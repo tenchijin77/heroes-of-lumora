@@ -1,0 +1,9 @@
+change list:
+
+completed:
+-created change list to track upcoming and completed tasks, created game context file with program variables, and layout
+
+
+to do:
+
+
