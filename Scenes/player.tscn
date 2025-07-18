@@ -1,0 +1,29 @@
+[gd_scene load_steps=4 format=3 uid="uid://docxyuvykeqmf"]
+
+[ext_resource type="Script" uid="uid://btptpi22vbosd" path="res://Scripts/player.gd" id="1_cvnsp"]
+[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="1_v0iea"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cvnsp"]
+size = Vector2(27, 31)
+
+[node name="player" type="CharacterBody2D" groups=["player"]]
+script = ExtResource("1_cvnsp")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2(0.5, -0.5)
+shape = SubResource("RectangleShape2D_cvnsp")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, 12)
+texture = ExtResource("1_v0iea")
+offset = Vector2(0, -12)
+flip_h = true
+region_enabled = true
+region_rect = Rect2(930, 32, 31, 31)
+
+[node name="muzzle" type="Node2D" parent="."]
+position = Vector2(17, 3)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(2, 2)
