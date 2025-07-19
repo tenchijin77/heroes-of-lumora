@@ -10,7 +10,6 @@ size = Vector2(27, 31)
 
 [node name="player" type="CharacterBody2D" groups=["player"]]
 script = ExtResource("1_cvnsp")
-firing_speed = 0.2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
@@ -27,6 +26,9 @@ region_rect = Rect2(930, 32, 31, 31)
 
 [node name="muzzle" type="Node2D" parent="."]
 position = Vector2(17, 3)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(2, 2)
 
 [node name="player_bullet_pool" type="Node" parent="."]
 script = ExtResource("3_6t5aa")

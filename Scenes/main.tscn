@@ -1,7 +1,10 @@
-[gd_scene load_steps=5 format=4 uid="uid://4qnufvqx54b"]
+[gd_scene load_steps=8 format=4 uid="uid://4qnufvqx54b"]
 
 [ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="1_bo1nx"]
 [ext_resource type="PackedScene" uid="uid://docxyuvykeqmf" path="res://Scenes/player.tscn" id="2_8gbba"]
+[ext_resource type="Script" uid="uid://brfhd1h8opivd" path="res://Scripts/camera_controller.gd" id="3_8gbba"]
+[ext_resource type="PackedScene" uid="uid://8omivgchd5p4" path="res://Scenes/wizard.tscn" id="4_jjvhh"]
+[ext_resource type="PackedScene" uid="uid://rxnkxpdrn2q2" path="res://Scenes/skeleton.tscn" id="5_kry3j"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1bvp3"]
 texture = ExtResource("1_bo1nx")
@@ -2917,3 +2920,16 @@ position = Vector2(77, 49)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(46, 38)
+zoom = Vector2(1.5, 1.5)
+editor_draw_limits = true
+script = ExtResource("3_8gbba")
+
+[node name="wizard" parent="." instance=ExtResource("4_jjvhh")]
+position = Vector2(576, 431)
+max_speed = 25.0
+stop_range = 25.0
+shoot_range = 150.0
+
+[node name="skeleton" parent="." instance=ExtResource("5_kry3j")]
+position = Vector2(859, 282)
+drag = 0.9
