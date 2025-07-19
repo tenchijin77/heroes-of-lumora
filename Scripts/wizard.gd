@@ -8,6 +8,12 @@ extends CharacterBody2D
 @export var stop_range : float = 25
 @export var shoot_rate : float = .8
 @export var shoot_range : float = 150
+@export var current_health : int = 25
+@export var max_health : int = 25
+@export var collision_damage : int = 3
+
+
+
 var last_shoot_time : float
 
 @onready var player = get_tree().get_first_node_in_group("player")
@@ -37,12 +43,26 @@ func _physics_process(delta: float) -> void:
 	if local_avoidance.length() > 0:
 		move_direction = local_avoidance
 		
-	if velocity.length() < max_speed and player_distance > stop_range:
+	if velocity.length() < max_speed:
 		velocity += move_direction * acceleration
 	else:
 		velocity *= drag
 		
 	move_and_slide()
+
+	# --- NEW: Check for collisions with the player after movement ---
+	for i in get_slide_collision_count():
+		var collision = get_slide_collision(i)
+		var body = collision.get_collider()
+		
+		# Ensure the collided body exists and is the player
+		if body and body.is_in_group("player"):
+			if body.has_method("take_damage"):
+				body.take_damage(collision_damage)
+				print(name, " collided with player and dealt ", collision_damage, " damage!")
+				# Optional: You might want to add a small delay or cooldown here
+				# to prevent the monster from instantly spamming damage if it stays
+				# on top of the player. For now, it will damage every physics frame.
 	
 func _local_avoidance () -> Vector2:
 	avoidance_ray.target_position = to_local(player.global_position).normalized()
@@ -68,3 +88,23 @@ func _cast ():
 	var fireball = fireball_pool.spawn()
 	fireball.global_position = muzzle.global_position
 	fireball.move_direction = muzzle.global_position.direction_to(player.global_position)
+
+
+func take_damage (damage : int):
+	current_health -= damage
+	
+	if current_health <= 0:
+		visible = false
+
+
+func _on_visibility_changed() -> void:
+
+	if visible:
+		set_process(false)
+		set_physics_process(false)
+		current_health = max_health
+	else:
+		set_process(false)
+		set_physics_process(false)
+		
+		global_position = Vector2(0 ,999999)

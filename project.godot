@@ -53,6 +53,14 @@ shoot={
 ]
 }
 
+[layer_names]
+
+2d_physics/layer_1="Player"
+2d_physics/layer_2="Monsters"
+2d_physics/layer_3="Player_Projectiles"
+2d_physics/layer_4="Enemy_Projectiles"
+2d_physics/layer_5="Environment"
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0

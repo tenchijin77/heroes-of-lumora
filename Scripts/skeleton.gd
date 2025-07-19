@@ -5,8 +5,9 @@ extends CharacterBody2D
 @export var max_speed : float
 @export var acceleration : float
 @export var drag : float
-@export var health : int = 15
-
+@export var current_health : int = 15
+@export var max_health : int = 15
+@export var collision_damage : int = 3
 
 
 @onready var player = get_tree().get_first_node_in_group("player")
@@ -39,7 +40,22 @@ func _physics_process(delta: float) -> void:
 		velocity *= drag
 		
 	move_and_slide()
-	
+
+	# --- NEW: Check for collisions with the player after movement ---
+	for i in get_slide_collision_count():
+		var collision = get_slide_collision(i)
+		var body = collision.get_collider()
+		
+		# Ensure the collided body exists and is the player
+		if body and body.is_in_group("player"):
+			if body.has_method("take_damage"):
+				body.take_damage(collision_damage)
+				print(name, " collided with player and dealt ", collision_damage, " damage!")
+				# Optional: You might want to add a small delay or cooldown here
+				# to prevent the monster from instantly spamming damage if it stays
+				# on top of the player. For now, it will damage every physics frame.
+
+
 func _local_avoidance () -> Vector2:
 	avoidance_ray.target_position = to_local(player.global_position).normalized()
 	avoidance_ray.target_position *= 80
@@ -59,4 +75,20 @@ func _local_avoidance () -> Vector2:
 	return Vector2(-obstacle_direction.y, obstacle_direction.x)
 	
 	
+func take_damage (damage : int):
+	current_health -= damage
+	
+	if current_health <= 0:
+		visible = false
 		
+func _on_visibility_changed() -> void:
+
+	if visible:
+		set_process(false)
+		set_physics_process(false)
+		current_health = max_health
+	else:
+		set_process(false)
+		set_physics_process(false)
+		
+		global_position = Vector2(0 ,999999)

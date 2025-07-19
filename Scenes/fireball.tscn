@@ -9,7 +9,10 @@ radius = 11.0
 height = 22.0
 
 [node name="fireball" type="Area2D"]
+collision_layer = 8
+collision_mask = 17
 script = ExtResource("2_hcgvv")
+owner_group = "monsters"
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_0mxqg")

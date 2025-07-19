@@ -8,7 +8,10 @@
 size = Vector2(21, 7)
 
 [node name="arrow" type="Area2D"]
+collision_layer = 4
+collision_mask = 18
 script = ExtResource("1_h5x2m")
+owner_group = "player"
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_2u0bd")

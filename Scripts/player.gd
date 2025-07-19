@@ -5,7 +5,8 @@ extends CharacterBody2D
 @export var acceleration : float = .2
 @export var braking : float = .15
 @export var firing_speed : float = .4
-@export var health : int = 60
+@export var current_health : int = 60
+@export var max_health: int = 60
 var last_shoot_time : float
 
 
@@ -61,6 +62,11 @@ func open_fire():
 	
 	arrow.move_dir = mouse_direction
 	
+func take_damage (damage : int):
+	current_health -= damage
+	
+	if current_health <= 0:
+		print("Game Over! LOADING, PLEASE WAIT......................")
 	
 	
 	

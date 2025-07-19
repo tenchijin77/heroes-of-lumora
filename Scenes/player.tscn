@@ -9,6 +9,7 @@
 size = Vector2(27, 31)
 
 [node name="player" type="CharacterBody2D" groups=["player"]]
+collision_mask = 26
 script = ExtResource("1_cvnsp")
 firing_speed = 0.2
 
