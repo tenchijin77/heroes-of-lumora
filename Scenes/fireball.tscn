@@ -30,5 +30,6 @@ autostart = true
 stream = ExtResource("2_ne4qj")
 autoplay = true
 
-[connection signal="body_entered" from="." to="destroy_timer" method="_on_area_2d_body_entered"]
-[connection signal="visibility_changed" from="." to="destroy_timer" method="_on_area_2d_visibility_changed"]
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
+[connection signal="timeout" from="destroy_timer" to="." method="_on_destroy_timer_timeout"]

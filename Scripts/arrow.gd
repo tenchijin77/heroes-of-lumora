@@ -52,7 +52,17 @@ func _on_body_entered(body):
 		
 	if body.has_method("take_damage"):
 		body.take_damage(damage)
-		visible = false
+		despawn()
+		
+
+func despawn(): # Ensure this function is here, spelled exactly 'despawn'
+	visible = false # Hide the sprite
+	if $CollisionShape2D:
+		$CollisionShape2D.disabled = true # Disable collision
+	if destroy_timer:
+		destroy_timer.stop() # Stop the timer
+	if hit_sound and hit_sound.playing:
+		hit_sound.stop()
 	
 		
 		

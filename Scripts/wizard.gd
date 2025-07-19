@@ -95,6 +95,15 @@ func take_damage (damage : int):
 	
 	if current_health <= 0:
 		visible = false
+	else:
+		_damage_flash()
+		
+func _damage_flash ():
+	sprite.modulate = Color.BLACK
+	await get_tree().create_timer(0.05).timeout
+	sprite.modulate = Color.WHITE
+	
+		
 
 
 func _on_visibility_changed() -> void:

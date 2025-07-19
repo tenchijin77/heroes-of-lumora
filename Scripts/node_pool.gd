@@ -1,4 +1,6 @@
 #node_pool.gd
+
+class_name NodePool
 extends Node
 
 @export var node_scene : PackedScene
@@ -7,7 +9,7 @@ var cached_nodes : Array[Node2D]
 func _create_new () -> Node2D:
 	var node = node_scene.instantiate()
 	cached_nodes.append(node)
-	get_tree().get_root().add_child(node)
+	get_tree().get_root().add_child.call_deferred(node)
 	#added to troubleshoot invisible fireballs
 	node.visible = true
 	return node

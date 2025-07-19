@@ -67,6 +67,13 @@ func take_damage (damage : int):
 	
 	if current_health <= 0:
 		print("Game Over! LOADING, PLEASE WAIT......................")
+	else:
+		_damage_flash()
+		
+func _damage_flash ():
+	sprite.modulate = Color.RED
+	await get_tree().create_timer(0.05).timeout
+	sprite.modulate = Color.WHITE
 	
 	
 	

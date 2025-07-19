@@ -8,17 +8,28 @@ extends CharacterBody2D
 @export var current_health : int = 15
 @export var max_health : int = 15
 @export var collision_damage : int = 3
-
+@export var shoot_rate : float = 1.5
+@export var shoot_range : float = 150.0 
 
 @onready var player = get_tree().get_first_node_in_group("player")
 @onready var avoidance_ray : RayCast2D = $avoidance_ray
 @onready var sprite : Sprite2D = $Sprite2D
+@onready var muzzle : Node2D = $muzzle 
+@onready var bone_pool = $skeleton_bullet_pool 
 
 
 
 
 var player_distance : float
 var player_direction : Vector2
+var last_shoot_time : float = 0.0 
+
+
+func _ready(): 
+	if visible:
+		set_process(true)
+		set_physics_process(true)
+		current_health = max_health
 
 
 func _process (delta):
@@ -26,6 +37,20 @@ func _process (delta):
 	player_direction =  global_position.direction_to(player.global_position)
 
 	sprite.flip_h = player_direction.x > 0
+	
+		
+	if player_distance < shoot_range:
+		if Time.get_unix_time_from_system() - last_shoot_time > shoot_rate:
+			_cast_bone()
+
+func _cast_bone():
+	last_shoot_time = Time.get_unix_time_from_system()
+	
+	if bone_pool and muzzle:
+		var bone = bone_pool.spawn()
+		bone.global_position = muzzle.global_position
+		bone.move_direction = muzzle.global_position.direction_to(player.global_position)
+		
 
 func _physics_process(delta: float) -> void:
 	var move_direction = player_direction
@@ -80,15 +105,26 @@ func take_damage (damage : int):
 	
 	if current_health <= 0:
 		visible = false
+		set_process(false)
+		set_physics_process(false)
+		global_position = Vector2(0 ,999999)
+		
+	else:
+		_damage_flash()
+		
+func _damage_flash ():
+	sprite.modulate = Color.BLACK
+	await get_tree().create_timer(0.05).timeout
+	sprite.modulate = Color.WHITE
+	
 		
 func _on_visibility_changed() -> void:
 
-	if visible:
-		set_process(false)
-		set_physics_process(false)
-		current_health = max_health
-	else:
-		set_process(false)
-		set_physics_process(false)
-		
-		global_position = Vector2(0 ,999999)
+		if visible:
+			set_process(true)
+			set_physics_process(true)
+			current_health = max_health
+		else:
+			set_process(false)
+			set_physics_process(false)
+			global_position = Vector2(0 ,999999)

@@ -1,12 +1,13 @@
-# fireball.gd - controls the fireball projectile
+# bone.gd - controls the bone projectile
 extends Area2D
 
 @export var speed : float = 200.0
-@export var owner_group : String
-@export var damage = 12
+@export var owner_group : String 
+@export var damage = 5
+
 
 @onready var destroy_timer : Timer = $destroy_timer
-@onready var hit_sound = $fireball_sound
+@onready var hit_sound = $bone_sound
 
 
 
@@ -24,13 +25,18 @@ func _ready():
 		else:
 			print("⚠️ hit_sound is null!")
 
-	
+	if destroy_timer:
+		destroy_timer.start()
 
 func _process (delta):
 	translate(move_direction * speed * delta)
 	
 	# makes the angle of the arrow equal to the direction. 
 	rotation = move_direction.angle()
+	
+	# Move the bone in its set direction
+	translate(move_direction * speed * delta)
+	
 	
 	
 func _on_destroy_timer_timeout() -> void:
@@ -51,7 +57,8 @@ func _on_body_entered(body):
 	if body.has_method("take_damage"):
 		body.take_damage(damage)
 		despawn()
-		
+	
+
 func despawn(): # Ensure this function is here, spelled exactly 'despawn'
 	visible = false # Hide the sprite
 	if $CollisionShape2D:

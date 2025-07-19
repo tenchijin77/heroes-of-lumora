@@ -1,14 +1,16 @@
-[gd_scene load_steps=4 format=3 uid="uid://rxnkxpdrn2q2"]
+[gd_scene load_steps=6 format=3 uid="uid://rxnkxpdrn2q2"]
 
 [ext_resource type="Script" uid="uid://con0frhkfq4w4" path="res://Scripts/skeleton.gd" id="1_81u3t"]
 [ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="1_sfdtf"]
+[ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="3_pegji"]
+[ext_resource type="PackedScene" uid="uid://dqvoxa00tmmcv" path="res://Scenes/bone.tscn" id="4_5abox"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sfdtf"]
 size = Vector2(18, 25)
 
 [node name="skeleton" type="CharacterBody2D" groups=["monsters"]]
 collision_layer = 2
-collision_mask = 21
+collision_mask = 23
 script = ExtResource("1_81u3t")
 max_speed = 35.0
 acceleration = 10.0
@@ -24,5 +26,11 @@ position = Vector2(1, -2.5)
 texture = ExtResource("1_sfdtf")
 region_enabled = true
 region_rect = Rect2(710, 262, 20, 26)
+
+[node name="muzzle" type="Node2D" parent="."]
+
+[node name="skeleton_bullet_pool" type="Node" parent="."]
+script = ExtResource("3_pegji")
+node_scene = ExtResource("4_5abox")
 
 [node name="avoidance_ray" type="RayCast2D" parent="."]
