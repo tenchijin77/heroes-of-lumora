@@ -4,7 +4,7 @@ completed:
 -created change list to track upcoming and completed tasks, created game context file with program variables, and layout
 -added player, skeleton, and wizard to the game
 -created an arrow projectile for the player (left mouse button), a bone ranged attack, and a fireball attack for the mobs
--implamented a random enemy spawner
+-implemented a random enemy spawner
 
 to do:
 

@@ -3,6 +3,8 @@ Game: Heroes of Lumora: a bullet hell game, similar to the idea of vampire survi
 Environmental Variables:
 
 -I am using Godot 4.4.1
+
+Files:
 -snakecase is used for all file names, with all words in lowercase
 -pascalcase is used for folders, (i.e. first letter capital like /Data)
 -all variables should have their type explicitly called to avoid error messages
@@ -11,55 +13,37 @@ Environmental Variables:
 -all scenes are stored in res://Scenes
 -all assets like sounds and images are in res://Assets/
 -user data is saved in user://saves/ (not yet implemented)
+-my player information is in player.gd
 -all scripts should start with a comment designating the script name, i.e. (# snake.gd)
 -all json files should start with a comment designating the file name and purpose, i.e. ("_comment": "monsters.json - this table is used for monster's stats ")
--all functions in scripts should start with a comment, documenting what the function does, i.e. #Apply stats to characte file
+-all functions in scripts should start with a comment, documenting what the function does, i.e. #Apply stats to character file
 -all script files should use tab indentation, not space indentation
+
+Collisions:
+
 -all monsters are in the monsters node group for collisions (layer 2)
 -the player is in the player node group for collisions (layer 1)
 -player projectiles are on layer 3 for collisions
--enemy projectils are on layer 4 for collisions
+-enemy projectiles are on layer 4 for collisions
 -environment is on layer 5 for collisions
+
+Naming:
 -scenes or levels are referred to as zones
 -monsters are referred to as mobs (or moving objects)
+
+Behaviour:
 -spawns are instantiated and handled by node_pool.gd
-
-
-Files:
-
--my player information is in player.gd
-
 -mobs are randomly generated via enemy_spawner.tscn with enemy_spawner.gd
--all mobs pull global variables from mob.tscn and mob.gd, and then pull unique settings from their specific file, i.e. skeleton.tscn and skeleton.gd
 -projectiles are called arrow.tscn and .gd for the player's attack, and bone.tscn and gd, and fireball.tscn and gd for the enemies' attacks.
 
+Monsters:
+
+-skeleton.tscn and gd - fires projectile, bone.tscn and gd
+-wizard.tscn and gd - fires projectile, fireball.tsn and gd
 
 Controls:
 
 
 Move: Arrow keys or WASD
 
-Melee Attack: Left mouse click (deals 20 damage to nearby enemies) called by melee_attack
-
-Ranged Attack (Warrior): Right mouse click (fires a projectile dealing 15 damage toward mouse position, 2s cooldown) called by ranged_attack
-
-Spell Attack (Caster): Right mouse click (casts Magic Missile, fires 3 bolts dealing 6 arcane damage each, costs 25 mana, 10s cooldown) Objective: Explore Lumora, battle monsters, and harness arcane powers to uncover the secrets of the Void. This should pull all spell data and variables from player_spells.json. will be called by spell_attack (currently is called by cast_magic_missile)
-
-(this is currently defaulted to the one spell, magic_missile from player_spells.json. at a later date i will update this to call the spell that the player has equipped.)
-
-
-Character Sheet: By hitting C, the player can bring up the character sheet, which calls character_sheet.tscn and character_sheet.gd, which graphically loads and shows the player's statistics, which are stored in character_stats.json. I want this to do a live update of stats as they change in the game, and it currently is only reading the static file. I want it to update health, mana, xp, weight, etc. in realtime eventually. 
-
-Monsters will be spawned by mob_spawner.tscn, which calls mob_spawner.gd; this has the basic monster (called mobs) logic, and pulls zone specific locations and mob amounts from the zone files. currently there is only one zone, lumore_outskirts_spawns.json. All new zones will be named in the same way, zonename_spawns.json
-
-
-All items will be stored in items.json.
-
-All monsters will be stored in monsters.json
-
-All loot drops use a two tiered system. The global loot for items common to the current area (zone) will be stored in a global table for each zone, for example, lumore_outskirts.json for the starting zone. All monsters in the zone will be able to drop these items randomly. Then unique drops will be stored under the monster's individual table, i.e. skeleton_loot.json When a monster dies, the RNG function should randomly generate loot first based on the zone loot table, then the individual loot table, and drop the combined results.
-
-
-Game information:
-
-Money is a four type system, copper, silver, gold, and platinum. It takes 100 of a type to make 1 of the next type. i.e. 100 copper = 1 silver. 
+Melee Attack: Left mouse click - calls arrow.tscn and gd
