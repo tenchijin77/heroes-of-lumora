@@ -1,8 +1,19 @@
-# Godot 4+ specific ignores
+.import/
+*.import
+*.tmp
 .godot/
-/android/
-*.import/
+builds/
+dist/
 export/
-*.exe
-*.apk
-*.pck
+logs/
+*.log
+*.bak
+*.backup
+*.old
+*.orig
+*.rej
+*.temp
+*.tmp
+bin/
+obj/
+android/
