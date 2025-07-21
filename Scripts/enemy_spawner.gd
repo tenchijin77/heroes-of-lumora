@@ -1,23 +1,20 @@
 #enemy_spawner.gd - spawns enemies randomly
 extends Node
 
-# @export variables
-@export var min_spawn_time : float = 1.0 # Reduced from 2.0 for faster spawns
-@export var max_spawn_time : float = 2.0 # Reduced from 5d.0 for faster spawns
+@export var min_spawn_time : float = 0.5
+@export var max_spawn_time : float = 2.0
 @export var spawn_radius : float = 100.0
 @export var wizard_spawn_chance : float = 0.3
-@export var enemies_per_spawn : int = 3  # Number of enemies to spawn per cycle
+@export var enemies_per_spawn : int = 3
 
-# NodePath exports for Inspector assignment
 @export var skeleton_pool_path: NodePath
 @export var wizard_pool_path: NodePath
 @export var spawn_points_paths: Array[NodePath]
 
-# @onready variables
 @onready var skeleton_pool = get_node(skeleton_pool_path) as NodePool
 @onready var wizard_pool = get_node(wizard_pool_path) as NodePool
 @onready var spawn_points_nodes: Array[Node2D] = []
-@onready var player = get_node("/root/main/player")  # Reference to player
+@onready var player = get_node("/root/main/player")
 
 func _ready():
 	for path in spawn_points_paths:
@@ -37,28 +34,24 @@ func _ready():
 		push_error("ERROR: Player node not found!")
 
 func _spawn_specific_monster(monster_pool: NodePool, spawn_point_node: Node2D):
-	if not monster_pool:
-		push_error("Attempted to spawn from a null monster_pool!")
+	if not monster_pool or not spawn_point_node or get_tree().paused:
 		return
-	if not spawn_point_node:
-		push_error("Attempted to spawn at a null spawn_point_node!")
-		return
-
 	var monster = monster_pool.spawn()
+	if not monster:
+		return
 	var random_offset = Vector2(randf_range(-spawn_radius, spawn_radius), randf_range(-spawn_radius, spawn_radius))
 	monster.global_position = spawn_point_node.global_position + random_offset
-	print("Spawned %s at %s" % [monster.name, monster.global_position])
-
+	monster.visible = true
 	if monster.has_signal("mob_died"):
 		monster.mob_died.connect(player.increment_score.bind())
 	else:
 		push_error("Monster %s does not have mob_died signal!" % monster.name)
 
 func _spawn_monster():
-	if spawn_points_nodes.is_empty():
-		push_warning("No valid spawn points configured for enemy_spawner! Cannot spawn.")
+	if get_tree().paused:
 		return
-
+	if spawn_points_nodes.is_empty():
+		return
 	for i in range(enemies_per_spawn):
 		var chosen_spawn_point_node = spawn_points_nodes[randi() % spawn_points_nodes.size()]
 		var actual_wizard_chance = wizard_spawn_chance

@@ -36,8 +36,11 @@ func _ready():
 				node.call_deferred("reset")
 	if not hit_sound:
 		push_error("Player: hit_sound is null!")
+	Global.current_score = 0  # Reset score on start
 
 func _physics_process(delta):
+	if is_queued_for_deletion():
+		return
 	move_input = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	
 	if move_input.length() > 0:
@@ -48,6 +51,8 @@ func _physics_process(delta):
 	move_and_slide()
 
 func _process(delta):
+	if is_queued_for_deletion():
+		return
 	sprite.flip_h = get_global_mouse_position().x > global_position.x
 	
 	if Input.is_action_pressed("shoot"):
@@ -60,6 +65,8 @@ func _process(delta):
 	update_time_label()
 
 func open_fire():
+	if is_queued_for_deletion():
+		return
 	last_shoot_time = Time.get_unix_time_from_system()
 	var available_nodes = arrow_pool.cached_nodes.filter(func(n): return n and n.visible == false)
 	var arrow = arrow_pool.spawn()
@@ -76,11 +83,21 @@ func open_fire():
 		arrow.despawn()
 
 func take_damage(damage : int):
+	if is_queued_for_deletion():
+		return
 	current_health -= damage
 	if hit_sound and not hit_sound.playing:
 		hit_sound.play()
 		print("Player: Hit sound played, damage: %d" % damage)
 	if current_health <= 0:
+		set_process(false)
+		set_physics_process(false)
+		for mob in get_tree().get_nodes_in_group("monsters"):
+			if mob.has_method("set_process"):
+				mob.set_process(false)
+				mob.set_physics_process(false)
+		get_tree().call_group("monsters", "queue_free")
+		Global.current_score = score  # Store score before transition
 		if Global.is_high_score(score):
 			get_tree().change_scene_to_file("res://Scenes/game_over.tscn")
 		else:

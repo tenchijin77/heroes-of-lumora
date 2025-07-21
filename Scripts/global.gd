@@ -2,8 +2,10 @@
 extends Node
 
 var high_scores : Array[Dictionary] = []
+var current_score : int = 0
 
 func _ready():
+	DirAccess.make_dir_absolute("user://saves/")
 	load_high_scores()
 
 # Load high scores from user://saves/high_scores.json
@@ -12,10 +14,18 @@ func load_high_scores():
 	if file:
 		var json = JSON.new()
 		var error = json.parse(file.get_as_text())
-		if error == OK and json.data is Array:
-			high_scores = json.data
+		if error == OK:
+			if json.data is Array:
+				high_scores = []
+				for item in json.data:
+					if item is Dictionary and "score" in item and "initials" in item:
+						high_scores.append(item)
+				print("Global: Loaded high scores: %s" % high_scores)
+			else:
+				print("Global: high_scores.json is not an array, initializing empty list")
+				high_scores = []
 		else:
-			print("Global: Failed to parse high_scores.json, initializing empty list")
+			print("Global: Failed to parse high_scores.json, error: %s" % error_string(error))
 			high_scores = []
 		file.close()
 	else:
@@ -24,10 +34,15 @@ func load_high_scores():
 
 # Save high scores to user://saves/high_scores.json
 func save_high_scores():
+	var dir = DirAccess.open("user://")
+	if not dir.dir_exists("saves"):
+		dir.make_dir("saves")
+		print("Global: Created saves directory")
 	var file = FileAccess.open("user://saves/high_scores.json", FileAccess.WRITE)
 	if file:
 		file.store_string(JSON.stringify(high_scores, "\t"))
 		file.close()
+		print("Global: Saved high scores: %s" % high_scores)
 	else:
 		push_error("Global: Failed to save high_scores.json")
 
@@ -50,3 +65,7 @@ func is_high_score(score: int) -> bool:
 	if high_scores.size() < 10:
 		return true
 	return score > high_scores[-1].score
+
+# Reset game state on restart
+func reset():
+	current_score = 0

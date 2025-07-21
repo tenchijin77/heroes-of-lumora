@@ -9,6 +9,7 @@ extends Control
 var current_score : int
 
 func _ready():
+	get_tree().paused = false  # Ensure unpaused
 	if not leader_board:
 		push_error("GameOver: leader_board is null!")
 	if not initials_input:
@@ -17,8 +18,7 @@ func _ready():
 		push_error("GameOver: submit_button is null!")
 	if not restart_button:
 		push_error("GameOver: restart_button is null!")
-	var player = get_tree().get_first_node_in_group("player")
-	current_score = player.score if player and player.score > 0 else 0
+	current_score = Global.current_score
 	update_leader_board()
 	if not Global.is_high_score(current_score):
 		if initials_input:
@@ -36,7 +36,7 @@ func update_leader_board():
 	for i in range(10):
 		var label = leader_board.get_node_or_null("score_" + str(i + 1))
 		if not label:
-			push_error("GameOver: score_%d label is null!" % (i + 1))
+			push_error("GameOver: score_%d is null!" % (i + 1))
 			continue
 		if i < Global.high_scores.size():
 			var entry = Global.high_scores[i]
@@ -68,4 +68,5 @@ func _on_submit_button_pressed():
 				restart_button.grab_focus()
 
 func _on_restart_button_pressed():
+	Global.reset()
 	get_tree().change_scene_to_file("res://Scenes/main.tscn")

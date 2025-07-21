@@ -9,7 +9,9 @@ completed:
 -add a ui with health, score, time survived
 -wrote music for the main menu and loop for the dialogue screen.
 -add sound on player hit
-
+-add a high-score system
+-add logic for when the player dies (save high score, if valid, etc.)
+-implement wall of heroes, i.e. save the top 10 high scores and show them when the player dies.
 
 to do: (in order of importance)
 -create a main menu screen
@@ -22,9 +24,7 @@ to do: (in order of importance)
 -add player potions (increase attack speed, increase movement speed, increase damage) each buff lasts 10 seconds.
 -add a regeneration system for the player. (they should regenerate x health per second; this should be modifiable)
 -add a save game system (will be used for high-score, wall of heroes and later updates)
--add a high-score system
--add logic for when the player dies (save high score, if valid, etc.)
--implement wall of heroes, i.e. save the top 10 high scores and show them when the player dies. 
+
 -add a loot drop system
 -add dialogue for the main screen to setup the game (use dialogic addon for godot to create this)
 -find cool fonts for all of the in game ui and assets
