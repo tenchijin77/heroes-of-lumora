@@ -1,5 +1,7 @@
 Game: Heroes of Lumora: a bullet hell game, similar to the idea of vampire survivors
 
+Gitfront read only repository: https://gitfront.io/r/tenchijin77/Ea5WKiTiUMTN/heroes-of-lumora/
+
 Environmental Variables:
 
 -I am using Godot 4.4.1
