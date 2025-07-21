@@ -33,7 +33,30 @@ var player_direction : Vector2
 func _ready ():
 	health_bar.max_value = max_health
 	health_bar.value = current_health
+	
+	if not health_bar:
+		push_error("Wizard %s: health_bar is null!" % name)
+	reset()
+	if player:
+		print("Wizard %s initialized, player ref: %s, health_bar: %s" % [name, player, health_bar])
+	else:
+		push_error("Wizard %s: Player reference is null!" % name)
 
+
+
+func reset():
+	visible = true
+	current_health = max_health
+	if health_bar:
+		health_bar.value = current_health
+	else:
+		push_error("Wizard %s: health_bar is null in reset!" % name)
+	velocity = Vector2.ZERO
+	last_shoot_time = 0.0
+	set_process(true)
+	set_physics_process(true)
+	global_position = Vector2.ZERO
+	print("Wizard %s reset, position: %s, velocity: %s, health_bar: %s" % [name, global_position, velocity, health_bar])
 
 func _process (delta):
 	player_distance = global_position.distance_to(player.global_position)
@@ -115,10 +138,15 @@ func _cast ():
 
 func take_damage (damage : int):
 	current_health -= damage
-	
+	if health_bar:
+		health_bar.value = current_health
+	else:
+		push_error("Wizard %s: health_bar is null in take_damage!" % name)
 	if current_health <= 0:
-		mob_died.emit()  # Emit signal when health reaches zero
+		mob_died.emit()
 		visible = false
+		set_process(false)
+		set_physics_process(false)
 	else:
 		_damage_flash()
 		health_bar.value = current_health
@@ -144,5 +172,4 @@ func _on_visibility_changed() -> void:
 	else:
 		set_process(false)
 		set_physics_process(false)
-		
-		global_position = Vector2(0 ,999999)
+	
