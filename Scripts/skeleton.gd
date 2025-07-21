@@ -16,6 +16,7 @@ extends CharacterBody2D
 @onready var sprite : Sprite2D = $Sprite2D
 @onready var muzzle : Node2D = $muzzle 
 @onready var bone_pool = $skeleton_bullet_pool 
+@onready var health_bar : ProgressBar = $health_bar
 
 
 
@@ -30,6 +31,9 @@ func _ready():
 		set_process(true)
 		set_physics_process(true)
 		current_health = max_health
+
+		health_bar.max_value = max_health
+		health_bar.value = current_health
 
 
 func _process (delta):
@@ -119,6 +123,7 @@ func _local_avoidance () -> Vector2:
 	
 func take_damage (damage : int):
 	current_health -= damage
+	health_bar.value = current_health
 	
 	if current_health <= 0:
 		visible = false
@@ -141,6 +146,10 @@ func _on_visibility_changed() -> void:
 			set_process(true)
 			set_physics_process(true)
 			current_health = max_health
+			
+			if health_bar:
+				health_bar.value = current_health
+			
 		else:
 			set_process(false)
 			set_physics_process(false)

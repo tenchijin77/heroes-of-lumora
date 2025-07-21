@@ -5,20 +5,24 @@ extends CharacterBody2D
 @export var acceleration : float = .2
 @export var braking : float = .15
 @export var firing_speed : float = .4
-@export var current_health : int = 60
-@export var max_health: int = 60
+@export var current_health : int = 100
+@export var max_health: int = 100
 var last_shoot_time : float
 
 
 @onready var sprite : Sprite2D = $Sprite2D
 @onready var muzzle = $muzzle
 @onready var arrow_pool = $player_bullet_pool
+@onready var health_bar : ProgressBar = $health_bar
 
 var move_input : Vector2
 
 # Removed to use the player_bullet_pool node pool instead.
 #var arrow_scene : PackedScene = preload("res://Scenes/arrow.tscn")
 
+func _ready ():
+	health_bar.max_value = max_health
+	health_bar.value = current_health
 
 func _physics_process(delta):
 	move_input = Input.get_vector("move_left", "move_right", "move_up", "move_down")
@@ -70,6 +74,7 @@ func take_damage (damage : int):
 		print("Game Over! LOADING, PLEASE WAIT......................")
 	else:
 		_damage_flash()
+		health_bar.value = current_health
 		
 func _damage_flash ():
 	sprite.modulate = Color.RED

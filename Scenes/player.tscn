@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://docxyuvykeqmf"]
+[gd_scene load_steps=8 format=3 uid="uid://docxyuvykeqmf"]
 
 [ext_resource type="Script" uid="uid://btptpi22vbosd" path="res://Scripts/player.gd" id="1_cvnsp"]
 [ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="1_v0iea"]
@@ -7,6 +7,12 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cvnsp"]
 size = Vector2(27, 31)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fkybt"]
+bg_color = Color(0.201527, 0.201527, 0.201527, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vgqql"]
+bg_color = Color(0.94902, 0, 0, 1)
 
 [node name="player" type="CharacterBody2D" groups=["player"]]
 collision_mask = 27
@@ -32,3 +38,13 @@ position = Vector2(17, 3)
 [node name="player_bullet_pool" type="Node" parent="."]
 script = ExtResource("3_6t5aa")
 node_scene = ExtResource("4_vgqql")
+
+[node name="health_bar" type="ProgressBar" parent="."]
+offset_left = -12.0
+offset_top = -25.0
+offset_right = 13.0
+offset_bottom = -21.0
+theme_override_styles/background = SubResource("StyleBoxFlat_fkybt")
+theme_override_styles/fill = SubResource("StyleBoxFlat_vgqql")
+rounded = true
+show_percentage = false

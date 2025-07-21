@@ -21,10 +21,17 @@ var last_shoot_time : float
 @onready var sprite : Sprite2D = $Sprite2D
 @onready var fireball_pool = $wizard_bullet_pool
 @onready var muzzle = $muzzle
+@onready var health_bar : ProgressBar = $health_bar
 
 
 var player_distance : float
 var player_direction : Vector2
+
+
+func _ready ():
+	health_bar.max_value = max_health
+	health_bar.value = current_health
+
 
 func _process (delta):
 	player_distance = global_position.distance_to(player.global_position)
@@ -111,6 +118,7 @@ func take_damage (damage : int):
 		visible = false
 	else:
 		_damage_flash()
+		health_bar.value = current_health
 		
 func _damage_flash ():
 	sprite.modulate = Color.BLACK
@@ -126,6 +134,10 @@ func _on_visibility_changed() -> void:
 		set_process(false)
 		set_physics_process(false)
 		current_health = max_health
+		
+		if health_bar:
+			health_bar.value = current_health
+		
 	else:
 		set_process(false)
 		set_physics_process(false)
