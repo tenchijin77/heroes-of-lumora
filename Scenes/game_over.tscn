@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://he6p5aj4qor7"]
+[gd_scene load_steps=4 format=3 uid="uid://he6p5aj4qor7"]
 
 [ext_resource type="Script" uid="uid://chhbi41vxqdyy" path="res://Scripts/game_over.gd" id="1_ojehl"]
+[ext_resource type="FontFile" uid="uid://cam7bapqpcdf8" path="res://Assets/Fonts/_bitmap_font____romulus_by_pix3m-d6aokem.ttf" id="2_8fo1c"]
+[ext_resource type="FontFile" uid="uid://djcjuyoolr6e1" path="res://Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf" id="2_ek8ke"]
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -19,40 +21,62 @@ alignment = 1
 
 [node name="score_1" type="Label" parent="leader_board"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_ek8ke")
+theme_override_font_sizes/font_size = 16
 
 [node name="score_2" type="Label" parent="leader_board"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_ek8ke")
+theme_override_font_sizes/font_size = 16
 
 [node name="score_3" type="Label" parent="leader_board"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_ek8ke")
+theme_override_font_sizes/font_size = 16
 
 [node name="score_4" type="Label" parent="leader_board"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_ek8ke")
+theme_override_font_sizes/font_size = 16
 
 [node name="score_5" type="Label" parent="leader_board"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_ek8ke")
+theme_override_font_sizes/font_size = 16
 
 [node name="score_6" type="Label" parent="leader_board"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_ek8ke")
+theme_override_font_sizes/font_size = 16
 
 [node name="score_7" type="Label" parent="leader_board"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_ek8ke")
+theme_override_font_sizes/font_size = 16
 
 [node name="score_8" type="Label" parent="leader_board"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_ek8ke")
+theme_override_font_sizes/font_size = 16
 
 [node name="score_9" type="Label" parent="leader_board"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_ek8ke")
+theme_override_font_sizes/font_size = 16
 
 [node name="score_10" type="Label" parent="leader_board"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_ek8ke")
+theme_override_font_sizes/font_size = 16
 
 [node name="prompt_label" type="Label" parent="."]
 layout_mode = 2
 offset_left = 384.0
-offset_top = 512.0
-offset_right = 527.0
-offset_bottom = 535.0
+offset_top = 520.0
+offset_right = 529.0
+offset_bottom = 543.0
+theme_override_fonts/font = ExtResource("2_8fo1c")
+theme_override_font_sizes/font_size = 18
 text = "Enter Your Initials:"
 
 [node name="initials_input" type="LineEdit" parent="."]
@@ -61,25 +85,58 @@ offset_left = 552.0
 offset_top = 512.0
 offset_right = 620.563
 offset_bottom = 543.0
+theme_override_fonts/font = ExtResource("2_8fo1c")
+theme_override_font_sizes/font_size = 24
 placeholder_text = "AAA"
 max_length = 3
 
 [node name="submit_button" type="Button" parent="."]
 layout_mode = 2
-offset_left = 480.0
-offset_top = 576.0
-offset_right = 548.0
-offset_bottom = 607.0
+offset_left = 664.0
+offset_top = 512.0
+offset_right = 732.0
+offset_bottom = 543.0
+theme_override_fonts/font = ExtResource("2_8fo1c")
+theme_override_font_sizes/font_size = 18
 text = "Submit"
 
 [node name="restart_button" type="Button" parent="."]
 layout_mode = 2
-offset_left = 608.0
+offset_left = 480.0
 offset_top = 576.0
-offset_right = 676.0
+offset_right = 548.0
 offset_bottom = 607.0
+theme_override_fonts/font = ExtResource("2_8fo1c")
+theme_override_font_sizes/font_size = 18
 text = "Restart"
+
+[node name="quit_button" type="Button" parent="."]
+layout_mode = 2
+offset_left = 600.0
+offset_top = 576.0
+offset_right = 680.0
+offset_bottom = 607.0
+theme_override_fonts/font = ExtResource("2_8fo1c")
+theme_override_font_sizes/font_size = 18
+text = "Run Away"
+
+[node name="Panel" type="Panel" parent="."]
+z_index = -1
+layout_mode = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+
+[node name="title_label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 248.0
+offset_top = 8.0
+offset_right = 897.0
+offset_bottom = 61.0
+theme_override_fonts/font = ExtResource("2_ek8ke")
+theme_override_font_sizes/font_size = 55
+text = "The Wall of Fallen Heroes"
 
 [connection signal="text_submitted" from="initials_input" to="." method="_on_initials_input_text_submitted"]
 [connection signal="pressed" from="submit_button" to="." method="_on_submit_button_pressed"]
 [connection signal="pressed" from="restart_button" to="." method="_on_restart_button_pressed"]
+[connection signal="pressed" from="quit_button" to="." method="_on_quit_button_pressed"]
