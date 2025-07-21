@@ -11,19 +11,28 @@ completed:
 
 
 
-to do:
+to do: (in order of importance)
 
+-add sound on player hit
+-configure collisions for environment and implement walls to block off zone boundaries (i believe this can be done with the tilemap painting system somehow.
+-expand the tilemap for the first level.
 -create a main menu screen 
--add background music
--add player potions
--add a loot drop system
+-add background music (to main menu, and make the background environmental audio loop in the level.)
+-fix sounds on projectiles (not working due to the node pool setup. the original projectiles have sound, later ones randomly do or do not.)
+-determine the reason for background randomly flashing during the game and fix.
+-implement area2d collision zones so the player can pickup loot; coins, potions, etc. 
+-add player potions (increase attack speed, increase movement speed, increase damage) each buff lasts 10 seconds.
+-add a regeneration system for the player. (they should regenerate x health per second; this should be modifiable)
+-add a save game system (will be used for high-score, wall of heroes and later updates)
 -add a high-score system
--add dialogue for the main screen to setup the game (use dialogic addon for godot to create this)
 -add logic for when the player dies (save high score, if valid, etc.)
 -implement wall of heroes, i.e. save the top 10 high scores and show them when the player dies. 
+-add a loot drop system
+-add dialogue for the main screen to setup the game (use dialogic addon for godot to create this)
 -find cool fonts for all of the in game ui and assets
-
-
+-add coin drops for future upgrade system
+-eventually add npcs to introduce famous npcs from aldenexia
+-modify and streamline the design of the monster spawning system so i can add in new monster types and add them to the spawners with the least amount of effort.
 
 
 sites for assets:
