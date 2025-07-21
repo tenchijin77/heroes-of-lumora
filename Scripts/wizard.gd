@@ -2,6 +2,8 @@
 
 extends CharacterBody2D
 
+signal mob_died  # Emitted when the wizard dies
+
 @export var max_speed : float = 25
 @export var acceleration : float = 10
 @export var drag : float = .9
@@ -115,6 +117,7 @@ func take_damage (damage : int):
 	current_health -= damage
 	
 	if current_health <= 0:
+		mob_died.emit()  # Emit signal when health reaches zero
 		visible = false
 	else:
 		_damage_flash()

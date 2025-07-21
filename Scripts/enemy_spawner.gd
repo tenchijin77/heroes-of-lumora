@@ -19,7 +19,7 @@ extends Node
 @onready var skeleton_pool = get_node(skeleton_pool_path) as NodePool
 @onready var wizard_pool = get_node(wizard_pool_path) as NodePool
 @onready var spawn_points_nodes: Array[Node2D] = [] # This array will hold the actual Node2D references
-
+@onready var player = get_node("/root/main/player")  # Reference to player
 
 func _ready():
 	# Populate spawn_points_nodes array from NodePaths
@@ -54,6 +54,11 @@ func _spawn_specific_monster(monster_pool: NodePool, spawn_point_node: Node2D):
 	var random_offset = Vector2(randf_range(-spawn_radius, spawn_radius), randf_range(-spawn_radius, spawn_radius))
 	monster.global_position = spawn_point_node.global_position + random_offset
 
+# Connect mob_died signal to player's increment_score
+	if monster.has_signal("mob_died"):
+		monster.mob_died.connect(player.increment_score.bind())
+	else:
+		push_error("Monster %s does not have mob_died signal!" % monster.name)
 
 func _spawn_monster():
 	if spawn_points_nodes.is_empty():

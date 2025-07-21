@@ -1,10 +1,8 @@
-[gd_scene load_steps=10 format=4 uid="uid://4qnufvqx54b"]
+[gd_scene load_steps=8 format=4 uid="uid://4qnufvqx54b"]
 
 [ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="1_bo1nx"]
 [ext_resource type="PackedScene" uid="uid://docxyuvykeqmf" path="res://Scenes/player.tscn" id="2_8gbba"]
 [ext_resource type="Script" uid="uid://brfhd1h8opivd" path="res://Scripts/camera_controller.gd" id="3_8gbba"]
-[ext_resource type="PackedScene" uid="uid://8omivgchd5p4" path="res://Scenes/wizard.tscn" id="4_jjvhh"]
-[ext_resource type="PackedScene" uid="uid://rxnkxpdrn2q2" path="res://Scenes/skeleton.tscn" id="5_kry3j"]
 [ext_resource type="AudioStream" uid="uid://flgenim1m2t3" path="res://Assets/Audio/echo-dungeon-70538.mp3" id="6_6bp64"]
 [ext_resource type="PackedScene" uid="uid://bj2e54eikqriu" path="res://Scenes/enemy_spawner.tscn" id="6_21xkr"]
 
@@ -2926,14 +2924,6 @@ zoom = Vector2(1.5, 1.5)
 editor_draw_limits = true
 script = ExtResource("3_8gbba")
 
-[node name="wizard" parent="." instance=ExtResource("4_jjvhh")]
-position = Vector2(576, 431)
-max_speed = 25.0
-shoot_range = 150.0
-
-[node name="skeleton" parent="." instance=ExtResource("5_kry3j")]
-position = Vector2(859, 282)
-
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_6bp64")
 volume_db = -9.0
@@ -2941,3 +2931,23 @@ autoplay = true
 parameters/looping = false
 
 [node name="enemy_spawner" parent="." instance=ExtResource("6_21xkr")]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="score" type="Label" parent="CanvasLayer"]
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 71.0
+offset_bottom = 33.0
+size_flags_horizontal = 3
+size_flags_vertical = 6
+text = "Score: 0"
+
+[node name="uptime" type="Label" parent="CanvasLayer"]
+offset_left = 10.0
+offset_top = 40.0
+offset_right = 173.0
+offset_bottom = 66.0
+size_flags_horizontal = 3
+size_flags_vertical = 6
+text = "Time Survived: 00:00"

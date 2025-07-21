@@ -8,12 +8,15 @@ extends CharacterBody2D
 @export var current_health : int = 100
 @export var max_health: int = 100
 var last_shoot_time : float
-
+var score : int = 0  # Tracks number of monsters killed
+var survival_time : float = 0.0  # Tracks survival time in seconds
 
 @onready var sprite : Sprite2D = $Sprite2D
 @onready var muzzle = $muzzle
 @onready var arrow_pool = $player_bullet_pool
 @onready var health_bar : ProgressBar = $health_bar
+@onready var score_label : Label = get_node("/root/main/CanvasLayer/score")  # Reference to score label
+@onready var uptime_label : Label = get_node("/root/main/CanvasLayer/uptime")  # Reference to uptime label
 
 var move_input : Vector2
 
@@ -47,6 +50,10 @@ func _process (delta):
 			open_fire()
 		
 	_move_wobble()
+	
+	# Update survival time
+	survival_time += delta
+	update_time_label()
 
 func open_fire():
 	last_shoot_time = Time.get_unix_time_from_system()
@@ -92,7 +99,26 @@ func _move_wobble ():
 	
 	sprite.rotation_degrees = rot
 	
-		
+# Increment score and update label
+func increment_score():
+	score += 1
+	update_score_label()
+
+# Update score label text
+func update_score_label():
+	if score_label:
+		score_label.text = "Score: %d" % score
+	else:
+		push_error("Score label not found at ../CanvasLayer/score")
+
+# Update uptime label text
+func update_time_label():
+	if uptime_label:
+		var minutes = int(survival_time / 60)
+		var seconds = int(survival_time) % 60
+		uptime_label.text = "Time: %02d:%02d" % [minutes, seconds]
+	else:
+		push_error("Uptime label not found at ../CanvasLayer/uptime")
 	
 	
 	

@@ -2,6 +2,8 @@
 
 extends CharacterBody2D
 
+signal mob_died  # Emitted when the skeleton dies
+
 @export var max_speed : float
 @export var acceleration : float
 @export var drag : float
@@ -48,10 +50,6 @@ func _process (delta):
 			_cast_bone()
 			
 	_move_wobble()
-
-
-
-
 
 func _cast_bone():
 	last_shoot_time = Time.get_unix_time_from_system()
@@ -126,6 +124,7 @@ func take_damage (damage : int):
 	health_bar.value = current_health
 	
 	if current_health <= 0:
+		mob_died.emit()  # Emit signal when health reaches zero
 		visible = false
 		set_process(false)
 		set_physics_process(false)
