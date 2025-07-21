@@ -23,4 +23,5 @@ export.cfg
 export_presets.cfg
 export_credentials.cfg
 *.translation
+*.kate-swp
 
