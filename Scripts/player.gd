@@ -17,6 +17,8 @@ var survival_time : float = 0.0  # Tracks survival time in seconds
 @onready var health_bar : ProgressBar = $health_bar
 @onready var score_label : Label = get_node("/root/main/CanvasLayer/score")  # Reference to score label
 @onready var uptime_label : Label = get_node("/root/main/CanvasLayer/uptime")  # Reference to uptime label
+@onready var hit_sound : AudioStreamPlayer2D = $hit_sound
+
 
 var move_input : Vector2
 
@@ -76,7 +78,10 @@ func open_fire():
 	
 func take_damage (damage : int):
 	current_health -= damage
-	
+	if hit_sound and not hit_sound.playing:
+		hit_sound.play()
+		print("Player: Hit sound played, damage: %d" % damage)
+		
 	if current_health <= 0:
 		print("Game Over! LOADING, PLEASE WAIT......................")
 	else:

@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://docxyuvykeqmf"]
+[gd_scene load_steps=9 format=3 uid="uid://docxyuvykeqmf"]
 
 [ext_resource type="Script" uid="uid://btptpi22vbosd" path="res://Scripts/player.gd" id="1_cvnsp"]
 [ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="1_v0iea"]
 [ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="3_6t5aa"]
 [ext_resource type="PackedScene" uid="uid://cbwhespnm2iot" path="res://Scenes/arrow.tscn" id="4_vgqql"]
+[ext_resource type="AudioStream" uid="uid://ro2pdpul83eq" path="res://Assets/Audio/Minifantasy_Dungeon_SFX/11_human_damage_3.wav" id="5_fkybt"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cvnsp"]
 size = Vector2(27, 31)
@@ -48,3 +49,6 @@ theme_override_styles/background = SubResource("StyleBoxFlat_fkybt")
 theme_override_styles/fill = SubResource("StyleBoxFlat_vgqql")
 rounded = true
 show_percentage = false
+
+[node name="hit_sound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_fkybt")
