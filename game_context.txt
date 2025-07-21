@@ -16,6 +16,7 @@ Files:
 -snakecase is used for all file names, with all words in lowercase
 -pascalcase is used for folders, (i.e. first letter capital like /Data)
 -all variables should have their type explicitly called to avoid error messages
+-when creating elements in scene files, i will use snakecase for all names, i.e. (sound file named enemy_attack)
 -all tables are stored in json files in res://Data/
 -all scripts are stored in res://Scripts/
 -all scenes are stored in res://Scenes
