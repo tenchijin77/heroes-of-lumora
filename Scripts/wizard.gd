@@ -35,6 +35,8 @@ func _process (delta):
 	if player_distance < shoot_range:
 		if Time.get_unix_time_from_system() - last_shoot_time > shoot_rate:
 			_cast()
+			
+	_move_wobble()
 
 func _physics_process(delta: float) -> void:
 	var move_direction = player_direction
@@ -64,6 +66,18 @@ func _physics_process(delta: float) -> void:
 				# to prevent the monster from instantly spamming damage if it stays
 				# on top of the player. For now, it will damage every physics frame.
 	
+func _move_wobble ():
+	if velocity.length() == 0:
+		sprite.rotation_degrees = 0
+		return
+		
+	var t = Time.get_unix_time_from_system()
+	var rot = sin(t * 20) * 2
+	
+	sprite.rotation_degrees = rot
+	
+		
+
 func _local_avoidance () -> Vector2:
 	avoidance_ray.target_position = to_local(player.global_position).normalized()
 	avoidance_ray.target_position *= 80

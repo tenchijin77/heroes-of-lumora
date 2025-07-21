@@ -42,6 +42,7 @@ func _process (delta):
 		if Time.get_unix_time_from_system() - last_shoot_time > firing_speed:
 			open_fire()
 		
+	_move_wobble()
 
 func open_fire():
 	last_shoot_time = Time.get_unix_time_from_system()
@@ -75,6 +76,18 @@ func _damage_flash ():
 	await get_tree().create_timer(0.05).timeout
 	sprite.modulate = Color.WHITE
 	
+	
+func _move_wobble ():
+	if move_input.length() == 0:
+		sprite.rotation_degrees = 0
+		return
+		
+	var t = Time.get_unix_time_from_system()
+	var rot = sin(t * 20) * 2
+	
+	sprite.rotation_degrees = rot
+	
+		
 	
 	
 	

@@ -19,3 +19,8 @@ Desktop.ini
 .vscode/
 *.idea/
 *.log
+export.cfg
+export_presets.cfg
+export_credentials.cfg
+*.translation
+
