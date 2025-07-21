@@ -80,6 +80,7 @@ theme_override_font_sizes/font_size = 18
 text = "Enter Your Initials:"
 
 [node name="initials_input" type="LineEdit" parent="."]
+top_level = true
 layout_mode = 2
 offset_left = 552.0
 offset_top = 512.0
@@ -91,6 +92,7 @@ placeholder_text = "AAA"
 max_length = 3
 
 [node name="submit_button" type="Button" parent="."]
+top_level = true
 layout_mode = 2
 offset_left = 664.0
 offset_top = 512.0
@@ -101,6 +103,7 @@ theme_override_font_sizes/font_size = 18
 text = "Submit"
 
 [node name="restart_button" type="Button" parent="."]
+top_level = true
 layout_mode = 2
 offset_left = 480.0
 offset_top = 576.0
@@ -111,6 +114,7 @@ theme_override_font_sizes/font_size = 18
 text = "Restart"
 
 [node name="quit_button" type="Button" parent="."]
+top_level = true
 layout_mode = 2
 offset_left = 600.0
 offset_top = 576.0

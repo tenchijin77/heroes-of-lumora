@@ -2928,7 +2928,7 @@ script = ExtResource("3_8gbba")
 stream = ExtResource("6_6bp64")
 volume_db = -9.0
 autoplay = true
-parameters/looping = false
+parameters/looping = true
 
 [node name="enemy_spawner" parent="." instance=ExtResource("6_21xkr")]
 
