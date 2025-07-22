@@ -16,7 +16,7 @@ bg_color = Color(0.94902, 0, 0, 1)
 
 [node name="skeleton" type="CharacterBody2D" groups=["monsters"]]
 collision_layer = 2
-collision_mask = 23
+collision_mask = 7
 script = ExtResource("1_81u3t")
 max_speed = 35.0
 acceleration = 10.0
