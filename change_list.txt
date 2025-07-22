@@ -9,24 +9,22 @@ completed:
 -add a ui with health, score, time survived
 -wrote music for the main menu and loop for the dialogue screen.
 -add sound on player hit
--add a high-score system
--add logic for when the player dies (save high score, if valid, etc.)
--implement wall of heroes, i.e. save the top 10 high scores and show them when the player dies.
 -create a main menu screen
 -add background music (to main menu, and make the background environmental audio loop in the level.)
+-add a save game system (will be used for high-score, wall of heroes and later updates)
+-add logic for when the player dies (save high score, if valid, etc.)
+-add a high-score system: implement wall of heroes, i.e. save the top 10 high scores and show them when the player dies.
+-determine the reason for background randomly flashing during the game and fix. (fixed via rendering settings in 2d rendering project variables)
 
 
 to do: (in order of importance)
 
+-add a regeneration system for the player. (they should regenerate x health per second; this should be modifiable)
 -configure collisions for environment and implement walls to block off zone boundaries (i believe this can be done with the tilemap painting system somehow.
 -expand the tilemap for the first level.
 -fix sounds on projectiles (not working due to the node pool setup. the original projectiles have sound, later ones randomly do or do not.)
--determine the reason for background randomly flashing during the game and fix.
--implement area2d collision zones so the player can pickup loot; coins, potions, etc. 
+-implement area2d collision zones so the player can pickup loot; coins, potions, etc.
 -add player potions (increase attack speed, increase movement speed, increase damage) each buff lasts 10 seconds.
--add a regeneration system for the player. (they should regenerate x health per second; this should be modifiable)
--add a save game system (will be used for high-score, wall of heroes and later updates)
-
 -add a loot drop system
 -add dialogue for the main screen to setup the game (use dialogic addon for godot to create this)
 -find cool fonts for all of the in game ui and assets
