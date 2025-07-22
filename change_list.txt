@@ -15,11 +15,13 @@ completed:
 -add logic for when the player dies (save high score, if valid, etc.)
 -add a high-score system: implement wall of heroes, i.e. save the top 10 high scores and show them when the player dies.
 -determine the reason for background randomly flashing during the game and fix. (fixed via rendering settings in 2d rendering project variables)
+-add a regeneration system for the player. (they should regenerate x health per second; this should be modifiable)
+
 
 
 to do: (in order of importance)
 
--add a regeneration system for the player. (they should regenerate x health per second; this should be modifiable)
+
 -configure collisions for environment and implement walls to block off zone boundaries (i believe this can be done with the tilemap painting system somehow.
 -expand the tilemap for the first level.
 -fix sounds on projectiles (not working due to the node pool setup. the original projectiles have sound, later ones randomly do or do not.)

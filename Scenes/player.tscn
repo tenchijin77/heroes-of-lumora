@@ -52,3 +52,8 @@ show_percentage = false
 
 [node name="hit_sound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("5_fkybt")
+
+[node name="regeneration_timer" type="Timer" parent="."]
+autostart = true
+
+[connection signal="timeout" from="regeneration_timer" to="." method="_on_regeneration_timer_timeout"]

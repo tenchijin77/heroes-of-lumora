@@ -7,6 +7,8 @@ extends CharacterBody2D
 @export var firing_speed : float = 0.4
 @export var current_health : int = 100
 @export var max_health : int = 100
+@export var regeneration_per_second : float = 1.0  # Health regenerated per second
+
 var last_shoot_time : float = -1.0
 var score : int = 0
 var survival_time : float = 0.0
@@ -18,25 +20,32 @@ var survival_time : float = 0.0
 @onready var score_label : Label = get_node("/root/main/CanvasLayer/score")
 @onready var uptime_label : Label = get_node("/root/main/CanvasLayer/uptime")
 @onready var hit_sound : AudioStreamPlayer2D = $hit_sound
+@onready var regeneration_timer : Timer = $regeneration_timer
 
 var move_input : Vector2
 
 func _ready():
 	if not is_inside_tree():
 		await tree_entered
+	if not health_bar:
+		push_error("Player: health_bar is null!")
+	if not arrow_pool:
+		push_error("Player: arrow_pool is null!")
+	if not hit_sound:
+		push_error("Player: hit_sound is null!")
+	if not regeneration_timer:
+		push_error("Player: regeneration_timer is null!")
+	else:
+		regeneration_timer.wait_time = 1.0
+		regeneration_timer.autostart = true
 	health_bar.max_value = max_health
 	health_bar.value = current_health
 	update_score_label()
 	update_time_label()
-	if not arrow_pool:
-		push_error("Player: arrow_pool is null!")
-	else:
-		for node in arrow_pool.cached_nodes:
-			if node and node.has_method("reset"):
-				node.call_deferred("reset")
-	if not hit_sound:
-		push_error("Player: hit_sound is null!")
-	Global.current_score = 0  # Reset score on start
+	for node in arrow_pool.cached_nodes:
+		if node and node.has_method("reset"):
+			node.call_deferred("reset")
+	Global.current_score = 0
 
 func _physics_process(delta):
 	if is_queued_for_deletion():
@@ -49,6 +58,11 @@ func _physics_process(delta):
 		velocity = velocity.lerp(Vector2.ZERO, braking)
 	
 	move_and_slide()
+	for i in get_slide_collision_count():
+		var collision = get_slide_collision(i)
+		var body = collision.get_collider()
+		if body and body.is_in_group("environment"):
+			velocity = velocity.slide(collision.get_normal())
 
 func _process(delta):
 	if is_queued_for_deletion():
@@ -65,10 +79,10 @@ func _process(delta):
 	update_time_label()
 
 func open_fire():
-	if is_queued_for_deletion():
+	if is_queued_for_deletion() or not arrow_pool or not muzzle:
+		push_error("Player: arrow_pool or muzzle is null!")
 		return
 	last_shoot_time = Time.get_unix_time_from_system()
-	var available_nodes = arrow_pool.cached_nodes.filter(func(n): return n and n.visible == false)
 	var arrow = arrow_pool.spawn()
 	if not arrow:
 		push_error("Player: Failed to spawn arrow from pool!")
@@ -88,7 +102,6 @@ func take_damage(damage : int):
 	current_health -= damage
 	if hit_sound and not hit_sound.playing:
 		hit_sound.play()
-		print("Player: Hit sound played, damage: %d" % damage)
 	if current_health <= 0:
 		set_process(false)
 		set_physics_process(false)
@@ -97,14 +110,22 @@ func take_damage(damage : int):
 				mob.set_process(false)
 				mob.set_physics_process(false)
 		get_tree().call_group("monsters", "queue_free")
-		Global.current_score = score  # Store score before transition
+		Global.current_score = score
 		if Global.is_high_score(score):
 			get_tree().change_scene_to_file("res://Scenes/game_over.tscn")
 		else:
-			get_tree().change_scene_to_file("res://Scenes/main.tscn")
+			get_tree().change_scene_to_file("res://Scenes/main_menu.tscn")
 	else:
 		_damage_flash()
 		health_bar.value = current_health
+
+func _on_regeneration_timer_timeout():
+	if is_queued_for_deletion():
+		return
+	var health_to_add : int = int(regeneration_per_second)
+	current_health += health_to_add
+	current_health = min(current_health, max_health)
+	health_bar.value = current_health
 
 func _damage_flash():
 	sprite.modulate = Color.RED
