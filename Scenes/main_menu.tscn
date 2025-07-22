@@ -47,7 +47,7 @@ theme_override_fonts/font = ExtResource("3_ce3w2")
 theme_override_font_sizes/font_size = 30
 text = "Run Away"
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+[node name="background_music" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_n45e2")
 autoplay = true
 parameters/looping = true
