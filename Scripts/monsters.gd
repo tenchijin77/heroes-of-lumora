@@ -101,7 +101,7 @@ func _physics_process(_delta: float) -> void:
 		var body = collision.get_collider()
 		if body and body.is_in_group("player"):
 			if body.has_method("take_damage"):
-				body.take_damage(collision_damage)
+				body.call_deferred("take_damage", collision_damage)
 				print("%s collided with player and dealt %s damage!" % [name, collision_damage])
 
 func _move_wobble():
