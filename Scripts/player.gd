@@ -47,7 +47,7 @@ func _ready():
 			node.call_deferred("reset")
 	Global.current_score = 0
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	if is_queued_for_deletion():
 		return
 	move_input = Input.get_vector("move_left", "move_right", "move_up", "move_down")
@@ -56,7 +56,8 @@ func _physics_process(delta):
 		velocity = velocity.lerp(move_input * max_speed, acceleration)
 	else:
 		velocity = velocity.lerp(Vector2.ZERO, braking)
-	
+		# velocity *= delta  # Make frame-rate independent # added to address delta not used error msg
+
 	move_and_slide()
 	for i in get_slide_collision_count():
 		var collision = get_slide_collision(i)

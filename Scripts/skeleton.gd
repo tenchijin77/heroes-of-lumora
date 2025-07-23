@@ -61,7 +61,7 @@ func reset():
 	global_position = Vector2.ZERO
 	print("Skeleton %s reset, position: %s, velocity: %s, health_bar: %s" % [name, global_position, velocity, health_bar])
 
-func _process (delta):
+func _process (_delta):
 	player_distance = global_position.distance_to(player.global_position)
 	player_direction =  global_position.direction_to(player.global_position)
 
@@ -83,7 +83,7 @@ func _cast_bone():
 		bone.move_direction = muzzle.global_position.direction_to(player.global_position)
 		
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	var move_direction = player_direction
 	var local_avoidance = _local_avoidance()
 	

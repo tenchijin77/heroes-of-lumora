@@ -50,12 +50,12 @@ func _on_body_entered(body):
 		
 	if body.has_method("take_damage"):
 		body.take_damage(damage)
-		despawn()
+		reset()
 		
-func despawn(): # Ensure this function is here, spelled exactly 'despawn'
+func reset(): # Ensure this function is here, spelled exactly 'despawn'
 	visible = false # Hide the sprite
 	if $CollisionShape2D:
-		$CollisionShape2D.disabled = true # Disable collision
+		$CollisionShape2D.set_deferred("disabled", true) 
 	if destroy_timer:
 		destroy_timer.stop() # Stop the timer
 	if hit_sound and hit_sound.playing:

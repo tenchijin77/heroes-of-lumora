@@ -20,12 +20,11 @@ func load_high_scores():
 				for item in json.data:
 					if item is Dictionary and "score" in item and "initials" in item:
 						high_scores.append(item)
-				print("Global: Loaded high scores: %s" % high_scores)
 			else:
 				print("Global: high_scores.json is not an array, initializing empty list")
 				high_scores = []
 		else:
-			print("Global: Failed to parse high_scores.json, error: %s" % error_string(error))
+			print("Global: Failed to parse high_scores.json, error code: " + str(error))
 			high_scores = []
 		file.close()
 	else:
@@ -42,7 +41,6 @@ func save_high_scores():
 	if file:
 		file.store_string(JSON.stringify(high_scores, "\t"))
 		file.close()
-		print("Global: Saved high scores: %s" % high_scores)
 	else:
 		push_error("Global: Failed to save high_scores.json")
 
@@ -58,7 +56,6 @@ func add_high_score(score: int, initials: String):
 	if high_scores.size() > 10:
 		high_scores.resize(10)
 	save_high_scores()
-	print("Global: Added high score - %s: %d" % [initials, score])
 
 # Check if score qualifies for top 10
 func is_high_score(score: int) -> bool:
