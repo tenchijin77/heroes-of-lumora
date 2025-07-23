@@ -1,3 +1,5 @@
+Heroes of Lumora 
+
 change list:
 
 completed:
@@ -21,7 +23,7 @@ completed:
 
 to do: (in order of importance)
 
-
+-add particle effects to player and monster projectile attacks
 -configure collisions for environment and implement walls to block off zone boundaries (i believe this can be done with the tilemap painting system somehow.
 -expand the tilemap for the first level.
 -fix sounds on projectiles (not working due to the node pool setup. the original projectiles have sound, later ones randomly do or do not.)
