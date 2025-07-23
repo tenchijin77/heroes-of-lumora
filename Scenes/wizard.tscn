@@ -1,55 +1,70 @@
-[gd_scene load_steps=8 format=3 uid="uid://8omivgchd5p4"]
+[gd_scene load_steps=12 format=3 uid="uid://ccp2m0ys1cf3"]
 
-[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="1_byqed"]
-[ext_resource type="Script" uid="uid://ckissxtq661ii" path="res://Scripts/wizard.gd" id="1_ilitf"]
-[ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="3_mqqw1"]
-[ext_resource type="PackedScene" uid="uid://d2jmj1vtqtyry" path="res://Scenes/fireball.tscn" id="4_be21u"]
+[ext_resource type="Script" uid="uid://ckissxtq661ii" path="res://Scripts/wizard.gd" id="1_mqqw1"]
+[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="3_sask2"]
+[ext_resource type="PackedScene" uid="uid://d1sakl0e37oo2" path="res://Scenes/fireball.tscn" id="4_be21u"]
+[ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="4_vxkga"]
+[ext_resource type="AudioStream" uid="uid://dw2ivmc1p3drn" path="res://Assets/Audio/fireball-whoosh-2-179126.mp3" id="5_sask2"]
+[ext_resource type="Script" uid="uid://bx6svlrm7bmps" path="res://Scripts/fireball.gd" id="5_vxkga"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sfdtf"]
-size = Vector2(31, 31)
+size = Vector2(18, 25)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mqqw1"]
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_cpagb"]
+radius = 11.0
+height = 22.0
+
+[sub_resource type="PackedScene" id="PackedScene_vxkga"]
+_bundled = {
+"conn_count": 3,
+"conns": PackedInt32Array(1073741829, 1073741828, 23, 22, 2, 0, 0, 1073741831, 1073741830, 25, 24, 2, 0, 0, 1073741833, 1073741832, 27, 26, 2, 0, 0),
+"editable_instances": [],
+"names": PackedStringArray("fireball", "Area2D", "collision_layer", "collision_mask", "script", "owner_group", "Sprite2D", "Sprite2D", "texture", "region_enabled", "region_rect", "CollisionShape2D", "CollisionShape2D", "shape", "destroy_timer", "Timer", "wait_time", "autostart", "fireball_sound", "AudioStreamPlayer2D", "stream", "autoplay", "_on_body_entered", "body_entered", "_on_visibility_changed", "visibility_changed", "_on_destroy_timer_timeout", "timeout"),
+"node_count": 5,
+"node_paths": [NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath("destroy_timer")],
+"nodes": PackedInt32Array(-1, -1, 1, 0, -1, 4, 2, 0, 3, 1, 4, 2, 5, 3, 0, 1073741824, 0, 7, 6, -1, 3, 8, 4, 9, 5, 10, 6, 0, 1073741825, 0, 12, 11, -1, 1, 13, 7, 0, 1073741826, 0, 15, 14, -1, 2, 16, 8, 17, 9, 0, 1073741827, 0, 19, 18, -1, 2, 20, 10, 21, 11, 0),
+"variants": [8, 17, ExtResource("5_vxkga"), "monsters", ExtResource("3_sask2"), true, Rect2(96, 323, 32, 26), SubResource("CapsuleShape2D_cpagb"), 4.0, true, ExtResource("5_sask2"), true],
+"version": 3
+}
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pegji"]
 bg_color = Color(0.201527, 0.201527, 0.201527, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_be21u"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5abox"]
 bg_color = Color(0.94902, 0, 0, 1)
 
 [node name="wizard" type="CharacterBody2D" groups=["monsters"]]
 collision_layer = 2
 collision_mask = 7
-script = ExtResource("1_ilitf")
-max_speed = 30.0
-shoot_range = 200.0
+script = ExtResource("1_mqqw1")
+bullet_scene = ExtResource("4_be21u")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
-position = Vector2(1.5, -2.5)
+position = Vector2(1, -2.5)
 shape = SubResource("RectangleShape2D_sfdtf")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(1, 8)
-texture = ExtResource("1_byqed")
-offset = Vector2(0, -8)
+position = Vector2(1, -2.5)
+texture = ExtResource("3_sask2")
 region_enabled = true
-region_rect = Rect2(640, 64, 32, 33)
+region_rect = Rect2(641, 64, 31, 32)
 
 [node name="muzzle" type="Node2D" parent="."]
-position = Vector2(-15, 3)
 
-[node name="wizard_bullet_pool" type="Node" parent="."]
-script = ExtResource("3_mqqw1")
-node_scene = ExtResource("4_be21u")
+[node name="bullet_pool" type="Node" parent="."]
+script = ExtResource("4_vxkga")
+node_scene = SubResource("PackedScene_vxkga")
 
 [node name="avoidance_ray" type="RayCast2D" parent="."]
+position = Vector2(-15, 0)
 
 [node name="health_bar" type="ProgressBar" parent="."]
 offset_left = -8.0
 offset_top = -19.0
-offset_right = 12.0
+offset_right = 8.0
 offset_bottom = -17.0
-theme_override_styles/background = SubResource("StyleBoxFlat_mqqw1")
-theme_override_styles/fill = SubResource("StyleBoxFlat_be21u")
+theme_override_styles/background = SubResource("StyleBoxFlat_pegji")
+theme_override_styles/fill = SubResource("StyleBoxFlat_5abox")
 rounded = true
 show_percentage = false
-
-[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]

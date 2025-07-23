@@ -1,0 +1,55 @@
+[gd_scene load_steps=9 format=3 uid="uid://dnruigihfkioj"]
+
+[ext_resource type="Script" uid="uid://cybc8x6cr6a7s" path="res://Scripts/goblin.gd" id="1_gbw3e"]
+[ext_resource type="PackedScene" uid="uid://bd3fki35y5s1v" path="res://Scenes/axe.tscn" id="2_fkbyy"]
+[ext_resource type="PackedScene" uid="uid://dw75c4av0rk1e" path="res://Scenes/projectile.tscn" id="2_gbw3e"]
+[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="3_fkbyy"]
+[ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="4_2gt0r"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sfdtf"]
+size = Vector2(28, 31)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pegji"]
+bg_color = Color(0.201527, 0.201527, 0.201527, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5abox"]
+bg_color = Color(0.94902, 0, 0, 1)
+
+[node name="goblin" type="CharacterBody2D" groups=["monsters"]]
+collision_layer = 2
+collision_mask = 7
+script = ExtResource("1_gbw3e")
+max_speed = 42.0
+shoot_range = 220.0
+current_health = 20
+max_health = 20
+bullet_scene = ExtResource("2_fkbyy")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -2.5)
+shape = SubResource("RectangleShape2D_sfdtf")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(1, -2.5)
+texture = ExtResource("3_fkbyy")
+region_enabled = true
+region_rect = Rect2(98, 65, 31, 33)
+
+[node name="muzzle" type="Node2D" parent="."]
+position = Vector2(-14, -3)
+
+[node name="bullet_pool" type="Node" parent="."]
+script = ExtResource("4_2gt0r")
+node_scene = ExtResource("2_gbw3e")
+
+[node name="avoidance_ray" type="RayCast2D" parent="."]
+
+[node name="health_bar" type="ProgressBar" parent="."]
+offset_left = -8.0
+offset_top = -22.0
+offset_right = 8.0
+offset_bottom = -20.0
+theme_override_styles/background = SubResource("StyleBoxFlat_pegji")
+theme_override_styles/fill = SubResource("StyleBoxFlat_5abox")
+rounded = true
+show_percentage = false

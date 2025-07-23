@@ -1,178 +1,30 @@
-#skeleton.gd - skeleton monster sheet
+# skeleton.gd - skeleton mob specific script (extends monsters.gd)
 
-extends CharacterBody2D
+extends "res://Scripts/monsters.gd"
 
-signal mob_died  # Emitted when the skeleton dies
-
-@export var max_speed : float
-@export var acceleration : float
-@export var drag : float
-@export var current_health : int = 15
-@export var max_health : int = 15
-@export var collision_damage : int = 3
-@export var shoot_rate : float = 1.5
-@export var shoot_range : float = 150.0 
-
-@onready var player = get_tree().get_first_node_in_group("player")
-@onready var avoidance_ray : RayCast2D = $avoidance_ray
-@onready var sprite : Sprite2D = $Sprite2D
-@onready var muzzle : Node2D = $muzzle 
-@onready var bone_pool = $skeleton_bullet_pool 
-@onready var health_bar : ProgressBar = $health_bar
-
-
-
-
-var player_distance : float
-var player_direction : Vector2
-var last_shoot_time : float = 0.0 
-
-
-func _ready(): 
-	
-	if not health_bar:
-		push_error("Skeleton %s: health_bar is null!" % name)
-		
-	if visible:
-		set_process(true)
-		set_physics_process(true)
-		current_health = max_health
-
-		health_bar.max_value = max_health
-		health_bar.value = current_health
-	reset()  # Initialize state on first creation
-	
-	if player:
-		print("Skeleton %s initialized, player ref: %s" % [name, player])
-	else:
-		push_error("Skeleton %s: Player reference is null!" % name)
-
-func reset():
-	visible = true
+func _ready():
+	super._ready()
+	max_speed = 35.0
+	acceleration = 10.0
+	drag = 0.9
+	shoot_rate = 1.5
+	shoot_range = 150.0
+	max_health = 15
+	collision_damage = 3
 	current_health = max_health
-	if health_bar:
-		health_bar.value = current_health
-	else:
-		push_error("Skeleton %s: health_bar is null in reset!" % name)
-	velocity = Vector2.ZERO
-	last_shoot_time = 0.0
-	set_process(true)
-	set_physics_process(true)
-	global_position = Vector2.ZERO
-	print("Skeleton %s reset, position: %s, velocity: %s, health_bar: %s" % [name, global_position, velocity, health_bar])
+	# Override sprite region if not in tscn: sprite.region_rect = Rect2(710, 262, 20, 26)
+	# bullet_scene already set in tscn to bone.tscn
 
-func _process (_delta):
-	player_distance = global_position.distance_to(player.global_position)
-	player_direction =  global_position.direction_to(player.global_position)
-
-	sprite.flip_h = player_direction.x > 0
-	
-		
-	if player_distance < shoot_range:
-		if Time.get_unix_time_from_system() - last_shoot_time > shoot_rate:
-			_cast_bone()
-			
-	_move_wobble()
-
-func _cast_bone():
+func _cast():
 	last_shoot_time = Time.get_unix_time_from_system()
-	
-	if bone_pool and muzzle:
-		var bone = bone_pool.spawn()
+	if not bullet_pool or not muzzle or not player:
+		push_warning("Skeleton %s: Cannot cast—missing bullet_pool, muzzle, or player!" % name)
+		return
+	var bone = bullet_pool.spawn()
+	if bone:
 		bone.global_position = muzzle.global_position
 		bone.move_direction = muzzle.global_position.direction_to(player.global_position)
-		
-
-func _physics_process(_delta: float) -> void:
-	var move_direction = player_direction
-	var local_avoidance = _local_avoidance()
-	
-	if local_avoidance.length() > 0:
-		move_direction = local_avoidance
-		
-	if velocity.length() < max_speed:
-		velocity += move_direction * acceleration
+		bone.owner_group = "monsters"  # Ensure owner_group for enemy
+		print("Skeleton %s: Cast bone %s, move_direction=%s, position=%s" % [name, bone.name, bone.move_direction, bone.global_position])
 	else:
-		velocity *= drag
-		
-	move_and_slide()
-
-	# --- NEW: Check for collisions with the player after movement ---
-	for i in get_slide_collision_count():
-		var collision = get_slide_collision(i)
-		var body = collision.get_collider()
-		
-		# Ensure the collided body exists and is the player
-		if body and body.is_in_group("player"):
-			if body.has_method("take_damage"):
-				body.take_damage(collision_damage)
-				print(name, " collided with player and dealt ", collision_damage, " damage!")
-				# Optional: You might want to add a small delay or cooldown here
-				# to prevent the monster from instantly spamming damage if it stays
-				# on top of the player. For now, it will damage every physics frame.
-
-func _move_wobble ():
-	if velocity.length() == 0:
-		sprite.rotation_degrees = 0
-		return
-		
-	var t = Time.get_unix_time_from_system()
-	var rot = sin(t * 20) * 2
-	
-	sprite.rotation_degrees = rot
-	
-	
-
-func _local_avoidance () -> Vector2:
-	avoidance_ray.target_position = to_local(player.global_position).normalized()
-	avoidance_ray.target_position *= 80
-	
-	
-	if not avoidance_ray.is_colliding():
-		return Vector2.ZERO
-			
-	var obstacle = avoidance_ray.get_collider()
-	
-	if obstacle == player:
-		return Vector2.ZERO
-		
-	var obstacle_point = avoidance_ray.get_collision_point()
-	var obstacle_direction = global_position.direction_to(obstacle_point)
-	
-	return Vector2(-obstacle_direction.y, obstacle_direction.x)
-	
-	
-func take_damage(damage : int):
-	current_health -= damage
-	if health_bar:
-		health_bar.value = current_health
-	else:
-		push_error("Skeleton %s: health_bar is null in take_damage!" % name)
-	if current_health <= 0:
-		mob_died.emit()
-		visible = false
-		set_process(false)
-		set_physics_process(false)
-	else:
-		_damage_flash()
-		
-func _damage_flash ():
-	sprite.modulate = Color.BLACK
-	await get_tree().create_timer(0.05).timeout
-	sprite.modulate = Color.WHITE
-	
-		
-func _on_visibility_changed() -> void:
-
-		if visible:
-			set_process(true)
-			set_physics_process(true)
-			current_health = max_health
-			
-			if health_bar:
-				health_bar.value = current_health
-			
-		else:
-			set_process(false)
-			set_physics_process(false)
-		
+		push_warning("Skeleton %s: Failed to spawn bone!" % name)

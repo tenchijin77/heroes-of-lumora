@@ -41,6 +41,7 @@ func _ready():
 		print("Monster %s initialized, player ref: %s" % [name, player])
 	reset()  # Initialize state on first creation
 
+
 func reset():
 	visible = true
 	current_health = max_health
@@ -48,7 +49,7 @@ func reset():
 		health_bar.max_value = max_health
 		health_bar.value = current_health
 	else:
-		push_error("Monster %s: health_bar is null in reset!" % name)
+		push_warning("Monster %s: health_bar is null in reset—check scene node!" % name)
 	velocity = Vector2.ZERO
 	last_shoot_time = 0.0
 	set_process(true)

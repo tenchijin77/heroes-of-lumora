@@ -24,7 +24,7 @@ func reset() -> void:
 		if not projectile_sound.playing:
 			projectile_sound.play()
 	else:
-		push_warning("Projectile %s: projectile_sound is null!" % name)
+		push_warning("Projectile %s: projectile_sound is null in reset—check scene node!" % name)
 	move_direction = Vector2.ZERO
 	rotation = 0.0
 	position = Vector2.ZERO
@@ -40,8 +40,9 @@ func _ready() -> void:
 		if not projectile_sound.playing:
 			projectile_sound.play()
 	else:
-		push_warning("Projectile %s: projectile_sound or sound_stream is null in _ready!" % name)
+		push_warning("Projectile %s: projectile_sound or sound_stream is null in _ready—check scene node!" % name)
 	print("Projectile %s: _ready, move_direction=%s, position=%s, owner_group=%s" % [name, move_direction, global_position, owner_group])
+
 
 func _process(delta: float) -> void:
 	if move_direction != Vector2.ZERO:
@@ -75,5 +76,5 @@ func despawn() -> void:
 	if get_parent() is NodePool:
 		get_parent().despawn(self)
 	else:
-		push_warning("Projectile %s: Parent is not a NodePool, cannot despawn properly!" % name)
+		print("Projectile %s: Despawn fallback (no NodePool parent)—test mode OK" % name)
 	print("Projectile %s: Despawned, move_direction=%s, position=%s" % [name, move_direction, global_position])

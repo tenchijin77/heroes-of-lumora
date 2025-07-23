@@ -1,12 +1,30 @@
-[gd_scene load_steps=8 format=3 uid="uid://rxnkxpdrn2q2"]
+[gd_scene load_steps=12 format=3 uid="uid://b0ctdv31c275k"]
 
-[ext_resource type="Script" uid="uid://con0frhkfq4w4" path="res://Scripts/skeleton.gd" id="1_81u3t"]
-[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="1_sfdtf"]
-[ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="3_pegji"]
-[ext_resource type="PackedScene" uid="uid://dqvoxa00tmmcv" path="res://Scenes/bone.tscn" id="4_5abox"]
+[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="3_v8sxu"]
+[ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="4_ks230"]
+[ext_resource type="Script" uid="uid://con0frhkfq4w4" path="res://Scripts/skeleton.gd" id="5_5abox"]
+[ext_resource type="Script" uid="uid://hmpuc7kqhkt1" path="res://Scripts/bone.gd" id="5_ks230"]
+[ext_resource type="PackedScene" uid="uid://ccvecuowlwto8" path="res://Scenes/bone.tscn" id="5_v8sxu"]
+[ext_resource type="AudioStream" uid="uid://cjlgt6nnsdopc" path="res://Assets/Audio/egg-cracking-6844.mp3" id="6_shq1q"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sfdtf"]
 size = Vector2(18, 25)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_shq1q"]
+size = Vector2(11, 3)
+
+[sub_resource type="PackedScene" id="PackedScene_xbfmp"]
+_bundled = {
+"conn_count": 3,
+"conns": PackedInt32Array(1073741829, 1073741828, 25, 24, 2, 0, 0, 1073741831, 1073741830, 27, 26, 2, 0, 0, 1073741833, 1073741832, 29, 28, 2, 0, 0),
+"editable_instances": [],
+"names": PackedStringArray("bone", "Area2D", "collision_layer", "collision_mask", "script", "owner_group", "Sprite2D", "Sprite2D", "rotation", "texture", "region_enabled", "region_rect", "CollisionShape2D", "CollisionShape2D", "position", "shape", "destroy_timer", "Timer", "wait_time", "autostart", "bone_sound", "AudioStreamPlayer2D", "stream", "autoplay", "_on_body_entered", "body_entered", "_on_visibility_changed", "visibility_changed", "_on_destroy_timer_timeout", "timeout"),
+"node_count": 5,
+"node_paths": [NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath("destroy_timer")],
+"nodes": PackedInt32Array(-1, -1, 1, 0, -1, 4, 2, 0, 3, 1, 4, 2, 5, 3, 0, 1073741824, 0, 7, 6, -1, 4, 8, 4, 9, 5, 10, 6, 11, 7, 0, 1073741825, 0, 13, 12, -1, 2, 14, 8, 15, 9, 0, 1073741826, 0, 17, 16, -1, 2, 18, 10, 19, 11, 0, 1073741827, 0, 21, 20, -1, 2, 22, 12, 23, 13, 0),
+"variants": [8, 17, ExtResource("5_ks230"), "monsters", 0.785398, ExtResource("3_v8sxu"), true, Rect2(1278, 1229, 14, 12), Vector2(-0.5, 0.5), SubResource("RectangleShape2D_shq1q"), 4.0, true, ExtResource("6_shq1q"), true],
+"version": 3
+}
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pegji"]
 bg_color = Color(0.201527, 0.201527, 0.201527, 1)
@@ -17,10 +35,8 @@ bg_color = Color(0.94902, 0, 0, 1)
 [node name="skeleton" type="CharacterBody2D" groups=["monsters"]]
 collision_layer = 2
 collision_mask = 7
-script = ExtResource("1_81u3t")
-max_speed = 35.0
-acceleration = 10.0
-drag = 0.9
+script = ExtResource("5_5abox")
+bullet_scene = ExtResource("5_v8sxu")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
@@ -29,17 +45,18 @@ shape = SubResource("RectangleShape2D_sfdtf")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(1, -2.5)
-texture = ExtResource("1_sfdtf")
+texture = ExtResource("3_v8sxu")
 region_enabled = true
-region_rect = Rect2(710, 262, 20, 26)
+region_rect = Rect2(711, 262, 18, 26)
 
 [node name="muzzle" type="Node2D" parent="."]
 
-[node name="skeleton_bullet_pool" type="Node" parent="."]
-script = ExtResource("3_pegji")
-node_scene = ExtResource("4_5abox")
+[node name="bullet_pool" type="Node" parent="."]
+script = ExtResource("4_ks230")
+node_scene = SubResource("PackedScene_xbfmp")
 
 [node name="avoidance_ray" type="RayCast2D" parent="."]
+position = Vector2(-7, 3)
 
 [node name="health_bar" type="ProgressBar" parent="."]
 offset_left = -8.0
