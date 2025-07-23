@@ -1,0 +1,34 @@
+[gd_scene load_steps=5 format=3 uid="uid://dw75c4av0rk1e"]
+
+[ext_resource type="Script" uid="uid://d6xrs2lxn4lc" path="res://Scripts/projectile.gd" id="1_tl4hk"]
+[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="2_d4467"]
+[ext_resource type="AudioStream" uid="uid://cuuy6rr4t7ccp" path="res://Assets/Audio/arrow-swish_03-306040.mp3" id="3_e1077"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_h5x2m"]
+size = Vector2(30, 24)
+
+[node name="projectile" type="Area2D"]
+collision_layer = 8
+collision_mask = 17
+script = ExtResource("1_tl4hk")
+sound_stream = ExtResource("3_e1077")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_d4467")
+region_enabled = true
+region_rect = Rect2(962, 741, 30, 25)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-1, 0)
+shape = SubResource("RectangleShape2D_h5x2m")
+
+[node name="destroy_timer" type="Timer" parent="."]
+wait_time = 4.0
+autostart = true
+
+[node name="projectile_sound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_e1077")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
+[connection signal="timeout" from="destroy_timer" to="." method="_on_destroy_timer_timeout"]

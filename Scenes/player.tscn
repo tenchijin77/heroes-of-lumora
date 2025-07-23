@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://btptpi22vbosd" path="res://Scripts/player.gd" id="1_cvnsp"]
 [ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="1_v0iea"]
 [ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="3_6t5aa"]
-[ext_resource type="PackedScene" uid="uid://cbwhespnm2iot" path="res://Scenes/arrow.tscn" id="4_vgqql"]
+[ext_resource type="PackedScene" uid="uid://dw75c4av0rk1e" path="res://Scenes/projectile.tscn" id="4_fkybt"]
 [ext_resource type="AudioStream" uid="uid://ro2pdpul83eq" path="res://Assets/Audio/Minifantasy_Dungeon_SFX/11_human_damage_3.wav" id="5_fkybt"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cvnsp"]
@@ -18,7 +18,6 @@ bg_color = Color(0.94902, 0, 0, 1)
 [node name="player" type="CharacterBody2D" groups=["player"]]
 collision_mask = 27
 script = ExtResource("1_cvnsp")
-firing_speed = 0.2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
@@ -38,7 +37,7 @@ position = Vector2(17, 3)
 
 [node name="player_bullet_pool" type="Node" parent="."]
 script = ExtResource("3_6t5aa")
-node_scene = ExtResource("4_vgqql")
+node_scene = ExtResource("4_fkybt")
 
 [node name="health_bar" type="ProgressBar" parent="."]
 offset_left = -12.0

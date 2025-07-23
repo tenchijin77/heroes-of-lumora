@@ -6,7 +6,7 @@ signal mob_died  # Emitted when the monster dies
 
 @export var max_speed : float = 35.0
 @export var acceleration : float = 10.0
-@export var drag : float = .9
+@export var drag : float = 0.9
 @export var collision_damage : int = 3
 @export var shoot_rate : float = 1.5
 @export var shoot_range : float = 150.0 
@@ -30,7 +30,7 @@ func _ready():
 	if bullet_scene:
 		bullet_pool.node_scene = bullet_scene
 	else:
-		push_error("Monster %s: bullet_scene not set!" % name)
+		push_warning("Monster %s: bullet_scene not set; no shooting possible!" % name)
 	if not health_bar:
 		push_error("Monster %s: health_bar is null!" % name)
 	if not collision_shape:
@@ -45,6 +45,7 @@ func reset():
 	visible = true
 	current_health = max_health
 	if health_bar:
+		health_bar.max_value = max_health
 		health_bar.value = current_health
 	else:
 		push_error("Monster %s: health_bar is null in reset!" % name)
@@ -56,7 +57,7 @@ func reset():
 	if collision_shape:
 		collision_shape.set_deferred("disabled", false)
 	global_position = Vector2.ZERO  # Will be set by spawner
-	print("Monster %s reset, position: %s, velocity: %s, health: %s" % [name, global_position, velocity, current_health])
+	print("Monster %s reset, position: %s, velocity: %s, health: %s / %s" % [name, global_position, velocity, current_health, max_health])
 
 func _process(_delta: float) -> void:
 	if not player:
@@ -70,8 +71,17 @@ func _process(_delta: float) -> void:
 	_move_wobble()
 
 func _cast():
-	# Virtual: Override in child scripts for specific projectile logic
-	push_warning("Monster %s: _cast() not overridden!" % name)
+	last_shoot_time = Time.get_unix_time_from_system()
+	if not bullet_pool or not muzzle or not player:
+		push_warning("Monster %s: Cannot cast—missing bullet_pool, muzzle, or player!" % name)
+		return
+	var projectile = bullet_pool.spawn()
+	if projectile:
+		projectile.global_position = muzzle.global_position
+		projectile.move_direction = muzzle.global_position.direction_to(player.global_position)
+		print("Monster %s: Cast default projectile %s, move_direction=%s, position=%s" % [name, projectile.name, projectile.move_direction, projectile.global_position])
+	else:
+		push_warning("Monster %s: Failed to spawn projectile!" % name)
 
 func _physics_process(_delta: float) -> void:
 	if not player:
@@ -123,7 +133,12 @@ func take_damage(damage : int):
 		if get_parent() is NodePool:
 			get_parent().despawn(self)
 		else:
-			push_warning("Monster %s: Parent is not a NodePool, cannot despawn properly!" % name)
+			visible = false
+			set_process(false)
+			set_physics_process(false)
+			if collision_shape:
+				collision_shape.set_deferred("disabled", true)
+			print("Monster %s: Despawn fallback at zero health" % name)
 	else:
 		_damage_flash()
 
