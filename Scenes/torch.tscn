@@ -1,0 +1,77 @@
+[gd_scene load_steps=11 format=3 uid="uid://1rrj1folkqus"]
+
+[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="1_wced7"]
+[ext_resource type="AudioStream" uid="uid://cut2so53rxm8s" path="res://Assets/Audio/Torch Loop.ogg" id="2_h1t0l"]
+[ext_resource type="Texture2D" uid="uid://cww3ovrdk7p3s" path="res://Assets/Sprites/FREE Textures Of Light/32x32/32x32 textures (10).png" id="3_spjw2"]
+[ext_resource type="Script" uid="uid://bv7vxlpm5wltm" path="res://Scripts/torch_light.gd" id="4_kg6dd"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h1t0l"]
+atlas = ExtResource("1_wced7")
+region = Rect2(1792, 576, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_beu3c"]
+atlas = ExtResource("1_wced7")
+region = Rect2(1824, 576, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_spjw2"]
+atlas = ExtResource("1_wced7")
+region = Rect2(1856, 576, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kg6dd"]
+atlas = ExtResource("1_wced7")
+region = Rect2(1888, 576, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7ufd5"]
+atlas = ExtResource("1_wced7")
+region = Rect2(1920, 576, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_05x6m"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h1t0l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_beu3c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_spjw2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kg6dd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7ufd5")
+}],
+"loop": true,
+"name": &"flickering",
+"speed": 5.0
+}]
+
+[node name="torch" type="AnimatedSprite2D"]
+top_level = true
+z_index = 3
+sprite_frames = SubResource("SpriteFrames_05x6m")
+animation = &"flickering"
+autoplay = "flickering"
+frame_progress = 0.890686
+speed_scale = 0.5
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+z_index = 3
+position = Vector2(1, -4)
+color = Color(1, 0.588235, 0, 1)
+energy = 1.5
+shadow_enabled = true
+shadow_color = Color(0.0705882, 0.0705882, 0.0705882, 1)
+shadow_filter = 1
+shadow_item_cull_mask = 19
+texture = ExtResource("3_spjw2")
+texture_scale = 8.0
+script = ExtResource("4_kg6dd")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("2_h1t0l")
+volume_db = -2.0
+autoplay = true
+stream_paused = true

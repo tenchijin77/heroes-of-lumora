@@ -35,7 +35,7 @@ bg_color = Color(0.94902, 0, 0, 1)
 
 [node name="wizard" type="CharacterBody2D" groups=["monsters"]]
 collision_layer = 2
-collision_mask = 7
+collision_mask = 23
 script = ExtResource("1_mqqw1")
 bullet_scene = ExtResource("4_be21u")
 

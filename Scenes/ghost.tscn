@@ -16,7 +16,7 @@ bg_color = Color(0.94902, 0, 0, 1)
 
 [node name="monster" type="CharacterBody2D" groups=["monsters"]]
 collision_layer = 2
-collision_mask = 7
+collision_mask = 23
 script = ExtResource("1_3btnm")
 bullet_scene = ExtResource("2_taxxh")
 
