@@ -8,7 +8,8 @@ extends Node
 @export var monster_configs : Array[Dictionary] = [
 	{"scene": preload("res://Scenes/skeleton.tscn"), "weight": 0.7},
 	{"scene": preload("res://Scenes/wizard.tscn"), "weight": 0.3},
-	{"scene": preload("res://Scenes/goblin.tscn"), "weight": 0.3}
+	{"scene": preload("res://Scenes/goblin.tscn"), "weight": 0.3},
+	{"scene": preload("res://Scenes/ghost.tscn"), "weight": 0.3}
 ]
 # Add new mobs here: {"scene": preload("new_mob.tscn"), "weight": 0.2}
 

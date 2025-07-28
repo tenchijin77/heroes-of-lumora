@@ -2966,13 +2966,16 @@ text = "Time Survived: 00:00"
 
 [node name="enemy_spawner" parent="." instance=ExtResource("5_kry3j")]
 
-[node name="torch" parent="." instance=ExtResource("6_21xkr")]
-position = Vector2(207, 13)
-
-[node name="torch2" parent="." instance=ExtResource("6_21xkr")]
-position = Vector2(432, 13)
-
 [node name="DirectionalLight2D" type="DirectionalLight2D" parent="."]
 energy = 0.28
 blend_mode = 1
 shadow_enabled = true
+
+[node name="torch" parent="." instance=ExtResource("6_21xkr")]
+position = Vector2(431, 9)
+
+[node name="torch2" parent="." instance=ExtResource("6_21xkr")]
+position = Vector2(750, 19)
+
+[node name="torch3" parent="." instance=ExtResource("6_21xkr")]
+position = Vector2(248, 187)

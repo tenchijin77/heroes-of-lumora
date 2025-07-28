@@ -29,7 +29,7 @@ shape = SubResource("RectangleShape2D_h5x2m")
 wait_time = 4.0
 autostart = true
 
-[node name="projectile_sound" type="AudioStreamPlayer2D" parent="."]
+[node name="fireball_sound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("2_ne4qj")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

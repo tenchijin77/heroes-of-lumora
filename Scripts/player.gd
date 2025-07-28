@@ -19,6 +19,7 @@ var survival_time : float = 0.0
 @onready var regeneration_timer : Timer = $regeneration_timer
 @onready var score_label : Label = get_node("/root/main/CanvasLayer/score")
 @onready var uptime_label : Label = get_node("/root/main/CanvasLayer/uptime")
+@onready var player_damage_sound : AudioStreamPlayer2D = $player_damage_sound
 
 var move_input : Vector2
 
@@ -69,6 +70,9 @@ func take_damage(damage: int):
 	else:
 		_damage_flash()
 		health_bar.value = current_health
+	
+		if player_damage_sound: # Check if the sound node exists
+			player_damage_sound.play()
 		
 	
 func _damage_flash ():
