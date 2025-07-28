@@ -18,23 +18,25 @@ completed:
 -add a high-score system: implement wall of heroes, i.e. save the top 10 high scores and show them when the player dies.
 -determine the reason for background randomly flashing during the game and fix. (fixed via rendering settings in 2d rendering project variables)
 -add a regeneration system for the player. (they should regenerate x health per second; this should be modifiable)
-
-
+-configure collisions for environment and implement walls to block off zone boundaries (i believe this can be done with the tilemap painting system somehow.
+-fix sounds on projectiles (not working due to the node pool setup. the original projectiles have sound, later ones randomly do or do not.)
+-find cool fonts for all of the in game ui and assets
+-modify and streamline the design of the monster spawning system so i can add in new monster types and add them to the spawners with the least amount of effort.
 
 to do: (in order of importance)
 
 -add particle effects to player and monster projectile attacks
--configure collisions for environment and implement walls to block off zone boundaries (i believe this can be done with the tilemap painting system somehow.
+
 -expand the tilemap for the first level.
--fix sounds on projectiles (not working due to the node pool setup. the original projectiles have sound, later ones randomly do or do not.)
+
 -implement area2d collision zones so the player can pickup loot; coins, potions, etc.
 -add player potions (increase attack speed, increase movement speed, increase damage) each buff lasts 10 seconds.
 -add a loot drop system
 -add dialogue for the main screen to setup the game (use dialogic addon for godot to create this)
--find cool fonts for all of the in game ui and assets
+
 -add coin drops for future upgrade system
 -eventually add npcs to introduce famous npcs from aldenexia
--modify and streamline the design of the monster spawning system so i can add in new monster types and add them to the spawners with the least amount of effort.
+
 
 
 sites for assets:
