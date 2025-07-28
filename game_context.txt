@@ -2,7 +2,7 @@ Game: Heroes of Lumora: a bullet hell game, similar to the idea of vampire survi
 
 Gitfront read only repository: https://gitfront.io/r/tenchijin77/Ea5WKiTiUMTN/heroes-of-lumora/
 
-Current GitHub commit hash: 4678240
+Current GitHub commit hash: 0ac68de
 
 
 Trello board for HoL:
@@ -40,15 +40,16 @@ Collisions:
 
 Naming:
 -scenes or levels are referred to as zones
--monsters are referred to as mobs (or moving objects)
+-monsters are referred to as mobs (moving objects)
 
 Behaviour:
 -spawns are instantiated and handled by node_pool.gd
 -mobs are randomly generated via enemy_spawner.tscn with enemy_spawner.gd
--projectiles are called arrow.tscn and .gd for the player's attack, and bone.tscn and gd, and fireball.tscn and gd for the enemies' attacks.
+-projectiles are all based off of projectile.tscn and projectile.gd; each unique attack will have its own file i.e. arrow.tscn and .gd for the player's attack, and bone.tscn and gd, and fireball.tscn and gd, and axe.tscn and gd for the enemies' attacks.
 
 Monsters:
-
+-monsters logic is handled by monster.tscn (the script that all unique mobs will inherit from) and monsters.gd
+-monsters will have their own scene based off of monster.tscn. i.e. skeleton.tscn; when monsters have unique stats or logic, they will have their own script like skeleton.gd
 -skeleton.tscn and gd - fires projectile, bone.tscn and gd
 -wizard.tscn and gd - fires projectile, fireball.tsn and gd
 

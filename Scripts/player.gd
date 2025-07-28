@@ -60,21 +60,17 @@ func open_fire():
 	arrow.move_direction = mouse_direction
 	print("Player: Spawned arrow %s, move_direction=%s, position=%s" % [arrow.name, arrow.move_direction, arrow.global_position])  # Debug
 
-func take_damage (damage : int):
+func take_damage(damage: int):
 	current_health -= damage
 	if current_health <= 0:
 		print("Game Over! LOADING, PLEASE WAIT......................")
 		Global.current_score = Global.current_score
-		if Global.is_high_score(Global.current_score):
-			get_tree().change_scene_to_file("res://Scenes/game_over.tscn")
-		else:
-			get_tree().change_scene_to_file("res://Scenes/main_menu.tscn")
+		call_deferred("_handle_game_over")  # defer to avoid acting in invalid state
 	else:
 		_damage_flash()
 		health_bar.value = current_health
 		
 	
-
 func _damage_flash ():
 	sprite.modulate = Color.RED
 	await get_tree().create_timer(0.05).timeout
@@ -113,3 +109,14 @@ func update_time_label():
 		uptime_label.text = "Time: %02d:%02d" % [minutes, seconds]
 	else:
 		push_error("Uptime label not found at /root/main/CanvasLayer/uptime")
+		
+func _handle_game_over():
+	var tree = get_tree()
+	if not tree:
+		push_error("SceneTree is null in _handle_game_over()")
+		return
+	
+	if Global.is_high_score(Global.current_score):
+		tree.change_scene_to_file("res://Scenes/game_over.tscn")
+	else:
+		tree.change_scene_to_file("res://Scenes/game_over2.tscn")
