@@ -11,7 +11,6 @@ size = Vector2(30, 24)
 collision_layer = 8
 collision_mask = 49
 script = ExtResource("1_tl4hk")
-sound_stream = ExtResource("3_e1077")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_d4467")

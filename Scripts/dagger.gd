@@ -1,74 +1,60 @@
-# axe.gd - controls the axe projectile
+# dagger.gd - controls the dagger projectile
 extends Area2D
 
-@export var speed : float = 250
-@export var owner_group : String 
-@export var damage = 8
+@export var speed: float = 300.0  # Faster for dagger throw
+@export var owner_group: String = "monsters"
+@export var damage: int = 8  # Balanced for goblin's sneak attack
 
+@onready var destroy_timer: Timer = $destroy_timer
+@onready var projectile_sound: AudioStreamPlayer2D = $projectile_sound
 
-@onready var destroy_timer : Timer = $destroy_timer
-@onready var hit_sound = $projectile_sound
+var move_direction: Vector2 = Vector2.ZERO
 
+func _ready() -> void:
+	# Set unique stream if not overridden in .tscn
+	if projectile_sound.stream == null:
+		projectile_sound.stream = load("res://Assets/Audio/sword-hit-7160.mp3")  # Your unique path
 
-
-var move_direction : Vector2
-
-func _ready():
-	# This should run when the object is pulled from the pool and made active
-	visible = true
-	# Make sure collision is re-enabled when spawned
-	if $CollisionShape2D: # Assuming your CollisionShape2D is a direct child
-		$CollisionShape2D.disabled = false
-		if hit_sound:
-			hit_sound.play()
-
-		else:
-			print("⚠️ hit_sound is null!")
-
-	if destroy_timer:
-		destroy_timer.start()
-		
-
-func _process (delta):
-	translate(move_direction * speed * delta)
-	
-	# makes the angle of the arrow equal to the direction. removed to implement axe animationd
+func launch(start_pos: Vector2, direction: Vector2) -> void:
+	global_position = start_pos
+	move_direction = direction.normalized()
 	rotation = move_direction.angle()
 	
-	# Move the axe in its set direction
-	translate(move_direction * speed * delta)
+	visible = true
+	if $CollisionShape2D:
+		$CollisionShape2D.disabled = false
 	
+	# Always ensure unique sound, overriding any default
+	if projectile_sound.stream == null:
+		projectile_sound.stream = load("res://Assets/sounds/dagger_swish.ogg")
+	if projectile_sound:
+		projectile_sound.play()
+	else:
+		print("⚠️ projectile_sound is null!")
 	
-	
-func _on_destroy_timer_timeout() -> void:
-	#removed in place of making the node invisible and moving to node pool use
-	#queue_free()
-	visible = false
-
-
-func _on_visibility_changed() -> void:
-	if visible == true and destroy_timer:
+	if destroy_timer:
 		destroy_timer.start()
 
-func _on_body_entered(body):
+func _process(delta: float) -> void:
+	if visible:
+		translate(move_direction * speed * delta)
 
+func _on_destroy_timer_timeout() -> void:
+	reset()
+
+func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group(owner_group):
 		return
-		
 	if body.has_method("take_damage"):
 		body.take_damage(damage)
-		reset()
-	
+	reset()
 
-func reset(): 
-	visible = false # Hide the sprite
+func reset() -> void:
+	visible = false
 	if $CollisionShape2D:
-		$CollisionShape2D.set_deferred("disabled", true) 
+		$CollisionShape2D.set_deferred("disabled", true)
 	if destroy_timer:
-		destroy_timer.stop() # Stop the timer
-	if hit_sound and hit_sound.playing:
-		hit_sound.stop()
-		
-		
-
-		
+		destroy_timer.stop()
+	if projectile_sound and projectile_sound.playing:
+		projectile_sound.stop()
+	move_direction = Vector2.ZERO

@@ -22,18 +22,17 @@ func _process(delta: float) -> void:
 
 func _cast() -> void:
 	last_shoot_time = Time.get_unix_time_from_system()
-
 	if not bullet_pool or not muzzle or not player:
 		push_warning("Ghost %s: Cannot cast—missing bullet_pool, muzzle, or player!" % name)
 		return
-
-	var ghost_fire = bullet_pool.spawn()
+	var ghost_fire: Area2D = bullet_pool.spawn()
+	
 	if ghost_fire:
 		ghost_fire.global_position = muzzle.global_position
-		ghost_fire.move_direction = muzzle.global_position.direction_to(player.global_position)
-		ghost_fire.owner_group = "monsters"  # Ensure owner_group for enemy
-
-		print("Ghost %s: Cast ghost_fire %s, move_direction=%s, position=%s" %
-			[name, ghost_fire.name, ghost_fire.move_direction, ghost_fire.global_position])
+		var direction: Vector2 = muzzle.global_position.direction_to(player.global_position)
+		ghost_fire.move_direction = direction.normalized() if direction.length() > 0.01 else Vector2.RIGHT  # Fallback to avoid zero vector
+		ghost_fire.owner_group = "monsters"
+		ghost_fire.launch(muzzle.global_position, ghost_fire.move_direction)  # Call launch to play sound and activate
+		print("Ghost %s: Cast ghost_fire %s, move_direction=%s, position=%s" % [name, ghost_fire.name, ghost_fire.move_direction, ghost_fire.global_position])
 	else:
 		push_warning("Ghost %s: Failed to spawn ghost_fire!" % name)
