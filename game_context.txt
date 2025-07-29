@@ -2,7 +2,7 @@ Game: Heroes of Lumora: a bullet hell game, similar to the idea of vampire survi
 
 Gitfront read only repository: https://gitfront.io/r/tenchijin77/Ea5WKiTiUMTN/heroes-of-lumora/
 
-Current GitHub commit hash: 0ac68de
+Current GitHub commit hash: ff0bc12
 
 Githut access passkey: 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
 
