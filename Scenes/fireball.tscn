@@ -4,12 +4,12 @@
 [ext_resource type="Script" uid="uid://d6xrs2lxn4lc" path="res://Scripts/projectile.gd" id="1_ne4qj"]
 [ext_resource type="AudioStream" uid="uid://dw2ivmc1p3drn" path="res://Assets/Audio/fireball-whoosh-2-179126.mp3" id="2_ne4qj"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_h5x2m"]
-size = Vector2(12.5, 10)
+[sub_resource type="CircleShape2D" id="CircleShape2D_ne4qj"]
+radius = 7.25
 
 [node name="fireball" type="Area2D"]
 collision_layer = 8
-collision_mask = 17
+collision_mask = 49
 script = ExtResource("1_ne4qj")
 speed = 150.0
 damage = 6
@@ -19,11 +19,10 @@ sound_stream = ExtResource("2_ne4qj")
 rotation = -1.5708
 texture = ExtResource("1_0mxqg")
 region_enabled = true
-region_rect = Rect2(786, 880, 12, 17)
+region_rect = Rect2(748, 879, 24, 18)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0.75, 0)
-shape = SubResource("RectangleShape2D_h5x2m")
+shape = SubResource("CircleShape2D_ne4qj")
 
 [node name="destroy_timer" type="Timer" parent="."]
 wait_time = 4.0

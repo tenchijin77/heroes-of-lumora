@@ -1,23 +1,24 @@
-[gd_scene load_steps=5 format=3 uid="uid://qabuch25b3i1"]
+[gd_scene load_steps=5 format=3 uid="uid://ehxlmudkbinc"]
 
-[ext_resource type="Script" uid="uid://d6xrs2lxn4lc" path="res://Scripts/projectile.gd" id="1_40cdi"]
-[ext_resource type="AudioStream" uid="uid://cuuy6rr4t7ccp" path="res://Assets/Audio/arrow-swish_03-306040.mp3" id="2_xxsqv"]
-[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="3_yjaco"]
+[ext_resource type="Script" uid="uid://d6xrs2lxn4lc" path="res://Scripts/projectile.gd" id="1_e7kb4"]
+[ext_resource type="AudioStream" uid="uid://cuuy6rr4t7ccp" path="res://Assets/Audio/arrow-swish_03-306040.mp3" id="2_3i3cr"]
+[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="3_7pvmx"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_h5x2m"]
-size = Vector2(24, 6)
+size = Vector2(20, 6)
 
-[node name="arrow" type="Area2D"]
-collision_layer = 36
+[node name="guard_arrow" type="Area2D"]
+collision_layer = 64
 collision_mask = 18
-script = ExtResource("1_40cdi")
+script = ExtResource("1_e7kb4")
 owner_group = "player"
-sound_stream = ExtResource("2_xxsqv")
+damage = 25
+sound_stream = ExtResource("2_3i3cr")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("3_yjaco")
+texture = ExtResource("3_7pvmx")
 region_enabled = true
-region_rect = Rect2(1828, 295, 26, 19)
+region_rect = Rect2(1477, 331, 20, 10)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-1, -1)
@@ -28,7 +29,7 @@ wait_time = 4.0
 autostart = true
 
 [node name="projectile_sound" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("2_xxsqv")
+stream = ExtResource("2_3i3cr")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]

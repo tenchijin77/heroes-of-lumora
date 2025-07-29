@@ -18,7 +18,7 @@ bg_color = Color(0.94902, 0, 0, 1)
 
 [node name="player" type="CharacterBody2D" groups=["player"]]
 top_level = true
-collision_mask = 27
+collision_mask = 59
 script = ExtResource("1_cvnsp")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -32,10 +32,10 @@ texture = ExtResource("1_v0iea")
 offset = Vector2(0, -12)
 flip_h = true
 region_enabled = true
-region_rect = Rect2(930, 32, 31, 31)
+region_rect = Rect2(1956, 258, 25, 31)
 
 [node name="muzzle" type="Node2D" parent="."]
-position = Vector2(17, 3)
+position = Vector2(13, 1)
 
 [node name="player_bullet_pool" type="Node" parent="."]
 script = ExtResource("3_6t5aa")

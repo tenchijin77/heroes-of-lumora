@@ -5,11 +5,11 @@
 [ext_resource type="AudioStream" uid="uid://bpdwfv0xic7kv" path="res://Assets/Audio/636087__noahbangs__magic-flutter.mp3" id="4_d5ami"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_h5x2m"]
-size = Vector2(14, 16)
+size = Vector2(24, 21)
 
 [node name="ghost_fire" type="Area2D"]
 collision_layer = 8
-collision_mask = 17
+collision_mask = 49
 script = ExtResource("1_7o06u")
 speed = 140.0
 damage = 15
@@ -17,9 +17,10 @@ damage = 15
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("3_bpaeh")
 region_enabled = true
-region_rect = Rect2(622, 879, 20, 17)
+region_rect = Rect2(191, 321, 35, 29)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(1, 0.5)
 shape = SubResource("RectangleShape2D_h5x2m")
 
 [node name="destroy_timer" type="Timer" parent="."]

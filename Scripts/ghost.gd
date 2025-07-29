@@ -17,8 +17,8 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	super._process(delta)
 
-	if sprite:
-		sprite.flip_h = player_direction.x < 0  # Inverted logic for right-facing sprite
+	#if sprite:
+	#	sprite.flip_h = player_direction.x < 0  # Inverted logic for right-facing sprite
 
 func _cast() -> void:
 	last_shoot_time = Time.get_unix_time_from_system()
