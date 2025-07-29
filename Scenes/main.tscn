@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=4 uid="uid://4qnufvqx54b"]
+[gd_scene load_steps=11 format=4 uid="uid://4qnufvqx54b"]
 
 [ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="1_bo1nx"]
 [ext_resource type="PackedScene" uid="uid://docxyuvykeqmf" path="res://Scenes/player.tscn" id="2_8gbba"]
 [ext_resource type="Script" uid="uid://brfhd1h8opivd" path="res://Scripts/camera_controller.gd" id="3_8gbba"]
+[ext_resource type="FontFile" uid="uid://cam7bapqpcdf8" path="res://Assets/Fonts/_bitmap_font____romulus_by_pix3m-d6aokem.ttf" id="5_344ge"]
 [ext_resource type="PackedScene" uid="uid://bj2e54eikqriu" path="res://Scenes/enemy_spawner.tscn" id="5_kry3j"]
 [ext_resource type="AudioStream" uid="uid://flgenim1m2t3" path="res://Assets/Audio/echo-dungeon-70538.mp3" id="6_6bp64"]
 [ext_resource type="PackedScene" uid="uid://1rrj1folkqus" path="res://Scenes/torch.tscn" id="6_21xkr"]
@@ -2947,23 +2948,31 @@ parameters/looping = true
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="score" type="Label" parent="CanvasLayer"]
-offset_left = 10.0
-offset_top = 10.0
-offset_right = 71.0
-offset_bottom = 33.0
-size_flags_horizontal = 3
-size_flags_vertical = 6
-text = "Score: 0"
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer"]
+offset_right = 40.0
+offset_bottom = 40.0
 
-[node name="uptime" type="Label" parent="CanvasLayer"]
-offset_left = 10.0
-offset_top = 40.0
-offset_right = 173.0
-offset_bottom = 66.0
+[node name="wave" type="Label" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_344ge")
+theme_override_font_sizes/font_size = 20
+text = "Current wave:"
+
+[node name="uptime" type="Label" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 6
+theme_override_fonts/font = ExtResource("5_344ge")
+theme_override_font_sizes/font_size = 20
 text = "Time Survived: 00:00"
+
+[node name="score" type="Label" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 6
+theme_override_fonts/font = ExtResource("5_344ge")
+theme_override_font_sizes/font_size = 20
+text = "Score: 0"
 
 [node name="enemy_spawner" parent="." instance=ExtResource("5_kry3j")]
 

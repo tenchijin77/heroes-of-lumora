@@ -17,8 +17,9 @@ var survival_time : float = 0.0
 @onready var arrow_pool = $player_bullet_pool
 @onready var health_bar : ProgressBar = $health_bar
 @onready var regeneration_timer : Timer = $regeneration_timer
-@onready var score_label : Label = get_node("/root/main/CanvasLayer/score")
-@onready var uptime_label : Label = get_node("/root/main/CanvasLayer/uptime")
+@onready var score_label : Label = get_node("/root/main/CanvasLayer/VBoxContainer/score")
+@onready var uptime_label : Label = get_node("/root/main/CanvasLayer/VBoxContainer/uptime")
+@onready var wave_label : Label = get_node("/root/main/CanvasLayer/VBoxContainer/wave")
 @onready var player_damage_sound : AudioStreamPlayer2D = $player_damage_sound
 
 var move_input : Vector2
