@@ -1,13 +1,13 @@
 # axe.gd - controls the axe projectile
 extends Area2D
 
-@export var speed : float = 140.0
+@export var speed : float = 250
 @export var owner_group : String 
 @export var damage = 8
 
 
 @onready var destroy_timer : Timer = $destroy_timer
-@onready var hit_sound = $dagger_sound
+@onready var hit_sound = $projectile_sound
 
 
 

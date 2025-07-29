@@ -7,7 +7,7 @@ extends Area2D
 
 
 @onready var destroy_timer : Timer = $destroy_timer
-@onready var hit_sound = $bone_sound
+@onready var hit_sound = $projectile_sound
 
 
 

@@ -1,25 +1,27 @@
 [gd_scene load_steps=5 format=3 uid="uid://bd3fki35y5s1v"]
 
-[ext_resource type="Script" uid="uid://k7tip5iyhcor" path="res://Scripts/dagger.gd" id="1_uw7d1"]
+[ext_resource type="Script" uid="uid://d6xrs2lxn4lc" path="res://Scripts/projectile.gd" id="1_uw7d1"]
 [ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="2_2xgjm"]
 [ext_resource type="AudioStream" uid="uid://cuuy6rr4t7ccp" path="res://Assets/Audio/arrow-swish_03-306040.mp3" id="3_h2poi"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6o4l1"]
-size = Vector2(32, 26.6667)
+size = Vector2(24, 7.57576)
 
 [node name="dagger" type="Area2D"]
 collision_layer = 8
 collision_mask = 17
 script = ExtResource("1_uw7d1")
-owner_group = "monsters"
+speed = 250.0
+damage = 8
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+rotation = 0.785398
 texture = ExtResource("2_2xgjm")
 region_enabled = true
 region_rect = Rect2(1573, 866, 26, 25)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 0.400001)
+position = Vector2(-1, 1)
 scale = Vector2(1, 1.32)
 shape = SubResource("RectangleShape2D_6o4l1")
 
@@ -27,7 +29,7 @@ shape = SubResource("RectangleShape2D_6o4l1")
 wait_time = 4.0
 autostart = true
 
-[node name="dagger_sound" type="AudioStreamPlayer2D" parent="."]
+[node name="projectile_sound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("3_h2poi")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

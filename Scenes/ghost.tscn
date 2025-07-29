@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://d3al3d7jrqspj"]
 
-[ext_resource type="Script" uid="uid://c8w7tuxkacujc" path="res://Scripts/monsters.gd" id="1_3btnm"]
+[ext_resource type="Script" uid="uid://npgwko7bycm7" path="res://Scripts/ghost.gd" id="1_3btnm"]
 [ext_resource type="PackedScene" uid="uid://dw75c4av0rk1e" path="res://Scenes/projectile.tscn" id="2_taxxh"]
 [ext_resource type="PackedScene" uid="uid://b74jflltkatsk" path="res://Scenes/ghost_fire.tscn" id="2_thbej"]
 [ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="3_thbej"]
@@ -25,7 +25,6 @@ max_health = 30
 bullet_scene = ExtResource("2_thbej")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-visible = false
 position = Vector2(1, -1)
 shape = SubResource("RectangleShape2D_sfdtf")
 
@@ -37,7 +36,7 @@ region_enabled = true
 region_rect = Rect2(1856, 223, 33, 31)
 
 [node name="muzzle" type="Node2D" parent="."]
-position = Vector2(15, 0)
+position = Vector2(16, 1)
 
 [node name="bullet_pool" type="Node" parent="."]
 script = ExtResource("4_uta0k")

@@ -6,7 +6,7 @@ extends Area2D
 @export var damage = 12
 
 @onready var destroy_timer : Timer = $destroy_timer
-@onready var hit_sound = $fireball_sound
+@onready var hit_sound = $projectile_sound
 
 
 

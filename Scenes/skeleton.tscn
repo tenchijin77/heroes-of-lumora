@@ -44,12 +44,12 @@ position = Vector2(1, -2.5)
 shape = SubResource("RectangleShape2D_sfdtf")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(1, -2.5)
 texture = ExtResource("3_v8sxu")
 region_enabled = true
 region_rect = Rect2(711, 262, 18, 26)
 
 [node name="muzzle" type="Node2D" parent="."]
+position = Vector2(-9, 3)
 
 [node name="bullet_pool" type="Node" parent="."]
 script = ExtResource("4_ks230")
