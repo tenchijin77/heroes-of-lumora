@@ -1,6 +1,6 @@
-join Narrator rightmost 
-Narrator: A thick haze hangs over the village. The player crests the ridge above Lumora and sees flickering torchlights and hears the sounds of distant screeches. (Push the spacebar to advance the text)
-[wait_input hide_text="false"]
+join Narrator rightmost
+Narrator: A dense fog coils over Lumora as you crest the ridge. Below, torchlight flickers through the dark, punctuated by distant screeches—sharp, frantic—and the anguished cries of villagers locked in chaos. (Press Space to continue.)
+[wait_input]
 Narrator: Suddenly—a flurry of footsteps and a marmalade blur. Timot bursts onto the path, cloak billowing, Brimble, his cat companion tightly clutched under one arm. The sounds of combat ring in the distance over the shouts and screams of the townsfolk.
 [wait_input]
 leave Narrator
@@ -9,25 +9,26 @@ Timot: By Aurethiel’s grace... you made it! Quick, this way!
 [wait_input]
 Timot: The monsters breached Hollow Gate at dawn—our defenders are holding them back as best they can, and now the village is choking on shadows. We’ve got wounded, terrified children, and burnt sigils!
 [wait_input]
-Timot: We don’t have time for pleasantries. You know how to fight, don’t you? Good—listen sharp. Use **W-A-S-D** to move—don’t dawdle in one spot or you'll get pinned. \
-Strike with your main hand— **Left Mouse Button** lets fly your arrows, stay light on your feet and may your aim ring true. Even blessed relics can miss if you’re sloppy.
+Timot: We don’t have time for pleasantries. You know how to fight, don’t you? Good—listen sharp. Use **W-A-S-D** to move—don’t dawdle in one spot or you'll get overwhelmed by the monsters! 
+[wait_input]
+Timot: Attack the enemies with — **Left Mouse Button.** This lets fly your arrows- stay light on your feet and may your aim ring true. Even blessed relics can miss if you’re sloppy.
 [wait_input]
 Timot: The guards hold the city gates... barely. We’ve rigged some ward-torches and glimmertraps along the eastern alley—use them if you see clusters of enemies forming. If you reach the watchtower, signal Merena—she’s brewing Dawnspring elixirs for defense. It'll buy us time... perhaps....
 [wait_input]
 join Brimble rightmost
-Brimble: Brimble meows sharply.
+Brimble: Meow! (Brimble meows sharply.)
 [wait_input]
-Timot: Yes, I know the bakery’s gone, Brimble—Lumora needs warriors now, not muffins!
+Timot: Yes, I know the bakery’s gone, Brimble but Lumora needs warriors now, not muffins!
+[wait_input]
 leave Brimble
-[wait_input]
 join Narrator rightmost
-Narrator: The ground trembles as a distant roar echoes through the hills.
+Narrator: The ground trembles as a distant roar echoes through the hills. The sounds of battle are louder now, as the monsters draw closer to the town.
 [wait_input]
 leave Narrator
-Timot: (voice soft, gravely) Annadeus sang of this day once... back when peace still held. Her voice lit hope in our bones. Maybe—if we survive long enough—she’ll return it to us.
+Timot: (voice soft, gravely) Annadeus sang of this day once... back in the time when peace still held. Her voice lit hope in our bones. Maybe—if we survive long enough—she’ll return to us.
 [wait_input]
 join Narrator rightmost
-Narrator: Timot  grips your shoulder, trembling but firm.
+Narrator: Timot  grips your shoulder, his voice trembling but firm.
 [wait_input]
-leave Narrator
-Timot: Go now. This is your moment. Lumora won’t fall—not while the light still flickers!
+Timot: Go now; This is your moment, hero.  Lumora will not fall—not while the light still flickers!
+[end_timeline]
