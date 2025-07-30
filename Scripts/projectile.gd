@@ -78,3 +78,26 @@ func despawn() -> void:
 	else:
 		print("Projectile %s: Despawn fallback (no NodePool parent)—test mode OK" % name)
 	print("Projectile %s: Despawned, move_direction=%s, position=%s" % [name, move_direction, global_position])
+
+
+func launch(start_pos: Vector2, direction: Vector2) -> void:
+	global_position = start_pos
+	move_direction = direction.normalized()
+	rotation = move_direction.angle()
+	
+	visible = true
+	if $CollisionShape2D:
+		$CollisionShape2D.disabled = false
+	
+	# Ensure unique sound plays on each launch, overriding any default
+	if projectile_sound and projectile_sound.stream == null:
+		projectile_sound.stream = load("res://Assets/sounds/bone_whistle.ogg")  # Reapply on reuse
+	if projectile_sound:
+		projectile_sound.play()
+	else:
+		print("⚠️ projectile_sound is null!")
+	
+	if destroy_timer:
+		destroy_timer.start()
+
+# ... (keep _process, _on_destroy_timer_timeout, _on_body_entered, reset as is)
