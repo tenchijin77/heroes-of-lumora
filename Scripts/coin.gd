@@ -11,6 +11,7 @@ var activation_radius: float = 30.0  # or however close you want
 
 
 @onready var coin_sound: AudioStreamPlayer2D = $coin_sound
+@onready var poof_sprite: AnimatedSprite2D = $poof_sprite
 
 func _ready() -> void:
 	add_to_group("loot")  # Add to loot group for pickup detection
@@ -42,5 +43,11 @@ func play_pickup_sound() -> void:
 		
 func collect():
 	play_pickup_sound()
-	await get_tree().create_timer(0.2).timeout
+	
+	if poof_sprite:
+		$Sprite2D.hide()  # Hide the coin
+		poof_sprite.show()
+		poof_sprite.play("poof")  # Your animation name
+
+	await get_tree().create_timer(0.3).timeout
 	queue_free()

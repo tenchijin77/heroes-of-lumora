@@ -21,3 +21,5 @@ shape = SubResource("CircleShape2D_jgi06")
 
 [node name="coin_sound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("2_g537i")
+
+[node name="poof_sprite" type="AnimatedSprite2D" parent="."]
