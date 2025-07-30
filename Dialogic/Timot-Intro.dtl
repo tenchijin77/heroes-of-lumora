@@ -1,11 +1,10 @@
-- Do you want to skip the intro?
-join Narrator leftmost
+join Narrator rightmost 
 Narrator: A thick haze hangs over the village. The player crests the ridge above Lumora and sees flickering torchlights and hears the sounds of distant screeches. (Push the spacebar to advance the text)
 [wait_input hide_text="false"]
 Narrator: Suddenly—a flurry of footsteps and a marmalade blur. Timot bursts onto the path, cloak billowing, Brimble, his cat companion tightly clutched under one arm. The sounds of combat ring in the distance over the shouts and screams of the townsfolk.
 [wait_input]
 leave Narrator
-join Timot rightmost
+join Timot leftmost
 Timot: By Aurethiel’s grace... you made it! Quick, this way!
 [wait_input]
 Timot: The monsters breached Hollow Gate at dawn—our defenders are holding them back as best they can, and now the village is choking on shadows. We’ve got wounded, terrified children, and burnt sigils!
@@ -15,22 +14,20 @@ Strike with your main hand— **Left Mouse Button** lets fly your arrows, stay l
 [wait_input]
 Timot: The guards hold the city gates... barely. We’ve rigged some ward-torches and glimmertraps along the eastern alley—use them if you see clusters of enemies forming. If you reach the watchtower, signal Merena—she’s brewing Dawnspring elixirs for defense. It'll buy us time... perhaps....
 [wait_input]
-join Brimble leftmost
+join Brimble rightmost
 Brimble: Brimble meows sharply.
 [wait_input]
-Timot: Yes, I know the bakery’s gone, Brimble—Lumora needs warriors now, not muffins.
+Timot: Yes, I know the bakery’s gone, Brimble—Lumora needs warriors now, not muffins!
 leave Brimble
 [wait_input]
-join Narrator leftmost
+join Narrator rightmost
 Narrator: The ground trembles as a distant roar echoes through the hills.
 [wait_input]
 leave Narrator
 Timot: (voice soft, gravely) Annadeus sang of this day once... back when peace still held. Her voice lit hope in our bones. Maybe—if we survive long enough—she’ll return it to us.
 [wait_input]
-join Narrator leftmost
+join Narrator rightmost
 Narrator: Timot  grips your shoulder, trembling but firm.
 [wait_input]
 leave Narrator
 Timot: Go now. This is your moment. Lumora won’t fall—not while the light still flickers!
-[wait_input]
-jump 

@@ -17,11 +17,11 @@
 &"portraits": {
 "default": {
 "export_overrides": {
-"image": "\"res://Assets/Sprites/brimble.png\""
+"image": "\"res://Assets/Sprites/Brimble2.png\""
 },
-"mirror": false,
+"mirror": true,
 "offset": Vector2(0, 0),
-"scale": 0.46,
+"scale": 0.44,
 "scene": ""
 }
 },
