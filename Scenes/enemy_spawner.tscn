@@ -4,7 +4,6 @@
 
 [node name="enemy_spawner" type="Node"]
 script = ExtResource("1_cdqhx")
-initial_spawn_multiplier = 2.5
 
 [node name="spawn_timer" type="Timer" parent="."]
 autostart = true

@@ -19,6 +19,10 @@ config/icon="res://icon.svg"
 
 Global="*res://Scripts/global.gd"
 
+[debug]
+
+file_logging/enable_file_logging=true
+
 [display]
 
 window/stretch/mode="viewport"
@@ -73,6 +77,7 @@ shoot={
 2d_physics/layer_6="Friendly_NPCs"
 2d_physics/layer_7="Friendly_Projectiles"
 2d_physics/layer_8="Forbidden_Zone"
+2d_physics/layer_9="Loot"
 
 [rendering]
 

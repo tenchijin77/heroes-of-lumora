@@ -7,7 +7,8 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_jgi06"]
 radius = 6.0
 
-[node name="CharacterBody2D" type="CharacterBody2D" groups=["loot"]]
+[node name="coin" type="CharacterBody2D" groups=["loot"]]
+collision_layer = 256
 script = ExtResource("1_g537i")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

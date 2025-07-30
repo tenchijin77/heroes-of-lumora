@@ -3,27 +3,30 @@
 extends Node
 
 # -- Existing @exports --
-@export var min_spawn_time: float = 0.5  # Reduced for bullet hell intensity
-@export var max_spawn_time: float = 1.5  # Reduced for bullet hell intensity
-@export var spawn_radius: float = 100.0  # Jitter for edge spawns
+@export var min_spawn_time: float = 0.5
+@export var max_spawn_time: float = 1.5
+@export var spawn_radius: float = 100.0
 @export var monster_configs: Array[Dictionary] = [
 	{"scene": preload("res://Scenes/skeleton.tscn"), "weight": 0.7},
 	{"scene": preload("res://Scenes/wizard.tscn"), "weight": 0.3},
 	{"scene": preload("res://Scenes/goblin.tscn"), "weight": 0.3},
 	{"scene": preload("res://Scenes/ghost.tscn"), "weight": 0.3}
 ]
-@export var use_fixed_points: bool = false  # Toggle for portals/fixed spawns
-@export var fixed_points_paths: Array[NodePath] = []  # For fixed points if true
+@export var use_fixed_points: bool = false
+@export var fixed_points_paths: Array[NodePath] = []
 
 # -- Spawning Multiplier and Wave Logic --
-@export var initial_spawn_multiplier: float = 1.0  # Overall multiplier for spawn speed
-@export var wave_duration_minutes: float = 2.0  # How long each wave lasts
-@export var spawn_rate_increase_per_wave: float = 0.2  # Increased for faster progression
-@export var min_multiplier_limit: float = 0.1  # Prevent insane spawn rates
-@export var obstacle_collision_mask: int = 16  # Layer 5 (environment/walls)
-@export var forbidden_zone_mask: int = 128  # Layer 8 (forbidden spawn area)
-@export var initial_mobs_per_spawn: int = 3  # Starting number of mobs per spawn event
-@export var mobs_increase_per_wave: int = 2  # How many extra mobs to add per wave
+@export var initial_spawn_multiplier: float = 1.0
+@export var wave_duration_minutes: float = 2.0
+@export var spawn_rate_increase_per_wave: float = 0.2
+@export var min_multiplier_limit: float = 0.1
+@export var obstacle_collision_mask: int = 16
+@export var forbidden_zone_mask: int = 128
+@export var initial_mobs_per_spawn: int = 3
+@export var mobs_increase_per_wave: int = 2
+@export var coin_drop_chance: float = 0.3  # 30% chance to drop coins
+@export var coin_drop_amount_range: Vector2 = Vector2(1, 4)  # Random 1-4 coins
+@export var coin_scene: PackedScene = preload("res://Scenes/coin.tscn")
 
 # -- References --
 @onready var spawn_timer: Timer = $spawn_timer
@@ -31,7 +34,7 @@ extends Node
 @onready var player = get_tree().get_first_node_in_group("player")
 @onready var current_wave_label: Label = get_node("/root/main/CanvasLayer/VBoxContainer/wave")
 
-var mob_pools: Dictionary = {}  # Dynamic pools: scene_path -> NodePool
+var mob_pools: Dictionary = {}
 var fixed_points_nodes: Array[Node2D] = []
 var total_weight: float = 0.0
 
@@ -111,7 +114,6 @@ func _increase_spawn_rate():
 
 # --- Spawning Logic ---
 
-# Spawn a monster at a valid position
 func _spawn_monster():
 	var selected_scene: PackedScene = _select_weighted_scene()
 	if not selected_scene:
@@ -122,7 +124,7 @@ func _spawn_monster():
 	var monster: Node2D = pool.spawn() as Node2D
 
 	var spawn_pos: Vector2
-	var max_attempts: int = 30  # Increased for more tries
+	var max_attempts: int = 30
 	var attempts: int = 0
 	var found_clear_spot: bool = false
 
@@ -137,7 +139,7 @@ func _spawn_monster():
 		if _is_obstacle_free(spawn_pos, monster_collision_shape.shape) and _is_forbidden_free(spawn_pos, monster_collision_shape.shape):
 			found_clear_spot = true
 		else:
-			print("Spawn attempt %d failed at %s (obstacle or forbidden)." % [attempts + 1, spawn_pos])  # Debug log
+			print("Spawn attempt %d failed at %s (obstacle or forbidden)." % [attempts + 1, spawn_pos])
 		attempts += 1
 
 	if not found_clear_spot:
@@ -154,7 +156,17 @@ func _spawn_monster():
 	else:
 		push_warning("Monster %s or player: Missing 'mob_died' signal or 'increment_score' method." % monster.name)
 
+	# Connect loot drop for this specific monster with debug
+	if monster.has_signal("mob_died") and not monster.is_connected("mob_died", _on_mob_died):
+		var connection_result = monster.mob_died.connect(_on_mob_died.bind(monster))
+		if connection_result != OK:
+			print("Failed to connect mob_died for %s, error: %s" % [monster.name, connection_result])
+		else:
+			print("Connected mob_died for %s" % monster.name)
+
 	print("Spawner: Spawned %s at %s" % [monster.name, spawn_pos])
+
+# --- Existing Helper Functions ---
 
 # Check if position is free of obstacles (layer 5) using shape query
 func _is_obstacle_free(position: Vector2, shape: Shape2D) -> bool:
@@ -165,7 +177,7 @@ func _is_obstacle_free(position: Vector2, shape: Shape2D) -> bool:
 	shape_query.collision_mask = obstacle_collision_mask  # Only layer 5
 	var intersects: Array = space.intersect_shape(shape_query)
 	if not intersects.is_empty():
-		print("Position %s blocked by obstacle: %s" % [position, intersects])  # Debug
+		print("Position %s blocked by obstacle: %s" % [position, intersects])
 		return false
 	return true
 
@@ -178,7 +190,7 @@ func _is_forbidden_free(position: Vector2, shape: Shape2D) -> bool:
 	shape_query.collision_mask = forbidden_zone_mask  # Only layer 8
 	var intersects: Array = space.intersect_shape(shape_query)
 	if not intersects.is_empty():
-		print("Position %s in forbidden zone: %s" % [position, intersects])  # Debug
+		print("Position %s in forbidden zone: %s" % [position, intersects])
 		return false
 	return true
 
@@ -200,7 +212,7 @@ func _get_spawn_position() -> Vector2:
 		var viewport_rect: Rect2 = get_viewport().get_visible_rect()
 		var camera: Camera2D = get_viewport().get_camera_2d()
 		var center: Vector2 = camera.get_screen_center_position() if camera else Vector2.ZERO
-		var margin: float = 200.0  # Increased to spawn further from player/camera
+		var margin: float = 200.0
 		var side: int = randi() % 4
 		var pos: Vector2 = Vector2.ZERO
 		match side:
@@ -214,3 +226,16 @@ func _on_spawn_timer_timeout():
 	for i: int in range(current_mobs_per_spawn):
 		_spawn_monster()
 	_update_spawn_timer_interval()
+
+# Handle mob death to drop coins
+func _on_mob_died(mob: Node2D) -> void:
+	if randf() < coin_drop_chance:
+		var drop_position: Vector2 = mob.global_position
+		var coin_count: int = randi_range(coin_drop_amount_range.x, coin_drop_amount_range.y)  # Random 1-4
+		for i in range(coin_count):
+			var coin: CharacterBody2D = coin_scene.instantiate() as CharacterBody2D
+			coin.collision_layer = 256  # Layer 9 (loot)
+			coin.collision_mask = 1    # Layer 1 (player)
+			coin.global_position = drop_position + Vector2(randf_range(-20.0, 20.0), randf_range(-20.0, 20.0))  # Slight scatter
+			get_parent().add_child(coin)
+			print("Dropped %d coins at %s (total %d)" % [coin_count, coin.global_position, i + 1])

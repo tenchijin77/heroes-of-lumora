@@ -21,7 +21,7 @@ radius = 24.0832
 
 [node name="player" type="CharacterBody2D" groups=["player"]]
 top_level = true
-collision_mask = 59
+collision_mask = 315
 script = ExtResource("1_cvnsp")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -64,6 +64,7 @@ autostart = true
 stream = ExtResource("6_x3wgy")
 
 [node name="pickup_area" type="Area2D" parent="."]
+collision_mask = 256
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="pickup_area"]
 shape = SubResource("CircleShape2D_x3wgy")
