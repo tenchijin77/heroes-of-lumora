@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d3pc5ksfpbjee"
-path="res://.godot/imported/tile_0068.png-18bb619665743b4517562d7cbabde167.ctex"
+path="res://.godot/imported/tile_0068.png-0245998ea68c711a3f582e91758f0d70.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/kenney_tiny-dungeon/Tiles/tile_0068.png"
-dest_files=["res://.godot/imported/tile_0068.png-18bb619665743b4517562d7cbabde167.ctex"]
+source_file="res://Assets/Sprites/kenney_tiny-dungeon/Tiles/tile_0068.png"
+dest_files=["res://.godot/imported/tile_0068.png-0245998ea68c711a3f582e91758f0d70.ctex"]
 
 [params]
 

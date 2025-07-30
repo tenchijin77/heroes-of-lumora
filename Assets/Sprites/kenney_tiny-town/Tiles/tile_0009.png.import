@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bdga3bb2sxb4f"
-path="res://.godot/imported/tile_0009.png-9ac995e08c48ab85445f2562e921592e.ctex"
+path="res://.godot/imported/tile_0009.png-0831c8de81389cf957a8657660da2c44.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/kenney_tiny-town/Tiles/tile_0009.png"
-dest_files=["res://.godot/imported/tile_0009.png-9ac995e08c48ab85445f2562e921592e.ctex"]
+source_file="res://Assets/Sprites/kenney_tiny-town/Tiles/tile_0009.png"
+dest_files=["res://.godot/imported/tile_0009.png-0831c8de81389cf957a8657660da2c44.ctex"]
 
 [params]
 

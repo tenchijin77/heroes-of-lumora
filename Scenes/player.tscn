@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://docxyuvykeqmf"]
+[gd_scene load_steps=11 format=3 uid="uid://docxyuvykeqmf"]
 
 [ext_resource type="Script" uid="uid://btptpi22vbosd" path="res://Scripts/player.gd" id="1_cvnsp"]
 [ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="1_v0iea"]
@@ -15,6 +15,9 @@ bg_color = Color(0.201527, 0.201527, 0.201527, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vgqql"]
 bg_color = Color(0.94902, 0, 0, 1)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_x3wgy"]
+radius = 24.0832
 
 [node name="player" type="CharacterBody2D" groups=["player"]]
 top_level = true
@@ -59,5 +62,10 @@ autostart = true
 
 [node name="player_damage_sound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("6_x3wgy")
+
+[node name="pickup_area" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="pickup_area"]
+shape = SubResource("CircleShape2D_x3wgy")
 
 [connection signal="timeout" from="regeneration_timer" to="." method="_on_regeneration_timer_timeout"]

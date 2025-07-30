@@ -20,9 +20,14 @@ var survival_time : float = 0.0
 @onready var score_label : Label = get_node("/root/main/CanvasLayer/VBoxContainer/score")
 @onready var uptime_label : Label = get_node("/root/main/CanvasLayer/VBoxContainer/uptime")
 @onready var wave_label : Label = get_node("/root/main/CanvasLayer/VBoxContainer/wave")
+@onready var coin_label : Label = get_node("/root/main/CanvasLayer/VBoxContainer/coins")
 @onready var player_damage_sound : AudioStreamPlayer2D = $player_damage_sound
+@onready var pickup_area: Area2D = $pickup_area  # New reference to pickup area
+
 
 var move_input : Vector2
+# New variable for coins
+var coin_count: int = 0
 
 func _ready ():
 	health_bar.max_value = max_health
@@ -125,3 +130,14 @@ func _handle_game_over():
 		tree.change_scene_to_file("res://Scenes/game_over.tscn")
 	else:
 		tree.change_scene_to_file("res://Scenes/game_over2.tscn")
+		
+# Handle loot pickup when entering pickup area
+# Handle loot pickup when entering pickup area
+func _on_pickup_area_entered(area: Area2D) -> void:
+	if area.is_in_group("loot") and area.name == "coin":
+		coin_count += 1
+		if coin_label:
+			coin_label.text = "Coin: %d" % coin_count
+		print("Picked up coin! Coins: %d" % coin_count)
+		area.play_pickup_sound()  # Trigger sound from coin
+		area.queue_free()

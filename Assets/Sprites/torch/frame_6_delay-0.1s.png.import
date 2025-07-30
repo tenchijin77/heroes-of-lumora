@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ccw8ogjrvchh"
-path="res://.godot/imported/frame_6_delay-0.1s.png-610c0ed414411d0d6b21db562fc72c64.ctex"
+path="res://.godot/imported/frame_6_delay-0.1s.png-053f72d9c1dd292c562d130a42d36163.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/torch/frame_6_delay-0.1s.png"
-dest_files=["res://.godot/imported/frame_6_delay-0.1s.png-610c0ed414411d0d6b21db562fc72c64.ctex"]
+source_file="res://Assets/Sprites/torch/frame_6_delay-0.1s.png"
+dest_files=["res://.godot/imported/frame_6_delay-0.1s.png-053f72d9c1dd292c562d130a42d36163.ctex"]
 
 [params]
 

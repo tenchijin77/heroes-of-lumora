@@ -2977,6 +2977,14 @@ theme_override_fonts/font = ExtResource("5_344ge")
 theme_override_font_sizes/font_size = 20
 text = "Score: 0"
 
+[node name="coins" type="Label" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 6
+theme_override_fonts/font = ExtResource("5_344ge")
+theme_override_font_sizes/font_size = 20
+text = "Coins: 0"
+
 [node name="enemy_spawner" parent="." instance=ExtResource("5_kry3j")]
 
 [node name="DirectionalLight2D" type="DirectionalLight2D" parent="."]
