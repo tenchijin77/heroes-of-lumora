@@ -39,7 +39,9 @@ func _ready ():
 	update_score_label()
 	update_time_label()
 	Global.current_score = 0
-
+# 🔧 Connect loot pickup detection
+	pickup_area.area_entered.connect(_on_pickup_area_entered)
+	
 func _physics_process(_delta):
 	move_input = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	if move_input.length() > 0:
@@ -132,12 +134,11 @@ func _handle_game_over():
 		tree.change_scene_to_file("res://Scenes/game_over2.tscn")
 		
 # Handle loot pickup when entering pickup area
-# Handle loot pickup when entering pickup area
 func _on_pickup_area_entered(area: Area2D) -> void:
-	if area.is_in_group("loot") and area.name == "coin":
+	if area.is_in_group("loot"):
 		coin_count += 1
 		if coin_label:
 			coin_label.text = "Coin: %d" % coin_count
 		print("Picked up coin! Coins: %d" % coin_count)
-		area.play_pickup_sound()  # Trigger sound from coin
-		area.queue_free()
+		
+		area.collect()  # Let coin handle sound and cleanup

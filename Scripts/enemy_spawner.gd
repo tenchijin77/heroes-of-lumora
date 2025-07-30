@@ -233,7 +233,7 @@ func _on_mob_died(mob: Node2D) -> void:
 		var drop_position: Vector2 = mob.global_position
 		var coin_count: int = randi_range(coin_drop_amount_range.x, coin_drop_amount_range.y)  # Random 1-4
 		for i in range(coin_count):
-			var coin: CharacterBody2D = coin_scene.instantiate() as CharacterBody2D
+			var coin: Area2D = coin_scene.instantiate() as Area2D
 			coin.collision_layer = 256  # Layer 9 (loot)
 			coin.collision_mask = 1    # Layer 1 (player)
 			coin.global_position = drop_position + Vector2(randf_range(-20.0, 20.0), randf_range(-20.0, 20.0))  # Slight scatter

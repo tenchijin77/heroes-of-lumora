@@ -17,11 +17,11 @@ bg_color = Color(0.201527, 0.201527, 0.201527, 1)
 bg_color = Color(0.94902, 0, 0, 1)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_x3wgy"]
-radius = 24.0832
+radius = 21.0
 
 [node name="player" type="CharacterBody2D" groups=["player"]]
 top_level = true
-collision_mask = 315
+collision_mask = 59
 script = ExtResource("1_cvnsp")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -64,6 +64,7 @@ autostart = true
 stream = ExtResource("6_x3wgy")
 
 [node name="pickup_area" type="Area2D" parent="."]
+collision_layer = 0
 collision_mask = 256
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="pickup_area"]
