@@ -3,8 +3,8 @@
 extends Node
 
 # -- Existing @exports --
-@export var min_spawn_time: float = 0.5
-@export var max_spawn_time: float = 1.5
+@export var min_spawn_time: float = 3.0
+@export var max_spawn_time: float = 5.0
 @export var spawn_radius: float = 100.0
 @export var monster_configs: Array[Dictionary] = [
 	{"scene": preload("res://Scenes/skeleton.tscn"), "weight": 0.7},
@@ -18,14 +18,14 @@ extends Node
 # -- Spawning Multiplier and Wave Logic --
 @export var initial_spawn_multiplier: float = 1.0
 @export var wave_duration_minutes: float = 2.0
-@export var spawn_rate_increase_per_wave: float = 0.2
+@export var spawn_rate_increase_per_wave: float = 0.1
 @export var min_multiplier_limit: float = 0.1
 @export var obstacle_collision_mask: int = 16
 @export var forbidden_zone_mask: int = 128
-@export var initial_mobs_per_spawn: int = 3
-@export var mobs_increase_per_wave: int = 2
-@export var coin_drop_chance: float = 0.3  # 30% chance to drop coins
-@export var coin_drop_amount_range: Vector2 = Vector2(1, 4)  # Random 1-4 coins
+@export var initial_mobs_per_spawn: int = 1
+@export var mobs_increase_per_wave: int = 1
+@export var coin_drop_chance: float = 0.3
+@export var coin_drop_amount_range: Vector2 = Vector2(1, 4)
 @export var coin_scene: PackedScene = preload("res://Scenes/coin.tscn")
 
 # -- References --
@@ -40,7 +40,7 @@ var total_weight: float = 0.0
 
 var current_spawn_multiplier: float = 1.0
 var current_wave: int = 1
-var current_mobs_per_spawn: int = 3
+var current_mobs_per_spawn: int = 1
 
 func _ready():
 	# Initial setup for monster pools
@@ -124,7 +124,7 @@ func _spawn_monster():
 	var monster: Node2D = pool.spawn() as Node2D
 
 	var spawn_pos: Vector2
-	var max_attempts: int = 30
+	var max_attempts: int = 50  # Increased to reduce teleportation from despawn
 	var attempts: int = 0
 	var found_clear_spot: bool = false
 
@@ -143,7 +143,7 @@ func _spawn_monster():
 		attempts += 1
 
 	if not found_clear_spot:
-		push_warning("Spawner: No clear spawn position after %d attempts for %s." % [max_attempts, monster.name])
+		push_warning("Spawner: No clear spawn position after %d attempts for %s, despawning." % [max_attempts, monster.name])
 		pool.despawn(monster)
 		return
 
@@ -166,9 +166,7 @@ func _spawn_monster():
 
 	print("Spawner: Spawned %s at %s" % [monster.name, spawn_pos])
 
-# --- Existing Helper Functions ---
-
-# Check if position is free of obstacles (layer 5) using shape query
+# --- Check if position is free of obstacles (layer 5) using shape query ---
 func _is_obstacle_free(position: Vector2, shape: Shape2D) -> bool:
 	var space: PhysicsDirectSpaceState2D = get_viewport().get_world_2d().direct_space_state
 	var shape_query: PhysicsShapeQueryParameters2D = PhysicsShapeQueryParameters2D.new()
@@ -181,7 +179,7 @@ func _is_obstacle_free(position: Vector2, shape: Shape2D) -> bool:
 		return false
 	return true
 
-# Check if position is free of forbidden zone (layer 8) using shape query
+# --- Check if position is free of forbidden zone (layer 8) using shape query ---
 func _is_forbidden_free(position: Vector2, shape: Shape2D) -> bool:
 	var space: PhysicsDirectSpaceState2D = get_viewport().get_world_2d().direct_space_state
 	var shape_query: PhysicsShapeQueryParameters2D = PhysicsShapeQueryParameters2D.new()
@@ -234,8 +232,11 @@ func _on_mob_died(mob: Node2D) -> void:
 		var coin_count: int = randi_range(coin_drop_amount_range.x, coin_drop_amount_range.y)  # Random 1-4
 		for i in range(coin_count):
 			var coin: Area2D = coin_scene.instantiate() as Area2D
-			coin.collision_layer = 256  # Layer 9 (loot)
-			coin.collision_mask = 1    # Layer 1 (player)
-			coin.global_position = drop_position + Vector2(randf_range(-20.0, 20.0), randf_range(-20.0, 20.0))  # Slight scatter
-			get_parent().add_child(coin)
-			print("Dropped %d coins at %s (total %d)" % [coin_count, coin.global_position, i + 1])
+			if coin:  # Debug check
+				coin.collision_layer = 256  # Layer 9 (loot)
+				coin.collision_mask = 1    # Layer 1 (player)
+				coin.global_position = drop_position + Vector2(randf_range(-20.0, 20.0), randf_range(-20.0, 20.0))  # Slight scatter
+				get_parent().add_child(coin)
+				print("Dropped %d coins at %s (total %d)" % [coin_count, coin.global_position, i + 1])
+			else:
+				print("Failed to instantiate coin at %s" % drop_position)
