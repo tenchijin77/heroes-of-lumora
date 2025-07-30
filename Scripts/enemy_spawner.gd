@@ -12,23 +12,22 @@ extends Node
 	{"scene": preload("res://Scenes/goblin.tscn"), "weight": 0.3},
 	{"scene": preload("res://Scenes/ghost.tscn"), "weight": 0.3}
 ]
-# Add new mobs here: {"scene": preload("new_mob.tscn"), "weight": 0.2}
-
 @export var use_fixed_points: bool = false  # Toggle for portals/fixed spawns
 @export var fixed_points_paths: Array[NodePath] = []  # For fixed points if true
 
-# -- NEW: Spawning Multiplier and Wave Logic --
+# -- Spawning Multiplier and Wave Logic --
 @export var initial_spawn_multiplier: float = 1.0  # Overall multiplier for spawn speed
 @export var wave_duration_minutes: float = 2.0  # How long each wave lasts
 @export var spawn_rate_increase_per_wave: float = 0.2  # Increased for faster progression
 @export var min_multiplier_limit: float = 0.1  # Prevent insane spawn rates
-@export var obstacle_collision_mask: int = 1  # Match environment layer
+@export var obstacle_collision_mask: int = 1  # Match environment layer (layer 5)
+@export var forbidden_zone_mask: int = 256  # Layer 8 for forbidden spawn area
 @export var initial_mobs_per_spawn: int = 3  # Starting number of mobs per spawn event
 @export var mobs_increase_per_wave: int = 2  # How many extra mobs to add per wave
 
 # -- References --
 @onready var spawn_timer: Timer = $spawn_timer
-@onready var wave_timer: Timer = $wave_timer  # New Timer node
+@onready var wave_timer: Timer = $wave_timer
 @onready var player = get_tree().get_first_node_in_group("player")
 @onready var current_wave_label: Label = get_node("/root/main/CanvasLayer/VBoxContainer/wave")
 
@@ -38,7 +37,7 @@ var total_weight: float = 0.0
 
 var current_spawn_multiplier: float = 1.0
 var current_wave: int = 1
-var current_mobs_per_spawn: int = 3  # Actual batch size, updates per wave
+var current_mobs_per_spawn: int = 3
 
 func _ready():
 	# Initial setup for monster pools
@@ -152,12 +151,13 @@ func _spawn_monster():
 
 	print("Spawner: Spawned %s at %s" % [monster.name, spawn_pos])
 
+# Check if a position is clear of obstacles and forbidden zones
 func _is_position_clear(position: Vector2, shape: Shape2D) -> bool:
 	var space = get_viewport().get_world_2d().direct_space_state
 	var shape_query = PhysicsShapeQueryParameters2D.new()
 	shape_query.shape = shape
 	shape_query.transform = Transform2D(0, position)
-	shape_query.collision_mask = obstacle_collision_mask
+	shape_query.collision_mask = obstacle_collision_mask | forbidden_zone_mask  # Combine layers 5 and 8
 	return space.intersect_shape(shape_query).is_empty()
 
 func _select_weighted_scene() -> PackedScene:
@@ -188,8 +188,7 @@ func _get_spawn_position() -> Vector2:
 			3: pos = Vector2(center.x + randf_range(-viewport_rect.size.x / 2, viewport_rect.size.x / 2), center.y + viewport_rect.size.y / 2 + margin)
 		return pos + Vector2(randf_range(-spawn_radius, spawn_radius), randf_range(-spawn_radius, spawn_radius))
 
-# Handle spawn timer timeout by spawning a batch of mobs
 func _on_spawn_timer_timeout():
 	for i in range(current_mobs_per_spawn):
 		_spawn_monster()
-	_update_spawn_timer_interval()  # Get new interval for next batch
+	_update_spawn_timer_interval()

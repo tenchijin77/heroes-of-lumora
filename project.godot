@@ -70,6 +70,7 @@ shoot={
 2d_physics/layer_5="Environment"
 2d_physics/layer_6="Friendly_NPCs"
 2d_physics/layer_7="Friendly_Projectiles"
+2d_physics/layer_8="Forbidden_Zone"
 
 [rendering]
 

@@ -22,6 +22,11 @@ completed:
 -fix sounds on projectiles (not working due to the node pool setup. the original projectiles have sound, later ones randomly do or do not.)
 -find cool fonts for all of the in game ui and assets
 -modify and streamline the design of the monster spawning system so i can add in new monster types and add them to the spawners with the least amount of effort.
+-added guard npcs to protect the entrance area
+-updated monster spawning rate and logic
+-standardized monster projectiles
+
+
 
 to do: (in order of importance)
 
@@ -33,7 +38,6 @@ to do: (in order of importance)
 -add player potions (increase attack speed, increase movement speed, increase damage) each buff lasts 10 seconds.
 -add a loot drop system
 -add dialogue for the main screen to setup the game (use dialogic addon for godot to create this)
-
 -add coin drops for future upgrade system
 -eventually add npcs to introduce famous npcs from aldenexia
 
