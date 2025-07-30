@@ -20,8 +20,8 @@ extends Node
 @export var wave_duration_minutes: float = 2.0  # How long each wave lasts
 @export var spawn_rate_increase_per_wave: float = 0.2  # Increased for faster progression
 @export var min_multiplier_limit: float = 0.1  # Prevent insane spawn rates
-@export var obstacle_collision_mask: int = 1  # Match environment layer (layer 5)
-@export var forbidden_zone_mask: int = 256  # Layer 8 for forbidden spawn area
+@export var obstacle_collision_mask: int = 16  # Layer 5 (environment/walls)
+@export var forbidden_zone_mask: int = 128  # Layer 8 (forbidden spawn area)
 @export var initial_mobs_per_spawn: int = 3  # Starting number of mobs per spawn event
 @export var mobs_increase_per_wave: int = 2  # How many extra mobs to add per wave
 
@@ -70,9 +70,11 @@ func _ready():
 	_update_spawn_timer_interval()
 	print("Initial spawn interval: %.2f seconds." % spawn_timer.wait_time)
 
-	# Connect timers
-	spawn_timer.timeout.connect(_on_spawn_timer_timeout)
-	wave_timer.timeout.connect(_on_wave_timer_timeout)
+	# Connect timers safely
+	if not spawn_timer.timeout.is_connected(_on_spawn_timer_timeout):
+		spawn_timer.timeout.connect(_on_spawn_timer_timeout)
+	if not wave_timer.timeout.is_connected(_on_wave_timer_timeout):
+		wave_timer.timeout.connect(_on_wave_timer_timeout)
 	print("Wave timer set for %.1f minutes." % (wave_timer.wait_time / 60.0))
 
 	# Initial label update
@@ -81,8 +83,8 @@ func _ready():
 # --- Wave and Spawn Rate Management Functions ---
 
 func _update_spawn_timer_interval():
-	var effective_min = max(0.1, min_spawn_time * current_spawn_multiplier)
-	var effective_max = max(effective_min + 0.1, max_spawn_time * current_spawn_multiplier)
+	var effective_min: float = max(0.1, min_spawn_time * current_spawn_multiplier)
+	var effective_max: float = max(effective_min + 0.1, max_spawn_time * current_spawn_multiplier)
 	spawn_timer.wait_time = randf_range(effective_min, effective_max)
 	spawn_timer.start()
 	print("Spawn interval updated to %.2f (Range: %.2f-%.2f, Multiplier: %.2f)." % [
@@ -109,19 +111,20 @@ func _increase_spawn_rate():
 
 # --- Spawning Logic ---
 
+# Spawn a monster at a valid position
 func _spawn_monster():
-	var selected_scene = _select_weighted_scene()
+	var selected_scene: PackedScene = _select_weighted_scene()
 	if not selected_scene:
 		push_warning("Spawner: No monster scene selected!")
 		return
 
-	var pool = mob_pools[selected_scene.resource_path]
-	var monster = pool.spawn()
+	var pool: NodePool = mob_pools[selected_scene.resource_path]
+	var monster: Node2D = pool.spawn() as Node2D
 
 	var spawn_pos: Vector2
-	var max_attempts = 10
-	var attempts = 0
-	var found_clear_spot = false
+	var max_attempts: int = 30  # Increased for more tries
+	var attempts: int = 0
+	var found_clear_spot: bool = false
 
 	var monster_collision_shape: CollisionShape2D = monster.find_child("CollisionShape2D", true, false)
 	if not monster_collision_shape or not monster_collision_shape.shape:
@@ -131,8 +134,10 @@ func _spawn_monster():
 
 	while attempts < max_attempts and not found_clear_spot:
 		spawn_pos = _get_spawn_position()
-		if _is_position_clear(spawn_pos, monster_collision_shape.shape):
+		if _is_obstacle_free(spawn_pos, monster_collision_shape.shape) and _is_forbidden_free(spawn_pos, monster_collision_shape.shape):
 			found_clear_spot = true
+		else:
+			print("Spawn attempt %d failed at %s (obstacle or forbidden)." % [attempts + 1, spawn_pos])  # Debug log
 		attempts += 1
 
 	if not found_clear_spot:
@@ -151,19 +156,36 @@ func _spawn_monster():
 
 	print("Spawner: Spawned %s at %s" % [monster.name, spawn_pos])
 
-# Check if a position is clear of obstacles and forbidden zones
-func _is_position_clear(position: Vector2, shape: Shape2D) -> bool:
-	var space = get_viewport().get_world_2d().direct_space_state
-	var shape_query = PhysicsShapeQueryParameters2D.new()
+# Check if position is free of obstacles (layer 5) using shape query
+func _is_obstacle_free(position: Vector2, shape: Shape2D) -> bool:
+	var space: PhysicsDirectSpaceState2D = get_viewport().get_world_2d().direct_space_state
+	var shape_query: PhysicsShapeQueryParameters2D = PhysicsShapeQueryParameters2D.new()
 	shape_query.shape = shape
 	shape_query.transform = Transform2D(0, position)
-	shape_query.collision_mask = obstacle_collision_mask | forbidden_zone_mask  # Combine layers 5 and 8
-	return space.intersect_shape(shape_query).is_empty()
+	shape_query.collision_mask = obstacle_collision_mask  # Only layer 5
+	var intersects: Array = space.intersect_shape(shape_query)
+	if not intersects.is_empty():
+		print("Position %s blocked by obstacle: %s" % [position, intersects])  # Debug
+		return false
+	return true
+
+# Check if position is free of forbidden zone (layer 8) using shape query
+func _is_forbidden_free(position: Vector2, shape: Shape2D) -> bool:
+	var space: PhysicsDirectSpaceState2D = get_viewport().get_world_2d().direct_space_state
+	var shape_query: PhysicsShapeQueryParameters2D = PhysicsShapeQueryParameters2D.new()
+	shape_query.shape = shape
+	shape_query.transform = Transform2D(0, position)
+	shape_query.collision_mask = forbidden_zone_mask  # Only layer 8
+	var intersects: Array = space.intersect_shape(shape_query)
+	if not intersects.is_empty():
+		print("Position %s in forbidden zone: %s" % [position, intersects])  # Debug
+		return false
+	return true
 
 func _select_weighted_scene() -> PackedScene:
-	var rand = randf() * total_weight
+	var rand: float = randf() * total_weight
 	var cumulative: float = 0.0
-	for config in monster_configs:
+	for config: Dictionary in monster_configs:
 		cumulative += config.weight
 		if rand < cumulative:
 			return config.scene
@@ -171,16 +193,16 @@ func _select_weighted_scene() -> PackedScene:
 
 func _get_spawn_position() -> Vector2:
 	if use_fixed_points and not fixed_points_nodes.is_empty():
-		var point = fixed_points_nodes[randi() % fixed_points_nodes.size()]
-		var offset = Vector2(randf_range(-spawn_radius, spawn_radius), randf_range(-spawn_radius, spawn_radius))
+		var point: Node2D = fixed_points_nodes[randi() % fixed_points_nodes.size()]
+		var offset: Vector2 = Vector2(randf_range(-spawn_radius, spawn_radius), randf_range(-spawn_radius, spawn_radius))
 		return point.global_position + offset
 	else:
-		var viewport_rect = get_viewport().get_visible_rect()
-		var camera = get_viewport().get_camera_2d()
-		var center = camera.get_screen_center_position() if camera else Vector2.ZERO
-		var margin = 50.0
-		var side = randi() % 4
-		var pos = Vector2.ZERO
+		var viewport_rect: Rect2 = get_viewport().get_visible_rect()
+		var camera: Camera2D = get_viewport().get_camera_2d()
+		var center: Vector2 = camera.get_screen_center_position() if camera else Vector2.ZERO
+		var margin: float = 200.0  # Increased to spawn further from player/camera
+		var side: int = randi() % 4
+		var pos: Vector2 = Vector2.ZERO
 		match side:
 			0: pos = Vector2(center.x - viewport_rect.size.x / 2 - margin, center.y + randf_range(-viewport_rect.size.y / 2, viewport_rect.size.y / 2))
 			1: pos = Vector2(center.x + viewport_rect.size.x / 2 + margin, center.y + randf_range(-viewport_rect.size.y / 2, viewport_rect.size.y / 2))
@@ -189,6 +211,6 @@ func _get_spawn_position() -> Vector2:
 		return pos + Vector2(randf_range(-spawn_radius, spawn_radius), randf_range(-spawn_radius, spawn_radius))
 
 func _on_spawn_timer_timeout():
-	for i in range(current_mobs_per_spawn):
+	for i: int in range(current_mobs_per_spawn):
 		_spawn_monster()
 	_update_spawn_timer_interval()
