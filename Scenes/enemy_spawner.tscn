@@ -9,4 +9,8 @@ initial_spawn_multiplier = 2.5
 [node name="spawn_timer" type="Timer" parent="."]
 autostart = true
 
+[node name="wave_timer" type="Timer" parent="."]
+wait_time = 120.0
+autostart = true
+
 [connection signal="timeout" from="spawn_timer" to="." method="_on_spawn_timer_timeout"]
