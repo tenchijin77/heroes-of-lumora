@@ -1,0 +1,29 @@
+{
+"@path": "res://addons/dialogic/Resources/character.gd",
+"@subpath": NodePath(""),
+&"_translation_id": "",
+&"color": Color(1, 1, 1, 1),
+&"custom_info": {
+"sound_mood_default": "",
+"sound_moods": {},
+"style": ""
+},
+&"default_portrait": "default",
+&"description": "Timot, a villager of Lumora",
+&"display_name": "Timot",
+&"mirror": false,
+&"nicknames": [""],
+&"offset": Vector2(0, 0),
+&"portraits": {
+"default": {
+"export_overrides": {
+"image": "\"res://Assets/Sprites/Timot.jpg\""
+},
+"mirror": false,
+"offset": Vector2(0, 0),
+"scale": 0.26,
+"scene": ""
+}
+},
+&"scale": 1.0
+}
