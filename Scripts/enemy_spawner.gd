@@ -3,40 +3,42 @@
 extends Node
 
 # -- Existing @exports --
-@export var min_spawn_time: float = 1.0 # Reduced for more frequent spawns
-@export var max_spawn_time: float = 3.0 # Reduced for more frequent spawns
-@export var spawn_radius: float = 100.0 # Jitter for edge spawns
+@export var min_spawn_time: float = 0.5  # Reduced for bullet hell intensity
+@export var max_spawn_time: float = 1.5  # Reduced for bullet hell intensity
+@export var spawn_radius: float = 100.0  # Jitter for edge spawns
 @export var monster_configs: Array[Dictionary] = [
 	{"scene": preload("res://Scenes/skeleton.tscn"), "weight": 0.7},
 	{"scene": preload("res://Scenes/wizard.tscn"), "weight": 0.3},
 	{"scene": preload("res://Scenes/goblin.tscn"), "weight": 0.3},
-# Add new mobs here: {"scene": preload("new_mob.tscn"), "weight": 0.2}
 	{"scene": preload("res://Scenes/ghost.tscn"), "weight": 0.3}
 ]
+# Add new mobs here: {"scene": preload("new_mob.tscn"), "weight": 0.2}
 
-
-@export var use_fixed_points: bool = false # Toggle for portals/fixed spawns
-@export var fixed_points_paths: Array[NodePath] = [] # For fixed points if true
+@export var use_fixed_points: bool = false  # Toggle for portals/fixed spawns
+@export var fixed_points_paths: Array[NodePath] = []  # For fixed points if true
 
 # -- NEW: Spawning Multiplier and Wave Logic --
-@export var initial_spawn_multiplier: float = 1.0 # Overall multiplier for spawn speed
-@export var wave_duration_minutes: float = 2.0 # How long each wave lasts
-@export var spawn_rate_increase_per_wave: float = 0.15 # Increased for faster progression
-@export var min_multiplier_limit: float = 0.05 # Prevent insane spawn rates
-@export var obstacle_collision_mask: int = 1 # Match environment layer
+@export var initial_spawn_multiplier: float = 1.0  # Overall multiplier for spawn speed
+@export var wave_duration_minutes: float = 2.0  # How long each wave lasts
+@export var spawn_rate_increase_per_wave: float = 0.2  # Increased for faster progression
+@export var min_multiplier_limit: float = 0.1  # Prevent insane spawn rates
+@export var obstacle_collision_mask: int = 1  # Match environment layer
+@export var initial_mobs_per_spawn: int = 3  # Starting number of mobs per spawn event
+@export var mobs_increase_per_wave: int = 2  # How many extra mobs to add per wave
 
 # -- References --
 @onready var spawn_timer: Timer = $spawn_timer
-@onready var wave_timer: Timer = $wave_timer # New Timer node
+@onready var wave_timer: Timer = $wave_timer  # New Timer node
 @onready var player = get_tree().get_first_node_in_group("player")
 @onready var current_wave_label: Label = get_node("/root/main/CanvasLayer/VBoxContainer/wave")
 
-var mob_pools: Dictionary = {} # Dynamic pools: scene_path -> NodePool
+var mob_pools: Dictionary = {}  # Dynamic pools: scene_path -> NodePool
 var fixed_points_nodes: Array[Node2D] = []
 var total_weight: float = 0.0
 
 var current_spawn_multiplier: float = 1.0
 var current_wave: int = 1
+var current_mobs_per_spawn: int = 3  # Actual batch size, updates per wave
 
 func _ready():
 	# Initial setup for monster pools
@@ -65,6 +67,7 @@ func _ready():
 
 	# Initialize wave and spawn logic
 	current_spawn_multiplier = initial_spawn_multiplier
+	current_mobs_per_spawn = initial_mobs_per_spawn
 	_update_spawn_timer_interval()
 	print("Initial spawn interval: %.2f seconds." % spawn_timer.wait_time)
 
@@ -101,6 +104,8 @@ func _update_wave_label():
 func _increase_spawn_rate():
 	current_spawn_multiplier *= (1.0 - spawn_rate_increase_per_wave)
 	current_spawn_multiplier = max(min_multiplier_limit, current_spawn_multiplier)
+	current_mobs_per_spawn += mobs_increase_per_wave
+	print("Batch size increased to %d mobs per spawn." % current_mobs_per_spawn)
 	_update_spawn_timer_interval()
 
 # --- Spawning Logic ---
@@ -183,6 +188,8 @@ func _get_spawn_position() -> Vector2:
 			3: pos = Vector2(center.x + randf_range(-viewport_rect.size.x / 2, viewport_rect.size.x / 2), center.y + viewport_rect.size.y / 2 + margin)
 		return pos + Vector2(randf_range(-spawn_radius, spawn_radius), randf_range(-spawn_radius, spawn_radius))
 
+# Handle spawn timer timeout by spawning a batch of mobs
 func _on_spawn_timer_timeout():
-	_spawn_monster()
-	_update_spawn_timer_interval()
+	for i in range(current_mobs_per_spawn):
+		_spawn_monster()
+	_update_spawn_timer_interval()  # Get new interval for next batch
