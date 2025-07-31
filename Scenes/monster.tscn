@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://b53cm0qago20u"]
+[gd_scene load_steps=9 format=3 uid="uid://b53cm0qago20u"]
 
 [ext_resource type="Script" uid="uid://c8w7tuxkacujc" path="res://Scripts/monsters.gd" id="1_i44lo"]
 [ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="2_cyu0s"]
 [ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="3_6ks7b"]
 [ext_resource type="PackedScene" uid="uid://dw75c4av0rk1e" path="res://Scenes/projectile.tscn" id="4_ujuxu"]
+[ext_resource type="PackedScene" uid="uid://d3rcusi22khhd" path="res://Scenes/potion.tscn" id="5_cyu0s"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sfdtf"]
 size = Vector2(18, 25)
@@ -36,6 +37,10 @@ region_rect = Rect2(674, 3, 29, 28)
 [node name="bullet_pool" type="Node" parent="."]
 script = ExtResource("3_6ks7b")
 node_scene = ExtResource("4_ujuxu")
+
+[node name="potion_pool" type="Node" parent="."]
+script = ExtResource("3_6ks7b")
+node_scene = ExtResource("5_cyu0s")
 
 [node name="avoidance_ray" type="RayCast2D" parent="."]
 

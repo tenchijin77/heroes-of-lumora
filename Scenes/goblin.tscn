@@ -1,10 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://dnruigihfkioj"]
+[gd_scene load_steps=10 format=3 uid="uid://dnruigihfkioj"]
 
 [ext_resource type="Script" uid="uid://cybc8x6cr6a7s" path="res://Scripts/goblin.gd" id="1_gbw3e"]
 [ext_resource type="PackedScene" uid="uid://bd3fki35y5s1v" path="res://Scenes/dagger.tscn" id="2_fkbyy"]
 [ext_resource type="PackedScene" uid="uid://dw75c4av0rk1e" path="res://Scenes/projectile.tscn" id="2_gbw3e"]
 [ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="3_fkbyy"]
 [ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="4_2gt0r"]
+[ext_resource type="PackedScene" uid="uid://d3rcusi22khhd" path="res://Scenes/potion.tscn" id="6_fkbyy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sfdtf"]
 size = Vector2(28, 31)
@@ -41,6 +42,11 @@ position = Vector2(-14, -3)
 [node name="bullet_pool" type="Node" parent="."]
 script = ExtResource("4_2gt0r")
 node_scene = ExtResource("2_gbw3e")
+
+[node name="potion_pool" type="Node" parent="."]
+script = ExtResource("4_2gt0r")
+node_scene = ExtResource("6_fkbyy")
+metadata/_custom_type_script = "uid://s244dhbmprhx"
 
 [node name="avoidance_ray" type="RayCast2D" parent="."]
 

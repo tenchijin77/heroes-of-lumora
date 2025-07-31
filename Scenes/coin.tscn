@@ -43,7 +43,7 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="Area2D" type="Area2D" groups=["loot"]]
+[node name="coin" type="Area2D" groups=["loot"]]
 collision_layer = 256
 collision_mask = 0
 script = ExtResource("1_g537i")

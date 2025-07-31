@@ -1,9 +1,10 @@
-#node_pool.gd
+# node_pool.gd
+
 class_name NodePool
 extends Node
 
-@export var node_scene : PackedScene
-var cached_nodes : Array[Node2D]
+@export var node_scene: PackedScene
+var cached_nodes: Array[Node2D]
 
 func _create_new() -> Node2D:
 	if not node_scene:
@@ -20,6 +21,7 @@ func _create_new() -> Node2D:
 		node.reset()
 	else:
 		push_warning("NodePool: Spawned node %s has no reset method!" % node.name)
+	print("NodePool: Created new node %s" % node.name)
 	return node
 
 func spawn() -> Node2D:
@@ -30,5 +32,6 @@ func spawn() -> Node2D:
 				node.reset()
 			else:
 				push_warning("NodePool: Reused node %s has no reset method!" % node.name)
+			print("NodePool: Reused node %s" % node.name)
 			return node
 	return _create_new()

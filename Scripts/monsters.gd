@@ -18,7 +18,8 @@ signal mob_died  # Emitted when the monster dies
 @onready var avoidance_ray: RayCast2D = $avoidance_ray
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var muzzle: Node2D = $muzzle 
-@onready var bullet_pool: NodePool = $bullet_pool 
+@onready var bullet_pool: NodePool = $bullet_pool  # For projectiles
+@onready var potion_pool: NodePool = $potion_pool  # For potions
 @onready var health_bar: ProgressBar = $health_bar
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
 
@@ -33,9 +34,12 @@ func _ready() -> void:
 	if file:
 		potions_data = JSON.parse_string(file.get_as_text())
 		file.close()
+		print("Monster %s: Loaded potions data with %d entries" % [name, potions_data.get("potions", []).size()])
+	else:
+		print("Monster %s: Failed to open potions.json!" % name)
 	add_to_group("monsters")
 	if bullet_scene:
-		bullet_pool.node_scene = bullet_scene
+		bullet_pool.node_scene = bullet_scene  # Set for projectiles
 	else:
 		push_warning("Monster %s: bullet_scene not set; no shooting possible!" % name)
 	if not health_bar:
@@ -137,16 +141,20 @@ func take_damage(damage: int) -> void:
 		push_error("Monster %s: health_bar is null in take_damage!" % name)
 	if current_health <= 0:
 		mob_died.emit()
+		print("Monster %s: Died at %s" % [name, str(global_position)])
 		if player:
+			print("Monster %s: Incrementing score" % name)
 			player.increment_score()
-		# Roll for potion drop
-		var drop_chance: float = randf()
-		var cumulative_chance: float = 0.0
-		for potion in potions_data["potions"]:
-			cumulative_chance += potion["drop_rate"]
-			if drop_chance <= cumulative_chance:
-				_spawn_potion(potion)
-				break
+		if not potions_data.get("potions", []).is_empty():
+			print("Monster %s: Checking for potion drop" % name)
+			var drop_chance: float = randf()
+			var cumulative_chance: float = 0.0
+			for potion in potions_data["potions"]:
+				cumulative_chance += potion["drop_rate"]
+				if drop_chance <= cumulative_chance:
+					print("Monster %s: Rolling for potion %s with chance %f" % [name, potion["id"], potion["drop_rate"]])
+					_spawn_potion(potion)
+					break
 		if get_parent() is NodePool:
 			get_parent().despawn(self)
 		else:
@@ -160,11 +168,17 @@ func take_damage(damage: int) -> void:
 		_damage_flash()
 
 func _spawn_potion(potion_data: Dictionary) -> void:
-	var node_pool: Node = get_tree().get_first_node_in_group("node_pool")
-	if node_pool:
-		var potion: Area2D = node_pool.spawn("res://Scenes/potion.tscn") as Area2D
-		potion.global_position = global_position
-		potion.setup(potion_data)
+	print("Monster %s: Attempting to spawn potion %s" % [name, potion_data["id"]])
+	if potion_pool:  # Use the dedicated potion_pool
+		var potion: Area2D = potion_pool.spawn() as Area2D
+		if potion:
+			potion.global_position = global_position
+			potion.setup(potion_data)
+			print("Monster %s: Spawned potion %s at %s" % [name, potion_data["id"], str(potion.global_position)])
+		else:
+			print("Monster %s: Failed to instantiate potion from potion_pool!" % name)
+	else:
+		print("Monster %s: No potion_pool found!" % name)
 
 func _damage_flash() -> void:
 	sprite.modulate = Color.BLACK

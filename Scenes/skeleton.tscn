@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://b0ctdv31c275k"]
+[gd_scene load_steps=13 format=3 uid="uid://b0ctdv31c275k"]
 
 [ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="3_v8sxu"]
 [ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="4_ks230"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://hmpuc7kqhkt1" path="res://Scripts/bone.gd" id="5_ks230"]
 [ext_resource type="PackedScene" uid="uid://ccvecuowlwto8" path="res://Scenes/bone.tscn" id="5_v8sxu"]
 [ext_resource type="AudioStream" uid="uid://cjlgt6nnsdopc" path="res://Assets/Audio/egg-cracking-6844.mp3" id="6_shq1q"]
+[ext_resource type="PackedScene" uid="uid://d3rcusi22khhd" path="res://Scenes/potion.tscn" id="7_ks230"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sfdtf"]
 size = Vector2(18, 25)
@@ -54,6 +55,11 @@ position = Vector2(-9, 3)
 [node name="bullet_pool" type="Node" parent="."]
 script = ExtResource("4_ks230")
 node_scene = SubResource("PackedScene_xbfmp")
+
+[node name="potion_pool" type="Node" parent="."]
+script = ExtResource("4_ks230")
+node_scene = ExtResource("7_ks230")
+metadata/_custom_type_script = "uid://s244dhbmprhx"
 
 [node name="avoidance_ray" type="RayCast2D" parent="."]
 position = Vector2(-7, 3)

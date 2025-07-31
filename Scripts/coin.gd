@@ -7,7 +7,7 @@ var target: Node2D
 var initial_y: float
 var bounce_height: float = 20.0  # Height of bounce
 var bounce_duration: float = 1.0  # Time for one bounce cycle
-var activation_radius: float = 30.0  # or however close you want
+var activation_radius: float = 60.0  # or however close you want
 
 
 @onready var coin_sound: AudioStreamPlayer2D = $coin_sound
