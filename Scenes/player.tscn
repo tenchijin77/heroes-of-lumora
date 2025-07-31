@@ -17,7 +17,7 @@ bg_color = Color(0.201527, 0.201527, 0.201527, 1)
 bg_color = Color(0.94902, 0, 0, 1)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_x3wgy"]
-radius = 21.0
+radius = 53.0094
 
 [node name="player" type="CharacterBody2D" groups=["player"]]
 top_level = true
@@ -68,6 +68,7 @@ collision_layer = 0
 collision_mask = 256
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="pickup_area"]
+visible = false
 shape = SubResource("CircleShape2D_x3wgy")
 
 [connection signal="timeout" from="regeneration_timer" to="." method="_on_regeneration_timer_timeout"]

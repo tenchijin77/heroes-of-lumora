@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://d3rcusi22khhd"]
+
+[ext_resource type="Script" uid="uid://buybcp670ekct" path="res://Scripts/potion.gd" id="1_524i7"]
+[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="1_nymo1"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xi5ht"]
+size = Vector2(16, 27)
+
+[node name="potion" type="Area2D"]
+collision_layer = 256
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_nymo1")
+region_enabled = true
+region_rect = Rect2(68, 801, 23, 30)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 0.5)
+shape = SubResource("RectangleShape2D_xi5ht")
+script = ExtResource("1_524i7")

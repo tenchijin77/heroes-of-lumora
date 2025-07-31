@@ -4,29 +4,36 @@ extends CharacterBody2D
 
 signal mob_died  # Emitted when the monster dies
 
-@export var max_speed : float = 35.0
-@export var acceleration : float = 10.0
-@export var drag : float = 0.9
-@export var collision_damage : int = 3
-@export var shoot_rate : float = 1.5
-@export var shoot_range : float = 150.0 
-@export var current_health : int = 15
-@export var max_health : int = 15
-@export var bullet_scene : PackedScene  # Override in child for specific projectile
+@export var max_speed: float = 35.0
+@export var acceleration: float = 10.0
+@export var drag: float = 0.9
+@export var collision_damage: int = 3
+@export var shoot_rate: float = 1.5
+@export var shoot_range: float = 150.0 
+@export var current_health: int = 15
+@export var max_health: int = 15
+@export var bullet_scene: PackedScene  # Override in child for specific projectile
 
-@onready var player : CharacterBody2D = get_tree().get_first_node_in_group("player")
-@onready var avoidance_ray : RayCast2D = $avoidance_ray
-@onready var sprite : Sprite2D = $Sprite2D
-@onready var muzzle : Node2D = $muzzle 
-@onready var bullet_pool : NodePool = $bullet_pool 
-@onready var health_bar : ProgressBar = $health_bar
-@onready var collision_shape : CollisionShape2D = $CollisionShape2D
+@onready var player: CharacterBody2D = get_tree().get_first_node_in_group("player")
+@onready var avoidance_ray: RayCast2D = $avoidance_ray
+@onready var sprite: Sprite2D = $Sprite2D
+@onready var muzzle: Node2D = $muzzle 
+@onready var bullet_pool: NodePool = $bullet_pool 
+@onready var health_bar: ProgressBar = $health_bar
+@onready var collision_shape: CollisionShape2D = $CollisionShape2D
 
-var player_distance : float
-var player_direction : Vector2
-var last_shoot_time : float = 0.0 
+var potions_data: Dictionary = {}
 
-func _ready():
+var player_distance: float
+var player_direction: Vector2
+var last_shoot_time: float = 0.0 
+
+func _ready() -> void:
+	var file: FileAccess = FileAccess.open("res://Data/potions.json", FileAccess.READ)
+	if file:
+		potions_data = JSON.parse_string(file.get_as_text())
+		file.close()
+	add_to_group("monsters")
 	if bullet_scene:
 		bullet_pool.node_scene = bullet_scene
 	else:
@@ -41,8 +48,7 @@ func _ready():
 		print("Monster %s initialized, player ref: %s" % [name, player])
 	reset()  # Initialize state on first creation
 
-
-func reset():
+func reset() -> void:
 	visible = true
 	current_health = max_health
 	if health_bar:
@@ -71,7 +77,7 @@ func _process(_delta: float) -> void:
 			_cast()
 	_move_wobble()
 
-func _cast():
+func _cast() -> void:
 	last_shoot_time = Time.get_unix_time_from_system()
 	if not bullet_pool or not muzzle or not player:
 		push_warning("Monster %s: Cannot cast—missing bullet_pool, muzzle, or player!" % name)
@@ -104,7 +110,7 @@ func _physics_process(_delta: float) -> void:
 				body.call_deferred("take_damage", collision_damage)
 				print("%s collided with player and dealt %s damage!" % [name, collision_damage])
 
-func _move_wobble():
+func _move_wobble() -> void:
 	if velocity.length() == 0:
 		sprite.rotation_degrees = 0
 		return
@@ -123,7 +129,7 @@ func _local_avoidance() -> Vector2:
 	var obstacle_direction = global_position.direction_to(obstacle_point)
 	return Vector2(-obstacle_direction.y, obstacle_direction.x)
 
-func take_damage(damage : int):
+func take_damage(damage: int) -> void:
 	current_health -= damage
 	if health_bar:
 		health_bar.value = current_health
@@ -131,6 +137,16 @@ func take_damage(damage : int):
 		push_error("Monster %s: health_bar is null in take_damage!" % name)
 	if current_health <= 0:
 		mob_died.emit()
+		if player:
+			player.increment_score()
+		# Roll for potion drop
+		var drop_chance: float = randf()
+		var cumulative_chance: float = 0.0
+		for potion in potions_data["potions"]:
+			cumulative_chance += potion["drop_rate"]
+			if drop_chance <= cumulative_chance:
+				_spawn_potion(potion)
+				break
 		if get_parent() is NodePool:
 			get_parent().despawn(self)
 		else:
@@ -143,7 +159,14 @@ func take_damage(damage : int):
 	else:
 		_damage_flash()
 
-func _damage_flash():
+func _spawn_potion(potion_data: Dictionary) -> void:
+	var node_pool: Node = get_tree().get_first_node_in_group("node_pool")
+	if node_pool:
+		var potion: Area2D = node_pool.spawn("res://Scenes/potion.tscn") as Area2D
+		potion.global_position = global_position
+		potion.setup(potion_data)
+
+func _damage_flash() -> void:
 	sprite.modulate = Color.BLACK
 	await get_tree().create_timer(0.05).timeout
 	sprite.modulate = Color.WHITE

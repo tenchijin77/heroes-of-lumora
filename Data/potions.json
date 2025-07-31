@@ -1,0 +1,37 @@
+{
+	"_comment": "potions.json - defines potion types, effects, drop rates, and sprite regions for Heroes of Lumora",
+	"potions": [
+		{
+			"id": "health_potion",
+			"name": "Health Potion",
+			"effect": {
+				"type": "heal",
+				"value": 20
+			},
+			"drop_rate": 0.3,
+			"sprite_region": [68, 801, 23, 30]
+		},
+		{
+			"id": "speed_potion",
+			"name": "Speed Potion",
+			"effect": {
+				"type": "speed_boost",
+				"value": 2.0,
+				"duration": 5.0
+			},
+			"drop_rate": 0.2,
+			"sprite_region": [932, 768, 22, 32]
+		},
+		{
+			"id": "damage_potion",
+			"name": "Damage Potion",
+			"effect": {
+				"type": "damage_boost",
+				"value": 2.5,
+				"duration": 10.0
+			},
+			"drop_rate": 0.1,
+			"sprite_region": [5,801,21,30]
+		}
+	]
+}
