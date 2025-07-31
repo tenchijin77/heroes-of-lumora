@@ -8,7 +8,7 @@
 				"type": "heal",
 				"value": 20
 			},
-			"drop_rate": 0.3,
+			"drop_rate": 0.2,
 			"sprite_region": [68, 801, 23, 30]
 		},
 		{

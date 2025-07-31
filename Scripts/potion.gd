@@ -15,6 +15,8 @@ var activation_radius: float = 60.0  # Increased range to start moving toward pl
 var tween: Tween  # Declare tween as a class variable
 
 @onready var potion_sound: AudioStreamPlayer2D = $potion_sound
+@onready var poof_sprite: AnimatedSprite2D = $poof_sprite
+
 
 func _ready() -> void:
 	add_to_group("loot")  # Add to loot group for pickup detection
@@ -82,6 +84,11 @@ func collect() -> void:
 		if tween and tween.is_running():  # Check if tween exists and is running
 			tween.kill()
 			
+			if poof_sprite:
+				$Sprite2D.hide()  # Hide the coin
+				poof_sprite.show()
+				poof_sprite.play("poof")  # Your animation name
+				
 		await get_tree().create_timer(0.3).timeout
 		queue_free()
 		print("Picked up potion!")  # Updated debug message

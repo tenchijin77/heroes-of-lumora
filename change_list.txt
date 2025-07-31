@@ -29,21 +29,14 @@ completed:
 -add a loot drop system
 -add dialogue for the main screen to setup the game (use dialogic addon for godot to create this)
 -add coin drops for future upgrade system
-
+-add player potions (increase attack speed, increase movement speed, increase damage) each buff lasts 10 seconds.
 
 to do: (in order of importance)
 
+
 -add particle effects to player and monster projectile attacks
-
 -expand the tilemap for the first level.
-
-
--add player potions (increase attack speed, increase movement speed, increase damage) each buff lasts 10 seconds.
-
-
 -eventually add npcs to introduce famous npcs from aldenexia
-
-
 
 sites for assets:
 
