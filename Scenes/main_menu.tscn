@@ -39,7 +39,19 @@ offset_bottom = 384.0
 layout_mode = 2
 theme_override_fonts/font = ExtResource("3_ce3w2")
 theme_override_font_sizes/font_size = 30
-text = "Start"
+text = "Start Introduction"
+
+[node name="skip_button" type="Button" parent="menu_container"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_ce3w2")
+theme_override_font_sizes/font_size = 30
+text = "Skip Intro"
+
+[node name="scores_button" type="Button" parent="menu_container"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_ce3w2")
+theme_override_font_sizes/font_size = 30
+text = "High Scores"
 
 [node name="quit_button" type="Button" parent="menu_container"]
 layout_mode = 2
@@ -53,4 +65,6 @@ autoplay = true
 parameters/looping = true
 
 [connection signal="pressed" from="menu_container/start_button" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="menu_container/skip_button" to="." method="_on_skip_button_pressed"]
+[connection signal="pressed" from="menu_container/scores_button" to="." method="_on_scores_button_pressed"]
 [connection signal="pressed" from="menu_container/quit_button" to="." method="_on_quit_button_pressed"]

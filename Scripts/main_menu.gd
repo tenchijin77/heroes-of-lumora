@@ -3,6 +3,8 @@ extends Control
 
 @onready var menu_container : VBoxContainer = $menu_container
 @onready var start_button : Button = $menu_container/start_button
+@onready var skip_button : Button = $menu_container/skip_button
+@onready var scores_button : Button = $menu_container/scores_button
 @onready var quit_button : Button = $menu_container/quit_button
 @onready var background_music : AudioStreamPlayer = $background_music
 
@@ -22,8 +24,13 @@ func _ready():
 		start_button.grab_focus()
 
 func _on_start_button_pressed():
-	#get_tree().change_scene_to_file("res://Scenes/main.tscn")
 	get_tree().change_scene_to_file("res://Scenes/intro_scene.tscn")
+
+func _on_skip_button_pressed():
+	get_tree().change_scene_to_file("res://Scenes/main.tscn")
+
+func _on_scores_button_pressed():
+	get_tree().change_scene_to_file("res://Scenes/game_over2.tscn")
 
 func _on_quit_button_pressed():
 	get_tree().quit()
