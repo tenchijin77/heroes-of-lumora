@@ -61,6 +61,7 @@ text = "Run Away"
 
 [node name="background_music" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_n45e2")
+volume_db = -7.0
 autoplay = true
 parameters/looping = true
 
