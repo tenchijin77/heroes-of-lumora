@@ -67,3 +67,4 @@ script = ExtResource("4_kg6dd")
 stream = ExtResource("2_h1t0l")
 volume_db = -2.0
 autoplay = true
+max_distance = 200.0

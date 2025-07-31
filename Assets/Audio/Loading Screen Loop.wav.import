@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://ckjxkeetnoerv"
+path="res://.godot/imported/Loading Screen Loop.wav-0fd26f984e8480b130041f9fb5517504.sample"
+
+[deps]
+
+source_file="res://Assets/Audio/Loading Screen Loop.wav"
+dest_files=["res://.godot/imported/Loading Screen Loop.wav-0fd26f984e8480b130041f9fb5517504.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2
