@@ -25,7 +25,10 @@ completed:
 -added guard npcs to protect the entrance area
 -updated monster spawning rate and logic
 -standardized monster projectiles
-
+-implement area2d collision zones so the player can pickup loot; coins, potions, etc.
+-add a loot drop system
+-add dialogue for the main screen to setup the game (use dialogic addon for godot to create this)
+-add coin drops for future upgrade system
 
 
 to do: (in order of importance)
@@ -34,11 +37,10 @@ to do: (in order of importance)
 
 -expand the tilemap for the first level.
 
--implement area2d collision zones so the player can pickup loot; coins, potions, etc.
+
 -add player potions (increase attack speed, increase movement speed, increase damage) each buff lasts 10 seconds.
--add a loot drop system
--add dialogue for the main screen to setup the game (use dialogic addon for godot to create this)
--add coin drops for future upgrade system
+
+
 -eventually add npcs to introduce famous npcs from aldenexia
 
 
