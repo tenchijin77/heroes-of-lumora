@@ -1,34 +1,22 @@
 join Narrator rightmost
-Narrator: A dense fog coils over Lumora as you crest the ridge. Below, torchlight flickers through the dark, punctuated by distant screeches—sharp, frantic—and the anguished cries of villagers locked in chaos. (Press Space to continue.)
-[wait_input]
-Narrator: Suddenly—a flurry of footsteps and a marmalade blur. Timot bursts onto the path, cloak billowing, Brimble, his cat companion tightly clutched under one arm. The sounds of combat ring in the distance over the shouts and screams of the townsfolk.
-[wait_input]
+Narrator: A heavy fog coils over the ridge as you crest its edge, shrouding Lumora beneath a thick veil. Below, torchlight sputters like dying stars, flickering against the gloom. Echoes of distant screeches pierce the air—sharp, panicked—mingling with the anguished cries of villagers caught in fierce combat. (Press Space to advance the text.)
+Narrator: From the silence erupts a scatter of footsteps and a blur of marmalade fur. Timot bursts onto the path, cloak lashing behind him, Brimble—his feline companion—clutched protectively in one arm. Far off, steel clashes ring through the chaos, swallowed by the cacophony of panicked voices.
 leave Narrator
 join Timot leftmost
-Timot: By Aurethiel’s grace... you made it! Quick, this way!
-[wait_input]
-Timot: The monsters breached Hollow Gate at dawn—our defenders are holding them back as best they can, and now the village is choking on shadows. We’ve got wounded, terrified children, and burnt sigils!
-[wait_input]
-Timot: We don’t have time for pleasantries. You know how to fight, don’t you? Good—listen sharp. Use **W-A-S-D** to move—don’t dawdle in one spot or you'll get overwhelmed by the monsters! 
-[wait_input]
-Timot: Attack the enemies with — **Left Mouse Button.** This lets fly your arrows- stay light on your feet and may your aim ring true. Even blessed relics can miss if you’re sloppy.
-[wait_input]
-Timot: The guards hold the city gates... barely. We’ve rigged some ward-torches and glimmertraps along the eastern alley—use them if you see clusters of enemies forming. If you reach the watchtower, signal Merena—she’s brewing Dawnspring elixirs for defense. It'll buy us time... perhaps....
-[wait_input]
+Timot: By Aurethiel’s grace… you made it! Quickly—this way. There's no time to lose!
+Timot: At dawn, they broke the city gate. Our defenders hold what ground they can, but the village chokes beneath the encroaching dark—heavy, black, pendulous. It rolls like smoke through the streets, smothering flame and song alike.
+Timot: There is no time for pleasantries. You know how to fight? Good. Listen closely—use W-A-S-D to move. Keep moving, or you'll be swarmed before you can draw breath!
+Timot: Strike with Left Mouse Button. Loose your arrows with precision—stay nimble, and let your aim fly true. Even relics blessed by the light falter if wielded without care.
+Timot: The guards hold the gates… barely. We've rigged ward-torches and glimmertraps in the eastern alley—watch for enemy clusters and light them up. If you reach the watchtower, find Merena. She’s concocting Dawnspring elixirs to stall the tide. We may not stop them—but we can delay the end.
 join Brimble rightmost
-Brimble: Meow! (Brimble meows sharply.)
-[wait_input]
-Timot: Yes, I know the bakery’s gone, Brimble but Lumora needs warriors now, not muffins!
-[wait_input]
+Brimble: Meow! (Brimble meows, sharp and emphatic.)
+Timot: I know, Brimble—the bakery’s gone. But Lumora needs blades and bravery, not muffins!
 leave Brimble
 join Narrator rightmost
-Narrator: The ground trembles as a distant roar echoes through the hills. The sounds of battle are louder now, as the monsters draw closer to the town.
-[wait_input]
+Narrator: The earth rumbles beneath your feet as a distant roar rips through the hills. The din of battle intensifies—the monsters draw near.
 leave Narrator
-Timot: (voice soft, gravely) Annadeus sang of this day once... back in the time when peace still held. Her voice lit hope in our bones. Maybe—if we survive long enough—she’ll return to us.
-[wait_input]
+Timot: (softly, voice rough with memory) Annadeus once sang of this day… back when peace still lingered. Her voice lit hope in our bones. Perhaps, if we endure, she’ll sing again.
 join Narrator rightmost
-Narrator: Timot  grips your shoulder, his voice trembling but firm.
-[wait_input]
-Timot: Go now; This is your moment, hero.  Lumora will not fall—not while the light still flickers!
+Narrator: Timot grips your shoulder. His voice is trembling—but resolute.
+Timot: Go now. This is your moment, hero. Lumora will not fall—not while the light endures.
 [end_timeline]

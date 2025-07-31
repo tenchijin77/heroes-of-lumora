@@ -57,8 +57,8 @@ save/encryption_on_exports_only=true
 text/autopauses={}
 variables={}
 text/autocolor_names=true
-text/autoadvance_fixed_delay=1.0
-text/autoadvance_enabled=false
+text/autoadvance_fixed_delay=0.0
+text/autoadvance_enabled=true
 
 [display]
 
