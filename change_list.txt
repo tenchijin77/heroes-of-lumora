@@ -30,12 +30,19 @@ completed:
 -add dialogue for the main screen to setup the game (use dialogic addon for godot to create this)
 -add coin drops for future upgrade system
 -add player potions (increase attack speed, increase movement speed, increase damage) each buff lasts 10 seconds.
+-build out some of the town elements: buildings, terrain with collisions, etc
+-added guards to the town and multiple entry points
+
 
 to do: (in order of importance)
 
-
+-continue expanding the tilemap for the first level
 -add particle effects to player and monster projectile attacks
--expand the tilemap for the first level.
+-add an npc vendor that the player can buy upgrades from
+-move spawn points so the enemies spawn further from the town and move towards it from multiple directions
+-add npcs for villagers; make them flee to exit points, and the player has to protect them
+-add portals that the enemies spawn from (possible idea)
+-add new weapons or spell pickups for the player
 -eventually add npcs to introduce famous npcs from aldenexia
 
 sites for assets:
