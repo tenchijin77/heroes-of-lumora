@@ -65,6 +65,10 @@ text/autoadvance_enabled=true
 window/size/mode=3
 window/stretch/mode="viewport"
 
+[dotnet]
+
+project/assembly_name="Heroes of Lumora"
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/dialogic/plugin.cfg")

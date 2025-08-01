@@ -26,7 +26,8 @@ Files:
 -all scripts are stored in res://Scripts/
 -all scenes are stored in res://Scenes
 -all assets like sounds and images are in res://Assets/
--user data is saved in user://saves/ (not yet implemented)
+-user data is saved in user://saves/
+-misc data, like the potion.json files are in res://Data/
 -my player information is in player.gd
 -all scripts should start with a comment designating the script name, i.e. (# snake.gd)
 -all json files should start with a comment designating the file name and purpose, i.e. ("_comment": "monsters.json - this table is used for monster's stats ")
@@ -40,6 +41,10 @@ Collisions:
 -player projectiles are on layer 3 for collisions
 -enemy projectiles are on layer 4 for collisions
 -environment is on layer 5 for collisions
+-friendly units are on layer 6 for collisions
+-friendly unit projectiles are on layer 7 for collisions
+-forbidden zone (where enemies aren't allowed to spawn) is designated by layer 8
+-loot is on layer 9 for player loot pickups
 
 Naming:
 -scenes or levels are referred to as zones

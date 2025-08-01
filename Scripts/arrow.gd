@@ -1,60 +1,45 @@
-# arrow.gd - controls the arrow projectile
+# arrow.gd - player's ranged attack
+
 extends Area2D
 
-@export var speed: float = 250.0  # Player's swift arrow
-@export var owner_group: String = "player"  # Player shots, layer 3
-@export var damage: int = 4  # Balanced for hero's strike
+# Projectile speed
+var speed: float = 800.0
+# Direction vector
+var direction: Vector2 = Vector2.RIGHT
+# Damage amount
+var damage: int = 10
+# Trail length limit
+var trail_length: int = 20
 
-@onready var destroy_timer: Timer = $destroy_timer
-@onready var projectile_sound: AudioStreamPlayer2D = $projectile_sound
+@onready var trail: Line2D = $Trail
+@onready var particles: GPUParticles2D = $Particles
+@onready var launch_sound: AudioStreamPlayer2D = $LaunchSound
 
-var move_direction: Vector2 = Vector2.ZERO
-
+# Set up effects on ready
 func _ready() -> void:
-	# Set unique stream if not overridden in .tscn
-	if projectile_sound.stream == null:
-		projectile_sound.stream = load("res://Assets/sounds/arrow_whiz.ogg")  # Your unique path
+	launch_sound.play()
+	particles.emitting = true  # Simple spark trail for arrow
 
-func launch(start_pos: Vector2, direction: Vector2) -> void:
-	global_position = start_pos
-	move_direction = direction.normalized()  # Ensure unit vector
-	rotation = move_direction.angle()
-	
-	visible = true
-	if $CollisionShape2D:
-		$CollisionShape2D.disabled = false
-	
-	# Always ensure unique sound, overriding any default
-	if projectile_sound.stream == null:
-		projectile_sound.stream = load("res://Assets/Audio/arrow-swish_03-306040.mp3")
-	if projectile_sound:
-		projectile_sound.play()
-	else:
-		print("⚠️ projectile_sound is null!")
-	
-	if destroy_timer:
-		destroy_timer.start()
-
+# Move projectile and update trail
 func _process(delta: float) -> void:
-	if visible:
-		translate(move_direction * speed * delta)
+	position += direction * speed * delta
+	update_trail()
 
-func _on_destroy_timer_timeout() -> void:
-	reset()
+# Update trail points
+func update_trail() -> void:
+	trail.add_point(position)
+	if trail.points.size() > trail_length:
+		trail.remove_point(0)
 
+# Handle collision with mobs
 func _on_body_entered(body: Node2D) -> void:
-	if body.is_in_group(owner_group):
-		return
-	if body.has_method("take_damage"):
-		body.take_damage(damage)
-	reset()
+	if body.is_in_group("monsters"):
+		body.take_damage(damage)  # Assuming mobs have take_damage func
+		spawn_blood_splatter()
+	queue_free()
 
-func reset() -> void:
-	visible = false
-	if $CollisionShape2D:
-		$CollisionShape2D.set_deferred("disabled", true)
-	if destroy_timer:
-		destroy_timer.stop()
-	if projectile_sound and projectile_sound.playing:
-		projectile_sound.stop()
-	move_direction = Vector2.ZERO
+# Spawn blood particle effect on hit
+func spawn_blood_splatter() -> void:
+	var effect: Node2D = preload("res://Scenes/blood_splatter.tscn").instantiate()
+	effect.position = position
+	get_parent().add_child(effect)
