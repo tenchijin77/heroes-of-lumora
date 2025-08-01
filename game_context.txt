@@ -1,4 +1,5 @@
-Game: Heroes of Lumora: a bullet hell game, similar to the idea of vampire survivors
+Game: Heroes of Lumora: a bullet hell game, similar to the idea of vampire survivors, with a spin on tower based defense games: there is a town under attack by monsters, and the player is the tower, defending the villagers in the town while they try to extract. The player has to buy as much time as possible so the villagers can escape over increasingly larger and more difficult waves of enemies.
+
 
 Gitfront read only repository: https://gitfront.io/r/tenchijin77/Ea5WKiTiUMTN/heroes-of-lumora/
 
@@ -15,7 +16,7 @@ https://trello.com/invite/b/687dfb8c9094426910d1698c/ATTI96afa298a949ce1898a6425
 
 Environmental Variables:
 
--I am using Godot 4.4.1
+-I am using Godot 4.4.1, and dialogic alpha 16 for dialogue
 
 Files:
 -snakecase is used for all file names, with all words in lowercase
