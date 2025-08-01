@@ -1,52 +1,60 @@
-# ghost_fire.gd - ghost projectile script
-
+# ghost_fire.gd - controls the ghost fire projectile
 extends Area2D
 
-# Projectile speed
-var speed: float = 550.0  # Slightly different for variety
-# Direction vector
-var direction: Vector2 = Vector2.RIGHT
-# Damage amount
-var damage: int = 18  # Adjust as needed
-# Trail length limit
-var trail_length: int = 25
-# Scale pulse for ethereal effect
-var scale_pulse_speed: float = 4.0
-# Light pulse speed
-var pulse_speed: float = 3.5
+@export var speed: float = 180.0  # Ethereal drift speed
+@export var owner_group: String = "monsters"
+@export var damage: int = 16  # Spectral burn damage
 
-@onready var trail: Line2D = $Trail
-@onready var particles: GPUParticles2D = $Particles
-@onready var launch_sound: AudioStreamPlayer2D = $LaunchSound
-@onready var glow_light: Light2D = $GlowLight
+@onready var destroy_timer: Timer = $destroy_timer
+@onready var projectile_sound: AudioStreamPlayer2D = $projectile_sound
 
-# Set up effects on ready
+var move_direction: Vector2 = Vector2.ZERO
+
 func _ready() -> void:
-	launch_sound.play()
-	particles.emitting = true  # Ethereal wisps for trail
+	# Set unique stream if not overridden in .tscn
+	if projectile_sound.stream == null:
+		projectile_sound.stream = load("res://Assets/sounds/ghost_wail.ogg")  # Your unique path
 
-# Move projectile, update trail, pulse scale and light for glam
+func launch(start_pos: Vector2, direction: Vector2) -> void:
+	global_position = start_pos
+	move_direction = direction.normalized()
+	rotation = move_direction.angle()
+	
+	visible = true
+	if $CollisionShape2D:
+		$CollisionShape2D.disabled = false
+	
+	# Always ensure unique sound, overriding any default
+	if projectile_sound.stream == null:
+		projectile_sound.stream = load("res://Assets/sounds/ghost_wail.ogg")
+	if projectile_sound:
+		projectile_sound.play()
+	else:
+		print("⚠️ projectile_sound is null!")
+	
+	if destroy_timer:
+		destroy_timer.start()
+
 func _process(delta: float) -> void:
-	position += direction * speed * delta
-	scale = Vector2(1 + 0.15 * sin(Time.get_ticks_msec() * 0.001 * scale_pulse_speed), 1 + 0.15 * sin(Time.get_ticks_msec() * 0.001 * scale_pulse_speed))
-	glow_light.energy = 1.0 + 0.35 * sin(Time.get_ticks_msec() * 0.001 * pulse_speed)
-	update_trail()
+	if visible:
+		translate(move_direction * speed * delta)
 
-# Update trail points
-func update_trail() -> void:
-	trail.add_point(position)
-	if trail.points.size() > trail_length:
-		trail.remove_point(0)
+func _on_destroy_timer_timeout() -> void:
+	reset()
 
-# Handle collision with player
 func _on_body_entered(body: Node2D) -> void:
-	if body.is_in_group("player"):
+	if body.is_in_group(owner_group):
+		return
+	if body.has_method("take_damage"):
 		body.take_damage(damage)
-		spawn_ghost_explosion()
-	queue_free()
+	reset()
 
-# Spawn ghost particle explosion on hit
-func spawn_ghost_explosion() -> void:
-	var effect: Node2D = preload("res://Scenes/ghost_explosion.tscn").instantiate()
-	effect.position = position
-	get_parent().add_child(effect)
+func reset() -> void:
+	visible = false
+	if $CollisionShape2D:
+		$CollisionShape2D.set_deferred("disabled", true)
+	if destroy_timer:
+		destroy_timer.stop()
+	if projectile_sound and projectile_sound.playing:
+		projectile_sound.stop()
+	move_direction = Vector2.ZERO

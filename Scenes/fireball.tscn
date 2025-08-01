@@ -1,9 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://d1sakl0e37oo2"]
+[gd_scene load_steps=5 format=3 uid="uid://d1sakl0e37oo2"]
 
 [ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="1_0mxqg"]
 [ext_resource type="Script" uid="uid://d6xrs2lxn4lc" path="res://Scripts/projectile.gd" id="1_ne4qj"]
 [ext_resource type="AudioStream" uid="uid://dw2ivmc1p3drn" path="res://Assets/Audio/fireball-whoosh-2-179126.mp3" id="2_ne4qj"]
-[ext_resource type="Texture2D" uid="uid://cqf267lpl6o60" path="res://Assets/Sprites/FREE Textures Of Light/32x32/32x32 textures (4).png" id="4_hcgvv"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ne4qj"]
 radius = 7.25
@@ -30,11 +29,6 @@ autostart = true
 
 [node name="projectile_sound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("2_ne4qj")
-
-[node name="glow_light" type="PointLight2D" parent="."]
-color = Color(0.00392157, 0, 0, 0.00392157)
-texture = ExtResource("4_hcgvv")
-texture_scale = 1.5
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
