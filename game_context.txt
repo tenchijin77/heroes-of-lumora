@@ -4,9 +4,6 @@ GitHub Repo: https://github.com/tenchijin77/heroes-of-lumora
 
 Current GitHub commit hash: 5ac07da
 
-
-Githut access passkey: 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
-
 Trello board for HoL:
 
 https://trello.com/invite/b/687dfb8c9094426910d1698c/ATTI96afa298a949ce1898a6425105bdf0f79F074F7D/heroes-of-lumora
