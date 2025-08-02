@@ -1,10 +1,9 @@
 Game: Heroes of Lumora: a bullet hell game, similar to the idea of vampire survivors, with a spin on tower based defense games: there is a town under attack by monsters, and the player is the tower, defending the villagers in the town while they try to extract. (the player is a hero with a bow and arrow that will attack the enemies as the guards try to defend the town. The player has to buy as much time as possible so the villagers can escape over increasingly larger and more difficult waves of enemies.
 
-Gitfront read only repository: https://gitfront.io/r/tenchijin77/Ea5WKiTiUMTN/heroes-of-lumora/
-Scripts are in: https://gitfront.io/r/tenchijin77/Ea5WKiTiUMTN/heroes-of-lumora/tree/Scripts/
-Scenes are in: https://gitfront.io/r/tenchijin77/Ea5WKiTiUMTN/heroes-of-lumora/tree/Scenes/
+GitHub Repo: https://github.com/tenchijin77/heroes-of-lumora
 
-Current GitHub commit hash: ff0bc12
+Current GitHub commit hash: 5ac07da
+
 
 Githut access passkey: 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
 
