@@ -65,6 +65,10 @@ text/autoadvance_enabled=true
 window/size/mode=3
 window/stretch/mode="viewport"
 
+[dotnet]
+
+project/assembly_name="Heroes of Lumora"
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/dialogic/plugin.cfg")
@@ -134,4 +138,5 @@ dialogic_default_action={
 
 textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="mobile"
+textures/vram_compression/import_etc2_astc=true
 2d/snap/snap_2d_transforms_to_pixel=true

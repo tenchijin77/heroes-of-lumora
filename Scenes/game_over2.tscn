@@ -1,7 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://dicm58kpeox50"]
+[gd_scene load_steps=4 format=3 uid="uid://dicm58kpeox50"]
 
 [ext_resource type="Script" uid="uid://chhbi41vxqdyy" path="res://Scripts/game_over2.gd" id="1_7rh5p"]
-[ext_resource type="Script" uid="uid://cfqybcdudxhih" path="res://Scripts/game_over.gd" id="1_niae8"]
 [ext_resource type="FontFile" uid="uid://djcjuyoolr6e1" path="res://Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf" id="2_niae8"]
 [ext_resource type="FontFile" uid="uid://cam7bapqpcdf8" path="res://Assets/Fonts/_bitmap_font____romulus_by_pix3m-d6aokem.ttf" id="3_ko4a0"]
 
@@ -10,7 +9,7 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
-script = ExtResource("1_niae8")
+script = ExtResource("1_7rh5p")
 
 [node name="leader_board" type="VBoxContainer" parent="."]
 layout_mode = 0

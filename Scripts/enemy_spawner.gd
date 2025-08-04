@@ -1,5 +1,4 @@
 # enemy_spawner.gd - scalable enemy spawner with weighted random and edge spawns
-
 extends Node
 
 # -- Existing @exports --
@@ -82,6 +81,7 @@ func _ready():
 
 	# Initial label update
 	_update_wave_label()
+	Global.current_wave = current_wave  # Updated: Sync initial wave to global
 
 # --- Wave and Spawn Rate Management Functions ---
 
@@ -95,6 +95,7 @@ func _update_spawn_timer_interval():
 
 func _on_wave_timer_timeout():
 	current_wave += 1
+	Global.current_wave = current_wave  # Updated: Sync wave advance to global
 	print("--- Wave %d Started! ---" % current_wave)
 	_update_wave_label()
 	_increase_spawn_rate()

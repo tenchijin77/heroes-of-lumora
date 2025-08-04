@@ -1,5 +1,4 @@
 # player.gd - main character script
-
 extends CharacterBody2D
 
 @export var player_damage: int = 4
@@ -39,9 +38,11 @@ func _ready() -> void:
 	update_score_label()
 	update_time_label()
 	Global.current_score = 0
+	Global.coins_collected = 0
+	Global.current_time_survived = 0.0
 	pickup_area.area_entered.connect(_on_pickup_area_entered)
 
-func _physics_process(_delta) -> void:
+func _physics_process(_delta: float) -> void:
 	move_input = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	if move_input.length() > 0:
 		velocity = velocity.lerp(move_input * max_speed, acceleration)
@@ -56,6 +57,7 @@ func _process(delta: float) -> void:
 			open_fire()
 	_move_wobble()
 	survival_time += delta
+	Global.current_time_survived = survival_time
 	update_time_label()
 
 func open_fire() -> void:
@@ -65,14 +67,16 @@ func open_fire() -> void:
 	var mouse_position = get_global_mouse_position()
 	var mouse_direction = muzzle.global_position.direction_to(mouse_position)
 	arrow.move_direction = mouse_direction
-	print("Player: Spawned arrow %s, move_direction=%s, position=%s" % [arrow.name, arrow.move_direction, arrow.global_position])  # Debug
+	print("Player: Spawned arrow %s, move_direction=%s, position=%s" % [arrow.name, arrow.move_direction, arrow.global_position])  # Existing debug, kept as it’s unrelated to high scores
 
 func take_damage(damage: int) -> void:
 	current_health -= damage
 	if current_health <= 0:
-		print("Game Over! LOADING, PLEASE WAIT......................")
+		print("Game Over! LOADING, PLEASE WAIT......................")  # Existing print, kept
 		Global.current_score = Global.current_score
-		call_deferred("_handle_game_over")  # defer to avoid acting in invalid state
+		Global.coins_collected = coin_count
+		Global.current_time_survived = survival_time
+		call_deferred("_handle_game_over")
 	else:
 		_damage_flash()
 		health_bar.value = current_health
@@ -132,9 +136,10 @@ func _handle_game_over() -> void:
 func _on_pickup_area_entered(area: Area2D) -> void:
 	if area.is_in_group("loot"):
 		coin_count += 1
+		Global.coins_collected = coin_count
 		if coin_label:
 			coin_label.text = "Coin: %d" % coin_count
-		print("Picked up coin! Coins: %d" % coin_count)
+		print("Picked up coin! Coins: %d" % coin_count)  # Existing debug, kept
 		area.collect()  # Let coin handle sound and cleanup
 
 # Apply potion effect to player
