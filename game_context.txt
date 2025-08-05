@@ -44,6 +44,10 @@ Collisions:
 -loot is on layer 9
 -healing projectiles are on layer 10
 
+-player should be able to collide with 2, 4, 5, 6, 9, 10
+-friendly should be able to collide with 1, 2, 4, 5, 6, 10
+-monsters should be able to collide with 1, 2, 3, 5, 6, 7, 10
+
 Groups:
 
 Player is in player node group.
