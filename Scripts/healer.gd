@@ -181,7 +181,7 @@ func _cast_projectile(target: CharacterBody2D, target_group: String):
 		if projectile:
 			projectile.global_position = muzzle.global_position
 			projectile.move_direction = muzzle.global_position.direction_to(target.global_position)
-			projectile.owner_group = target_group # This is key for the projectile's logic
+			projectile.owner_group = "friendly"  # This is key for the projectile's logic
 			print("Healer: Fired projectile at %s" % target.name)
 		else:
 			push_warning("Healer: Failed to spawn projectile!")

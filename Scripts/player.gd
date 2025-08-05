@@ -9,7 +9,6 @@ extends CharacterBody2D
 @export var current_health: int = 100
 @export var max_health: int = 100
 @export var regeneration_per_second: float = 1.0  # Health regenerated per second
-
 var last_shoot_time: float
 var survival_time: float = 0.0
 
@@ -64,6 +63,7 @@ func open_fire() -> void:
 	last_shoot_time = Time.get_unix_time_from_system()
 	var arrow = arrow_pool.spawn()
 	arrow.global_position = muzzle.global_position
+	arrow.owner_group = "player"  # ✅ Set owner_group on the projectile
 	var mouse_position = get_global_mouse_position()
 	var mouse_direction = muzzle.global_position.direction_to(mouse_position)
 	arrow.move_direction = mouse_direction
