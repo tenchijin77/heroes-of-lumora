@@ -209,3 +209,9 @@ func _on_detection_area_body_exited(body: Node2D):
 	if detected_monsters.has(body):
 		detected_monsters.erase(body)
 		print("Guard lost monster: ", body.name)
+		
+func get_health() -> int:
+	return current_health
+
+func get_max_health() -> int:
+	return max_health

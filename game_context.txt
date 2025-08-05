@@ -33,11 +33,22 @@ Files:
 
 Collisions:
 
--all monsters are in the monsters node group for collisions (layer 2)
 -the player is in the player node group for collisions (layer 1)
+-all monsters are in the monsters node group for collisions (layer 2)
 -player projectiles are on layer 3 for collisions
 -enemy projectiles are on layer 4 for collisions
 -environment is on layer 5 for collisions
+-friendly npcs are on layer 6
+-friendly npc projectiles are on layer 7
+-forbidden layer is 8 (area where monsters can't spawn at)
+-loot is on layer 9
+-healing projectiles are on layer 10
+
+Groups:
+
+Player is in player node group.
+Friendly NPCs are in friendly node group.
+Monsters are in monster node group.
 
 Naming:
 -scenes or levels are referred to as zones
@@ -50,11 +61,12 @@ Behaviour:
 
 Monsters:
 -monsters logic is handled by monster.tscn (the script that all unique mobs will inherit from) and monsters.gd
--monsters will have their own scene based off of monster.tscn. i.e. skeleton.tscn; when monsters have unique stats or logic, they will have their own script like skeleton.gd
--skeleton.tscn and gd - fires projectile, bone.tscn and gd
--wizard.tscn and gd - fires projectile, fireball.tscn and gd
--ghost.tscn and gd - fires projectile, ghost_fire.tscn and gd
--goblin.tscn and gd - fires projectile, dagger.tscn and gd
+-monsters will have their own scene based off of monster.tscn. i.e. skeleton.tscn; when monsters have unique stats or logic, they will have their own script like skeleton.gd. Each projectile is fired via projectile.gd:
+
+-skeleton.tscn and gd - fires projectile, bone
+-wizard.tscn and gd - fires projectile, fireball
+-ghost.tscn and gd - fires projectile, ghost_fire
+-goblin.tscn and gd - fires projectile, dagger
 
 Controls:
 

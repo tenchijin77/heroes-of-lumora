@@ -166,3 +166,14 @@ func _start_effect_timer(duration: float, property: String, revert_multiplier: f
 	)
 	add_child(timer)
 	timer.start()
+	
+func get_health() -> int:
+	return current_health
+
+func get_max_health() -> int:
+	return max_health
+
+func heal(amount: int) -> void:
+	current_health = min(current_health + amount, max_health)
+	health_bar.value = current_health
+	print("Player healed for %d. Current health: %d" % [amount, current_health])

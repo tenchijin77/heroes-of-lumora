@@ -1,9 +1,9 @@
 [gd_scene load_steps=9 format=3 uid="uid://bhm0mxnnqdj6x"]
 
-[ext_resource type="Script" uid="uid://cymvg6s8ih2op" path="res://Scripts/priestess.gd" id="1_6h5py"]
+[ext_resource type="Script" uid="uid://cv70j56i2fo7u" path="res://Scripts/healer.gd" id="1_ewup4"]
 [ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="2_2kld1"]
 [ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="3_owegj"]
-[ext_resource type="PackedScene" uid="uid://bpwqywi1qnnka" path="res://Scenes/heal_bolt.tscn" id="4_6h5py"]
+[ext_resource type="PackedScene" uid="uid://dkjn4u5pvci4p" path="res://Scenes/heal_bolt.tscn" id="4_6h5py"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sfdtf"]
 size = Vector2(20, 28)
@@ -19,8 +19,12 @@ radius = 288.014
 
 [node name="priestess" type="CharacterBody2D" groups=["friendly"]]
 collision_layer = 32
-collision_mask = 59
-script = ExtResource("1_6h5py")
+collision_mask = 571
+script = ExtResource("1_ewup4")
+max_speed = 30.0
+current_health = 20
+max_health = 20
+projectile_scene = ExtResource("4_6h5py")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
@@ -62,3 +66,5 @@ visible = false
 light_mask = 35
 visibility_layer = 35
 shape = SubResource("CircleShape2D_dmkvq")
+
+[node name="patrol_timer" type="Timer" parent="."]

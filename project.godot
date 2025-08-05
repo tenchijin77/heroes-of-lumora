@@ -133,6 +133,7 @@ dialogic_default_action={
 2d_physics/layer_7="Friendly_Projectiles"
 2d_physics/layer_8="Forbidden_Zone"
 2d_physics/layer_9="Loot"
+2d_physics/layer_10="Healing_Projectiles"
 
 [rendering]
 

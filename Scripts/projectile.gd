@@ -5,7 +5,6 @@ extends Area2D
 @export var owner_group : String = "monsters"  # Default for enemy projectiles; override for "player"
 @export var damage : int = 4
 @export var sound_stream : AudioStream  # Override in child for specific sound
-
 @onready var destroy_timer : Timer = $destroy_timer
 @onready var projectile_sound : AudioStreamPlayer2D = $projectile_sound
 @onready var collision_shape : CollisionShape2D = $CollisionShape2D
@@ -59,10 +58,20 @@ func _on_visibility_changed() -> void:
 		destroy_timer.start()
 
 func _on_body_entered(body: Node) -> void:
+	# A projectile can't hit a body in its own group [cite: 25]
 	if body.is_in_group(owner_group):
 		return
-	if body.has_method("take_damage"):
+	
+	# Check if the body can be damaged or healed
+	if body.has_method("take_damage") and owner_group != "friendly":
 		body.take_damage(damage)
+		print("Projectile from group '%s' dealt %d damage to %s" % [owner_group, damage, body.name])
+	elif body.has_method("heal") and owner_group == "friendly":
+		# We need a heal amount. Let's add it to the projectile's properties.
+		var heal_amount: int = 10 # Example value; make this an export variable
+		body.heal(heal_amount)
+		print("Projectile from group '%s' healed %s for %d" % [owner_group, body.name, heal_amount])
+		
 	despawn()
 
 func despawn() -> void:
