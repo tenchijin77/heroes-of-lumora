@@ -42,7 +42,7 @@ Collisions:
 -friendly npc projectiles are on layer 7
 -forbidden layer is 8 (area where monsters can't spawn at)
 -loot is on layer 9
--healing projectiles are on layer 10
+-healing projectiles are on layer 10 (the healer npc priestess.tscn and healer.gd uses healing_projectile.gd)
 
 -player should be able to collide with 2, 4, 5, 6, 9, 10
 -friendly should be able to collide with 1, 2, 4, 5, 6, 10
