@@ -2,7 +2,7 @@ Game: Heroes of Lumora: a bullet hell game, similar to the idea of vampire survi
 
 GitHub Repo: https://github.com/tenchijin77/heroes-of-lumora
 
-Current GitHub commit hash: 5ac07da
+Current GitHub commit hash: ae36623
 
 Trello board for HoL:
 
@@ -48,6 +48,12 @@ Collisions:
 -friendly should be able to collide with 1, 2, 4, 5, 6, 10
 -monsters should be able to collide with 1, 2, 3, 5, 6, 7, 10
 
+Projectiles:
+-player: Layer 3 - needs to collide with 2 (monsters), and 5 (environment), uses projectile.gd
+-friendly: Layer 7 - needs to collide with 2 (monsters), and 5 (environment), uses projectile.gd
+-healing projectiles: Layer 10 - needs to collide with 1 (player), 2 (monsters), 5 (environment), 6 (friendly), (logic needs to be called so if it enters a collision for the player, or friendly groups it heals the unit; if it enters a monster it does damage. It uses the same projectile for both: healing_projectile.gd)
+-monster projectiles: Layer 4 - needs to collide with 1 (player), 5 (enviroment), uses projectile.gd
+
 Groups:
 
 Player is in player node group.
@@ -72,9 +78,13 @@ Monsters:
 -ghost.tscn and gd - fires projectile, ghost_fire
 -goblin.tscn and gd - fires projectile, dagger
 
+NPCs:
+-guard is a stationary guard AI that will engage enemies when they get in his area2d detection zone, and then return to his station. Uses guard.tscn and guard.gd, fires with projectile.gd
+-priestess is a roaming healer AI that will engage enemies and heal player and friendly group when they are damaged. uses priestess.tscn and healer.gd, and healing_projectile.gd
+
 Controls:
 
 
 Move: Arrow keys or WASD
 
-Melee Attack: Left mouse click - calls arrow.tscn and gd
+Melee Attack: Left mouse click - calls arrow.tscn and projectile.gd
