@@ -51,7 +51,7 @@ Collisions:
 Projectiles:
 -player: Layer 3 - needs to collide with 2 (monsters), and 5 (environment), uses projectile.gd
 -friendly: Layer 7 - needs to collide with 2 (monsters), and 5 (environment), uses projectile.gd
--healing projectiles: Layer 10 - needs to collide with 1 (player), 2 (monsters), 5 (environment), 6 (friendly), (logic needs to be called so if it enters a collision for the player, or friendly groups it heals the unit; if it enters a monster it does damage. It uses the same projectile for both: healing_projectile.gd)
+-healing projectiles: Layer 10 - needs to collide with 1 (player), 2 (monsters), 5 (environment), 6 (friendly), (logic needs to be called so if it enters a collision for the player, or friendly groups it heals the unit; if it enters a monster it does damage. It uses the same projectile for both: heal_bolt.tscn and healing_projectile.gd)
 -monster projectiles: Layer 4 - needs to collide with 1 (player), 5 (enviroment), uses projectile.gd
 
 Groups:
