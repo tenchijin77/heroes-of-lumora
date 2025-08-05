@@ -1,0 +1,38 @@
+[gd_scene load_steps=6 format=3 uid="uid://7vg4iod2d430"]
+
+[ext_resource type="Script" uid="uid://d6xrs2lxn4lc" path="res://Scripts/projectile.gd" id="1_g7t1c"]
+[ext_resource type="AudioStream" uid="uid://d234ibi2b2m1k" path="res://Assets/Audio/elemental-magic-spell-impact-outgoing-228342.mp3" id="2_gmr0t"]
+[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="2_wmey2"]
+[ext_resource type="AudioStream" uid="uid://cuuy6rr4t7ccp" path="res://Assets/Audio/arrow-swish_03-306040.mp3" id="3_gmr0t"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_g7t1c"]
+radius = 14.0
+
+[node name="eye_blast" type="Area2D"]
+collision_layer = 8
+collision_mask = 49
+script = ExtResource("1_g7t1c")
+speed = 500.0
+damage = 50
+sound_stream = ExtResource("2_gmr0t")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_wmey2")
+region_enabled = true
+region_rect = Rect2(1152, 192, 32, 32)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+shape = SubResource("CircleShape2D_g7t1c")
+
+[node name="destroy_timer" type="Timer" parent="."]
+wait_time = 4.0
+autostart = true
+
+[node name="projectile_sound" type="AudioStreamPlayer2D" parent="."]
+position = Vector2(1, 1)
+stream = ExtResource("3_gmr0t")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
+[connection signal="timeout" from="destroy_timer" to="." method="_on_destroy_timer_timeout"]
