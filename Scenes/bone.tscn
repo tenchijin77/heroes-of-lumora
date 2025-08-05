@@ -12,7 +12,8 @@ collision_layer = 8
 collision_mask = 49
 script = ExtResource("1_2e6wv")
 speed = 180.0
-damage = 3
+damage = 5
+sound_stream = ExtResource("3_2e6wv")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 rotation = 0.785398

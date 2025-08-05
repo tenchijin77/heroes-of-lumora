@@ -11,7 +11,7 @@ size = Vector2(20, 6)
 collision_layer = 64
 collision_mask = 18
 script = ExtResource("1_e7kb4")
-owner_group = "player"
+owner_group = "friendly"
 damage = 25
 sound_stream = ExtResource("2_3i3cr")
 
