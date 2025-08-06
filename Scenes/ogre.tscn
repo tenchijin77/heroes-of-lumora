@@ -43,6 +43,7 @@ script = ExtResource("4_n5x3l")
 node_scene = ExtResource("5_vc312")
 
 [node name="avoidance_ray" type="RayCast2D" parent="."]
+collision_mask = 51
 
 [node name="health_bar" type="ProgressBar" parent="."]
 offset_left = -8.0

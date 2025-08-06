@@ -12,6 +12,9 @@
 [ext_resource type="PackedScene" uid="uid://2g470it6g0jt" path="res://Scenes/guard.tscn" id="7_6bp64"]
 [ext_resource type="PackedScene" uid="uid://bhm0mxnnqdj6x" path="res://Scenes/priestess.tscn" id="11_d1ilt"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_344ge"]
+size = Vector2(1569, 703)
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1bvp3"]
 texture = ExtResource("1_bo1nx")
 texture_region_size = Vector2i(32, 32)
@@ -3615,19 +3618,25 @@ physics_layer_0/collision_mask = 111
 sources/0 = SubResource("TileSetAtlasSource_ynf5e")
 sources/1 = SubResource("TileSetAtlasSource_d1ilt")
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_344ge"]
-size = Vector2(1569, 703)
-
 [node name="main" type="Node2D"]
 
 [node name="player" parent="." instance=ExtResource("2_8gbba")]
-position = Vector2(114, 81)
+z_index = 10
+position = Vector2(254, 227)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(46, 38)
 zoom = Vector2(1.5, 1.5)
 editor_draw_limits = true
 script = ExtResource("3_8gbba")
+
+[node name="forbidden_zone" type="Area2D" parent="."]
+collision_layer = 128
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="forbidden_zone"]
+position = Vector2(719.5, 350.5)
+shape = SubResource("RectangleShape2D_344ge")
 
 [node name="walls" type="TileMapLayer" parent="."]
 show_behind_parent = true
@@ -3698,7 +3707,6 @@ text = "Coins: 0"
 [node name="enemy_spawner" parent="." instance=ExtResource("5_kry3j")]
 
 [node name="DirectionalLight2D" type="DirectionalLight2D" parent="."]
-visible = false
 energy = 0.28
 blend_mode = 1
 shadow_enabled = true
@@ -3714,33 +3722,6 @@ position = Vector2(1072, 15)
 
 [node name="torch4" parent="." instance=ExtResource("6_21xkr")]
 position = Vector2(1392, 16)
-
-[node name="guard" parent="." instance=ExtResource("7_6bp64")]
-position = Vector2(1009, 47)
-
-[node name="guard2" parent="." instance=ExtResource("7_6bp64")]
-position = Vector2(810, 51)
-
-[node name="forbidden_zone" type="Area2D" parent="."]
-collision_layer = 128
-collision_mask = 2
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="forbidden_zone"]
-visible = false
-position = Vector2(719.5, 350.5)
-shape = SubResource("RectangleShape2D_344ge")
-
-[node name="guard3" parent="." instance=ExtResource("7_6bp64")]
-position = Vector2(520, 656)
-
-[node name="guard4" parent="." instance=ExtResource("7_6bp64")]
-position = Vector2(654, 659)
-
-[node name="guard5" parent="." instance=ExtResource("7_6bp64")]
-position = Vector2(780, 662)
-
-[node name="guard6" parent="." instance=ExtResource("7_6bp64")]
-position = Vector2(911, 661)
 
 [node name="torch5" parent="." instance=ExtResource("6_21xkr")]
 position = Vector2(463, 688)
@@ -3772,17 +3753,61 @@ position = Vector2(-48, 495)
 [node name="torch14" parent="." instance=ExtResource("6_21xkr")]
 position = Vector2(-49, 335)
 
+[node name="torch15" parent="." instance=ExtResource("6_21xkr")]
+position = Vector2(1200, 686)
+
+[node name="torch16" parent="." instance=ExtResource("6_21xkr")]
+position = Vector2(1424, 687)
+
+[node name="guard" parent="." instance=ExtResource("7_6bp64")]
+position = Vector2(1015, 91)
+current_health = 20
+max_health = 20
+
+[node name="guard2" parent="." instance=ExtResource("7_6bp64")]
+position = Vector2(813, 94)
+current_health = 20
+max_health = 20
+
+[node name="guard3" parent="." instance=ExtResource("7_6bp64")]
+position = Vector2(521, 632)
+current_health = 20
+max_health = 20
+
+[node name="guard4" parent="." instance=ExtResource("7_6bp64")]
+position = Vector2(655, 632)
+current_health = 20
+max_health = 20
+
+[node name="guard5" parent="." instance=ExtResource("7_6bp64")]
+position = Vector2(778, 630)
+current_health = 20
+max_health = 20
+
+[node name="guard6" parent="." instance=ExtResource("7_6bp64")]
+position = Vector2(917, 632)
+current_health = 20
+max_health = 20
+
 [node name="guard7" parent="." instance=ExtResource("7_6bp64")]
-position = Vector2(1448, 434)
+position = Vector2(1421, 452)
+current_health = 20
+max_health = 20
 
 [node name="guard8" parent="." instance=ExtResource("7_6bp64")]
-position = Vector2(1450, 269)
+position = Vector2(1418, 271)
+current_health = 20
+max_health = 20
 
 [node name="guard9" parent="." instance=ExtResource("7_6bp64")]
-position = Vector2(-21, 340)
+position = Vector2(58, 327)
+current_health = 20
+max_health = 20
 
 [node name="guard10" parent="." instance=ExtResource("7_6bp64")]
-position = Vector2(-21, 504)
+position = Vector2(49, 494)
+current_health = 20
+max_health = 20
 
 [node name="priestess" parent="." instance=ExtResource("11_d1ilt")]
 position = Vector2(184, 359)
