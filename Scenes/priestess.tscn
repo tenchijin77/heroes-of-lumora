@@ -1,9 +1,12 @@
-[gd_scene load_steps=9 format=3 uid="uid://bhm0mxnnqdj6x"]
+[gd_scene load_steps=14 format=3 uid="uid://bhm0mxnnqdj6x"]
 
 [ext_resource type="Script" uid="uid://cv70j56i2fo7u" path="res://Scripts/healer.gd" id="1_ewup4"]
 [ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="2_2kld1"]
 [ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="3_owegj"]
 [ext_resource type="PackedScene" uid="uid://dkjn4u5pvci4p" path="res://Scenes/heal_bolt.tscn" id="4_6h5py"]
+[ext_resource type="Script" uid="uid://dirtd7uwkj0xb" path="res://Scripts/healing_aura.gd" id="5_2kld1"]
+[ext_resource type="Shader" uid="uid://5a3hd36av1m" path="res://Assets/green_glow_shader.gdshader" id="6_bwqxu"]
+[ext_resource type="Texture2D" uid="uid://cgr378xi2neye" path="res://Assets/Sprites/green aura glow.png" id="7_bwqxu"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sfdtf"]
 size = Vector2(20, 28)
@@ -16,6 +19,14 @@ bg_color = Color(0.94902, 0, 0, 1)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_dmkvq"]
 radius = 288.014
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_6h5py"]
+radius = 192.003
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nmwim"]
+shader = ExtResource("6_bwqxu")
+shader_parameter/pulse_speed = 2.0
+shader_parameter/max_alpha = 0.1
 
 [node name="priestess" type="CharacterBody2D" groups=["healer"]]
 collision_layer = 32
@@ -72,3 +83,18 @@ visibility_layer = 35
 shape = SubResource("CircleShape2D_dmkvq")
 
 [node name="patrol_timer" type="Timer" parent="."]
+
+[node name="heal_aura" type="Area2D" parent="."]
+script = ExtResource("5_2kld1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="heal_aura"]
+shape = SubResource("CircleShape2D_6h5py")
+
+[node name="heal_aura_timer" type="Timer" parent="heal_aura"]
+
+[node name="aura_glow" type="Sprite2D" parent="heal_aura"]
+modulate = Color(0.3, 1, 0.3, 1)
+show_behind_parent = true
+material = SubResource("ShaderMaterial_nmwim")
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("7_bwqxu")
