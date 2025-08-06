@@ -3,13 +3,15 @@
 [ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="3_v8sxu"]
 [ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="4_ks230"]
 [ext_resource type="Script" uid="uid://con0frhkfq4w4" path="res://Scripts/skeleton.gd" id="5_5abox"]
-[ext_resource type="Script" uid="uid://hmpuc7kqhkt1" path="res://Scripts/bone.gd" id="5_ks230"]
 [ext_resource type="PackedScene" uid="uid://ccvecuowlwto8" path="res://Scenes/bone.tscn" id="5_v8sxu"]
 [ext_resource type="AudioStream" uid="uid://cjlgt6nnsdopc" path="res://Assets/Audio/egg-cracking-6844.mp3" id="6_shq1q"]
 [ext_resource type="PackedScene" uid="uid://d3rcusi22khhd" path="res://Scenes/potion.tscn" id="7_ks230"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sfdtf"]
 size = Vector2(18, 25)
+
+[sub_resource type="Resource" id="Resource_v8sxu"]
+metadata/__load_path__ = "res://Scripts/bone.gd"
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_shq1q"]
 size = Vector2(11, 3)
@@ -23,7 +25,7 @@ _bundled = {
 "node_count": 5,
 "node_paths": [NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath("destroy_timer")],
 "nodes": PackedInt32Array(-1, -1, 1, 0, -1, 4, 2, 0, 3, 1, 4, 2, 5, 3, 0, 1073741824, 0, 7, 6, -1, 4, 8, 4, 9, 5, 10, 6, 11, 7, 0, 1073741825, 0, 13, 12, -1, 2, 14, 8, 15, 9, 0, 1073741826, 0, 17, 16, -1, 2, 18, 10, 19, 11, 0, 1073741827, 0, 21, 20, -1, 2, 22, 12, 23, 13, 0),
-"variants": [8, 17, ExtResource("5_ks230"), "monsters", 0.785398, ExtResource("3_v8sxu"), true, Rect2(1278, 1229, 14, 12), Vector2(-0.5, 0.5), SubResource("RectangleShape2D_shq1q"), 4.0, true, ExtResource("6_shq1q"), true],
+"variants": [8, 17, SubResource("Resource_v8sxu"), "monsters", 0.785398, ExtResource("3_v8sxu"), true, Rect2(1278, 1229, 14, 12), Vector2(-0.5, 0.5), SubResource("RectangleShape2D_shq1q"), 4.0, true, ExtResource("6_shq1q"), true],
 "version": 3
 }
 

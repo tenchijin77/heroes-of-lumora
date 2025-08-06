@@ -9,6 +9,9 @@ extends Node
 	{"scene": preload("res://Scenes/skeleton.tscn"), "weight": 0.7},
 	{"scene": preload("res://Scenes/wizard.tscn"), "weight": 0.3},
 	{"scene": preload("res://Scenes/goblin.tscn"), "weight": 0.3},
+	{"scene": preload("res://Scenes/beholder.tscn"), "weight": 0.1},
+	{"scene": preload("res://Scenes/lich.tscn"), "weight": 0.1},
+	{"scene": preload("res://Scenes/ogre.tscn"), "weight": 0.2},
 	{"scene": preload("res://Scenes/ghost.tscn"), "weight": 0.3}
 ]
 @export var use_fixed_points: bool = false

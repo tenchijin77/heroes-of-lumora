@@ -1,13 +1,14 @@
-[gd_scene load_steps=9 format=3 uid="uid://d4cj0ctni5g8g"]
+[gd_scene load_steps=10 format=3 uid="uid://d4cj0ctni5g8g"]
 
 [ext_resource type="Script" uid="uid://c8w7tuxkacujc" path="res://Scripts/monsters.gd" id="1_frnyu"]
 [ext_resource type="PackedScene" uid="uid://dw75c4av0rk1e" path="res://Scenes/projectile.tscn" id="2_awor0"]
+[ext_resource type="PackedScene" uid="uid://bbfa72cjrxx6w" path="res://Scenes/death_bolt.tscn" id="2_pl4bj"]
 [ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="3_pl4bj"]
 [ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="4_a487a"]
 [ext_resource type="PackedScene" uid="uid://d3rcusi22khhd" path="res://Scenes/potion.tscn" id="5_l7mi6"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sfdtf"]
-size = Vector2(18, 25)
+size = Vector2(29, 27)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pegji"]
 bg_color = Color(0.201527, 0.201527, 0.201527, 1)
@@ -15,22 +16,24 @@ bg_color = Color(0.201527, 0.201527, 0.201527, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5abox"]
 bg_color = Color(0.94902, 0, 0, 1)
 
-[node name="monster" type="CharacterBody2D" groups=["monsters"]]
+[node name="lich" type="CharacterBody2D" groups=["monsters"]]
 collision_layer = 2
 collision_mask = 23
 script = ExtResource("1_frnyu")
-bullet_scene = ExtResource("2_awor0")
+shoot_rate = 3.0
+current_health = 45
+max_health = 45
+bullet_scene = ExtResource("2_pl4bj")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-visible = false
-position = Vector2(1, -2.5)
+position = Vector2(1.5, -1.5)
 shape = SubResource("RectangleShape2D_sfdtf")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(1, -2.5)
 texture = ExtResource("3_pl4bj")
 region_enabled = true
-region_rect = Rect2(674, 3, 29, 28)
+region_rect = Rect2(1792, 256, 32, 33)
 
 [node name="muzzle" type="Node2D" parent="."]
 
@@ -43,6 +46,7 @@ script = ExtResource("4_a487a")
 node_scene = ExtResource("5_l7mi6")
 
 [node name="avoidance_ray" type="RayCast2D" parent="."]
+target_position = Vector2(-64, 0)
 collision_mask = 51
 
 [node name="health_bar" type="ProgressBar" parent="."]

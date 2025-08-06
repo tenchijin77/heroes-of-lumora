@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://dobl3nffwaalr"]
 
 [ext_resource type="Script" uid="uid://c8w7tuxkacujc" path="res://Scripts/monsters.gd" id="1_4eqte"]
-[ext_resource type="PackedScene" uid="uid://dw75c4av0rk1e" path="res://Scenes/projectile.tscn" id="2_c4eq2"]
+[ext_resource type="PackedScene" uid="uid://7vg4iod2d430" path="res://Scenes/disintegration_ray.tscn" id="2_g16p2"]
 [ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="3_g16p2"]
 [ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="4_w8pae"]
 [ext_resource type="PackedScene" uid="uid://d3rcusi22khhd" path="res://Scenes/potion.tscn" id="5_rud3j"]
@@ -22,7 +22,7 @@ script = ExtResource("1_4eqte")
 shoot_rate = 4.0
 current_health = 50
 max_health = 50
-bullet_scene = ExtResource("2_c4eq2")
+bullet_scene = ExtResource("2_g16p2")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
@@ -39,7 +39,7 @@ position = Vector2(-5, 1)
 
 [node name="bullet_pool" type="Node" parent="."]
 script = ExtResource("4_w8pae")
-node_scene = ExtResource("2_c4eq2")
+node_scene = ExtResource("2_g16p2")
 
 [node name="potion_pool" type="Node" parent="."]
 script = ExtResource("4_w8pae")
