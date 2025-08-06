@@ -21,6 +21,8 @@ radius = 173.072
 collision_layer = 32
 collision_mask = 571
 script = ExtResource("1_mk1iy")
+current_health = 50
+max_health = 50
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false

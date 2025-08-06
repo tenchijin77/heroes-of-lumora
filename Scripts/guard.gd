@@ -25,6 +25,7 @@ var last_shoot_time: float = 0.0
 var guard_home_position: Vector2
 
 func _ready():
+	add_to_group("friendly")
 	guard_home_position = global_position + guard_center_offset
 
 	if bullet_pool and bullet_pool.node_scene == null:
@@ -180,3 +181,9 @@ func get_health() -> int:
 
 func get_max_health() -> int:
 	return max_health
+	
+func heal(amount: int) -> void:
+	current_health = clamp(current_health + amount, 0, max_health)
+	if health_bar:
+		health_bar.value = current_health
+		print("Guard %s healed for %d → current_health = %d" % [name, amount, current_health])

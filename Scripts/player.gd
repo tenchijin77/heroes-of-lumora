@@ -28,6 +28,7 @@ var move_input: Vector2
 var coin_count: int = 0
 
 func _ready() -> void:
+	add_to_group("player")
 	health_bar.max_value = max_health
 	health_bar.value = current_health
 	regeneration_timer.wait_time = 1.0

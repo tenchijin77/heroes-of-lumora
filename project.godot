@@ -79,6 +79,7 @@ monsters=""
 player=""
 loot=""
 friendly=""
+healer=""
 
 [input]
 

@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://dkjn4u5pvci4p"]
 
-[ext_resource type="Script" uid="uid://d6xrs2lxn4lc" path="res://Scripts/projectile.gd" id="1_0kvpt"]
+[ext_resource type="Script" uid="uid://uer5q8tttnsw" path="res://Scripts/healing_projectile.gd" id="1_0kvpt"]
 [ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="2_mvsgx"]
 [ext_resource type="AudioStream" uid="uid://drmqw7t2lnkl7" path="res://Assets/Audio/healing-magic-3-378664.mp3" id="3_0kvpt"]
 
@@ -11,6 +11,7 @@ radius = 7.0
 collision_layer = 512
 collision_mask = 51
 script = ExtResource("1_0kvpt")
+owner_group = "healer"
 sound_stream = ExtResource("3_0kvpt")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

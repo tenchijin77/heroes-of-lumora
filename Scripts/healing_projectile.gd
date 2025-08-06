@@ -1,7 +1,7 @@
 # healing_projectile.gd - used by priestess to heal or hurt
 extends "res://Scripts/projectile.gd"
 
-@export var heal_amount: int = 4
+@export var heal_amount: int = 8
 
 func _ready() -> void:
 	if not is_connected("body_entered", Callable(self, "_on_body_entered")):

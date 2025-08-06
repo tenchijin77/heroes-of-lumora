@@ -28,6 +28,7 @@ var patrol_center: Vector2
 var patrol_target: Vector2
 
 func _ready():
+	add_to_group("healer")
 	if projectile_scene:
 		bullet_pool.node_scene = projectile_scene
 	if health_bar:

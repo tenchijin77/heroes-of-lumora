@@ -27,6 +27,7 @@ var player_direction: Vector2
 var last_shoot_time: float = 0.0
 
 func _ready() -> void:
+	add_to_group("monsters")
 	var file: FileAccess = FileAccess.open("res://Data/potions.json", FileAccess.READ)
 	if file:
 		potions_data = JSON.parse_string(file.get_as_text())
@@ -34,7 +35,6 @@ func _ready() -> void:
 	else:
 		print("Monster %s: Failed to open potions.json!" % name)
 
-	add_to_group("monsters")
 	if bullet_scene:
 		bullet_pool.node_scene = bullet_scene
 	else:
