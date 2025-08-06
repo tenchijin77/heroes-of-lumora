@@ -54,10 +54,25 @@ Projectiles:
 -healing projectiles: Layer 10 - needs to collide with 1 (player), 2 (monsters), 5 (environment), 6 (friendly), (logic needs to be called so if it enters a collision for the player, or friendly groups it heals the unit; if it enters a monster it does damage. It uses the same projectile for both: heal_bolt.tscn and healing_projectile.gd)
 -monster projectiles: Layer 4 - needs to collide with 1 (player), 5 (enviroment), uses projectile.gd
 
+Monster Projectile layouts:
+skeleton: bone.tscn and projectile.gd
+wizard: fireball.tscn and projectile.gd
+goblin: dagger.tscn and projectile.gd
+ghost: ghost_fire.tscn and projectile.gd
+beholder: disintegration_ray.tscn and projectile.gd
+lich: necro_bolt.tscn and projectile.gd
+ogre: ogre.tscn and projectile.gd
+
+NPC Projectile layouts:
+
+guard: guard_arrow.tscn and projectile.gd
+priestess: heal_bolt.tscn and healing_projectile.gd
+
 Groups:
 
 Player is in player node group.
 Friendly NPCs are in friendly node group.
+Priestess (Healing NPC) is in healer node group.
 Monsters are in monster node group.
 
 Naming:
