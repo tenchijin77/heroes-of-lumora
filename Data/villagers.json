@@ -1,0 +1,21 @@
+{
+  "_comment": "villagers.json - This table stores stats and sprite region data for villagers.",
+  "villager_commoner_male": {
+    "max_health": 25.0,
+    "move_speed": 75.0,
+    "popup_message": "Help me!",
+    "sprite_region": [1989, 39, 22, 25]
+  },
+  "villager_commoner_female": {
+    "max_health": 25.0,
+    "move_speed": 80.0,
+    "popup_message": "Save us!",
+    "sprite_region": [1605, 257, 22, 30]
+  },
+  "villager_child": {
+    "max_health": 15.0,
+    "move_speed": 90.0,
+    "popup_message": "I'm scared!",
+    "sprite_region": [135, 68, 20, 28]
+  }
+}

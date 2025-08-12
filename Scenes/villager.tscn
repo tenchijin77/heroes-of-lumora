@@ -1,0 +1,36 @@
+[gd_scene load_steps=5 format=3 uid="uid://cvvk7iwbqhlpu"]
+
+[ext_resource type="Script" uid="uid://by6pa02k3u6d6" path="res://Scripts/villager.gd" id="1_7u53x"]
+[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="1_clim2"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7u53x"]
+size = Vector2(16, 24)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_gn4cm"]
+radius = 74.0
+
+[node name="villager" type="CharacterBody2D" groups=["friendly"]]
+collision_layer = 32
+collision_mask = 571
+script = ExtResource("1_7u53x")
+
+[node name="sprite_2d" type="Sprite2D" parent="."]
+texture = ExtResource("1_clim2")
+region_enabled = true
+region_rect = Rect2(135, 68, 20, 28)
+
+[node name="collision_shape_2d" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2(0, 1)
+shape = SubResource("RectangleShape2D_7u53x")
+
+[node name="navigation_agent_2d" type="NavigationAgent2D" parent="."]
+path_desired_distance = 5.0
+target_desired_distance = 5.0
+
+[node name="interaction_area" type="Area2D" parent="."]
+collision_layer = 0
+
+[node name="collision_shape_2d" type="CollisionShape2D" parent="interaction_area"]
+visible = false
+shape = SubResource("CircleShape2D_gn4cm")

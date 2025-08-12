@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 Global="*res://Scripts/global.gd"
 DialogicManager="*res://Scripts/dialogic.gd"
 Dialogic="*res://addons/dialogic/Core/DialogicGameHandler.gd"
+GameData="*res://Scripts/game_data.gd"
 
 [debug]
 
@@ -33,7 +34,8 @@ directories/dch_directory={
 "Timot": "res://Dialogic/Timot.dch"
 }
 directories/dtl_directory={
-"Timot-Intro": "res://Dialogic/Timot-Intro.dtl"
+"Timot-Intro": "res://Dialogic/Timot-Intro.dtl",
+"villager_generic_plea": "res://Dialogic/villager_generic_plea.dtl"
 }
 extensions_folder="res://addons/dialogic_additions"
 text/letter_speed=0.01
@@ -80,6 +82,7 @@ player=""
 loot=""
 friendly=""
 healer=""
+extraction_points=""
 
 [input]
 
