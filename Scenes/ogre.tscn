@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://dubv13cak6mjn"]
 
-[ext_resource type="Script" uid="uid://c8w7tuxkacujc" path="res://Scripts/monsters.gd" id="1_t5uq8"]
+[ext_resource type="Script" uid="uid://8pyc0gstrrsb" path="res://Scripts/ogre.gd" id="1_t5uq8"]
 [ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="3_uw55x"]
 [ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="4_n5x3l"]
 [ext_resource type="PackedScene" uid="uid://dgm03pu34032m" path="res://Scenes/boulder.tscn" id="5_7kbme"]
@@ -19,10 +19,11 @@ bg_color = Color(0.94902, 0, 0, 1)
 collision_layer = 2
 collision_mask = 23
 script = ExtResource("1_t5uq8")
+max_speed = 24.0
 shoot_rate = 2.5
-current_health = 30
-max_health = 30
-bullet_scene = ExtResource("5_7kbme")
+shoot_range = 100.0
+current_health = 50
+max_health = 50
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false

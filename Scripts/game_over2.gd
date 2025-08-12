@@ -13,6 +13,7 @@ func _ready() -> void:
 	update_leader_board()
 
 # Update leaderboard display with requested format
+# In game_over2.gd
 func update_leader_board() -> void:
 	if not leader_board:
 		push_error("GameOver2: Cannot update leaderboard, leader_board is null!")
@@ -24,11 +25,11 @@ func update_leader_board() -> void:
 			continue
 		if i < Global.high_scores.size():
 			var entry: Dictionary = Global.high_scores[i]
-			label.text = "%s - Score: %d | Coins: %d | Wave: %d | Time Survived: %s" % [
-				entry.initials, entry.score, entry.coins, entry.wave, Global.format_time(entry.time_survived)
+			label.text = "%s - Score: %d | Coins: %d | Wave: %d | Saved: %d | Lost: %d | Time: %s" % [
+				entry.initials, entry.score, entry.coins, entry.wave, entry.saved_villagers, entry.lost_villagers, Global.format_time(entry.time_survived)
 			]
 		else:
-			label.text = "--- - Score: 0 | Coins: 0 | Wave: 0 | Time Survived: 00:00"
+			label.text = "--- - Score: 0 | Coins: 0 | Wave: 0 | Saved: 0 | Lost: 0 | Time: 00:00"
 
 # Restart game
 func _on_restart_button_pressed() -> void:

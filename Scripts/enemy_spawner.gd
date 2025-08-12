@@ -44,7 +44,8 @@ var current_spawn_multiplier: float = 1.0
 var current_wave: int = 1
 var current_mobs_per_spawn: int = 1
 
-func _ready():
+# Initialize spawner, set up pools, and start timers
+func _ready() -> void:
 	# Initial setup for monster pools
 	for config in monster_configs:
 		total_weight += config.weight
@@ -84,11 +85,10 @@ func _ready():
 
 	# Initial label update
 	_update_wave_label()
-	Global.current_wave = current_wave  # Updated: Sync initial wave to global
+	Global.current_wave = current_wave  # Sync initial wave to global
 
-# --- Wave and Spawn Rate Management Functions ---
-
-func _update_spawn_timer_interval():
+# Update spawn timer interval based on multiplier
+func _update_spawn_timer_interval() -> void:
 	var effective_min: float = max(0.1, min_spawn_time * current_spawn_multiplier)
 	var effective_max: float = max(effective_min + 0.1, max_spawn_time * current_spawn_multiplier)
 	spawn_timer.wait_time = randf_range(effective_min, effective_max)
@@ -96,71 +96,71 @@ func _update_spawn_timer_interval():
 	print("Spawn interval updated to %.2f (Range: %.2f-%.2f, Multiplier: %.2f)." % [
 		spawn_timer.wait_time, effective_min, effective_max, current_spawn_multiplier])
 
-func _on_wave_timer_timeout():
-	current_wave += 1
-	Global.current_wave = current_wave  # Updated: Sync wave advance to global
+# Handle wave timer timeout to advance wave
+func _on_wave_timer_timeout() -> void:
+	Global.increment_wave()  # Use global increment to emit signal for UI
+	current_wave = Global.current_wave  # Sync local if needed (optional, can remove if using Global everywhere)
 	print("--- Wave %d Started! ---" % current_wave)
 	_update_wave_label()
 	_increase_spawn_rate()
 
-func _update_wave_label():
+# Update wave label display
+func _update_wave_label() -> void:
 	if current_wave_label:
 		current_wave_label.text = "Wave: %d" % current_wave
 	else:
 		push_warning("Spawner: 'current_wave_label' is not set or found.")
 
-func _increase_spawn_rate():
+# Increase spawn rate for next wave
+func _increase_spawn_rate() -> void:
 	current_spawn_multiplier *= (1.0 - spawn_rate_increase_per_wave)
 	current_spawn_multiplier = max(min_multiplier_limit, current_spawn_multiplier)
 	current_mobs_per_spawn += mobs_increase_per_wave
-	print("Batch size increased to %d mobs per spawn." % current_mobs_per_spawn)
 	_update_spawn_timer_interval()
+	print("Wave %d: Spawn multiplier=%.2f, Mobs per spawn=%d" % [current_wave, current_spawn_multiplier, current_mobs_per_spawn])
 
-# --- Spawning Logic ---
-
-func _spawn_monster():
-	var selected_scene: PackedScene = _select_weighted_scene()
-	if not selected_scene:
-		push_warning("Spawner: No monster scene selected!")
+# Spawn a single monster
+func _spawn_monster() -> void:
+	var monster_scene: PackedScene = _select_weighted_scene()
+	if not monster_scene:
+		push_error("Spawner: No monster scene selected!")
+		return
+	if not player:
+		push_error("Spawner: Player reference is null!")
 		return
 
-	var pool: NodePool = mob_pools[selected_scene.resource_path]
-	var monster: Node2D = pool.spawn() as Node2D
+	var monster: CharacterBody2D = mob_pools[monster_scene.resource_path].spawn()
+	if not monster:
+		push_error("Spawner: Failed to spawn monster from pool!")
+		return
 
-	var spawn_pos: Vector2
-	var max_attempts: int = 50  # Increased to reduce teleportation from despawn
+	var spawn_pos: Vector2 = _get_spawn_position()
+	var shape: Shape2D = monster.collision_shape.shape if monster.collision_shape else null
 	var attempts: int = 0
-	var found_clear_spot: bool = false
-
-	var monster_collision_shape: CollisionShape2D = monster.find_child("CollisionShape2D", true, false)
-	if not monster_collision_shape or not monster_collision_shape.shape:
-		push_error("Monster %s: Missing CollisionShape2D or shape." % monster.name)
-		pool.despawn(monster)
-		return
-
-	while attempts < max_attempts and not found_clear_spot:
+	while attempts < 10:
+		if _is_obstacle_free(spawn_pos, shape) and _is_forbidden_free(spawn_pos, shape):
+			break
 		spawn_pos = _get_spawn_position()
-		if _is_obstacle_free(spawn_pos, monster_collision_shape.shape) and _is_forbidden_free(spawn_pos, monster_collision_shape.shape):
-			found_clear_spot = true
-		else:
-			print("Spawn attempt %d failed at %s (obstacle or forbidden)." % [attempts + 1, spawn_pos])
 		attempts += 1
-
-	if not found_clear_spot:
-		push_warning("Spawner: No clear spawn position after %d attempts for %s, despawning." % [max_attempts, monster.name])
-		pool.despawn(monster)
+	if attempts >= 10:
+		push_warning("Spawner: Could not find valid spawn position after 10 attempts!")
 		return
 
 	monster.global_position = spawn_pos
-	monster.player_direction = spawn_pos.direction_to(player.global_position)
+	# Removed: monster.player_direction = spawn_pos.direction_to(player.global_position)
+	# Reason: monsters.gd uses target_direction for dynamic targeting, making player_direction redundant
 
-	if monster.has_signal("mob_died") and player and player.has_method("increment_score"):
-		if not monster.is_connected("mob_died", Callable(player, "increment_score")):
-			monster.mob_died.connect(Callable(player, "increment_score"))
+	get_parent().add_child(monster)
+	monster.visible = true
+	if monster.has_method("reset"):
+		monster.reset()
+
+	# Connect signals
+	if monster.has_signal("mob_died") and player.has_method("increment_score") and not monster.is_connected("mob_died", Callable(player, "increment_score")):
+		monster.mob_died.connect(Callable(player, "increment_score"))
 	else:
 		push_warning("Monster %s or player: Missing 'mob_died' signal or 'increment_score' method." % monster.name)
 
-	# Connect loot drop for this specific monster with debug
 	if monster.has_signal("mob_died") and not monster.is_connected("mob_died", _on_mob_died):
 		var connection_result = monster.mob_died.connect(_on_mob_died.bind(monster))
 		if connection_result != OK:
@@ -170,7 +170,7 @@ func _spawn_monster():
 
 	print("Spawner: Spawned %s at %s" % [monster.name, spawn_pos])
 
-# --- Check if position is free of obstacles (layer 5) using shape query ---
+# Check if position is free of obstacles (layer 5) using shape query
 func _is_obstacle_free(position: Vector2, shape: Shape2D) -> bool:
 	var space: PhysicsDirectSpaceState2D = get_viewport().get_world_2d().direct_space_state
 	var shape_query: PhysicsShapeQueryParameters2D = PhysicsShapeQueryParameters2D.new()
@@ -183,7 +183,7 @@ func _is_obstacle_free(position: Vector2, shape: Shape2D) -> bool:
 		return false
 	return true
 
-# --- Check if position is free of forbidden zone (layer 8) using shape query ---
+# Check if position is free of forbidden zone (layer 8) using shape query
 func _is_forbidden_free(position: Vector2, shape: Shape2D) -> bool:
 	var space: PhysicsDirectSpaceState2D = get_viewport().get_world_2d().direct_space_state
 	var shape_query: PhysicsShapeQueryParameters2D = PhysicsShapeQueryParameters2D.new()
@@ -196,6 +196,7 @@ func _is_forbidden_free(position: Vector2, shape: Shape2D) -> bool:
 		return false
 	return true
 
+# Select a monster scene based on weights
 func _select_weighted_scene() -> PackedScene:
 	var rand: float = randf() * total_weight
 	var cumulative: float = 0.0
@@ -205,6 +206,7 @@ func _select_weighted_scene() -> PackedScene:
 			return config.scene
 	return null
 
+# Get a spawn position, either fixed or edge-based
 func _get_spawn_position() -> Vector2:
 	if use_fixed_points and not fixed_points_nodes.is_empty():
 		var point: Node2D = fixed_points_nodes[randi() % fixed_points_nodes.size()]
@@ -224,7 +226,8 @@ func _get_spawn_position() -> Vector2:
 			3: pos = Vector2(center.x + randf_range(-viewport_rect.size.x / 2, viewport_rect.size.x / 2), center.y + viewport_rect.size.y / 2 + margin)
 		return pos + Vector2(randf_range(-spawn_radius, spawn_radius), randf_range(-spawn_radius, spawn_radius))
 
-func _on_spawn_timer_timeout():
+# Handle spawn timer timeout to spawn monsters
+func _on_spawn_timer_timeout() -> void:
 	for i: int in range(current_mobs_per_spawn):
 		_spawn_monster()
 	_update_spawn_timer_interval()
@@ -236,7 +239,7 @@ func _on_mob_died(mob: Node2D) -> void:
 		var coin_count: int = randi_range(coin_drop_amount_range.x, coin_drop_amount_range.y)  # Random 1-4
 		for i in range(coin_count):
 			var coin: Area2D = coin_scene.instantiate() as Area2D
-			if coin:  # Debug check
+			if coin:
 				coin.collision_layer = 256  # Layer 9 (loot)
 				coin.collision_mask = 1    # Layer 1 (player)
 				coin.global_position = drop_position + Vector2(randf_range(-20.0, 20.0), randf_range(-20.0, 20.0))  # Slight scatter

@@ -1,3 +1,6 @@
+# monsters.gd
+# Base script for monster behavior, targeting nearest friendly or player.
+
 extends CharacterBody2D
 
 signal mob_died
@@ -12,9 +15,8 @@ signal mob_died
 @export var max_health: int = 15
 @export var bullet_scene: PackedScene
 
-@onready var player: CharacterBody2D = get_tree().get_first_node_in_group("player")
-@onready var avoidance_ray: RayCast2D = $avoidance_ray
 @onready var sprite: Sprite2D = $Sprite2D
+@onready var avoidance_ray: RayCast2D = $avoidance_ray
 @onready var muzzle: Node2D = $muzzle
 @onready var bullet_pool: NodePool = $bullet_pool
 @onready var potion_pool: NodePool = $potion_pool
@@ -22,8 +24,9 @@ signal mob_died
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
 
 var potions_data: Dictionary = {}
-var player_distance: float
-var player_direction: Vector2
+var target: Node2D
+var target_distance: float
+var target_direction: Vector2
 var last_shoot_time: float = 0.0
 
 func _ready() -> void:
@@ -44,9 +47,8 @@ func _ready() -> void:
 		push_error("Monster %s: health_bar is null!" % name)
 	if not collision_shape:
 		push_error("Monster %s: collision_shape is null!" % name)
-	if not player:
-		push_error("Monster %s: Player reference is null!" % name)
 
+	_find_nearest_target()
 	reset()
 
 func reset() -> void:
@@ -65,16 +67,17 @@ func reset() -> void:
 	global_position = Vector2.ZERO
 
 func _process(_delta: float) -> void:
-	if not player:
+	_find_nearest_target()
+	if not target:
 		return
 
-	player_distance = global_position.distance_to(player.global_position)
-	player_direction = global_position.direction_to(player.global_position)
-	sprite.flip_h = player_direction.x > 0
+	target_distance = global_position.distance_to(target.global_position)
+	target_direction = global_position.direction_to(target.global_position)
+	sprite.flip_h = target_direction.x > 0
 
-	_update_avoidance_ray(player, shoot_range)
+	_update_avoidance_ray(target, shoot_range)
 
-	if player_distance < shoot_range and _has_clear_line_to_target(player):
+	if target_distance < shoot_range and _has_clear_line_to_target(target):
 		if Time.get_unix_time_from_system() - last_shoot_time > shoot_rate:
 			_cast()
 
@@ -82,23 +85,23 @@ func _process(_delta: float) -> void:
 
 func _cast() -> void:
 	last_shoot_time = Time.get_unix_time_from_system()
-	if not bullet_pool or not muzzle or not player:
+	if not bullet_pool or not muzzle or not target:
 		push_warning("Monster %s: Cannot cast!" % name)
 		return
 
 	var projectile = bullet_pool.spawn()
 	if projectile:
 		projectile.global_position = muzzle.global_position
-		projectile.move_direction = muzzle.global_position.direction_to(player.global_position)
-		print("Monster %s: Cast projectile %s" % [name, projectile.name])
+		projectile.move_direction = muzzle.global_position.direction_to(target.global_position)
+		print("Monster %s: Cast projectile %s at %s" % [name, projectile.name, target.name])
 	else:
 		push_warning("Monster %s: Failed to spawn projectile!" % name)
 
 func _physics_process(_delta: float) -> void:
-	if not player:
+	if not target:
 		return
 
-	var move_direction = player_direction
+	var move_direction = target_direction
 	var local_avoidance = _local_avoidance()
 	if local_avoidance.length() > 0:
 		move_direction = local_avoidance
@@ -113,7 +116,7 @@ func _physics_process(_delta: float) -> void:
 	for i in get_slide_collision_count():
 		var collision = get_slide_collision(i)
 		var body = collision.get_collider()
-		if body and body.is_in_group("player"):
+		if body and (body.is_in_group("player") or body.is_in_group("friendly")):
 			if body.has_method("take_damage"):
 				body.call_deferred("take_damage", collision_damage)
 
@@ -126,25 +129,35 @@ func _move_wobble() -> void:
 	sprite.rotation_degrees = rot
 
 func _local_avoidance() -> Vector2:
-	avoidance_ray.target_position = to_local(player.global_position).normalized() * 80
+	avoidance_ray.target_position = to_local(target.global_position).normalized() * 80
 	if not avoidance_ray.is_colliding():
 		return Vector2.ZERO
 	var obstacle = avoidance_ray.get_collider()
-	if obstacle == player:
+	if obstacle == target:
 		return Vector2.ZERO
 	var obstacle_point = avoidance_ray.get_collision_point()
 	var obstacle_direction = global_position.direction_to(obstacle_point)
 	return Vector2(-obstacle_direction.y, obstacle_direction.x)
 
-func _update_avoidance_ray(target: Node2D, range: float):
-	if avoidance_ray and target:
-		avoidance_ray.target_position = (target.global_position - global_position).normalized() * range
+func _update_avoidance_ray(target_node: Node2D, range: float) -> void:
+	if avoidance_ray and target_node:
+		avoidance_ray.target_position = (target_node.global_position - global_position).normalized() * range
 		avoidance_ray.force_raycast_update()
 
-func _has_clear_line_to_target(target: Node2D) -> bool:
-	if not avoidance_ray or not target:
+func _has_clear_line_to_target(target_node: Node2D) -> bool:
+	if not avoidance_ray or not target_node:
 		return false
-	return not avoidance_ray.is_colliding() or avoidance_ray.get_collider() == target
+	return not avoidance_ray.is_colliding() or avoidance_ray.get_collider() == target_node
+
+func _find_nearest_target() -> void:
+	var friendlies: Array = get_tree().get_nodes_in_group("friendly")
+	var players: Array = get_tree().get_nodes_in_group("player")
+	var all_targets: Array = friendlies + players
+	if all_targets.is_empty():
+		target = null
+		return
+	all_targets.sort_custom(func(a, b): return global_position.distance_to(a.global_position) < global_position.distance_to(b.global_position))
+	target = all_targets[0]
 
 func take_damage(damage: int) -> void:
 	current_health -= damage
@@ -152,8 +165,8 @@ func take_damage(damage: int) -> void:
 		health_bar.value = current_health
 	if current_health <= 0:
 		mob_died.emit()
-		if player:
-			player.increment_score()
+		if target and target.is_in_group("player"):
+			target.increment_score()
 
 		if not potions_data.get("potions", []).is_empty():
 			var drop_chance: float = randf()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://cvvk7iwbqhlpu"]
+[gd_scene load_steps=6 format=3 uid="uid://cvvk7iwbqhlpu"]
 
 [ext_resource type="Script" uid="uid://by6pa02k3u6d6" path="res://Scripts/villager.gd" id="1_7u53x"]
 [ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="1_clim2"]
@@ -8,6 +8,9 @@ size = Vector2(16, 24)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_gn4cm"]
 radius = 74.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_7u53x"]
+radius = 108.0
 
 [node name="villager" type="CharacterBody2D" groups=["friendly"]]
 collision_layer = 32
@@ -34,3 +37,11 @@ collision_layer = 0
 [node name="collision_shape_2d" type="CollisionShape2D" parent="interaction_area"]
 visible = false
 shape = SubResource("CircleShape2D_gn4cm")
+
+[node name="fear_area" type="Area2D" parent="."]
+visible = false
+collision_layer = 0
+collision_mask = 2
+
+[node name="collision_shape_2d" type="CollisionShape2D" parent="fear_area"]
+shape = SubResource("CircleShape2D_7u53x")
