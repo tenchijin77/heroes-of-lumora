@@ -21,7 +21,7 @@ bg_color = Color(0.94902, 0, 0, 1)
 radius = 288.014
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_6h5py"]
-radius = 192.003
+radius = 281.397
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_nmwim"]
 shader = ExtResource("6_bwqxu")
@@ -30,7 +30,7 @@ shader_parameter/max_alpha = 0.1
 
 [node name="priestess" type="CharacterBody2D" groups=["healer"]]
 collision_layer = 32
-collision_mask = 571
+collision_mask = 538
 script = ExtResource("1_ewup4")
 max_speed = 30.0
 attack_range = 125.0

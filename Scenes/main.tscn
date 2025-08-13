@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=4 uid="uid://4qnufvqx54b"]
+[gd_scene load_steps=24 format=4 uid="uid://4qnufvqx54b"]
 
 [ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="1_bo1nx"]
 [ext_resource type="Script" uid="uid://pk7xc0kbb1b" path="res://Scripts/main.gd" id="1_fdnlq"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://2g470it6g0jt" path="res://Scenes/guard.tscn" id="7_6bp64"]
 [ext_resource type="PackedScene" uid="uid://bhm0mxnnqdj6x" path="res://Scenes/priestess.tscn" id="11_d1ilt"]
 [ext_resource type="PackedScene" uid="uid://cvvk7iwbqhlpu" path="res://Scenes/villager.tscn" id="12_6iyac"]
+[ext_resource type="Script" uid="uid://6806mwtl5hkr" path="res://Scripts/villager_spawner.gd" id="14_jkdf5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_344ge"]
 size = Vector2(1569, 703)
@@ -3634,17 +3635,14 @@ position = Vector2(254, 227)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(46, 38)
-zoom = Vector2(1.5, 1.5)
 editor_draw_limits = true
 script = ExtResource("3_8gbba")
 
 [node name="forbidden_zone" type="Area2D" parent="."]
-visible = false
 collision_layer = 128
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="forbidden_zone"]
-visible = false
 position = Vector2(719.5, 350.5)
 shape = SubResource("RectangleShape2D_344ge")
 
@@ -3857,7 +3855,6 @@ max_health = 20
 position = Vector2(184, 359)
 
 [node name="priestess2" parent="." instance=ExtResource("11_d1ilt")]
-visible = false
 position = Vector2(935, 340)
 
 [node name="extraction_point" type="Marker2D" parent="." groups=["extraction_points"]]
@@ -3868,36 +3865,12 @@ position = Vector2(940, 2916)
 z_index = 12
 position = Vector2(4238, 337)
 
-[node name="villager" parent="." instance=ExtResource("12_6iyac")]
-position = Vector2(750, 385)
-
-[node name="villager2" parent="." instance=ExtResource("12_6iyac")]
-position = Vector2(702, 271)
-
-[node name="villager3" parent="." instance=ExtResource("12_6iyac")]
-position = Vector2(849, 453)
-
-[node name="villager4" parent="." instance=ExtResource("12_6iyac")]
-position = Vector2(635, 465)
-
-[node name="villager5" parent="." instance=ExtResource("12_6iyac")]
-position = Vector2(622, 324)
-
-[node name="villager6" parent="." instance=ExtResource("12_6iyac")]
-position = Vector2(778, 259)
-
-[node name="villager7" parent="." instance=ExtResource("12_6iyac")]
-position = Vector2(560, 391)
-
-[node name="villager8" parent="." instance=ExtResource("12_6iyac")]
-position = Vector2(675, 215)
-
-[node name="villager9" parent="." instance=ExtResource("12_6iyac")]
-position = Vector2(533, 299)
-
-[node name="villager10" parent="." instance=ExtResource("12_6iyac")]
-position = Vector2(842, 349)
-
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
 position = Vector2(6, 4)
 navigation_polygon = SubResource("NavigationPolygon_6iyac")
+
+[node name="villager_spawner" type="Node" parent="."]
+script = ExtResource("14_jkdf5")
+villager_scene = ExtResource("12_6iyac")
+
+[node name="villager_spawn_timer" type="Timer" parent="villager_spawner"]

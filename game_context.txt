@@ -97,6 +97,12 @@ NPCs:
 -guard is a stationary guard AI that will engage enemies when they get in his area2d detection zone, and then return to his station. Uses guard.tscn and guard.gd, fires with projectile.gd
 -priestess is a roaming healer AI that will engage enemies and heal player and friendly group when they are damaged. uses priestess.tscn and healer.gd, and healing_projectile.gd
 
+
+Villagers:
+-villagers spawn from villager_spawner.gd and use villager.tscn
+-variables stored in villagers.json
+-call res://Assets/UI/villager_popup.tscn to shout messages on screen.
+
 Controls:
 
 

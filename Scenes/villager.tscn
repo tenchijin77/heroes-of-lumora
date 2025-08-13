@@ -14,7 +14,7 @@ radius = 108.0
 
 [node name="villager" type="CharacterBody2D" groups=["friendly"]]
 collision_layer = 32
-collision_mask = 571
+collision_mask = 538
 script = ExtResource("1_7u53x")
 
 [node name="sprite_2d" type="Sprite2D" parent="."]
@@ -45,3 +45,11 @@ collision_mask = 2
 
 [node name="collision_shape_2d" type="CollisionShape2D" parent="fear_area"]
 shape = SubResource("CircleShape2D_7u53x")
+
+[node name="avoidance_ray" type="RayCast2D" parent="."]
+target_position = Vector2(50, 0)
+collision_mask = 48
+
+[node name="fear_timer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
