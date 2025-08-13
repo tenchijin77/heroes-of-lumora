@@ -14,6 +14,7 @@ func _ready() -> void:
 	max_health = 45  # Tankier
 	collision_damage = 5  # Stronger melee
 	current_health = max_health
+	score_value = 65  # Sets monster's score value to 65
 	# bullet_scene already set in tscn to death_bolt.tscn
 
 # Cast death_bolt projectile at target
@@ -23,7 +24,7 @@ func _cast() -> void:
 		push_warning("Lich %s: Cannot cast—missing bullet_pool, muzzle, or target!" % name)
 		return
 	var death_bolt: Area2D = bullet_pool.spawn()
-	
+
 	if death_bolt:
 		death_bolt.global_position = muzzle.global_position
 		var direction: Vector2 = muzzle.global_position.direction_to(target.global_position)

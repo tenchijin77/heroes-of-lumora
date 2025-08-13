@@ -14,6 +14,7 @@ func _ready() -> void:
 	max_health = 25
 	collision_damage = 3
 	current_health = max_health
+	score_value = 25  # Sets monster's score value to 25
 	# Override sprite region if not in tscn: sprite.region_rect = Rect2(640, 64, 32, 33)
 	# bullet_scene already set in tscn to fireball.tscn
 
@@ -24,7 +25,7 @@ func _cast() -> void:
 		push_warning("Wizard %s: Cannot cast—missing bullet_pool, muzzle, or target!" % name)
 		return
 	var fireball: Area2D = bullet_pool.spawn()
-	
+
 	if fireball:
 		fireball.global_position = muzzle.global_position
 		var direction: Vector2 = muzzle.global_position.direction_to(target.global_position)

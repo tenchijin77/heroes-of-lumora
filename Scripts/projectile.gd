@@ -1,8 +1,9 @@
 # projectile.gd - base projectile template script
 extends Area2D
 
+
 @export var speed : float = 200.0
-@export var owner_group : String = "monsters"
+@export var owner_group: String
 @export var damage : int = 4
 @export var sound_stream : AudioStream
 @onready var destroy_timer : Timer = $destroy_timer
@@ -79,20 +80,20 @@ func _on_body_entered(body: Node) -> void:
 			return
 
 	if body.has_method("take_damage") and body.is_in_group("monsters"):
-		body.take_damage(damage)
+		body.take_damage(damage, self)
 		print("Projectile from '%s' damaged monster %s for %d" % [owner_group, body.name, damage])
 		despawn()
 		return
 
 	if owner_group == "monsters":
 		if body.has_method("take_damage") and (body.is_in_group("player") or body.is_in_group("friendly")):
-			body.take_damage(damage)
+			body.take_damage(damage, self)
 			print("Monster projectile hit %s for %d" % [body.name, damage])
 			despawn()
 			return
 
 	if owner_group == "player" and body.has_method("take_damage") and body.is_in_group("monsters"):
-		body.take_damage(damage)
+		body.take_damage(damage, self)
 		print("Player projectile hit monster %s for %d" % [body.name, damage])
 		despawn()
 		return

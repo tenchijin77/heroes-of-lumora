@@ -14,6 +14,7 @@ signal mob_died
 @export var current_health: int = 15
 @export var max_health: int = 15
 @export var bullet_scene: PackedScene
+@export var score_value: int = 10 # Points awarded when killed by player
 
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var avoidance_ray: RayCast2D = $avoidance_ray
@@ -28,6 +29,7 @@ var target: Node2D
 var target_distance: float
 var target_direction: Vector2
 var last_shoot_time: float = 0.0
+var last_damage_source: Node = null  # Track the last entity to damage this monster
 
 func _ready() -> void:
 	add_to_group("monsters")
@@ -59,6 +61,7 @@ func reset() -> void:
 		health_bar.value = current_health
 	velocity = Vector2.ZERO
 	last_shoot_time = 0.0
+	last_damage_source = null
 	set_process(true)
 	set_physics_process(true)
 	set_deferred("process_mode", Node.PROCESS_MODE_INHERIT)
@@ -74,7 +77,6 @@ func _process(_delta: float) -> void:
 	target_distance = global_position.distance_to(target.global_position)
 	target_direction = global_position.direction_to(target.global_position)
 	sprite.flip_h = target_direction.x > 0
-
 	_update_avoidance_ray(target, shoot_range)
 
 	if target_distance < shoot_range and _has_clear_line_to_target(target):
@@ -88,7 +90,6 @@ func _cast() -> void:
 	if not bullet_pool or not muzzle or not target:
 		push_warning("Monster %s: Cannot cast!" % name)
 		return
-
 	var projectile = bullet_pool.spawn()
 	if projectile:
 		projectile.global_position = muzzle.global_position
@@ -100,19 +101,15 @@ func _cast() -> void:
 func _physics_process(_delta: float) -> void:
 	if not target:
 		return
-
 	var move_direction = target_direction
 	var local_avoidance = _local_avoidance()
 	if local_avoidance.length() > 0:
 		move_direction = local_avoidance
-
 	if velocity.length() < max_speed:
 		velocity += move_direction * acceleration
 	else:
 		velocity *= drag
-
 	move_and_slide()
-
 	for i in get_slide_collision_count():
 		var collision = get_slide_collision(i)
 		var body = collision.get_collider()
@@ -159,15 +156,16 @@ func _find_nearest_target() -> void:
 	all_targets.sort_custom(func(a, b): return global_position.distance_to(a.global_position) < global_position.distance_to(b.global_position))
 	target = all_targets[0]
 
-func take_damage(damage: int) -> void:
+func take_damage(damage: int, projectile_instance: Node):
 	current_health -= damage
 	if health_bar:
 		health_bar.value = current_health
 	if current_health <= 0:
 		mob_died.emit()
-		if target and target.is_in_group("player"):
-			target.increment_score()
-
+		
+		if is_instance_valid(projectile_instance) and projectile_instance.owner_group == "player":
+			Global.current_score += score_value
+			Global.emit_signal("score_updated", Global.current_score)
 		if not potions_data.get("potions", []).is_empty():
 			var drop_chance: float = randf()
 			var cumulative_chance: float = 0.0
@@ -176,7 +174,6 @@ func take_damage(damage: int) -> void:
 				if drop_chance <= cumulative_chance:
 					_spawn_potion(potion)
 					break
-
 		if get_parent() is NodePool:
 			get_parent().despawn(self)
 		else:

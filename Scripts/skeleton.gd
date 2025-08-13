@@ -14,6 +14,7 @@ func _ready() -> void:
 	max_health = 15
 	collision_damage = 3
 	current_health = max_health
+	score_value = 15  # Sets monster's score value to 15
 	# Override sprite region if not in tscn: sprite.region_rect = Rect2(710, 262, 20, 26)
 	# bullet_scene already set in tscn to bone.tscn
 
@@ -24,7 +25,7 @@ func _cast() -> void:
 		push_warning("Skeleton %s: Cannot cast—missing bullet_pool, muzzle, or target!" % name)
 		return
 	var bone = bullet_pool.spawn()
-	
+
 	if bone:
 		bone.global_position = muzzle.global_position
 		var direction: Vector2 = muzzle.global_position.direction_to(target.global_position)

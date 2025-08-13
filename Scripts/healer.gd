@@ -190,7 +190,7 @@ func _update_flip_h():
 	elif velocity.x < 0:
 		sprite.flip_h = false
 
-func take_damage(damage: int):
+func take_damage(damage: int, _projectile_instance):
 	current_health -= damage
 	if health_bar:
 		health_bar.value = current_health

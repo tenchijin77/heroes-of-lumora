@@ -14,6 +14,7 @@ func _ready() -> void:
 	max_health = 50  # Very tanky
 	collision_damage = 6  # Strong melee
 	current_health = max_health
+	score_value = 35  # Sets monster's score value to 35
 	# bullet_scene already set in tscn to ogre.tscn
 
 # Cast ogre projectile at target
@@ -23,7 +24,7 @@ func _cast() -> void:
 		push_warning("Ogre %s: Cannot cast—missing bullet_pool, muzzle, or target!" % name)
 		return
 	var boulder: Area2D = bullet_pool.spawn()
-	
+
 	if boulder:
 		boulder.global_position = muzzle.global_position
 		var direction: Vector2 = muzzle.global_position.direction_to(target.global_position)

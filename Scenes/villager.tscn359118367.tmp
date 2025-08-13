@@ -46,14 +46,10 @@ collision_mask = 2
 [node name="collision_shape_2d" type="CollisionShape2D" parent="fear_area"]
 shape = SubResource("CircleShape2D_7u53x")
 
-[node name="avoidance_ray" type="RayCast2D" parent="." groups=["friendly"]]
+[node name="avoidance_ray" type="RayCast2D" parent="."]
 target_position = Vector2(50, 0)
-collision_mask = 16
+collision_mask = 48
 
 [node name="fear_timer" type="Timer" parent="."]
-wait_time = 3.0
-one_shot = true
-
-[node name="popup_timer" type="Timer" parent="."]
 wait_time = 3.0
 one_shot = true

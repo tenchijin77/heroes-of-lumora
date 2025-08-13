@@ -143,7 +143,7 @@ func _update_avoidance_ray(target: Node2D, range: float):
 func _has_clear_line_to_target(target: Node2D) -> bool:
 	return not avoidance_ray.is_colliding() or avoidance_ray.get_collider() == target
 
-func take_damage(damage: int):
+func take_damage(damage: int, _projectile_instance):
 	current_health -= damage
 	if health_bar:
 		health_bar.value = current_health
@@ -187,3 +187,4 @@ func heal(amount: int) -> void:
 	if health_bar:
 		health_bar.value = current_health
 		print("Guard %s healed for %d → current_health = %d" % [name, amount, current_health])
+		

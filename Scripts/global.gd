@@ -14,9 +14,9 @@ var current_score: int = 0
 var current_wave: int = 1
 var coins_collected: int = 0
 var current_time_survived: float = 0.0
-var saved_villagers: int = 0  # Track villagers that reached extraction points
-var lost_villagers: int = 0   # Track villagers killed by monsters
-var game_active: bool = true  # Flag to control time updates (stop on game over)
+var saved_villagers: int = 0 # Track villagers that reached extraction points
+var lost_villagers: int = 0 # Track villagers killed by monsters
+var game_active: bool = true # Flag to control time updates (stop on game over)
 
 # UI References (set in init_ui_labels after scene load)
 var score_label: Label
@@ -61,61 +61,36 @@ func _process(delta: float) -> void:
 		current_time_survived += delta
 		emit_signal("time_updated", format_time(current_time_survived))
 
-# Increment score and emit signal
-func increment_score(amount: int = 1) -> void:
-	current_score += amount
-	emit_signal("score_updated", current_score)
-
-# Increment coins and emit signal
-func increment_coins(amount: int = 1) -> void:
-	coins_collected += amount
-	emit_signal("coins_updated", coins_collected)
-
-# Increment wave and emit signal
-func increment_wave() -> void:
-	current_wave += 1
-	emit_signal("wave_updated", current_wave)
-
-# Increment saved villagers
-func increment_saved_villagers() -> void:
-	saved_villagers += 1
-	emit_signal("villagers_updated", saved_villagers, lost_villagers)
-
-# Increment lost villagers
-func increment_lost_villagers() -> void:
-	lost_villagers += 1
-	emit_signal("villagers_updated", saved_villagers, lost_villagers)
-
-# Load high scores from user://saves/high_scores.json
 func load_high_scores() -> void:
 	var file: FileAccess = FileAccess.open("user://saves/high_scores.json", FileAccess.READ)
 	if file:
-		var json: JSON = JSON.new()
-		var error: int = json.parse(file.get_as_text())
-		if error == OK:
-			if json.data is Array:
-				high_scores = []
-				for item in json.data:
-					if item is Dictionary and "score" in item and "initials" in item:
-						item["wave"] = item.get("wave", 0)
-						item["coins"] = item.get("coins", 0)
-						item["time_survived"] = item.get("time_survived", 0.0)
-						item["saved_villagers"] = item.get("saved_villagers", 0)
-						item["lost_villagers"] = item.get("lost_villagers", 0)
-						high_scores.append(item)
-			else:
-				print("Global: high_scores.json is not an array, initializing empty list")
-				high_scores = []
-		else:
-			print("Global: Failed to parse high_scores.json, error code: %s" % error)
+		var json_data = JSON.parse_string(file.get_as_text())
+		if json_data is Array:
 			high_scores = []
+			for item in json_data:
+				if item is Dictionary:
+					var entry: Dictionary = {
+						"score": int(round(item.get("score", 0.0))),
+						"initials": item.get("initials", "AAA").to_upper(),
+						"wave": int(round(item.get("wave", 0.0))),
+						"coins": int(round(item.get("coins", 0.0))),
+						"time_survived": float(item.get("time_survived", 0.0)),
+						"saved_villagers": int(round(item.get("saved_villagers", 0.0))),
+						"lost_villagers": int(round(item.get("lost_villagers", 0.0)))
+					}
+					high_scores.append(entry)
+			if OS.has_feature("editor"):
+				print("Global: Loaded high scores: %s" % JSON.stringify(high_scores))
+		else:
+			high_scores = []
+			if OS.has_feature("editor"):
+				print("Global: No valid high scores data, initialized empty array")
 		file.close()
 	else:
-		print("Global: No high_scores.json found, initializing empty list")
 		high_scores = []
-	print("Global: Loaded high scores: %s" % high_scores)  # Debug log for testing
+		if OS.has_feature("editor"):
+			print("Global: No high_scores.json found, initialized empty array")
 
-# Save high scores to user://saves/high_scores.json
 func save_high_scores() -> void:
 	var dir: DirAccess = DirAccess.open("user://")
 	if not dir.dir_exists("saves"):
@@ -148,7 +123,8 @@ func add_high_score(score: int, initials: String, wave: int, coins: int, time_su
 	if high_scores.size() > 10:
 		high_scores.resize(10)
 	save_high_scores()
-	print("Global: Added high score entry: %s" % entry)  # Debug log for testing
+	if OS.has_feature("editor"):
+		print("Global: Added high score entry: %s" % entry)
 
 # Check if score qualifies for top 10
 func is_high_score(score: int) -> bool:
@@ -170,7 +146,7 @@ func reset() -> void:
 	current_time_survived = 0.0
 	saved_villagers = 0
 	lost_villagers = 0
-	game_active = true  # Reset flag for new game
+	game_active = true # Reset flag for new game
 	emit_signal("score_updated", current_score)
 	emit_signal("coins_updated", coins_collected)
 	emit_signal("wave_updated", current_wave)

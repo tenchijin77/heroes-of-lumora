@@ -1,254 +1,279 @@
 # villager.gd
-# This script defines the behavior for a non-combatant villager NPC.
-# The villager navigates to a randomly selected extraction point, cowering/fleeing from monsters.
+# Controls villager behavior, navigation to extraction points, and popup message display.
 
-class_name Villager
 extends CharacterBody2D
+class_name Villager
 
-signal villager_extracted
-signal villager_died
+signal villager_died(villager: Node2D)
+signal villager_extracted(villager: Node2D)
 
-## Villager Type - Determines stats and appearance from GameData
+@export var speed: float = 100.0
 @export var villager_type: String = "villager_commoner_male"
+@export var avoidance_strength: float = 100.0 # Strength of avoidance steering
+@export var ray_length: float = 100.0 # Length of avoidance ray
 
-var move_speed: float = 40.0
-var max_health: float = 25.0
-var popup_message: String = "Help me!"
-
-var current_health: float
-var _extraction_point: Node2D
-var can_trigger_popup: bool = true
-var is_fearing: bool = false
-var fear_direction: Vector2
-var fear_timer: Timer
-var is_extracted: bool = false
-var player_in_range: bool = false
-
-var popup_scene: PackedScene = preload("res://Assets/UI/villager_popup.tscn")
-
-@onready var sprite: Sprite2D = $sprite_2d
 @onready var navigation_agent: NavigationAgent2D = $navigation_agent_2d
-@onready var interaction_area: Area2D = $interaction_area
-@onready var fear_area: Area2D = $fear_area
+@onready var sprite: Sprite2D = $sprite_2d
+@onready var popup_timer: Timer = $popup_timer
+@onready var avoidance_ray: RayCast2D = $avoidance_ray
+
+var target_extraction_point: Node2D
+var is_extracted: bool = false
+var health: int = 100
+var popup_message: String = "Help me!"
+var popup_node: CanvasLayer
+var popup_label: Label
 
 func _ready() -> void:
-	if not sprite or not fear_area or not navigation_agent:
+	# Initialize villager in scene tree
+	if is_inside_tree():
 		if OS.has_feature("editor"):
-			push_error("Villager: Missing required nodes (sprite_2d, fear_area, or navigation_agent_2d)")
-		queue_free()
-		return
-	
-	if get_tree() == null:
-		if OS.has_feature("editor"):
-			push_error("Villager: get_tree() is null in _ready!")
-		queue_free()
-		return
-	if OS.has_feature("editor"):
-		print("Villager: Scene tree valid in _ready, node: %s" % name)
-	
-	var stats: Dictionary = GameData.get_villager_stats(villager_type)
-	max_health = stats.get("max_health", 25.0)
-	move_speed = stats.get("move_speed", 40.0)
-	popup_message = stats.get("popup_message", "Help me!")
-	var region: Array = stats.get("sprite_region", [135, 68, 20, 28])
-	sprite.region_rect = Rect2(region[0], region[1], region[2], region[3])
-	current_health = max_health
-	
-	navigation_agent.navigation_finished.connect(_on_navigation_finished)
-	fear_area.body_entered.connect(_on_fear_area_body_entered)
-	interaction_area.area_entered.connect(_on_area_entered)
-	interaction_area.area_exited.connect(_on_area_exited)
-	
-	fear_timer = Timer.new()
-	fear_timer.name = "FearTimer"
-	fear_timer.wait_time = 3.0
-	fear_timer.one_shot = true
-	fear_timer.timeout.connect(_on_fear_timer_timeout)
-	add_child(fear_timer)
-	
-	# Defer navigation target update to ensure scene tree is ready
-	if get_tree():
-		await get_tree().physics_frame
-		update_navigation_target.call_deferred()
+			print("Villager: Scene tree valid in _ready, node: %s" % name)
 	else:
 		if OS.has_feature("editor"):
-			push_error("Villager %s: get_tree() is null after physics_frame, deferring navigation update" % name)
-		update_navigation_target.call_deferred()
-	if OS.has_feature("editor"):
-		print("Villager %s: Initialized with type %s, popup_message=%s" % [name, villager_type, popup_message])
+			push_error("Villager: Not in scene tree in _ready!")
+	
+	# Setup navigation
+	if navigation_agent:
+		navigation_agent.path_desired_distance = 50.0
+		navigation_agent.target_desired_distance = 50.0
+		navigation_agent.navigation_finished.connect(_on_navigation_finished)
+		update_navigation_target()
+		if OS.has_feature("editor"):
+			print("Villager %s: navigation_agent_2d initialized" % name)
+	else:
+		if OS.has_feature("editor"):
+			push_error("Villager %s: navigation_agent_2d not found!" % name)
+	
+	# Setup popup timer
+	if popup_timer:
+		popup_timer.wait_time = 3.0
+		popup_timer.one_shot = true
+		popup_timer.timeout.connect(_on_popup_timer_timeout)
+		if OS.has_feature("editor"):
+			print("Villager %s: popup_timer initialized with wait_time %s" % [name, popup_timer.wait_time])
+	else:
+		if OS.has_feature("editor"):
+			push_error("Villager %s: popup_timer not found!" % name)
+	
+	# Setup avoidance ray
+	if avoidance_ray:
+		avoidance_ray.enabled = true
+		avoidance_ray.collision_mask = 1 << 4  # Layer 5 (environment, mask is 1 << (layer - 1))
+		if OS.has_feature("editor"):
+			print("Villager %s: avoidance_ray initialized" % name)
+	else:
+		if OS.has_feature("editor"):
+			push_error("Villager %s: avoidance_ray not found!" % name)
+	
+	# Load villager data
+	var file: FileAccess = FileAccess.open("res://Data/villagers.json", FileAccess.READ)
+	if file:
+		var json_data = JSON.parse_string(file.get_as_text())
+		if json_data and json_data.has(villager_type):
+			var data: Dictionary = json_data[villager_type]
+			health = data.get("health", 100)
+			popup_message = data.get("popup_message", "Help me!")
+			if OS.has_feature("editor"):
+				print("Villager %s: Initialized with type %s, popup_message=%s" % [name, villager_type, popup_message])
+		else:
+			if OS.has_feature("editor"):
+				push_error("Villager: Failed to load data for type %s from villagers.json!" % villager_type)
+		file.close()
+	else:
+		if OS.has_feature("editor"):
+			push_error("Villager: Failed to open villagers.json!")
+	
+	# Setup popup
+	_setup_popup()
+	
+	add_to_group("villagers")
 
-func reset() -> void:
-	current_health = max_health
-	is_fearing = false
-	fear_direction = Vector2.ZERO
-	can_trigger_popup = true
-	is_extracted = false
-	player_in_range = false
-	if fear_timer:
-		fear_timer.stop()
-	set_physics_process(true)
-	update_navigation_target()
-	if OS.has_feature("editor"):
-		print("Villager %s: Reset with type %s" % [name, villager_type])
+func _setup_popup() -> void:
+	# Sets up the popup message
+	var popup_scene: PackedScene = preload("res://Assets/UI/villager_popup.tscn")
+	if popup_scene:
+		if popup_node:
+			popup_node.queue_free()
+			popup_node = null
+			popup_label = null
+		popup_node = popup_scene.instantiate() as CanvasLayer
+		if popup_node:
+			add_child(popup_node)
+			popup_label = popup_node.get_node_or_null("label")
+			if popup_label:
+				popup_label.text = popup_message
+				popup_label.visible = true
+				# Position label above villager, centered horizontally
+				var offset_y: float = -20.0
+				if sprite:
+					offset_y = -sprite.get_rect().size.y / 2 - 20
+				else:
+					if OS.has_feature("editor"):
+						push_warning("Villager %s: sprite_2d is null, using fallback offset for popup!" % name)
+				popup_label.global_position = global_position + Vector2(-popup_label.size.x / 2, offset_y)
+				if popup_timer:
+					popup_timer.start()
+				if OS.has_feature("editor"):
+					print("Villager %s: Popup initialized with message '%s' at position %s" % [name, popup_message, popup_label.global_position])
+			else:
+				if OS.has_feature("editor"):
+					push_error("Villager %s: label not found in villager_popup.tscn!" % name)
+		else:
+			if OS.has_feature("editor"):
+				push_error("Villager %s: Failed to instantiate villager_popup.tscn!" % name)
+	else:
+		if OS.has_feature("editor"):
+			push_error("Villager %s: villager_popup.tscn not found!" % name)
 
 func _physics_process(delta: float) -> void:
-	if not visible or is_extracted:
+	# Move towards extraction point if not extracted
+	if is_extracted or not navigation_agent:
+		if OS.has_feature("editor"):
+			print("Villager %s: Skipping _physics_process: is_extracted=%s, navigation_agent=%s" % [name, is_extracted, navigation_agent])
 		return
-	if not is_fearing and not navigation_agent.is_navigation_finished():
-		var next_path_position: Vector2 = navigation_agent.get_next_path_position()
-		var direction: Vector2 = (next_path_position - global_position).normalized()
-		velocity = direction * move_speed
-		move_and_slide()
-		if player_in_range and can_trigger_popup:
-			show_popup()
-	else:
-		velocity = Vector2.ZERO
-		if is_fearing:
-			velocity = fear_direction * move_speed
-			move_and_slide()
+	
+	if navigation_agent.is_navigation_finished():
+		if OS.has_feature("editor"):
+			print("Villager %s: Navigation finished, checking for new target" % name)
+		update_navigation_target()
+		return
+	
+	var next_position: Vector2 = navigation_agent.get_next_path_position()
+	if next_position == Vector2.ZERO:
+		if OS.has_feature("editor"):
+			print("Villager %s: No valid path, updating navigation target" % name)
+		update_navigation_target()
+		return
+	
+	var direction: Vector2 = (next_position - global_position).normalized()
+	
+	# Update avoidance ray in direction of movement
+	if avoidance_ray:
+		avoidance_ray.target_position = direction * ray_length
+		avoidance_ray.force_raycast_update()
+		if avoidance_ray.is_colliding():
+			var collision_point = avoidance_ray.get_collision_point()
+			var avoidance_vector = (global_position - collision_point).normalized().orthogonal() * avoidance_strength * delta
+			direction += avoidance_vector
+			direction = direction.normalized().clamp(Vector2(-1, -1), Vector2(1, 1))
+			if OS.has_feature("editor"):
+				print("Villager %s: Avoiding obstacle at %s, adjusted direction %s" % [name, collision_point, direction])
+	
+	velocity = direction * speed
+	move_and_slide()
+	if OS.has_feature("editor"):
+		print("Villager %s: Moving to %s with velocity %s" % [name, next_position, velocity])
+	
+	# Update popup position to follow villager
+	if popup_label:
+		var offset_y: float = -20.0
+		if sprite:
+			offset_y = -sprite.get_rect().size.y / 2 - 20
+		else:
+			if OS.has_feature("editor"):
+				push_warning("Villager %s: sprite_2d is null, using fallback offset for popup!" % name)
+		popup_label.global_position = global_position + Vector2(-popup_label.size.x / 2, offset_y)
+
+func _on_popup_timer_timeout() -> void:
+	# Hides popup after 3 seconds
+	if popup_node:
+		popup_node.queue_free()
+		popup_node = null
+		popup_label = null
+		if OS.has_feature("editor"):
+			print("Villager %s: Popup freed after timer timeout" % name)
 
 func update_navigation_target() -> void:
-	# Updates navigation target to a random extraction point
-	if is_extracted:
-		return
-	if not get_tree():
+	# Sets a random extraction point as navigation target
+	if is_extracted or not navigation_agent:
 		if OS.has_feature("editor"):
-			push_error("Villager %s: get_tree() is null in update_navigation_target, retrying next frame" % name)
-		update_navigation_target.call_deferred()
+			print("Villager %s: Skipping update_navigation_target: is_extracted=%s, navigation_agent=%s" % [name, is_extracted, navigation_agent])
 		return
-	var extraction_points: Array[Node] = get_tree().get_nodes_in_group("extraction_points")
+	
+	var extraction_points: Array = get_tree().get_nodes_in_group("extraction_points")
+	if OS.has_feature("editor"):
+		print("Villager %s: Found %d extraction points" % [name, extraction_points.size()])
 	if not extraction_points.is_empty():
-		_extraction_point = extraction_points[randi() % extraction_points.size()] as Node2D
-		navigation_agent.target_position = _extraction_point.global_position
-		if OS.has_feature("editor"):
-			print("Villager %s: Navigation target set to %s at %s" % [name, _extraction_point.name, _extraction_point.global_position])
+		target_extraction_point = extraction_points[randi() % extraction_points.size()] as Node2D
+		if target_extraction_point:
+			navigation_agent.set_target_position(target_extraction_point.global_position)
+			if OS.has_feature("editor"):
+				print("Villager %s: Navigation target set to %s at %s" % [name, target_extraction_point.name, target_extraction_point.global_position])
+		else:
+			if OS.has_feature("editor"):
+				push_error("Villager %s: Invalid extraction point!" % name)
 	else:
 		if OS.has_feature("editor"):
-			push_error("Villager %s: No extraction points found in group 'extraction_points'!" % name)
-		_extraction_point = null
-		navigation_agent.target_position = Vector2.ZERO
-
-func take_damage(damage: float) -> void:
-	if is_extracted:
-		return
-	current_health -= damage
-	if OS.has_feature("editor"):
-		print("Villager %s: Took %s damage, current_health=%s" % [name, damage, current_health])
-	if current_health <= 0:
-		visible = false
-		is_extracted = true
-		set_physics_process(false)
-		Global.lost_villagers += 1
-		Global.villagers_updated.emit(Global.saved_villagers, Global.lost_villagers)
-		villager_died.emit()
-	else:
-		show_popup()
-
-func receive_heal(heal: float) -> void:
-	if is_extracted:
-		return
-	current_health = min(current_health + heal, max_health)
-	if OS.has_feature("editor"):
-		print("Villager %s: Healed for %s, current_health=%s" % [name, heal, current_health])
-	show_popup()
-
-func fear_from(monster_position: Vector2) -> void:
-	if is_extracted:
-		return
-	is_fearing = true
-	fear_direction = (global_position - monster_position).normalized()
-	fear_timer.start()
-	if OS.has_feature("editor"):
-		print("Villager %s: Fearing from monster at %s" % [name, monster_position])
-
-func _on_fear_timer_timeout() -> void:
-	is_fearing = false
-	update_navigation_target()
+			push_error("Villager %s: No extraction points found!" % name)
 
 func _on_navigation_finished() -> void:
+	# Handles villager reaching extraction point
 	if is_extracted:
-		return
-	if _extraction_point and global_position.distance_squared_to(_extraction_point.global_position) < 50:
 		if OS.has_feature("editor"):
-			print("Villager %s: Reached extraction point %s at %s" % [name, _extraction_point.name, _extraction_point.global_position])
-		visible = false
+			print("Villager %s: Already extracted, skipping _on_navigation_finished" % name)
+		return
+	
+	if target_extraction_point and global_position.distance_to(target_extraction_point.global_position) <= 50.0:
 		is_extracted = true
+		visible = false
 		set_physics_process(false)
-		navigation_agent.target_position = Vector2.ZERO
 		Global.saved_villagers += 1
-		Global.villagers_updated.emit(Global.saved_villagers, Global.lost_villagers)
-		villager_extracted.emit()
-	else:
+		emit_signal("villagers_updated", Global.saved_villagers, Global.lost_villagers)
+		if popup_node:
+			popup_node.queue_free()
+			popup_node = null
+			popup_label = null
+			if OS.has_feature("editor"):
+				print("Villager %s: Popup freed on extraction" % name)
 		if OS.has_feature("editor"):
-			print("Villager %s: Navigation finished, but not at extraction point. Recalculating." % name)
+			print("Villager %s: Reached extraction point %s at %s" % [name, target_extraction_point.name, target_extraction_point.global_position])
+			print("Villager %s: Global.saved_villagers incremented to %d" % [name, Global.saved_villagers])
+		villager_extracted.emit(self)
+	else:
 		update_navigation_target()
+		if OS.has_feature("editor"):
+			print("Villager %s: Navigation finished but not close enough to %s, updating target" % [name, target_extraction_point.name if target_extraction_point else "null"])
 
-func show_popup() -> void:
-	if not can_trigger_popup or is_extracted:
-		return
+func take_damage(damage: int, _projectile_instance):
+	# Applies damage and handles death
+	health -= damage
 	if OS.has_feature("editor"):
-		print("Villager %s: Attempting to show popup with message '%s'" % [name, popup_message])
-	can_trigger_popup = false
-	var popup: CanvasLayer = popup_scene.instantiate()
-	var label: Label = popup.get_node_or_null("Label")
-	if not label:
+		print("Villager %s: Took %d damage, health now %d" % [name, damage, health])
+	if health <= 0:
+		Global.lost_villagers += 1
+		emit_signal("villagers_updated", Global.saved_villagers, Global.lost_villagers)
+		if popup_node:
+			popup_node.queue_free()
+			popup_node = null
+			popup_label = null
+			if OS.has_feature("editor"):
+				print("Villager %s: Popup freed on death" % name)
 		if OS.has_feature("editor"):
-			push_error("Villager %s: Popup Label node not found!" % name)
-		popup.queue_free()
-		return
-	label.text = popup_message
-	var viewport: Viewport = get_viewport()
-	var camera: Camera2D = viewport.get_camera_2d()
-	var screen_pos: Vector2
-	if camera:
-		if OS.has_feature("editor"):
-			print("Villager %s: Camera found, calculating screen position" % name)
-		screen_pos = global_position - camera.global_position + (viewport.get_visible_rect().size / 2)
-	else:
-		if OS.has_feature("editor"):
-			print("Villager %s: No camera found, using default viewport position" % name)
-		screen_pos = global_position
-	label.global_position = screen_pos
-	get_tree().current_scene.add_child(popup)
+			print("Villager %s: Died, Global.lost_villagers incremented to %d" % [name, Global.lost_villagers])
+		villager_died.emit(self)
+
+func reset(type: String = villager_type) -> void:
+	# Resets villager for reuse
+	villager_type = type
+	health = 100
+	is_extracted = false
+	visible = true
+	set_physics_process(true)
+	
+	# Reload villager data to update popup_message
+	var file: FileAccess = FileAccess.open("res://Data/villagers.json", FileAccess.READ)
+	if file:
+		var json_data = JSON.parse_string(file.get_as_text())
+		if json_data and json_data.has(villager_type):
+			var data: Dictionary = json_data[villager_type]
+			health = data.get("health", 100)
+			popup_message = data.get("popup_message", "Help me!")
+		file.close()
+	
+	# Reset popup
+	_setup_popup()
+	
 	if OS.has_feature("editor"):
-		print("Villager %s: Popup added to scene at %s" % [name, screen_pos])
-	var tween: Tween = create_tween()
-	tween.tween_property(label, "modulate:a", 1.0, 0.5)
-	tween.tween_interval(2.0)
-	tween.tween_property(label, "modulate:a", 0.0, 0.5)
-	tween.tween_callback(popup.queue_free)
-	tween.tween_interval(5.0)
-	tween.tween_callback(func(): can_trigger_popup = true)
-	if OS.has_feature("editor"):
-		print("Villager %s: Popup tween started" % name)
-
-func _on_area_entered(area: Area2D) -> void:
-	if is_extracted:
-		return
-	if area.is_in_group("monster_projectiles"):
-		var damage: float = area.damage if "damage" in area else 10.0
-		take_damage(damage)
-		if OS.has_feature("editor"):
-			print("Villager %s: Hit by monster projectile, damage=%s" % [name, damage])
-	elif area.is_in_group("healing_projectiles"):
-		var heal: float = area.heal_amount if "heal_amount" in area else 20.0
-		receive_heal(heal)
-		if OS.has_feature("editor"):
-			print("Villager %s: Hit by healing projectile, heal=%s" % [name, heal])
-	elif area.is_in_group("player"):
-		player_in_range = true
-		if OS.has_feature("editor"):
-			print("Villager %s: Player entered interaction area" % name)
-		show_popup()
-
-func _on_area_exited(area: Area2D) -> void:
-	if is_extracted:
-		return
-	if area.is_in_group("player"):
-		player_in_range = false
-		if OS.has_feature("editor"):
-			print("Villager %s: Player exited interaction area" % name)
-
-func _on_fear_area_body_entered(body: Node2D) -> void:
-	if body.is_in_group("monsters"):
-		fear_from(body.global_position)
+		print("Villager %s: Reset with type %s" % [name, villager_type])
+	update_navigation_target()

@@ -14,6 +14,7 @@ func _ready() -> void:
 	max_health = 20
 	collision_damage = 3
 	current_health = max_health
+	score_value = 25  # Sets monster's score value to 25
 	# bullet_scene already set in tscn to ghost_fire.tscn
 
 # Process ghost-specific behavior
@@ -29,7 +30,7 @@ func _cast() -> void:
 		push_warning("Ghost %s: Cannot cast—missing bullet_pool, muzzle, or target!" % name)
 		return
 	var ghost_fire: Area2D = bullet_pool.spawn()
-	
+
 	if ghost_fire:
 		ghost_fire.global_position = muzzle.global_position
 		var direction: Vector2 = muzzle.global_position.direction_to(target.global_position)

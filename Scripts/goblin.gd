@@ -14,6 +14,7 @@ func _ready() -> void:
 	max_health = 20
 	collision_damage = 3
 	current_health = max_health
+	score_value = 20  # Sets monster's score value to 20
 	# bullet_scene already set in tscn to dagger.tscn
 
 # Cast dagger projectile at target
@@ -23,7 +24,7 @@ func _cast() -> void:
 		push_warning("Goblin %s: Cannot cast—missing bullet_pool, muzzle, or target!" % name)
 		return
 	var dagger: Area2D = bullet_pool.spawn()
-	
+
 	if dagger:
 		dagger.global_position = muzzle.global_position
 		var direction: Vector2 = muzzle.global_position.direction_to(target.global_position)

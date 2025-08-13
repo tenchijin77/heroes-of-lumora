@@ -105,6 +105,8 @@ Villagers:
 
 Controls:
 
+global.gd is the script that handles updating the score labels, and awarding points, etc. This is a global super ready called Global.
+game_data.gd is a superready that handles the villager's information called GameData.
 
 Move: Arrow keys or WASD
 

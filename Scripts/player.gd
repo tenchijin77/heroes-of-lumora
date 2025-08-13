@@ -8,7 +8,7 @@ extends CharacterBody2D
 @export var firing_speed: float = 0.2
 @export var current_health: int = 100
 @export var max_health: int = 100
-@export var regeneration_per_second: float = 1.0  # Health regenerated per second
+@export var regeneration_per_second: float = 1.0 # Health regenerated per second
 var last_shoot_time: float
 
 @onready var sprite: Sprite2D = $Sprite2D
@@ -17,7 +17,7 @@ var last_shoot_time: float
 @onready var health_bar: ProgressBar = $health_bar
 @onready var regeneration_timer: Timer = $regeneration_timer
 @onready var player_damage_sound: AudioStreamPlayer2D = $player_damage_sound
-@onready var pickup_area: Area2D = $pickup_area  # New reference to pickup area
+@onready var pickup_area: Area2D = $pickup_area # New reference to pickup area
 
 var move_input: Vector2
 
@@ -52,14 +52,14 @@ func open_fire() -> void:
 	last_shoot_time = Time.get_unix_time_from_system()
 	var arrow = arrow_pool.spawn()
 	arrow.global_position = muzzle.global_position
-	arrow.owner_group = "player"  # Set owner_group on the projectile
+	arrow.owner_group = "player" # Set owner_group on the projectile
 	var mouse_position = get_global_mouse_position()
 	var mouse_direction = muzzle.global_position.direction_to(mouse_position)
 	arrow.move_direction = mouse_direction
-	print("Player: Spawned arrow %s, move_direction=%s, position=%s" % [arrow.name, arrow.move_direction, arrow.global_position])  # Debug log
+	print("Player: Spawned arrow %s, move_direction=%s, position=%s" % [arrow.name, arrow.move_direction, arrow.global_position]) # Debug log
 
 # Apply damage to player
-func take_damage(damage: int) -> void:
+func take_damage(damage: int, _projectile_instance) -> void:
 	current_health -= damage
 	if current_health <= 0:
 		_handle_game_over()
@@ -82,23 +82,20 @@ func _on_regeneration_timer_timeout() -> void:
 	current_health = min(current_health, max_health)
 	health_bar.value = current_health
 
-# Increment score via global
-func increment_score() -> void:
-	Global.increment_score()  # Call Global to handle increment and signal
-
 # Handle loot pickup when entering pickup area
 func _on_pickup_area_entered(area: Area2D) -> void:
 	if area.is_in_group("loot"):
-		Global.increment_coins()  # Call Global to handle increment and signal
-		print("Picked up coin! Coins: %d" % Global.coins_collected)  # Debug log
-		area.collect()  # Let coin handle sound and cleanup
+		Global.coins_collected += 1  # Increment coins directly
+		Global.emit_signal("coins_updated", Global.coins_collected)
+		print("Picked up coin! Coins: %d" % Global.coins_collected) # Debug log
+		area.collect() # Let coin handle sound and cleanup
 
 # Apply potion effect to player
 func apply_potion_effect(effect_type: String, effect_value: float, effect_duration: float) -> void:
 	match effect_type:
 		"heal":
 			current_health = min(current_health + int(effect_value), max_health)
-			health_bar.value = current_health  # Update UI for heal effect
+			health_bar.value = current_health # Update UI for heal effect
 		"speed_boost":
 			max_speed *= effect_value
 			_start_effect_timer(effect_duration, "max_speed", 1.0 / effect_value)
@@ -134,10 +131,10 @@ func heal(amount: int) -> void:
 
 # Handle game over logic when player's health hits zero
 func _handle_game_over() -> void:
-	Global.game_active = false  # Halt time updates
+	Global.game_active = false # Halt time updates
 	print("Game Over! Final Score: %d | Wave: %d | Coins: %d | Time: %s | Saved: %d | Lost: %d" % [
 		Global.current_score, Global.current_wave, Global.coins_collected, Global.format_time(Global.current_time_survived),
-		Global.saved_villagers, Global.lost_villagers])  # Debug final state
+		Global.saved_villagers, Global.lost_villagers]) # Debug final state
 	if get_tree():
 		if Global.is_high_score(Global.current_score):
 			get_tree().change_scene_to_file("res://Scenes/game_over.tscn")

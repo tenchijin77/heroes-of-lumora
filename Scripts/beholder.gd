@@ -14,6 +14,7 @@ func _ready() -> void:
 	max_health = 50  # Very tanky
 	collision_damage = 4
 	current_health = max_health
+	score_value = 45  # Sets monster's score value to 45
 	# bullet_scene already set in tscn to disintegration_ray.tscn
 
 # Cast disintegration_ray projectile at target
@@ -23,7 +24,7 @@ func _cast() -> void:
 		push_warning("Beholder %s: Cannot cast—missing bullet_pool, muzzle, or target!" % name)
 		return
 	var disintegration_ray: Area2D = bullet_pool.spawn()
-	
+
 	if disintegration_ray:
 		disintegration_ray.global_position = muzzle.global_position
 		var direction: Vector2 = muzzle.global_position.direction_to(target.global_position)
