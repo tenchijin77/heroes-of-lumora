@@ -3866,6 +3866,7 @@ z_index = 12
 position = Vector2(4238, 337)
 
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
+visible = false
 position = Vector2(6, 4)
 navigation_polygon = SubResource("NavigationPolygon_6iyac")
 

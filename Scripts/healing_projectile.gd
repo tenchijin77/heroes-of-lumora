@@ -4,8 +4,9 @@ extends "res://Scripts/projectile.gd"
 @export var heal_amount: int = 8
 
 func _ready() -> void:
-	if not is_connected("body_entered", Callable(self, "_on_body_entered")):
-		connect("body_entered", Callable(self, "_on_body_entered"))
+	# `is_connected` and `connect` is now more robust.
+	if not body_entered.is_connected(_on_body_entered):
+		body_entered.connect(_on_body_entered)
 
 func _on_body_entered(body: Node) -> void:
 	print("🟢 healing_projectile.gd _on_body_entered called: hit %s from group %s" % [body.name, owner_group])
@@ -17,7 +18,9 @@ func _on_body_entered(body: Node) -> void:
 			despawn()
 	elif body.is_in_group("monsters"):
 		if body.has_method("take_damage"):
-			body.take_damage(damage)
+			# This is the line that needs to be fixed.
+			# It now passes both the damage and a reference to itself.
+			body.take_damage(damage, self)
 			print("Healing projectile dealt %d damage to %s" % [damage, body.name])
 			despawn()
 	else:

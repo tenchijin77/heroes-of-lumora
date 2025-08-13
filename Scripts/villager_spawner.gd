@@ -88,6 +88,7 @@ func _spawn_villager() -> void:
 			get_tree().current_scene.add_child.call_deferred(villager)
 			if OS.has_feature("editor"):
 				print("Spawner: Spawned villager %s with type %s at %s" % [villager.name, villager.villager_type, villager.global_position])
+			# Connect the signals to the spawner's handler functions
 			if not villager.villager_died.is_connected(_on_villager_died):
 				villager.villager_died.connect(_on_villager_died.bind(villager))
 			if not villager.villager_extracted.is_connected(_on_villager_extracted):
@@ -97,20 +98,18 @@ func _spawn_villager() -> void:
 			push_error("VillagerSpawner: villager_pool is null!")
 
 func _on_villager_died(villager: Node2D) -> void:
-	# Handles villager death, freeing the node
+	# Increment the lost villagers counter and emit the update signal
+	Global.lost_villagers += 1
+	Global.villagers_updated.emit(Global.saved_villagers, Global.lost_villagers)
 	if OS.has_feature("editor"):
-		print("Villager died: %s" % villager.name)
-	villager.queue_free()
-	if OS.has_feature("editor"):
-		print("VillagerSpawner: Freed villager %s" % villager.name)
+		print("Villager died: %s, lost_villagers now %d" % [villager.name, Global.lost_villagers])
 
 func _on_villager_extracted(villager: Node2D) -> void:
-	# Handles villager extraction, freeing the node
+	# Increment the saved villagers counter and emit the update signal
+	Global.saved_villagers += 1
+	Global.villagers_updated.emit(Global.saved_villagers, Global.lost_villagers)
 	if OS.has_feature("editor"):
-		print("Villager extracted: %s" % villager.name)
-	villager.queue_free()
-	if OS.has_feature("editor"):
-		print("VillagerSpawner: Freed villager %s" % villager.name)
+		print("Villager extracted: %s, saved_villagers now %d" % [villager.name, Global.saved_villagers])
 
 func _get_random_spawn_position() -> Vector2:
 	# Returns a random spawn position within the forbidden zone or town rect
@@ -133,7 +132,7 @@ func _get_random_spawn_position() -> Vector2:
 			if OS.has_feature("editor"):
 				print("Spawner: Found valid RectangleShape2D, spawning inside it.")
 			return Vector2(randf_range(rect.position.x, rect.position.x + rect.size.x),
-						   randf_range(rect.position.y, rect.position.y + rect.size.y))
+							randf_range(rect.position.y, rect.position.y + rect.size.y))
 		else:
 			if OS.has_feature("editor"):
 				print("Spawner: Forbidden zone shape is not a RectangleShape2D or no shape found.")
@@ -141,4 +140,4 @@ func _get_random_spawn_position() -> Vector2:
 		if OS.has_feature("editor"):
 			print("Spawner: Could not find forbidden_zone node. Falling back to town_spawn_rect.")
 	return Vector2(randf_range(town_spawn_rect.position.x, town_spawn_rect.position.x + town_spawn_rect.size.x),
-				   randf_range(town_spawn_rect.position.y, town_spawn_rect.position.y + town_spawn_rect.size.y))
+					randf_range(town_spawn_rect.position.y, town_spawn_rect.position.y + town_spawn_rect.size.y))

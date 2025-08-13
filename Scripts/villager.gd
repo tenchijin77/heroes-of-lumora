@@ -17,12 +17,11 @@ signal villager_extracted(villager: Node2D)
 @onready var popup_timer: Timer = $popup_timer
 @onready var avoidance_ray: RayCast2D = $avoidance_ray
 
-var target_extraction_point: Node2D
-var is_extracted: bool = false
 var health: int = 100
 var popup_message: String = "Help me!"
 var popup_node: CanvasLayer
 var popup_label: Label
+var target_position: Vector2
 
 func _ready() -> void:
 	# Initialize villager in scene tree
@@ -127,25 +126,19 @@ func _setup_popup() -> void:
 			push_error("Villager %s: villager_popup.tscn not found!" % name)
 
 func _physics_process(delta: float) -> void:
-	# Move towards extraction point if not extracted
-	if is_extracted or not navigation_agent:
-		if OS.has_feature("editor"):
-			print("Villager %s: Skipping _physics_process: is_extracted=%s, navigation_agent=%s" % [name, is_extracted, navigation_agent])
-		return
-	
+	# Check if the villager has reached the final destination and is ready to be extracted
 	if navigation_agent.is_navigation_finished():
-		if OS.has_feature("editor"):
-			print("Villager %s: Navigation finished, checking for new target" % name)
-		update_navigation_target()
+		_on_navigation_finished()
 		return
-	
+
+	# If the villager is on a path, get the next point and move
 	var next_position: Vector2 = navigation_agent.get_next_path_position()
+	
+	# Add a check to update target if the path becomes invalid or is zero
 	if next_position == Vector2.ZERO:
-		if OS.has_feature("editor"):
-			print("Villager %s: No valid path, updating navigation target" % name)
 		update_navigation_target()
 		return
-	
+		
 	var direction: Vector2 = (next_position - global_position).normalized()
 	
 	# Update avoidance ray in direction of movement
@@ -162,9 +155,7 @@ func _physics_process(delta: float) -> void:
 	
 	velocity = direction * speed
 	move_and_slide()
-	if OS.has_feature("editor"):
-		print("Villager %s: Moving to %s with velocity %s" % [name, next_position, velocity])
-	
+
 	# Update popup position to follow villager
 	if popup_label:
 		var offset_y: float = -20.0
@@ -184,22 +175,33 @@ func _on_popup_timer_timeout() -> void:
 		if OS.has_feature("editor"):
 			print("Villager %s: Popup freed after timer timeout" % name)
 
+# This function is now responsible for handling extraction
+func _on_navigation_finished() -> void:
+	# New: Increment saved villagers
+	if Global.has_method("increment_saved_villagers"):
+		Global.increment_saved_villagers()
+	
+	# Emit the signal before freeing the node
+	villager_extracted.emit(self)
+	
+	# Use queue_free() to properly remove the node from the scene
+	queue_free()
+
 func update_navigation_target() -> void:
 	# Sets a random extraction point as navigation target
-	if is_extracted or not navigation_agent:
-		if OS.has_feature("editor"):
-			print("Villager %s: Skipping update_navigation_target: is_extracted=%s, navigation_agent=%s" % [name, is_extracted, navigation_agent])
+	if not navigation_agent:
 		return
 	
 	var extraction_points: Array = get_tree().get_nodes_in_group("extraction_points")
 	if OS.has_feature("editor"):
 		print("Villager %s: Found %d extraction points" % [name, extraction_points.size()])
 	if not extraction_points.is_empty():
-		target_extraction_point = extraction_points[randi() % extraction_points.size()] as Node2D
-		if target_extraction_point:
-			navigation_agent.set_target_position(target_extraction_point.global_position)
+		var random_target = extraction_points[randi() % extraction_points.size()] as Node2D
+		if random_target:
+			target_position = random_target.global_position
+			navigation_agent.set_target_position(target_position)
 			if OS.has_feature("editor"):
-				print("Villager %s: Navigation target set to %s at %s" % [name, target_extraction_point.name, target_extraction_point.global_position])
+				print("Villager %s: Navigation target set to %s at %s" % [name, random_target.name, target_position])
 		else:
 			if OS.has_feature("editor"):
 				push_error("Villager %s: Invalid extraction point!" % name)
@@ -207,57 +209,31 @@ func update_navigation_target() -> void:
 		if OS.has_feature("editor"):
 			push_error("Villager %s: No extraction points found!" % name)
 
-func _on_navigation_finished() -> void:
-	# Handles villager reaching extraction point
-	if is_extracted:
-		if OS.has_feature("editor"):
-			print("Villager %s: Already extracted, skipping _on_navigation_finished" % name)
-		return
-	
-	if target_extraction_point and global_position.distance_to(target_extraction_point.global_position) <= 50.0:
-		is_extracted = true
-		visible = false
-		set_physics_process(false)
-		Global.saved_villagers += 1
-		emit_signal("villagers_updated", Global.saved_villagers, Global.lost_villagers)
-		if popup_node:
-			popup_node.queue_free()
-			popup_node = null
-			popup_label = null
-			if OS.has_feature("editor"):
-				print("Villager %s: Popup freed on extraction" % name)
-		if OS.has_feature("editor"):
-			print("Villager %s: Reached extraction point %s at %s" % [name, target_extraction_point.name, target_extraction_point.global_position])
-			print("Villager %s: Global.saved_villagers incremented to %d" % [name, Global.saved_villagers])
-		villager_extracted.emit(self)
-	else:
-		update_navigation_target()
-		if OS.has_feature("editor"):
-			print("Villager %s: Navigation finished but not close enough to %s, updating target" % [name, target_extraction_point.name if target_extraction_point else "null"])
-
 func take_damage(damage: int, _projectile_instance):
 	# Applies damage and handles death
 	health -= damage
 	if OS.has_feature("editor"):
 		print("Villager %s: Took %d damage, health now %d" % [name, damage, health])
 	if health <= 0:
-		Global.lost_villagers += 1
-		emit_signal("villagers_updated", Global.saved_villagers, Global.lost_villagers)
+		# New: Increment lost villagers
+		if Global.has_method("increment_lost_villagers"):
+			Global.increment_lost_villagers()
+		
+		# A villager death has occurred, now emit the signal so other nodes can react.
 		if popup_node:
 			popup_node.queue_free()
 			popup_node = null
 			popup_label = null
 			if OS.has_feature("editor"):
 				print("Villager %s: Popup freed on death" % name)
-		if OS.has_feature("editor"):
-			print("Villager %s: Died, Global.lost_villagers incremented to %d" % [name, Global.lost_villagers])
+		
 		villager_died.emit(self)
+		queue_free()
 
 func reset(type: String = villager_type) -> void:
 	# Resets villager for reuse
 	villager_type = type
 	health = 100
-	is_extracted = false
 	visible = true
 	set_physics_process(true)
 	

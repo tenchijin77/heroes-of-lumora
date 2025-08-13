@@ -3,20 +3,22 @@
 
 extends Node
 
-signal villagers_updated(saved: int, lost: int)  # Signal for villager UI updates
-signal score_updated(score: int)  # Signal for score UI updates
-signal coins_updated(coins: int)  # Signal for coin UI updates
-signal wave_updated(wave: int)  # Signal for wave UI updates
-signal time_updated(time: String)  # Signal for time survived UI updates
+# Signals
+signal villagers_updated(saved: int, lost: int)
+signal score_updated(score: int)
+signal coins_updated(coins: int)
+signal wave_updated(wave: int)
+signal time_updated(time: String)
 
 var high_scores: Array[Dictionary] = []
 var current_score: int = 0
 var current_wave: int = 1
 var coins_collected: int = 0
 var current_time_survived: float = 0.0
-var saved_villagers: int = 0 # Track villagers that reached extraction points
-var lost_villagers: int = 0 # Track villagers killed by monsters
-var game_active: bool = true # Flag to control time updates (stop on game over)
+var saved_villagers: int = 0
+var lost_villagers: int = 0
+var game_active: bool = true
+
 
 # UI References (set in init_ui_labels after scene load)
 var score_label: Label
@@ -26,28 +28,37 @@ var coin_label: Label
 var saved_label: Label
 var lost_label: Label
 
+
 # Initialize game state and load high scores
 func _ready() -> void:
 	DirAccess.make_dir_absolute("user://saves/")
 	load_high_scores()
+	
 	# Connect signals to UI update functions
 	score_updated.connect(_on_score_updated)
 	coins_updated.connect(_on_coins_updated)
 	wave_updated.connect(_on_wave_updated)
 	time_updated.connect(_on_time_updated)
 	villagers_updated.connect(_on_villagers_updated)
+	
+	# Wait for the scene to be fully initialized before binding UI labels
+	await get_tree().process_frame
+	init_ui_labels()
+	
 
-# Bind UI labels and initialize values (called from main.gd _ready)
+# Bind UI labels and initialize values
 func init_ui_labels() -> void:
-	score_label = get_node("/root/main/CanvasLayer/VBoxContainer/score")
-	uptime_label = get_node("/root/main/CanvasLayer/VBoxContainer/uptime")
-	wave_label = get_node("/root/main/CanvasLayer/VBoxContainer/wave")
-	coin_label = get_node("/root/main/CanvasLayer/VBoxContainer/coins")
-	saved_label = get_node("/root/main/CanvasLayer/VBoxContainer/saved_villagers")
-	lost_label = get_node("/root/main/CanvasLayer/VBoxContainer/lost_villagers")
+	score_label = get_node_or_null("/root/main/CanvasLayer/VBoxContainer/score")
+	uptime_label = get_node_or_null("/root/main/CanvasLayer/VBoxContainer/uptime")
+	wave_label = get_node_or_null("/root/main/CanvasLayer/VBoxContainer/wave")
+	coin_label = get_node_or_null("/root/main/CanvasLayer/VBoxContainer/coins")
+	saved_label = get_node_or_null("/root/main/CanvasLayer/VBoxContainer/saved_villagers")
+	lost_label = get_node_or_null("/root/main/CanvasLayer/VBoxContainer/lost_villagers")
+	
 	if not score_label or not uptime_label or not wave_label or not coin_label or not saved_label or not lost_label:
 		push_error("Global: One or more UI labels not found—check paths in main.tscn")
 		return
+		
 	# Initialize UI with current values
 	_on_score_updated(current_score)
 	_on_coins_updated(coins_collected)
@@ -146,11 +157,25 @@ func reset() -> void:
 	current_time_survived = 0.0
 	saved_villagers = 0
 	lost_villagers = 0
-	game_active = true # Reset flag for new game
+	game_active = true
 	emit_signal("score_updated", current_score)
 	emit_signal("coins_updated", coins_collected)
 	emit_signal("wave_updated", current_wave)
 	emit_signal("time_updated", format_time(current_time_survived))
+	emit_signal("villagers_updated", saved_villagers, lost_villagers)
+
+
+# Public functions for other scripts to use
+func increment_wave() -> void:
+	current_wave += 1
+	emit_signal("wave_updated", current_wave)
+
+func increment_saved_villagers() -> void:
+	saved_villagers += 1
+	emit_signal("villagers_updated", saved_villagers, lost_villagers)
+
+func increment_lost_villagers() -> void:
+	lost_villagers += 1
 	emit_signal("villagers_updated", saved_villagers, lost_villagers)
 
 # UI Update Functions
@@ -160,7 +185,7 @@ func _on_score_updated(score: int) -> void:
 
 func _on_coins_updated(coins: int) -> void:
 	if coin_label:
-		coin_label.text = "Coin: %d" % coins
+		coin_label.text = "Coins: %d" % coins
 
 func _on_wave_updated(wave: int) -> void:
 	if wave_label:
