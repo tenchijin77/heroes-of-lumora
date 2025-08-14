@@ -9,7 +9,7 @@ radius = 14.0357
 
 [node name="boulder" type="Area2D"]
 collision_layer = 8
-collision_mask = 49
+collision_mask = 1073
 script = ExtResource("1_umxe1")
 damage = 20
 sound_stream = ExtResource("3_umxe1")

@@ -9,7 +9,7 @@ size = Vector2(30, 24)
 
 [node name="projectile" type="Area2D"]
 collision_layer = 8
-collision_mask = 49
+collision_mask = 1073
 script = ExtResource("1_tl4hk")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

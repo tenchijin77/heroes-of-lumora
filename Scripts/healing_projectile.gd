@@ -18,8 +18,6 @@ func _on_body_entered(body: Node) -> void:
 			despawn()
 	elif body.is_in_group("monsters"):
 		if body.has_method("take_damage"):
-			# This is the line that needs to be fixed.
-			# It now passes both the damage and a reference to itself.
 			body.take_damage(damage, self)
 			print("Healing projectile dealt %d damage to %s" % [damage, body.name])
 			despawn()

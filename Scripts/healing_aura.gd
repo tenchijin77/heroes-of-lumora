@@ -1,10 +1,9 @@
-#healing_aura.gd - healer's aura logic
+# healing_aura.gd - healer's aura logic
 extends Area2D
 
 @export var heal_amount: int = 4
 @export var heal_interval: float = 3.0
 @export var target_groups: Array[String] = ["healer", "friendly", "player"]
-
 @onready var heal_aura_timer: Timer = $heal_aura_timer
 @onready var aura_particles: Node2D = $aura_particles
 

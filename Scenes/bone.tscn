@@ -9,7 +9,7 @@ size = Vector2(12, 6)
 
 [node name="bone" type="Area2D"]
 collision_layer = 8
-collision_mask = 49
+collision_mask = 1073
 script = ExtResource("1_2e6wv")
 speed = 180.0
 damage = 5

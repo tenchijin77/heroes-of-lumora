@@ -8,6 +8,7 @@ signal villager_extracted(villager: Node2D)
 @export var villager_type: String = "villager_commoner_male"
 @export var avoidance_strength: float = 100.0 # Strength of avoidance steering
 @export var ray_length: float = 100.0 # Length of avoidance ray
+@export var max_health: int = 100 # Added for healer compatibility
 @onready var navigation_agent: NavigationAgent2D = $navigation_agent_2d
 @onready var sprite: Sprite2D = $sprite_2d
 @onready var popup_timer: Timer = $popup_timer
@@ -47,7 +48,8 @@ func _ready() -> void:
 			var json_data = JSON.parse_string(file.get_as_text())
 			if json_data and json_data.has(villager_type):
 				var data: Dictionary = json_data[villager_type]
-				health = data.get("health", 100)
+				max_health = data.get("max_health", 100) # Added max_health from data if available
+				health = max_health # Reset to max
 				popup_message = data.get("popup_message", "Help me!")
 			else:
 				push_error("Villager: Failed to load data for type %s from villagers.json!" % villager_type)
@@ -57,6 +59,7 @@ func _ready() -> void:
 		# Setup popup
 		_setup_popup()
 		add_to_group("villagers")
+
 func _setup_popup() -> void:
 	# Sets up the popup message
 	var popup_scene: PackedScene = preload("res://Assets/UI/villager_popup.tscn")
@@ -87,6 +90,7 @@ func _setup_popup() -> void:
 			push_error("Villager %s: Failed to instantiate villager_popup.tscn!" % name)
 	else:
 		push_error("Villager %s: villager_popup.tscn not found!" % name)
+
 func _physics_process(delta: float) -> void:
 	# Check if the villager has reached the final destination and is ready to be extracted
 	if navigation_agent.is_navigation_finished():
@@ -118,12 +122,14 @@ func _physics_process(delta: float) -> void:
 		else:
 			push_warning("Villager %s: sprite_2d is null, using fallback offset for popup!" % name)
 		popup_label.global_position = global_position + Vector2(-popup_label.size.x / 2, offset_y)
+
 func _on_popup_timer_timeout() -> void:
 	# Hides popup after 3 seconds
 	if popup_node:
 		popup_node.queue_free()
 		popup_node = null
 		popup_label = null
+
 # This function is now responsible for handling extraction
 func _on_navigation_finished() -> void:
 	# New: Increment saved villagers
@@ -133,6 +139,7 @@ func _on_navigation_finished() -> void:
 	villager_extracted.emit(self)
 	# Use queue_free() to properly remove the node from the scene
 	queue_free()
+
 func update_navigation_target() -> void:
 	# Sets a random extraction point as navigation target
 	if not navigation_agent:
@@ -147,6 +154,7 @@ func update_navigation_target() -> void:
 			push_error("Villager %s: Invalid extraction point!" % name)
 	else:
 		push_error("Villager %s: No extraction points found!" % name)
+
 func take_damage(damage: int, _projectile_instance):
 	# Applies damage and handles death
 	health -= damage
@@ -161,10 +169,11 @@ func take_damage(damage: int, _projectile_instance):
 			popup_label = null
 		villager_died.emit(self)
 		queue_free()
+
 func reset(type: String = villager_type) -> void:
 	# Resets villager for reuse
 	villager_type = type
-	health = 100
+	health = max_health # Reset to max_health
 	visible = true
 	set_physics_process(true)
 	# Reload villager data to update popup_message
@@ -173,9 +182,20 @@ func reset(type: String = villager_type) -> void:
 		var json_data = JSON.parse_string(file.get_as_text())
 		if json_data and json_data.has(villager_type):
 			var data: Dictionary = json_data[villager_type]
-			health = data.get("health", 100)
+			max_health = data.get("max_health", 100) # Update max_health
+			health = max_health
 			popup_message = data.get("popup_message", "Help me!")
 		file.close()
 	# Reset popup
 	_setup_popup()
 	update_navigation_target()
+
+func get_health() -> int:
+	return health
+
+func get_max_health() -> int:
+	return max_health
+
+func heal(amount: int) -> void:
+	health = clamp(health + amount, 0, max_health)
+	print("Villager %s healed for %d → current_health = %d" % [name, amount, health])

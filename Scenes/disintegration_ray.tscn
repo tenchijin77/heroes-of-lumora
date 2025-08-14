@@ -9,7 +9,7 @@ radius = 14.0
 
 [node name="disintegration_ray" type="Area2D"]
 collision_layer = 8
-collision_mask = 49
+collision_mask = 1073
 script = ExtResource("1_2emgx")
 speed = 500.0
 damage = 25

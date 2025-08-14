@@ -9,7 +9,7 @@ radius = 7.0
 
 [node name="death_bolt" type="Area2D"]
 collision_layer = 8
-collision_mask = 49
+collision_mask = 1073
 script = ExtResource("1_phk3b")
 speed = 350.0
 damage = 28

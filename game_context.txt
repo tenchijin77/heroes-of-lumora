@@ -2,8 +2,6 @@ Game: Heroes of Lumora: a bullet hell game, similar to the idea of vampire survi
 
 GitHub Repo: https://github.com/tenchijin77/heroes-of-lumora
 
-Current GitHub commit hash: ae36623
-
 Trello board for HoL:
 
 https://trello.com/invite/b/687dfb8c9094426910d1698c/ATTI96afa298a949ce1898a6425105bdf0f79F074F7D/heroes-of-lumora

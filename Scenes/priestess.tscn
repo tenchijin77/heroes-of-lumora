@@ -29,13 +29,11 @@ shader_parameter/pulse_speed = 2.0
 shader_parameter/max_alpha = 0.1
 
 [node name="priestess" type="CharacterBody2D" groups=["healer"]]
-collision_layer = 32
-collision_mask = 538
+collision_layer = 1024
+collision_mask = 26
 script = ExtResource("1_ewup4")
 max_speed = 30.0
-attack_range = 125.0
 heal_rate = 4.0
-heal_range = 150.0
 current_health = 50
 max_health = 50
 projectile_scene = ExtResource("4_6h5py")
@@ -85,9 +83,11 @@ shape = SubResource("CircleShape2D_dmkvq")
 [node name="patrol_timer" type="Timer" parent="."]
 
 [node name="heal_aura" type="Area2D" parent="."]
+collision_layer = 33
 script = ExtResource("5_2kld1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="heal_aura"]
+visible = false
 shape = SubResource("CircleShape2D_6h5py")
 
 [node name="heal_aura_timer" type="Timer" parent="heal_aura"]

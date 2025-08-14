@@ -3731,13 +3731,19 @@ text = "Villagers Lost: 0"
 [node name="enemy_spawner" parent="." instance=ExtResource("5_kry3j")]
 spawn_radius = 45.0
 use_fixed_points = true
-fixed_points_paths = Array[NodePath]([NodePath("../SpawnPoint1"), NodePath("../SpawnPoint2")])
+fixed_points_paths = Array[NodePath]([NodePath("../SpawnPoint1"), NodePath("../SpawnPoint2"), NodePath("../SpawnPoint3"), NodePath("../SpawnPoint4")])
 
 [node name="SpawnPoint1" type="Node2D" parent="."]
 position = Vector2(-1086, 438)
 
 [node name="SpawnPoint2" type="Node2D" parent="."]
 position = Vector2(1050, -1084)
+
+[node name="SpawnPoint3" type="Node2D" parent="."]
+position = Vector2(-4112, 342)
+
+[node name="SpawnPoint4" type="Node2D" parent="."]
+position = Vector2(1093, -1962)
 
 [node name="DirectionalLight2D" type="DirectionalLight2D" parent="."]
 energy = 0.43
@@ -3826,12 +3832,12 @@ current_health = 20
 max_health = 20
 
 [node name="guard4" parent="." instance=ExtResource("7_6bp64")]
-position = Vector2(655, 632)
+position = Vector2(986, 2845)
 current_health = 20
 max_health = 20
 
 [node name="guard5" parent="." instance=ExtResource("7_6bp64")]
-position = Vector2(778, 630)
+position = Vector2(4198, 278)
 current_health = 20
 max_health = 20
 
@@ -3862,9 +3868,19 @@ max_health = 20
 
 [node name="priestess" parent="." instance=ExtResource("11_d1ilt")]
 position = Vector2(422, 337)
+max_speed = 40.0
+heal_rate = 2.0
+current_health = 25
+max_health = 25
+projectile_scene = null
 
 [node name="priestess2" parent="." instance=ExtResource("11_d1ilt")]
 position = Vector2(935, 340)
+max_speed = 40.0
+heal_rate = 2.0
+current_health = 25
+max_health = 25
+projectile_scene = null
 
 [node name="extraction_point" type="Marker2D" parent="." groups=["extraction_points"]]
 z_index = 12
