@@ -1,14 +1,14 @@
-#main_menu.gd - handles main menu interactions
+# main_menu.gd - handles main menu interactions
 extends Control
 
-@onready var menu_container : VBoxContainer = $menu_container
-@onready var start_button : Button = $menu_container/start_button
-@onready var skip_button : Button = $menu_container/skip_button
-@onready var scores_button : Button = $menu_container/scores_button
-@onready var quit_button : Button = $menu_container/quit_button
-@onready var background_music : AudioStreamPlayer = $background_music
+@onready var menu_container: VBoxContainer = $menu_container
+@onready var start_button: Button = $menu_container/start_button
+@onready var skip_button: Button = $menu_container/skip_button
+@onready var scores_button: Button = $menu_container/scores_button
+@onready var quit_button: Button = $menu_container/quit_button
+@onready var background_music: AudioStreamPlayer = $background_music
 
-func _ready():
+func _ready() -> void:
 	if not menu_container:
 		push_error("MainMenu: menu_container is null!")
 	if not start_button:
@@ -22,15 +22,18 @@ func _ready():
 		print("MainMenu: Playing background music")
 	if start_button:
 		start_button.grab_focus()
+	# Hide UI on main menu
+	if Global and Global.has_node("UI"):
+		Global.ui.visible = false
 
-func _on_start_button_pressed():
+func _on_start_button_pressed() -> void:
 	get_tree().change_scene_to_file("res://Scenes/intro_scene.tscn")
 
-func _on_skip_button_pressed():
+func _on_skip_button_pressed() -> void:
 	get_tree().change_scene_to_file("res://Scenes/main.tscn")
 
-func _on_scores_button_pressed():
+func _on_scores_button_pressed() -> void:
 	get_tree().change_scene_to_file("res://Scenes/game_over2.tscn")
 
-func _on_quit_button_pressed():
+func _on_quit_button_pressed() -> void:
 	get_tree().quit()

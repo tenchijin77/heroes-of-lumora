@@ -19,7 +19,7 @@ radius = 173.072
 
 [node name="guard" type="CharacterBody2D" groups=["friendly"]]
 collision_layer = 32
-collision_mask = 538
+collision_mask = 539
 script = ExtResource("1_mk1iy")
 current_health = 200
 max_health = 200

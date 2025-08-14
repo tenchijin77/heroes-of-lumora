@@ -34,27 +34,21 @@ extends Node
 @onready var spawn_timer: Timer = $spawn_timer
 @onready var wave_timer: Timer = $wave_timer
 @onready var player = get_tree().get_first_node_in_group("player")
-@onready var current_wave_label: Label = get_node("/root/main/CanvasLayer/VBoxContainer/wave")
 
 var mob_pools: Dictionary = {}
 var fixed_points_nodes: Array[Node2D] = []
 var total_weight: float = 0.0
-
 var current_spawn_multiplier: float = 1.0
 var current_wave: int = 1
 var current_mobs_per_spawn: int = 1
 
-# Initialize spawner, set up pools, and start timers
 func _ready() -> void:
-	# Initial setup for monster pools
+	_calculate_total_weight()
 	for config in monster_configs:
-		total_weight += config.weight
 		var pool = NodePool.new()
 		add_child(pool)
 		pool.node_scene = config.scene
 		mob_pools[config.scene.resource_path] = pool
-
-	# Setup fixed spawn points
 	if use_fixed_points:
 		for path in fixed_points_paths:
 			var node = get_node(path)
@@ -62,32 +56,26 @@ func _ready() -> void:
 				fixed_points_nodes.append(node as Node2D)
 			else:
 				push_error("Fixed point node not found at path: %s" % path)
-
-	# Check player and label references
 	if not player:
 		push_error("Spawner: Player reference is null! Make sure player is in 'player' group.")
 		set_process_mode(Node.PROCESS_MODE_DISABLED)
-	if not current_wave_label:
-		push_warning("Spawner: 'current_wave_label' is null! Check path /root/main/CanvasLayer/VBoxContainer/wave")
-
-	# Initialize wave and spawn logic
 	current_spawn_multiplier = initial_spawn_multiplier
 	current_mobs_per_spawn = initial_mobs_per_spawn
 	_update_spawn_timer_interval()
 	print("Initial spawn interval: %.2f seconds." % spawn_timer.wait_time)
-
-	# Connect timers safely
 	if not spawn_timer.timeout.is_connected(_on_spawn_timer_timeout):
 		spawn_timer.timeout.connect(_on_spawn_timer_timeout)
 	if not wave_timer.timeout.is_connected(_on_wave_timer_timeout):
 		wave_timer.timeout.connect(_on_wave_timer_timeout)
 	print("Wave timer set for %.1f minutes." % (wave_timer.wait_time / 60.0))
+	Global.current_wave = current_wave
+	Global.emit_signal("wave_updated", current_wave)  # Emit initial wave
 
-	# Initial label update
-	_update_wave_label()
-	Global.current_wave = current_wave  # Sync initial wave to global
+func _calculate_total_weight() -> void:
+	total_weight = 0.0
+	for config in monster_configs:
+		total_weight += config.weight
 
-# Update spawn timer interval based on multiplier
 func _update_spawn_timer_interval() -> void:
 	var effective_min: float = max(0.1, min_spawn_time * current_spawn_multiplier)
 	var effective_max: float = max(effective_min + 0.1, max_spawn_time * current_spawn_multiplier)
@@ -96,22 +84,12 @@ func _update_spawn_timer_interval() -> void:
 	print("Spawn interval updated to %.2f (Range: %.2f-%.2f, Multiplier: %.2f)." % [
 		spawn_timer.wait_time, effective_min, effective_max, current_spawn_multiplier])
 
-# Handle wave timer timeout to advance wave
 func _on_wave_timer_timeout() -> void:
-	Global.increment_wave()  # Use global increment to emit signal for UI
-	current_wave = Global.current_wave  # Sync local if needed (optional, can remove if using Global everywhere)
+	Global.increment_wave()
+	current_wave = Global.current_wave
 	print("--- Wave %d Started! ---" % current_wave)
-	_update_wave_label()
 	_increase_spawn_rate()
 
-# Update wave label display
-func _update_wave_label() -> void:
-	if current_wave_label:
-		current_wave_label.text = "Wave: %d" % current_wave
-	else:
-		push_warning("Spawner: 'current_wave_label' is not set or found.")
-
-# Increase spawn rate for next wave
 func _increase_spawn_rate() -> void:
 	current_spawn_multiplier *= (1.0 - spawn_rate_increase_per_wave)
 	current_spawn_multiplier = max(min_multiplier_limit, current_spawn_multiplier)
@@ -119,7 +97,6 @@ func _increase_spawn_rate() -> void:
 	_update_spawn_timer_interval()
 	print("Wave %d: Spawn multiplier=%.2f, Mobs per spawn=%d" % [current_wave, current_spawn_multiplier, current_mobs_per_spawn])
 
-# Spawn a single monster
 func _spawn_monster() -> void:
 	var monster_scene: PackedScene = _select_weighted_scene()
 	if not monster_scene:
@@ -128,12 +105,10 @@ func _spawn_monster() -> void:
 	if not player:
 		push_error("Spawner: Player reference is null!")
 		return
-
 	var monster: CharacterBody2D = mob_pools[monster_scene.resource_path].spawn()
 	if not monster:
 		push_error("Spawner: Failed to spawn monster from pool!")
 		return
-
 	var spawn_pos: Vector2 = _get_spawn_position()
 	var shape: Shape2D = monster.collision_shape.shape if monster.collision_shape else null
 	var attempts: int = 0
@@ -145,33 +120,24 @@ func _spawn_monster() -> void:
 	if attempts >= 10:
 		push_warning("Spawner: Could not find valid spawn position after 10 attempts!")
 		return
-
 	monster.global_position = spawn_pos
 	print("Monster %s spawned at: %s" % [monster.name, monster.global_position])
-	# Removed: monster.player_direction = spawn_pos.direction_to(player.global_position)
-	# Reason: monsters.gd uses target_direction for dynamic targeting, making player_direction redundant
-
 	get_parent().add_child(monster)
 	monster.visible = true
 	if monster.has_method("reset"):
 		monster.reset()
-
-	# Connect signals
 	if monster.has_signal("mob_died") and player.has_method("increment_score") and not monster.is_connected("mob_died", Callable(player, "increment_score")):
 		monster.mob_died.connect(Callable(player, "increment_score"))
 	else:
 		push_warning("Monster %s or player: Missing 'mob_died' signal or 'increment_score' method." % monster.name)
-
 	if monster.has_signal("mob_died") and not monster.is_connected("mob_died", _on_mob_died):
 		var connection_result = monster.mob_died.connect(_on_mob_died.bind(monster))
 		if connection_result != OK:
 			print("Failed to connect mob_died for %s, error: %s" % [monster.name, connection_result])
 		else:
 			print("Connected mob_died for %s" % monster.name)
-
 	print("Spawner: Spawned %s at %s" % [monster.name, spawn_pos])
 
-# Check if position is free of obstacles (layer 5) using shape query
 func _is_obstacle_free(position: Vector2, shape: Shape2D) -> bool:
 	var space: PhysicsDirectSpaceState2D = get_viewport().get_world_2d().direct_space_state
 	var shape_query: PhysicsShapeQueryParameters2D = PhysicsShapeQueryParameters2D.new()
@@ -184,7 +150,6 @@ func _is_obstacle_free(position: Vector2, shape: Shape2D) -> bool:
 		return false
 	return true
 
-# Check if position is free of forbidden zone (layer 8) using shape query
 func _is_forbidden_free(position: Vector2, shape: Shape2D) -> bool:
 	var space: PhysicsDirectSpaceState2D = get_viewport().get_world_2d().direct_space_state
 	var shape_query: PhysicsShapeQueryParameters2D = PhysicsShapeQueryParameters2D.new()
@@ -197,7 +162,6 @@ func _is_forbidden_free(position: Vector2, shape: Shape2D) -> bool:
 		return false
 	return true
 
-# Select a monster scene based on weights
 func _select_weighted_scene() -> PackedScene:
 	var rand: float = randf() * total_weight
 	var cumulative: float = 0.0
@@ -207,7 +171,6 @@ func _select_weighted_scene() -> PackedScene:
 			return config.scene
 	return null
 
-# Get a spawn position, either fixed or edge-based
 func _get_spawn_position() -> Vector2:
 	if use_fixed_points and not fixed_points_nodes.is_empty():
 		var point: Node2D = fixed_points_nodes[randi() % fixed_points_nodes.size()]
@@ -227,23 +190,21 @@ func _get_spawn_position() -> Vector2:
 			3: pos = Vector2(center.x + randf_range(-viewport_rect.size.x / 2, viewport_rect.size.x / 2), center.y + viewport_rect.size.y / 2 + margin)
 		return pos + Vector2(randf_range(-spawn_radius, spawn_radius), randf_range(-spawn_radius, spawn_radius))
 
-# Handle spawn timer timeout to spawn monsters
 func _on_spawn_timer_timeout() -> void:
 	for i: int in range(current_mobs_per_spawn):
 		_spawn_monster()
 	_update_spawn_timer_interval()
 
-# Handle mob death to drop coins
 func _on_mob_died(mob: Node2D) -> void:
 	if randf() < coin_drop_chance:
 		var drop_position: Vector2 = mob.global_position
-		var coin_count: int = randi_range(coin_drop_amount_range.x, coin_drop_amount_range.y)  # Random 1-4
+		var coin_count: int = randi_range(coin_drop_amount_range.x, coin_drop_amount_range.y)
 		for i in range(coin_count):
 			var coin: Area2D = coin_scene.instantiate() as Area2D
 			if coin:
 				coin.collision_layer = 256  # Layer 9 (loot)
 				coin.collision_mask = 1    # Layer 1 (player)
-				coin.global_position = drop_position + Vector2(randf_range(-20.0, 20.0), randf_range(-20.0, 20.0))  # Slight scatter
+				coin.global_position = drop_position + Vector2(randf_range(-20.0, 20.0), randf_range(-20.0, 20.0))
 				get_parent().add_child(coin)
 				print("Dropped %d coins at %s (total %d)" % [coin_count, coin.global_position, i + 1])
 			else:

@@ -21,6 +21,7 @@ Global="*res://Scripts/global.gd"
 DialogicManager="*res://Scripts/dialogic.gd"
 Dialogic="*res://addons/dialogic/Core/DialogicGameHandler.gd"
 GameData="*res://Scripts/game_data.gd"
+UI="*res://Scenes/ui.tscn"
 
 [debug]
 

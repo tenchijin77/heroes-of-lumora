@@ -19,6 +19,7 @@ bg_color = Color(0.94902, 0, 0, 1)
 [node name="ghost" type="CharacterBody2D" groups=["monsters"]]
 collision_layer = 2
 collision_mask = 631
+motion_mode = 1
 script = ExtResource("1_3btnm")
 max_speed = 25.0
 current_health = 30

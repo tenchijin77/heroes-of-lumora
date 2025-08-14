@@ -35,20 +35,23 @@ completed:
 -add npcs for villagers; make them flee to exit points, and the player has to protect them
 -add portals (spawn points) that the enemies spawn from (possible idea)
 -move spawn points so the enemies spawn further from the town and move towards it from multiple directions
+-add a messenger that runs to town before the enemies show up announcing their arrival
 
 to do: (in order of importance)
-
+-move all ui elements into a ui.tscn for a persistent UI
+-update villagers to start spawning in at wave 2, with 100 villager total, counting down.
+-add walls and camera boundaries at world edge 
 -continue expanding the tilemap for the first level
+-add reinforcements on a timer (guards/healers) and add the ability to buy more in the shop (need to limit it to prevent overpowering the player)
+-add particle effects to the healer's aura (green circle that starts at the player, then expands to the end of the aura with particles and loops
 -add particle effects to player and monster projectile attacks
--add an npc vendor that the player can buy upgrades from
+-add a store with an npc vendor (Timot the villager) that the player can buy upgrades from
 -add new weapons or spell pickups for the player
 -eventually add npcs to introduce famous npcs from aldenexia
--move all ui elements into a ui.tscn for a persistent UI
--update villagers to start spawning in at wave 2, with 100 villager total, counting down. 
 -add boss monsters, starting every 4 waves
--add reinforcements on a timer (guards/healers) and add the ability to buy more in the shop (need to limit it to prevent overpowering the player)
--add walls and camera boundaries at world edge
--add particle effects to the healer's aura (green circle that starts at the player, then expands to the end of the aura with particles and loops
+
+
+
 
 sites for assets:
 

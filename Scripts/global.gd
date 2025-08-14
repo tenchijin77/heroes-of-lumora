@@ -1,6 +1,4 @@
-# global.gd
-# Manages global game state (scores, coins, waves, time, villagers) and in-game UI updates for labels in main.tscn.
-
+# global.gd - manages global game state and emits signals for UI updates
 extends Node
 
 # Signals
@@ -19,54 +17,10 @@ var saved_villagers: int = 0
 var lost_villagers: int = 0
 var game_active: bool = true
 
-
-# UI References (set in init_ui_labels after scene load)
-var score_label: Label
-var uptime_label: Label
-var wave_label: Label
-var coin_label: Label
-var saved_label: Label
-var lost_label: Label
-
-
-# Initialize game state and load high scores
 func _ready() -> void:
 	DirAccess.make_dir_absolute("user://saves/")
 	load_high_scores()
-	
-	# Connect signals to UI update functions
-	score_updated.connect(_on_score_updated)
-	coins_updated.connect(_on_coins_updated)
-	wave_updated.connect(_on_wave_updated)
-	time_updated.connect(_on_time_updated)
-	villagers_updated.connect(_on_villagers_updated)
-	
-	# Wait for the scene to be fully initialized before binding UI labels
-	await get_tree().process_frame
-	init_ui_labels()
-	
 
-# Bind UI labels and initialize values
-func init_ui_labels() -> void:
-	score_label = get_node_or_null("/root/main/CanvasLayer/VBoxContainer/score")
-	uptime_label = get_node_or_null("/root/main/CanvasLayer/VBoxContainer/uptime")
-	wave_label = get_node_or_null("/root/main/CanvasLayer/VBoxContainer/wave")
-	coin_label = get_node_or_null("/root/main/CanvasLayer/VBoxContainer/coins")
-	saved_label = get_node_or_null("/root/main/CanvasLayer/VBoxContainer/saved_villagers")
-	lost_label = get_node_or_null("/root/main/CanvasLayer/VBoxContainer/lost_villagers")
-	
-	if not score_label or not uptime_label or not wave_label or not coin_label or not saved_label or not lost_label:
-		push_error("Global: One or more UI labels not found—check paths in main.tscn")
-		return
-		
-	# Initialize UI with current values
-	_on_score_updated(current_score)
-	_on_coins_updated(coins_collected)
-	_on_wave_updated(current_wave)
-	_on_time_updated(format_time(current_time_survived))
-	_on_villagers_updated(saved_villagers, lost_villagers)
-
-# Update time only if game is active
 func _process(delta: float) -> void:
 	if game_active:
 		current_time_survived += delta
@@ -90,17 +44,13 @@ func load_high_scores() -> void:
 						"lost_villagers": int(round(item.get("lost_villagers", 0.0)))
 					}
 					high_scores.append(entry)
-			if OS.has_feature("editor"):
-				print("Global: Loaded high scores: %s" % JSON.stringify(high_scores))
-		else:
-			high_scores = []
-			if OS.has_feature("editor"):
-				print("Global: No valid high scores data, initialized empty array")
-		file.close()
+		if OS.has_feature("editor"):
+			print("Global: Loaded high scores: %s" % JSON.stringify(high_scores))
 	else:
 		high_scores = []
 		if OS.has_feature("editor"):
-			print("Global: No high_scores.json found, initialized empty array")
+			print("Global: No valid high scores data, initialized empty array")
+	file.close()
 
 func save_high_scores() -> void:
 	var dir: DirAccess = DirAccess.open("user://")
@@ -114,7 +64,6 @@ func save_high_scores() -> void:
 	else:
 		push_error("Global: Failed to save high_scores.json")
 
-# Add a new score with initials, wave, coins, villagers, and time survived, keeping top 10
 func add_high_score(score: int, initials: String, wave: int, coins: int, time_survived: float, saved_villagers: int, lost_villagers: int) -> void:
 	if initials.length() > 3:
 		initials = initials.substr(0, 3)
@@ -137,19 +86,16 @@ func add_high_score(score: int, initials: String, wave: int, coins: int, time_su
 	if OS.has_feature("editor"):
 		print("Global: Added high score entry: %s" % entry)
 
-# Check if score qualifies for top 10
 func is_high_score(score: int) -> bool:
 	if high_scores.size() < 10:
 		return true
 	return score > high_scores[-1].score
 
-# Format time in seconds to MM:SS for display
 func format_time(seconds: float) -> String:
 	var minutes: int = int(seconds / 60)
 	var secs: int = int(seconds) % 60
 	return "%02d:%02d" % [minutes, secs]
 
-# Reset game state on restart
 func reset() -> void:
 	current_score = 0
 	current_wave = 1
@@ -164,7 +110,6 @@ func reset() -> void:
 	emit_signal("time_updated", format_time(current_time_survived))
 	emit_signal("villagers_updated", saved_villagers, lost_villagers)
 
-
 # Public functions for other scripts to use
 func increment_wave() -> void:
 	current_wave += 1
@@ -177,26 +122,3 @@ func increment_saved_villagers() -> void:
 func increment_lost_villagers() -> void:
 	lost_villagers += 1
 	emit_signal("villagers_updated", saved_villagers, lost_villagers)
-
-# UI Update Functions
-func _on_score_updated(score: int) -> void:
-	if score_label:
-		score_label.text = "Score: %d" % score
-
-func _on_coins_updated(coins: int) -> void:
-	if coin_label:
-		coin_label.text = "Coins: %d" % coins
-
-func _on_wave_updated(wave: int) -> void:
-	if wave_label:
-		wave_label.text = "Wave: %d" % wave
-
-func _on_time_updated(time: String) -> void:
-	if uptime_label:
-		uptime_label.text = "Time: %s" % time
-
-func _on_villagers_updated(saved: int, lost: int) -> void:
-	if saved_label:
-		saved_label.text = "Saved Villagers: %d" % saved
-	if lost_label:
-		lost_label.text = "Lost Villagers: %d" % lost
