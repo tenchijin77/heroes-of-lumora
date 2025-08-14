@@ -147,6 +147,7 @@ func _spawn_monster() -> void:
 		return
 
 	monster.global_position = spawn_pos
+	print("Monster %s spawned at: %s" % [monster.name, monster.global_position])
 	# Removed: monster.player_direction = spawn_pos.direction_to(player.global_position)
 	# Reason: monsters.gd uses target_direction for dynamic targeting, making player_direction redundant
 

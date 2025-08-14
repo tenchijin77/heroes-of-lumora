@@ -1,10 +1,7 @@
 # monsters.gd
 # Base script for monster behavior, targeting nearest friendly or player.
-
 extends CharacterBody2D
-
 signal mob_died
-
 @export var max_speed: float = 35.0
 @export var acceleration: float = 10.0
 @export var drag: float = 0.9
@@ -15,7 +12,6 @@ signal mob_died
 @export var max_health: int = 15
 @export var bullet_scene: PackedScene
 @export var score_value: int = 10 # Points awarded when killed by player
-
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var avoidance_ray: RayCast2D = $avoidance_ray
 @onready var muzzle: Node2D = $muzzle
@@ -23,15 +19,15 @@ signal mob_died
 @onready var potion_pool: NodePool = $potion_pool
 @onready var health_bar: ProgressBar = $health_bar
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
-
 var potions_data: Dictionary = {}
 var target: Node2D
 var target_distance: float
 var target_direction: Vector2
 var last_shoot_time: float = 0.0
-var last_damage_source: Node = null  # Track the last entity to damage this monster
+var last_damage_source: Node = null # Track the last entity to damage this monster
 
 func _ready() -> void:
+	print("Monster %s initial position: %s" % [name, global_position])
 	add_to_group("monsters")
 	var file: FileAccess = FileAccess.open("res://Data/potions.json", FileAccess.READ)
 	if file:
@@ -39,17 +35,14 @@ func _ready() -> void:
 		file.close()
 	else:
 		print("Monster %s: Failed to open potions.json!" % name)
-
 	if bullet_scene:
 		bullet_pool.node_scene = bullet_scene
 	else:
 		push_warning("Monster %s: bullet_scene not set!" % name)
-
 	if not health_bar:
 		push_error("Monster %s: health_bar is null!" % name)
 	if not collision_shape:
 		push_error("Monster %s: collision_shape is null!" % name)
-
 	_find_nearest_target()
 	reset()
 
@@ -67,22 +60,22 @@ func reset() -> void:
 	set_deferred("process_mode", Node.PROCESS_MODE_INHERIT)
 	if collision_shape:
 		collision_shape.set_deferred("disabled", false)
-	global_position = Vector2.ZERO
+	# Conditionally reset position only if reused node is at origin (pool-specific)
+	if get_parent() is NodePool and global_position == Vector2.ZERO:
+		global_position = Vector2.ZERO  # Only for reused nodes at origin
+	# Otherwise, preserve the spawner-set position
 
 func _process(_delta: float) -> void:
 	_find_nearest_target()
 	if not target:
 		return
-
 	target_distance = global_position.distance_to(target.global_position)
 	target_direction = global_position.direction_to(target.global_position)
 	sprite.flip_h = target_direction.x > 0
 	_update_avoidance_ray(target, shoot_range)
-
 	if target_distance < shoot_range and _has_clear_line_to_target(target):
 		if Time.get_unix_time_from_system() - last_shoot_time > shoot_rate:
 			_cast()
-
 	_move_wobble()
 
 func _cast() -> void:
@@ -99,6 +92,7 @@ func _cast() -> void:
 		push_warning("Monster %s: Failed to spawn projectile!" % name)
 
 func _physics_process(_delta: float) -> void:
+	print("Monster %s current position: %s" % [name, global_position])
 	if not target:
 		return
 	var move_direction = target_direction
@@ -162,7 +156,6 @@ func take_damage(damage: int, projectile_instance: Node):
 		health_bar.value = current_health
 	if current_health <= 0:
 		mob_died.emit()
-		
 		if is_instance_valid(projectile_instance) and projectile_instance.owner_group == "player":
 			Global.current_score += score_value
 			Global.emit_signal("score_updated", Global.current_score)
