@@ -35,11 +35,13 @@ completed:
 -add npcs for villagers; make them flee to exit points, and the player has to protect them
 -add portals (spawn points) that the enemies spawn from (possible idea)
 -move spawn points so the enemies spawn further from the town and move towards it from multiple directions
--add a messenger that runs to town before the enemies show up announcing their arrival
+-move all ui elements into a ui.tscn for a persistent UI
+
 
 to do: (in order of importance)
--move all ui elements into a ui.tscn for a persistent UI
+
 -update villagers to start spawning in at wave 2, with 100 villager total, counting down.
+-add a messenger that runs to town before the enemies show up announcing their arrival
 -add walls and camera boundaries at world edge 
 -continue expanding the tilemap for the first level
 -add reinforcements on a timer (guards/healers) and add the ability to buy more in the shop (need to limit it to prevent overpowering the player)
