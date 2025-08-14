@@ -27,7 +27,6 @@ var last_shoot_time: float = 0.0
 var last_damage_source: Node = null # Track the last entity to damage this monster
 
 func _ready() -> void:
-	print("Monster %s initial position: %s" % [name, global_position])
 	add_to_group("monsters")
 	var file: FileAccess = FileAccess.open("res://Data/potions.json", FileAccess.READ)
 	if file:
@@ -62,8 +61,7 @@ func reset() -> void:
 		collision_shape.set_deferred("disabled", false)
 	# Conditionally reset position only if reused node is at origin (pool-specific)
 	if get_parent() is NodePool and global_position == Vector2.ZERO:
-		global_position = Vector2.ZERO  # Only for reused nodes at origin
-	# Otherwise, preserve the spawner-set position
+		global_position = Vector2.ZERO  # This only for reused nodes at origin
 
 func _process(_delta: float) -> void:
 	_find_nearest_target()
@@ -92,7 +90,6 @@ func _cast() -> void:
 		push_warning("Monster %s: Failed to spawn projectile!" % name)
 
 func _physics_process(_delta: float) -> void:
-	print("Monster %s current position: %s" % [name, global_position])
 	if not target:
 		return
 	var move_direction = target_direction
