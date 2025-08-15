@@ -80,8 +80,9 @@ shape = SubResource("CircleShape2D_dmkvq")
 
 [node name="patrol_timer" type="Timer" parent="."]
 
-[node name="heal_aura" type="Area2D" parent="."]
-collision_layer = 1057
+[node name="heal_aura" type="Area2D" parent="." groups=["healer"]]
+collision_layer = 1024
+collision_mask = 1057
 script = ExtResource("5_2kld1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="heal_aura"]
