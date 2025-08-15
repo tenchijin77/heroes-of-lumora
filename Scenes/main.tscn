@@ -14024,7 +14024,7 @@ position = Vector2(-4112, 342)
 [node name="SpawnPoint4" type="Node2D" parent="."]
 position = Vector2(1093, -1962)
 
-[node name="DirectionalLight2D" type="DirectionalLight2D" parent="."]
+[node name="global_light" type="DirectionalLight2D" parent="."]
 energy = 0.43
 blend_mode = 1
 shadow_enabled = true

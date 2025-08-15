@@ -93,7 +93,7 @@ Monsters:
 
 NPCs:
 -guard is a stationary guard AI that will engage enemies when they get in his area2d detection zone, and then return to his station. Uses guard.tscn and guard.gd, fires with projectile.gd
--priestess is a roaming healer AI that will engage enemies and heal player and friendly group when they are damaged. uses priestess.tscn and healer.gd, and healing_projectile.gd
+-priestess is a roaming healer AI that will engage enemies and heal player and friendly group when they are damaged. uses priestess.tscn and healer.gd, and healing_projectile.gd. She has a healing aura, that collides with layers 1, 6, and 11 and provides a heal over time, so her healing projectile doesn't collide with her own sprite, and allows the healer to heal all friendly units.
 
 
 Villagers:
@@ -109,3 +109,95 @@ game_data.gd is a superready that handles the villager's information called Game
 Move: Arrow keys or WASD
 
 Melee Attack: Left mouse click - calls arrow.tscn and projectile.gd
+
+
+Time System:
+
+I'm thinking time will advance very quickly in the game world; 30sec - 1 min of real time will be equal to 1 hour in game time. This will be connected to a time_manager function that will make the lighting change in game.
+
+Months & Seasons
+- Number of Months: 10 (for a distinct feel)
+- Days per Month: 36 days (360-day year feels magical and symmetrical)
+- Seasons: 5 (each season tied to a magical or elemental theme)
+| Month | Season | Element/Theme |
+| Luminar | Dawnspring | Light & Renewal |
+| Verdalis | Greensurge | Nature & Growth |
+| Pyrosol | Emberheight | Fire & Passion |
+| Zepheral | Windsway | Air & Change |
+| Aquenox | Tideswell | Water & Reflection |
+| Obscurion | Duskfall | Darkness & Secrets |
+| Solsticea | Midveil | Balance & Mystery |
+| Thornmere | Witherwane | Decay & Twilight |
+| Glacivorne | Frostbound | Ice & Preservation |
+| Starvane | Nightreach | Cosmos & Fate |
+
+
+Days of the Week
+- Number of Days: 6-day week (streamlined and unique)
+| Day Name | Theme |
+| Mornis | Beginnings |
+| Ferros | Strength & Battle |
+| Eldra | Magic & Wisdom |
+| Solyn | Hope & Light |
+| Umbra | Shadows & Secrets |
+| Nexar | Fate & Endings |
+
+
+
+Era & Timeline
+Current Era Name: Era of Veilfire
+- Associated with an ongoing battle between ancient elemental forces and mortal kingdoms.
+- Named for the mystical Veilfire — a flame that burns between worlds.
+Past Eras
+- Era of Echoing Stone: Rise of the first civilizations from the remnants of gods.
+- Era of Shattered Crowns: Age of warring monarchs, betrayal, and blood magic.
+- Era of the Silver Tides: A time when moonborn creatures ruled the coasts.
+- Era of Hollow Stars: An age of celestial omens and interrealm migrations.
+
+
+Historical Timeline of Aldenexia
+Era of Echoing Stone
+~10,000–6,000 years ago
+Theme: Creation, divine legacy, elemental awakening
+
+Year 1, Luminar 1: The First Flame is kindled by Aurethiel and Durnhal, marking the beginning of recorded time.
+Year 312, Verdalis 18: The Stoneheart Collective awakens beneath the Embercrag Mountains, believed to be shaped by Dromek himself.
+Year 1,200, Pyrosol 36: The Verdant Kin form the first pact with Thalorun, binding mortal druids to nature spirits.
+
+
+Era of Shattered Crowns
+~6,000–3,000 years ago
+Theme: Betrayal, war, blood magic
+
+Year 87, Obscurion 12: The Twilight Accord is born from the ashes of the Viremont Empire, guided by Virexus and Morthan.
+Year 1,004, Thornmere 6: The Crimson Warlord Kaerun descends from the north, uniting fractured warbands under the Ironclad Brotherhood.
+Year 1,800, Solsticea 1: The Codex of Infinite Paths is stolen from the Arcane Synod, sparking the Mage Wars.
+
+
+Era of the Silver Tides
+~3,000–1,500 years ago
+Theme: Moonborn dominion, sea empires, mysticism
+
+Year 112, Aquenox 24: The Pearl of the Abyss is discovered by Thalindra’s followers, founding the Echoes of the Deep.
+Year 1,002, Starvane 36: The Lunaborne Conclave rises, claiming dominion over the tides and moonlight.
+Year 1,499, Glacivorne 1: The Glare of Zetherin descends from the sky, bringing radiant order to the coasts.
+
+
+Era of Hollow Stars
+~1,500–300 years ago
+Theme: Celestial omens, interrealm migrations
+
+Year 3, Solsticea 18: The Chronoglass of Aeons is shattered, scattering time magic across Aldenexia. Elarion’s cults begin to form.
+Year 212, Starvane 6: The Spire of Concordance phases into the material realm, establishing the Arcane Synod.
+Year 1,001, Umbra 5: The Guild of the Eclipsed Mind is founded by Velistra Noct, claiming to hear the “echoes of forgotten futures.”
+
+
+Era of Veilfire (Current Era)
+~300 years ago–present
+Theme: Elemental resurgence, divine relics, balance vs. entropy
+
+Year 1, Luminar 1: The Veilfire ignites in the ruins of Old Viremont, marking the start of the current era.
+Year 88, Zepheral 12: The Stormbinders of Mael’Thun harness Zephyra’s fury to repel the Ashenborn Pact.
+Year 212, Obscurion 36: The Umbral Talon attempts to corrupt the Solstice Aegis, sparking the Second Sundering.
+Year 289, Starvane 1: The Luminar Covenant recovers a fragment of the Orrenlight Grimoire, foretelling a second cataclysm.
+Year 300, Solyn 6 (Present Day): Tensions rise between the Order of the Silent Fist, Twilight Accord, and Circle of Thorns as celestial alignments shift.
