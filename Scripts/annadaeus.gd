@@ -1,4 +1,4 @@
-#annadaeus.gd - AI for Annadaeus's logic
+# annadaeus.gd - AI for Annadaeus's logic
 extends CharacterBody2D
 
 # --- Annadaeus's Abilities ---
@@ -16,10 +16,7 @@ extends CharacterBody2D
 @export var current_health: int = 75
 @export var max_health: int = 75
 
-@export var buffing_aura_scene: PackedScene # New variable for the buffing aura scene
-@export var ability_projectile_scene: PackedScene # The projectile Annadaeus uses (troubadour_bolt)
-
-# --- Node References (from healer.gd) ---
+# --- Node References ---
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var muzzle: Node2D = $muzzle
 @onready var bullet_pool: NodePool = $bullet_pool
@@ -28,6 +25,10 @@ extends CharacterBody2D
 @onready var avoidance_ray: RayCast2D = $avoidance_ray
 @onready var casting_label: Label = $casting_label
 @onready var casting_timer: Timer = $casting_timer
+@onready var renewal_aura: Area2D = $renewal_aura
+@onready var courage_aura: Area2D = $courage_aura
+@onready var renewal_aura_timer: Timer = $renewal_aura_timer
+@onready var courage_aura_timer: Timer = $courage_aura_timer
 
 var current_target: CharacterBody2D = null
 var current_friendly_target: CharacterBody2D = null
@@ -39,6 +40,7 @@ var ability_cooldowns: Dictionary = {
 	"symphony": 0.0,
 	"finale": 0.0
 }
+var casting_lines: Dictionary = {}
 
 func _ready():
 	add_to_group("friendly")
@@ -47,6 +49,9 @@ func _ready():
 		health_bar.value = current_health
 	
 	casting_timer.timeout.connect(func(): _show_casting_text(""))
+	
+	_load_casting_lines()
+	_configure_auras()
 
 func _process(delta: float):
 	_update_targets()
@@ -74,6 +79,27 @@ func _process(delta: float):
 func _physics_process(delta: float):
 	move_and_slide()
 
+# --- Setup Logic ---
+func _load_casting_lines():
+	var file = FileAccess.open("res://Data/annadaeus_casting_lines.json", FileAccess.READ)
+	if file:
+		var content = file.get_as_text()
+		var json = JSON.new()
+		var error = json.parse(content)
+		if error == OK:
+			casting_lines = json.get_data()
+		else:
+			print("JSON Parse Error: ", json.get_error_message())
+		file.close()
+
+func _configure_auras():
+	renewal_aura.collision_mask = 1057
+	courage_aura.collision_mask = 1057
+	renewal_aura.visible = false
+	courage_aura.visible = false
+	renewal_aura_timer.timeout.connect(func(): renewal_aura.visible = false)
+	courage_aura_timer.timeout.connect(func(): courage_aura.visible = false)
+
 # --- State & Target Logic ---
 func _update_targets():
 	if current_state != "CASTING":
@@ -85,7 +111,7 @@ func _update_targets():
 			current_state = "ESCAPING"
 		elif heal_target and ability_cooldowns["renewal"] <= 0:
 			current_friendly_target = heal_target
-			_perform_song_of_renewal(heal_target)
+			_perform_song_of_renewal()
 		elif enemy_target and ability_cooldowns["symphony"] <= 0:
 			current_target = enemy_target
 			_perform_symphony_of_fate(enemy_target)
@@ -121,41 +147,36 @@ func _defending_player_state(delta: float):
 
 # --- Abilities ---
 func _perform_song_of_courage():
-	_show_casting_text("Courage!")
+	_show_casting_text("Song of Courage")
 	current_state = "CASTING"
 	await get_tree().create_timer(1.0).timeout
 	ability_cooldowns["courage"] = song_of_courage_rate
-	_spawn_buffing_aura()
+	_activate_courage_aura()
 	current_state = "IDLE"
 
-func _perform_song_of_renewal(target: CharacterBody2D):
-	_show_casting_text("Renewal!")
+func _perform_song_of_renewal():
+	_show_casting_text("Song of Renewal")
 	current_state = "CASTING"
 	await get_tree().create_timer(1.0).timeout
 	ability_cooldowns["renewal"] = song_of_renewal_rate
-	_spawn_healing_projectile(target)
+	_activate_renewal_aura()
 	current_state = "IDLE"
 
 func _perform_symphony_of_fate(target: CharacterBody2D):
-	_show_casting_text("Symphony!")
+	_show_casting_text("Symphony of Fate")
 	current_state = "CASTING"
 	await get_tree().create_timer(1.0).timeout
 	ability_cooldowns["symphony"] = symphony_of_fate_rate
 	_spawn_ability_projectile(target)
 	current_state = "IDLE"
 
-func _spawn_buffing_aura():
-	if buffing_aura_scene:
-		var aura = buffing_aura_scene.instantiate()
-		aura.global_position = global_position
-		get_parent().add_child(aura)
+func _activate_courage_aura():
+	courage_aura.visible = true
+	courage_aura_timer.start()
 
-func _spawn_healing_projectile(target: CharacterBody2D):
-	if bullet_pool and muzzle and target and is_instance_valid(target):
-		var projectile = bullet_pool.spawn()
-		if projectile:
-			projectile.global_position = muzzle.global_position
-			projectile.move_direction = muzzle.global_position.direction_to(target.global_position)
+func _activate_renewal_aura():
+	renewal_aura.visible = true
+	renewal_aura_timer.start()
 
 func _spawn_ability_projectile(target: CharacterBody2D):
 	if bullet_pool and muzzle and target and is_instance_valid(target):
@@ -179,9 +200,14 @@ func _is_player_buffed():
 	# Placeholder for checking if player has active buffs
 	return true
 	
-func _show_casting_text(text: String):
+func _show_casting_text(ability_name: String):
 	if casting_label and casting_timer:
-		casting_label.text = text
+		if casting_lines.has(ability_name):
+			var lines = casting_lines[ability_name]
+			var random_line = lines[randi() % lines.size()]
+			casting_label.text = random_line
+		else:
+			casting_label.text = ability_name # Fallback
 		casting_timer.start()
 
 func take_damage(damage: int, _projectile_instance):
