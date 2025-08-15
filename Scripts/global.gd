@@ -2,7 +2,7 @@
 extends Node
 
 # Signals
-signal villagers_updated(saved: int, lost: int)
+signal villagers_updated(saved: int, lost: int, total: int)  # Modified to include total
 signal score_updated(score: int)
 signal coins_updated(coins: int)
 signal wave_updated(wave: int)
@@ -15,6 +15,7 @@ var coins_collected: int = 0
 var current_time_survived: float = 0.0
 var saved_villagers: int = 0
 var lost_villagers: int = 0
+var total_villagers: int = 100  # Added for total villager count
 var game_active: bool = true
 
 func _ready() -> void:
@@ -103,12 +104,13 @@ func reset() -> void:
 	current_time_survived = 0.0
 	saved_villagers = 0
 	lost_villagers = 0
+	total_villagers = 100  # Reset total villagers
 	game_active = true
 	emit_signal("score_updated", current_score)
 	emit_signal("coins_updated", coins_collected)
 	emit_signal("wave_updated", current_wave)
 	emit_signal("time_updated", format_time(current_time_survived))
-	emit_signal("villagers_updated", saved_villagers, lost_villagers)
+	emit_signal("villagers_updated", saved_villagers, lost_villagers, total_villagers)
 
 # Public functions for other scripts to use
 func increment_wave() -> void:
@@ -117,8 +119,8 @@ func increment_wave() -> void:
 
 func increment_saved_villagers() -> void:
 	saved_villagers += 1
-	emit_signal("villagers_updated", saved_villagers, lost_villagers)
+	emit_signal("villagers_updated", saved_villagers, lost_villagers, total_villagers)
 
 func increment_lost_villagers() -> void:
 	lost_villagers += 1
-	emit_signal("villagers_updated", saved_villagers, lost_villagers)
+	emit_signal("villagers_updated", saved_villagers, lost_villagers, total_villagers)

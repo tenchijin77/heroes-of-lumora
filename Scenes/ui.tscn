@@ -56,3 +56,11 @@ size_flags_vertical = 6
 theme_override_fonts/font = ExtResource("1_jxero")
 theme_override_font_sizes/font_size = 20
 text = "Villagers Lost: 0"
+
+[node name="remaining_villagers" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 6
+theme_override_fonts/font = ExtResource("1_jxero")
+theme_override_font_sizes/font_size = 20
+text = "Villagers Left: 0"

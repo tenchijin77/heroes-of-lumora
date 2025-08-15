@@ -57,19 +57,34 @@ func _ready() -> void:
 		spawn_timer.wait_time = randf_range(spawn_interval_range.x, spawn_interval_range.y)
 		spawn_timer.autostart = false
 		spawn_timer.one_shot = false
-		spawn_timer.paused = false
-		spawn_timer.start()
+		spawn_timer.paused = true  # Start paused until wave 2
 		if OS.has_feature("editor"):
-			print("VillagerSpawner: Timer started with wait_time %s" % spawn_timer.wait_time)
+			print("VillagerSpawner: Timer initialized with wait_time %s (paused)" % spawn_timer.wait_time)
 	else:
 		if OS.has_feature("editor"):
 			push_error("VillagerSpawner: villager_spawn_timer not found!")
+	
+	# Connect to wave updates
+	Global.wave_updated.connect(_on_wave_updated)
+
+func _on_wave_updated(wave: int) -> void:
+	# Start spawning at wave 2
+	if wave >= 2 and spawn_timer.paused:
+		spawn_timer.paused = false
+		spawn_timer.start()
+		if OS.has_feature("editor"):
+			print("VillagerSpawner: Started spawning at wave %d" % wave)
 
 func _on_villager_spawn_timer_timeout() -> void:
 	# Handle timer timeout to spawn a villager
 	if OS.has_feature("editor"):
 		print("VillagerSpawner: Timer timeout fired!")
-	_spawn_villager()
+	if Global.saved_villagers + Global.lost_villagers < Global.total_villagers:
+		_spawn_villager()
+	else:
+		spawn_timer.stop()
+		if OS.has_feature("editor"):
+			print("VillagerSpawner: Stopped spawning, villager limit reached")
 	spawn_timer.wait_time = randf_range(spawn_interval_range.x, spawn_interval_range.y)
 	spawn_timer.start()
 	if OS.has_feature("editor"):
@@ -100,14 +115,14 @@ func _spawn_villager() -> void:
 func _on_villager_died(villager: Node2D) -> void:
 	# Increment the lost villagers counter and emit the update signal
 	Global.lost_villagers += 1
-	Global.villagers_updated.emit(Global.saved_villagers, Global.lost_villagers)
+	Global.villagers_updated.emit(Global.saved_villagers, Global.lost_villagers, Global.total_villagers)
 	if OS.has_feature("editor"):
 		print("Villager died: %s, lost_villagers now %d" % [villager.name, Global.lost_villagers])
 
 func _on_villager_extracted(villager: Node2D) -> void:
 	# Increment the saved villagers counter and emit the update signal
 	Global.saved_villagers += 1
-	Global.villagers_updated.emit(Global.saved_villagers, Global.lost_villagers)
+	Global.villagers_updated.emit(Global.saved_villagers, Global.lost_villagers, Global.total_villagers)
 	if OS.has_feature("editor"):
 		print("Villager extracted: %s, saved_villagers now %d" % [villager.name, Global.saved_villagers])
 

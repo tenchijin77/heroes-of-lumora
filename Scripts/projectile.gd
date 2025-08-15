@@ -86,7 +86,7 @@ func _on_body_entered(body: Node) -> void:
 		return
 
 	if owner_group == "monsters":
-		if body.has_method("take_damage") and (body.is_in_group("player") or body.is_in_group("friendly")):
+		if body.has_method("take_damage") and (body.is_in_group("player") or body.is_in_group("friendly") or body.is_in_group("healer")):
 			body.take_damage(damage, self)
 			print("Monster projectile hit %s for %d" % [body.name, damage])
 			despawn()
