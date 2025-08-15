@@ -2,7 +2,7 @@
 extends Node
 
 # Time variables
-var current_time : float = 0.0 # in minutes
+var current_time : float = 840.0 # 14 * 60 = 840 minutes (starts the game at 14:00) 
 var day_length_minutes : float = 1440.0 # 24 hours
 
 

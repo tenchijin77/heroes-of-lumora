@@ -9,6 +9,9 @@ extends Control
 var current_score: int
 
 func _ready() -> void:
+	
+	add_to_group("ui_hidden")
+
 	get_tree().paused = false  # Ensure unpaused
 	if not leader_board:
 		push_error("GameOver: leader_board is null!")

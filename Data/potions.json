@@ -16,7 +16,7 @@
 			"name": "Speed Potion",
 			"effect": {
 				"type": "speed_boost",
-				"value": 2.0,
+				"value": 1.5,
 				"duration": 5.0
 			},
 			"drop_rate": 0.2,

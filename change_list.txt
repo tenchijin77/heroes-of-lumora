@@ -37,6 +37,7 @@ completed:
 -move spawn points so the enemies spawn further from the town and move towards it from multiple directions
 -move all ui elements into a ui.tscn for a persistent UI
 -update villagers to start spawning in at wave 2, with 100 villager total, counting down.
+-added a time/date system and dynamic lighting based on TOD
 
 to do: (in order of importance)
 

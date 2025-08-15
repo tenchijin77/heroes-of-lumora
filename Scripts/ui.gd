@@ -34,7 +34,7 @@ func _check_scene() -> void:
 func _on_node_added(node: Node) -> void:
 	if node.name == "main":
 		visible = true
-	elif node.name in ["main_menu", "intro_scene", "game_over2"]:
+	elif node.name in ["main_menu", "intro_scene", "game_over", "game_over2", "shop_zone"]:
 		visible = false
 
 func _update_all() -> void:

@@ -5,6 +5,9 @@ extends Control
 @onready var restart_button: Button = $restart_button
 
 func _ready() -> void:
+	
+	add_to_group("ui_hidden")
+
 	get_tree().paused = false  # Ensure unpaused
 	if not leader_board:
 		push_error("GameOver2: leader_board is null!")
