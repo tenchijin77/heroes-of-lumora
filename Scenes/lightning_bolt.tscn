@@ -1,0 +1,37 @@
+[gd_scene load_steps=6 format=3 uid="uid://b0k5b4e7h81n2"]
+
+[ext_resource type="Script" uid="uid://d6xrs2lxn4lc" path="res://Scripts/projectile.gd" id="1_lq1lq"]
+[ext_resource type="AudioStream" uid="uid://si7ksfl0wp3k" path="res://Assets/Audio/Lightning.ogg" id="2_fhcvw"]
+[ext_resource type="AudioStream" uid="uid://dw2ivmc1p3drn" path="res://Assets/Audio/fireball-whoosh-2-179126.mp3" id="2_vwjp1"]
+[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="3_fhcvw"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ne4qj"]
+radius = 11.0
+
+[node name="lightning_bolt" type="Area2D"]
+collision_layer = 8
+collision_mask = 1073
+script = ExtResource("1_lq1lq")
+speed = 250.0
+damage = 15
+sound_stream = ExtResource("2_fhcvw")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+rotation = -1.5708
+texture = ExtResource("3_fhcvw")
+region_enabled = true
+region_rect = Rect2(575, 1344, 34, 31)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_ne4qj")
+
+[node name="destroy_timer" type="Timer" parent="."]
+wait_time = 4.0
+autostart = true
+
+[node name="projectile_sound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("2_vwjp1")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
+[connection signal="timeout" from="destroy_timer" to="." method="_on_destroy_timer_timeout"]

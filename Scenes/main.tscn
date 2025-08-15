@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=4 uid="uid://4qnufvqx54b"]
+[gd_scene load_steps=28 format=4 uid="uid://4qnufvqx54b"]
 
 [ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="1_bo1nx"]
 [ext_resource type="Script" uid="uid://pk7xc0kbb1b" path="res://Scripts/main.gd" id="1_fdnlq"]
@@ -14,6 +14,8 @@
 [ext_resource type="PackedScene" uid="uid://cvvk7iwbqhlpu" path="res://Scenes/villager.tscn" id="12_6iyac"]
 [ext_resource type="Script" uid="uid://6806mwtl5hkr" path="res://Scripts/villager_spawner.gd" id="14_jkdf5"]
 [ext_resource type="Script" uid="uid://xlp43s2ui51c" path="res://Scripts/shop_door.gd" id="14_wsu2k"]
+[ext_resource type="PackedScene" uid="uid://cdfbj1oyr0vl5" path="res://Scenes/annadaeus.tscn" id="15_k12tt"]
+[ext_resource type="PackedScene" uid="uid://cvu1l5283jic0" path="res://Scenes/tenchijin.tscn" id="16_h1bgf"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_344ge"]
 size = Vector2(1569, 703)
@@ -14173,5 +14175,11 @@ script = ExtResource("14_wsu2k")
 [node name="shop_door" type="CollisionShape2D" parent="doorway_area"]
 position = Vector2(154.125, 63.75)
 shape = SubResource("RectangleShape2D_fdnlq")
+
+[node name="annadaeus" parent="." instance=ExtResource("15_k12tt")]
+position = Vector2(916, 165)
+
+[node name="tenchijin" parent="." instance=ExtResource("16_h1bgf")]
+position = Vector2(308, 340)
 
 [connection signal="body_entered" from="doorway_area" to="doorway_area" method="_on_body_entered"]

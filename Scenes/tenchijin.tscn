@@ -1,0 +1,70 @@
+[gd_scene load_steps=9 format=3 uid="uid://cvu1l5283jic0"]
+
+[ext_resource type="Script" uid="uid://cv70j56i2fo7u" path="res://Scripts/healer.gd" id="1_b5tfo"]
+[ext_resource type="PackedScene" uid="uid://dkjn4u5pvci4p" path="res://Scenes/heal_bolt.tscn" id="2_cflju"]
+[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="2_ohxry"]
+[ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="3_jajwk"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sfdtf"]
+size = Vector2(20, 28)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pegji"]
+bg_color = Color(0.201527, 0.201527, 0.201527, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5abox"]
+bg_color = Color(0.94902, 0, 0, 1)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_dmkvq"]
+radius = 288.014
+
+[node name="tenchijin" type="CharacterBody2D" groups=["friendly"]]
+collision_layer = 32
+collision_mask = 571
+script = ExtResource("1_b5tfo")
+max_speed = 30.0
+heal_rate = 4.0
+projectile_scene = ExtResource("2_cflju")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2(2, -1)
+shape = SubResource("RectangleShape2D_sfdtf")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(1, -2.5)
+texture = ExtResource("2_ohxry")
+region_enabled = true
+region_rect = Rect2(192, 287, 31, 32)
+
+[node name="muzzle" type="Node2D" parent="."]
+position = Vector2(-13, 6)
+
+[node name="bullet_pool" type="Node" parent="."]
+script = ExtResource("3_jajwk")
+node_scene = ExtResource("2_cflju")
+
+[node name="avoidance_ray" type="RayCast2D" parent="."]
+target_position = Vector2(-64, 0)
+collision_mask = 51
+
+[node name="health_bar" type="ProgressBar" parent="."]
+offset_left = -8.0
+offset_top = -22.0
+offset_right = 11.0
+offset_bottom = -20.0
+theme_override_styles/background = SubResource("StyleBoxFlat_pegji")
+theme_override_styles/fill = SubResource("StyleBoxFlat_5abox")
+rounded = true
+show_percentage = false
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="defense_zone" type="CollisionShape2D" parent="Area2D" groups=["friendly"]]
+visible = false
+light_mask = 35
+visibility_layer = 35
+shape = SubResource("CircleShape2D_dmkvq")
+
+[node name="patrol_timer" type="Timer" parent="."]

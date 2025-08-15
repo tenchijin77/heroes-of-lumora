@@ -1,0 +1,38 @@
+[gd_scene load_steps=6 format=3 uid="uid://shyk8gpa8u3i"]
+
+[ext_resource type="Script" uid="uid://d6xrs2lxn4lc" path="res://Scripts/projectile.gd" id="1_upah7"]
+[ext_resource type="AudioStream" uid="uid://cuuy6rr4t7ccp" path="res://Assets/Audio/arrow-swish_03-306040.mp3" id="2_546on"]
+[ext_resource type="AudioStream" uid="uid://dvhyklb7chejx" path="res://Assets/Audio/skill-attack-combo-music-note-4-384959.mp3" id="2_slpnq"]
+[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="3_slpnq"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_h5x2m"]
+size = Vector2(14, 16)
+
+[node name="troubadour_bolt" type="Area2D"]
+collision_layer = 64
+collision_mask = 18
+script = ExtResource("1_upah7")
+speed = 250.0
+owner_group = "friendly"
+damage = 15
+sound_stream = ExtResource("2_slpnq")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("3_slpnq")
+region_enabled = true
+region_rect = Rect2(1996, 750, 23, 19)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(1, 1)
+shape = SubResource("RectangleShape2D_h5x2m")
+
+[node name="destroy_timer" type="Timer" parent="."]
+wait_time = 4.0
+autostart = true
+
+[node name="projectile_sound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("2_546on")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
+[connection signal="timeout" from="destroy_timer" to="." method="_on_destroy_timer_timeout"]

@@ -1,0 +1,64 @@
+[gd_scene load_steps=9 format=3 uid="uid://cdfbj1oyr0vl5"]
+
+[ext_resource type="Script" uid="uid://bg5vu64dmauk4" path="res://Scripts/guard.gd" id="1_qalx6"]
+[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="2_20pnm"]
+[ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="3_qhmnp"]
+[ext_resource type="PackedScene" uid="uid://shyk8gpa8u3i" path="res://Scenes/troubadour_bolt.tscn" id="4_qalx6"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sfdtf"]
+size = Vector2(20, 28)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pegji"]
+bg_color = Color(0.201527, 0.201527, 0.201527, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5abox"]
+bg_color = Color(0.94902, 0, 0, 1)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_dmkvq"]
+radius = 173.072
+
+[node name="annadaeus" type="CharacterBody2D" groups=["friendly"]]
+collision_layer = 32
+collision_mask = 539
+script = ExtResource("1_qalx6")
+shoot_range = 200.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2(2, -1)
+shape = SubResource("RectangleShape2D_sfdtf")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(1, -2.5)
+texture = ExtResource("2_20pnm")
+region_enabled = true
+region_rect = Rect2(386, 253, 28, 36)
+
+[node name="muzzle" type="Node2D" parent="."]
+position = Vector2(-8, 0)
+
+[node name="bullet_pool" type="Node" parent="."]
+script = ExtResource("3_qhmnp")
+node_scene = ExtResource("4_qalx6")
+
+[node name="avoidance_ray" type="RayCast2D" parent="."]
+target_position = Vector2(-64, 0)
+collision_mask = 51
+
+[node name="health_bar" type="ProgressBar" parent="."]
+offset_left = -8.0
+offset_top = -22.0
+offset_right = 11.0
+offset_bottom = -20.0
+theme_override_styles/background = SubResource("StyleBoxFlat_pegji")
+theme_override_styles/fill = SubResource("StyleBoxFlat_5abox")
+rounded = true
+show_percentage = false
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="defense_zone" type="CollisionShape2D" parent="Area2D"]
+visible = false
+shape = SubResource("CircleShape2D_dmkvq")

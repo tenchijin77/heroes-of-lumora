@@ -215,5 +215,5 @@ func get_max_health() -> int:
 
 func heal(amount: int) -> void:
 	current_health = min(current_health + amount, max_health)
-	if health_bar and is_instance_valid(health_bar):
-		health_bar.value = current_health
+	health_bar.value = current_health
+	print("Priestess healed for %d. Current health: %d" % [amount, current_health])
