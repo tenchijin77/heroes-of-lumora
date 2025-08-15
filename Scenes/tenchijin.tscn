@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://cvu1l5283jic0"]
+[gd_scene load_steps=10 format=3 uid="uid://cvu1l5283jic0"]
 
 [ext_resource type="Script" uid="uid://cv70j56i2fo7u" path="res://Scripts/healer.gd" id="1_b5tfo"]
 [ext_resource type="PackedScene" uid="uid://dkjn4u5pvci4p" path="res://Scenes/heal_bolt.tscn" id="2_cflju"]
 [ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="2_ohxry"]
 [ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="3_jajwk"]
+[ext_resource type="FontFile" uid="uid://djcjuyoolr6e1" path="res://Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf" id="5_ohxry"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sfdtf"]
 size = Vector2(20, 28)
@@ -34,7 +35,7 @@ shape = SubResource("RectangleShape2D_sfdtf")
 position = Vector2(1, -2.5)
 texture = ExtResource("2_ohxry")
 region_enabled = true
-region_rect = Rect2(192, 287, 31, 32)
+region_rect = Rect2(801, 290, 29, 30)
 
 [node name="muzzle" type="Node2D" parent="."]
 position = Vector2(-13, 6)
@@ -68,3 +69,17 @@ visibility_layer = 35
 shape = SubResource("CircleShape2D_dmkvq")
 
 [node name="patrol_timer" type="Timer" parent="."]
+
+[node name="casting_label" type="Label" parent="."]
+offset_left = -48.0
+offset_top = -42.0
+offset_right = 55.0
+offset_bottom = -19.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("5_ohxry")
+theme_override_font_sizes/font_size = 16
+
+[node name="casting_timer" type="Timer" parent="."]
+wait_time = 2.5
+one_shot = true

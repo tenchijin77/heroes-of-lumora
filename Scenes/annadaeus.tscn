@@ -1,9 +1,12 @@
-[gd_scene load_steps=9 format=3 uid="uid://cdfbj1oyr0vl5"]
+[gd_scene load_steps=14 format=3 uid="uid://cdfbj1oyr0vl5"]
 
 [ext_resource type="Script" uid="uid://bg5vu64dmauk4" path="res://Scripts/guard.gd" id="1_qalx6"]
 [ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="2_20pnm"]
 [ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="3_qhmnp"]
 [ext_resource type="PackedScene" uid="uid://shyk8gpa8u3i" path="res://Scenes/troubadour_bolt.tscn" id="4_qalx6"]
+[ext_resource type="FontFile" uid="uid://djcjuyoolr6e1" path="res://Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf" id="5_20pnm"]
+[ext_resource type="Shader" uid="uid://clonmnbb5h1pk" path="res://Scenes/red_glow_shader.gdshader" id="6_4xvhl"]
+[ext_resource type="Texture2D" uid="uid://cgr378xi2neye" path="res://Assets/Sprites/green aura glow.png" id="7_cti21"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sfdtf"]
 size = Vector2(20, 28)
@@ -16,6 +19,14 @@ bg_color = Color(0.94902, 0, 0, 1)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_dmkvq"]
 radius = 173.072
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_20pnm"]
+radius = 199.251
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dnpss"]
+shader = ExtResource("6_4xvhl")
+shader_parameter/pulse_speed = 4.5
+shader_parameter/max_alpha = 0.1
 
 [node name="annadaeus" type="CharacterBody2D" groups=["friendly"]]
 collision_layer = 32
@@ -32,7 +43,7 @@ shape = SubResource("RectangleShape2D_sfdtf")
 position = Vector2(1, -2.5)
 texture = ExtResource("2_20pnm")
 region_enabled = true
-region_rect = Rect2(386, 253, 28, 36)
+region_rect = Rect2(1604, 257, 25, 31)
 
 [node name="muzzle" type="Node2D" parent="."]
 position = Vector2(-8, 0)
@@ -62,3 +73,55 @@ collision_mask = 2
 [node name="defense_zone" type="CollisionShape2D" parent="Area2D"]
 visible = false
 shape = SubResource("CircleShape2D_dmkvq")
+
+[node name="casting_label" type="Label" parent="."]
+offset_left = -75.0
+offset_top = -44.0
+offset_right = 76.0
+offset_bottom = -21.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("5_20pnm")
+theme_override_font_sizes/font_size = 16
+
+[node name="casting_timer" type="Timer" parent="."]
+wait_time = 2.5
+one_shot = true
+
+[node name="renewal_aura" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 1057
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="renewal_aura"]
+visible = false
+shape = SubResource("CircleShape2D_20pnm")
+
+[node name="aura_glow" type="Sprite2D" parent="renewal_aura"]
+modulate = Color(0.5, 0.75, 20.995, 1)
+show_behind_parent = true
+material = SubResource("ShaderMaterial_dnpss")
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("7_cti21")
+
+[node name="courage_aura" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 1057
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="courage_aura"]
+visible = false
+shape = SubResource("CircleShape2D_20pnm")
+
+[node name="aura_glow" type="Sprite2D" parent="courage_aura"]
+modulate = Color(0.5, 0.75, 20.995, 1)
+show_behind_parent = true
+material = SubResource("ShaderMaterial_dnpss")
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("7_cti21")
+
+[node name="renewal_aura_timer" type="Timer" parent="."]
+wait_time = 8.0
+one_shot = true
+
+[node name="courage_aura_timer" type="Timer" parent="."]
+wait_time = 8.0
+one_shot = true
