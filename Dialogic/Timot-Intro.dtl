@@ -8,16 +8,38 @@ Timot: By Aurethiel’s grace… you made it! Quickly—this way. There's no tim
 Timot: At dawn, they broke the city gate. Our defenders hold what ground they can, but the village chokes beneath the encroaching dark—heavy, black, pendulous. It rolls like smoke through the streets, smothering flame and song alike.
 Timot: There is no time for pleasantries. You know how to fight? Good. Listen closely—use W-A-S-D to move. Keep moving, or you'll be swarmed before you can draw breath!
 Timot: Strike with Left Mouse Button. Loose your arrows with precision—stay nimble, and let your aim fly true. Even relics blessed by the light falter if wielded without care.
-Timot: The guards hold the gates… barely. We've rigged ward-torches and glimmertraps in the eastern alley—watch for enemy clusters and light them up. If you reach the watchtower, find Merena. She’s concocting Dawnspring elixirs to stall the tide. We may not stop them—but we can delay the end.
+Timot: The guards hold the gates… but only just.\
+The village is under siege—creatures of the Umbral Talon pour in from every direction. We must evacuate the townsfolk, but we can’t do it alone. We need you to buy us time.\
+\
+I shall open my shop to you in what time we have left—what potions and trinkets I have left are yours in exchange for whatever coin you may have.  Use them wisely. Every second you hold the line gives another villager a chance to escape.\
+\
+Stand fast. Hold them off.\
+The fate of the town rests in your hands.
 join Brimble rightmost
 Brimble: Meow! (Brimble meows, sharp and emphatic.)
-Timot: I know, Brimble—the bakery’s gone. But Lumora needs blades and bravery, not muffins!
+Timot: I know, Brimble—the bakery’s gone. But Lumora needs blade and bravery now, not snacks! Hurry back to the safety of the store! (Brimble runs off towards the town)
 leave Brimble
 join Narrator rightmost
-Narrator: The earth rumbles beneath your feet as a distant roar rips through the hills. The din of battle intensifies—the monsters draw near.
+Narrator: The earth rumbles beneath your feet as a distant roar rips through the hills. The din of battle intensifies—the monsters are drawing close now.
 leave Narrator
-Timot: (softly, voice rough with memory) Annadeus once sang of this day… back when peace still lingered. Her voice lit hope in our bones. Perhaps, if we endure, she’ll sing again.
+Timot: (softly, voice rough with memory)\
+“Annadaeus once sang of this day… back when peace still lingered in the air. Her voice lit hope in our bones, even when the world felt like it might crack.\
+\
+She saw this storm coming—long before the rest of us dared to believe it could.”\
+\
+(He pauses, eyes distant, as the sound of battle grows louder)\
+\
+“If we can endure… if we can hold the line just a little longer… perhaps she’ll sing again. Not of warning, but of triumph.”\
+\
+(A faint smile touches his lips, fragile but defiant)\
+\
+“Until then, we fight. For the villagers. For the light. For the song yet unsung.”
 join Narrator rightmost
-Narrator: Timot grips your shoulder. His voice is trembling—but resolute.
-Timot: Go now. This is your moment, hero. Lumora will not fall—not while the light endures.
+Narrator: (Timot grips your shoulder, his hand firm despite the tremor in his voice)
+Timot: “Go now. This is your moment, hero.”  (He locks eyes with you, fear flickering behind the steel of his gaze)\
+“Lumora cannot fall—not while the light endures. And you… you are that light now.”\
+\
+(A distant roar echoes through the valley. The ground shakes. Timot doesn’t flinch.)\
+\
+“Make them remember why they fear the dawn.”
 [end_timeline]
