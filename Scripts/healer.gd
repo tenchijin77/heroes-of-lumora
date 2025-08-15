@@ -8,8 +8,8 @@ extends CharacterBody2D
 @export var attack_range: float = 250.0
 @export var heal_rate: float = 2.0
 @export var heal_range: float = 250.0 # Increased for better NPC reach
-@export var current_health: int = 25
-@export var max_health: int = 25
+@export var current_health: int = 75
+@export var max_health: int = 75
 @export var patrol_radius: float = 300.0
 @export var projectile_scene: PackedScene
 @onready var sprite: Sprite2D = $Sprite2D

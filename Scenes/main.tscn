@@ -3734,10 +3734,22 @@ position = Vector2(2579, 80)
 position = Vector2(-3889, 751)
 
 [node name="torch12" parent="." instance=ExtResource("6_21xkr")]
-position = Vector2(-47, 238)
+position = Vector2(-49, 303)
+
+[node name="torch23" parent="." instance=ExtResource("6_21xkr")]
+position = Vector2(635, -964)
+
+[node name="torch24" parent="." instance=ExtResource("6_21xkr")]
+position = Vector2(1504, -966)
+
+[node name="torch25" parent="." instance=ExtResource("6_21xkr")]
+position = Vector2(1696, -1692)
+
+[node name="torch26" parent="." instance=ExtResource("6_21xkr")]
+position = Vector2(375, -1707)
 
 [node name="torch13" parent="." instance=ExtResource("6_21xkr")]
-position = Vector2(-48, 591)
+position = Vector2(-48, 527)
 
 [node name="torch14" parent="." instance=ExtResource("6_21xkr")]
 position = Vector2(-1415, 778)
@@ -3768,68 +3780,44 @@ position = Vector2(1186, 2919)
 
 [node name="guard" parent="." instance=ExtResource("7_6bp64")]
 position = Vector2(1015, 91)
-current_health = 20
-max_health = 20
 
 [node name="guard2" parent="." instance=ExtResource("7_6bp64")]
 position = Vector2(813, 94)
-current_health = 20
-max_health = 20
 
 [node name="guard3" parent="." instance=ExtResource("7_6bp64")]
 position = Vector2(521, 632)
-current_health = 20
-max_health = 20
 
 [node name="guard4" parent="." instance=ExtResource("7_6bp64")]
 position = Vector2(986, 2845)
-current_health = 20
-max_health = 20
 
 [node name="guard5" parent="." instance=ExtResource("7_6bp64")]
 position = Vector2(4198, 278)
-current_health = 20
-max_health = 20
 
 [node name="guard6" parent="." instance=ExtResource("7_6bp64")]
 position = Vector2(917, 632)
-current_health = 20
-max_health = 20
 
 [node name="guard7" parent="." instance=ExtResource("7_6bp64")]
 position = Vector2(1421, 452)
-current_health = 20
-max_health = 20
 
 [node name="guard8" parent="." instance=ExtResource("7_6bp64")]
 position = Vector2(1418, 271)
-current_health = 20
-max_health = 20
 
 [node name="guard9" parent="." instance=ExtResource("7_6bp64")]
 position = Vector2(58, 327)
-current_health = 20
-max_health = 20
 
 [node name="guard10" parent="." instance=ExtResource("7_6bp64")]
 position = Vector2(49, 494)
-current_health = 20
-max_health = 20
 
 [node name="priestess" parent="." instance=ExtResource("11_d1ilt")]
 position = Vector2(422, 337)
 max_speed = 40.0
 heal_rate = 2.0
-current_health = 25
-max_health = 25
 projectile_scene = null
 
 [node name="priestess2" parent="." instance=ExtResource("11_d1ilt")]
 position = Vector2(935, 340)
 max_speed = 40.0
 heal_rate = 2.0
-current_health = 25
-max_health = 25
 projectile_scene = null
 
 [node name="extraction_point" type="Marker2D" parent="." groups=["extraction_points"]]

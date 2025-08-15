@@ -25,6 +25,7 @@ var target_distance: float
 var target_direction: Vector2
 var last_shoot_time: float = 0.0
 var last_damage_source: Node = null # Track the last entity to damage this monster
+var last_damage_times: Dictionary = {}  # Tracks last collision damage time per target
 
 func _ready() -> void:
 	add_to_group("monsters")
@@ -54,6 +55,7 @@ func reset() -> void:
 	velocity = Vector2.ZERO
 	last_shoot_time = 0.0
 	last_damage_source = null
+	last_damage_times = {}  # Reset collision damage tracker
 	set_process(true)
 	set_physics_process(true)
 	set_deferred("process_mode", Node.PROCESS_MODE_INHERIT)
@@ -104,9 +106,14 @@ func _physics_process(_delta: float) -> void:
 	for i in get_slide_collision_count():
 		var collision = get_slide_collision(i)
 		var body = collision.get_collider()
-		if body and (body.is_in_group("player") or body.is_in_group("friendly")):
+		if body and (body.is_in_group("player") or body.is_in_group("friendly") or body.is_in_group("healer")):
 			if body.has_method("take_damage"):
-				body.call_deferred("take_damage", collision_damage)
+				var current_time: float = Time.get_unix_time_from_system()
+				var last_time: float = last_damage_times.get(body, 0.0)
+				if current_time - last_time >= 2.0:
+					last_damage_times[body] = current_time
+					body.call_deferred("take_damage", collision_damage, null)
+					print("Monster %s dealt %d collision damage to %s" % [name, collision_damage, body.name])
 
 func _move_wobble() -> void:
 	if velocity.length() == 0:

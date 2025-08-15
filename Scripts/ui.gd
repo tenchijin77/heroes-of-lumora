@@ -41,7 +41,7 @@ func _update_all() -> void:
 	_update_villagers(Global.saved_villagers, Global.lost_villagers, Global.total_villagers)
 
 func _update_wave(wave: int) -> void:
-	wave_label.text = "Wave: %d" % wave
+	wave_label.text = "Current Wave: %d" % wave
 
 func _update_time(time: String) -> void:
 	uptime_label.text = "Time: %s" % time
