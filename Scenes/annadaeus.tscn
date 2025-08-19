@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://cdfbj1oyr0vl5"]
+[gd_scene load_steps=18 format=3 uid="uid://cdfbj1oyr0vl5"]
 
 [ext_resource type="Script" uid="uid://b7hku5cs4rmy6" path="res://Scripts/annadaeus.gd" id="1_4xvhl"]
 [ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="2_20pnm"]
@@ -7,6 +7,7 @@
 [ext_resource type="FontFile" uid="uid://djcjuyoolr6e1" path="res://Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf" id="5_20pnm"]
 [ext_resource type="Shader" uid="uid://clonmnbb5h1pk" path="res://Scenes/red_glow_shader.gdshader" id="6_4xvhl"]
 [ext_resource type="Texture2D" uid="uid://cgr378xi2neye" path="res://Assets/Sprites/green aura glow.png" id="7_cti21"]
+[ext_resource type="AudioStream" uid="uid://rte3djdolcxw" path="res://Assets/Audio/dingle-106476.mp3" id="8_cti21"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sfdtf"]
 size = Vector2(20, 28)
@@ -152,3 +153,6 @@ one_shot = true
 explosiveness = 0.9
 trail_enabled = true
 process_material = SubResource("ParticleProcessMaterial_4xvhl")
+
+[node name="finale_sound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("8_cti21")

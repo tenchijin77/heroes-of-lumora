@@ -31,6 +31,7 @@ extends CharacterBody2D
 @onready var renewal_aura_timer: Timer = $renewal_aura_timer
 @onready var courage_aura_timer: Timer = $courage_aura_timer
 @onready var finale_particles: GPUParticles2D = $finale_particles
+@onready var finale_sound: AudioStreamPlayer2D = $finale_sound
 
 var current_target: CharacterBody2D = null
 var current_friendly_target: CharacterBody2D = null
@@ -227,6 +228,9 @@ func _perform_finale() -> void:
 	current_state = "CASTING"
 	if finale_particles and is_instance_valid(finale_particles):
 		finale_particles.emitting = true
+	if finale_sound and is_instance_valid(finale_sound):
+		finale_sound.play()
+		print("Annadaeus: Playing Finale sound")
 	var base_finale_damage: int = 25
 	var damage_boost: float = 1.0 + 0.5 * (int(courage_aura.visible) + int(renewal_aura.visible))
 	var final_damage: int = int(base_finale_damage * damage_boost)
