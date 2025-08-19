@@ -1,0 +1,37 @@
+[gd_scene load_steps=5 format=3 uid="uid://b3u85ibipyv8w"]
+
+[ext_resource type="Script" uid="uid://d6xrs2lxn4lc" path="res://Scripts/projectile.gd" id="1_au4kq"]
+[ext_resource type="AudioStream" uid="uid://wfkf4800q4oi" path="res://Assets/Audio/cough.ogg" id="2_au4kq"]
+[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="3_8qfpl"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_phk3b"]
+radius = 11.0
+
+[node name="bile_spew" type="Area2D"]
+collision_layer = 8
+collision_mask = 1073
+script = ExtResource("1_au4kq")
+speed = 350.0
+damage = 28
+sound_stream = ExtResource("2_au4kq")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("3_8qfpl")
+region_enabled = true
+region_rect = Rect2(67, 8, 27, 25)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_phk3b")
+
+[node name="destroy_timer" type="Timer" parent="."]
+wait_time = 4.0
+autostart = true
+
+[node name="projectile_sound" type="AudioStreamPlayer2D" parent="."]
+position = Vector2(1, 0)
+stream = ExtResource("2_au4kq")
+volume_db = 2.0
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
+[connection signal="timeout" from="destroy_timer" to="." method="_on_destroy_timer_timeout"]

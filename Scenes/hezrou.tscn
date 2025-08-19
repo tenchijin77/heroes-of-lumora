@@ -1,0 +1,64 @@
+[gd_scene load_steps=9 format=3 uid="uid://dgfdgfgyxwky6"]
+
+[ext_resource type="Script" uid="uid://bxdcw03f401hl" path="res://Scripts/hezrou.gd" id="1_lmg06"]
+[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="3_aebgk"]
+[ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="4_ual8j"]
+[ext_resource type="PackedScene" uid="uid://d3rcusi22khhd" path="res://Scenes/potion.tscn" id="5_uprq3"]
+[ext_resource type="PackedScene" uid="uid://b3u85ibipyv8w" path="res://Scenes/bile_spew.tscn" id="5_x8tu6"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sfdtf"]
+size = Vector2(78, 86)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pegji"]
+bg_color = Color(0.201527, 0.201527, 0.201527, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5abox"]
+bg_color = Color(0.94902, 0, 0, 1)
+
+[node name="hezrou" type="CharacterBody2D" groups=["monsters"]]
+collision_layer = 2
+collision_mask = 1655
+script = ExtResource("1_lmg06")
+max_speed = 50.0
+shoot_rate = 2.0
+shoot_range = 250.0
+current_health = 100
+max_health = 350
+bullet_scene = ExtResource("5_x8tu6")
+score_value = 300
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2(2, 0)
+shape = SubResource("RectangleShape2D_sfdtf")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(1, -2.5)
+scale = Vector2(2, 2)
+texture = ExtResource("3_aebgk")
+region_enabled = true
+region_rect = Rect2(321, 160, 31, 32)
+
+[node name="muzzle" type="Node2D" parent="."]
+
+[node name="bullet_pool" type="Node" parent="."]
+script = ExtResource("4_ual8j")
+node_scene = ExtResource("5_x8tu6")
+
+[node name="potion_pool" type="Node" parent="."]
+script = ExtResource("4_ual8j")
+node_scene = ExtResource("5_uprq3")
+
+[node name="avoidance_ray" type="RayCast2D" parent="."]
+target_position = Vector2(-50, 0)
+collision_mask = 1075
+
+[node name="health_bar" type="ProgressBar" parent="."]
+offset_left = -22.0
+offset_top = -50.0
+offset_right = 22.0
+offset_bottom = -47.0
+theme_override_styles/background = SubResource("StyleBoxFlat_pegji")
+theme_override_styles/fill = SubResource("StyleBoxFlat_5abox")
+rounded = true
+show_percentage = false
