@@ -35,7 +35,7 @@ shape = SubResource("RectangleShape2D_sfdtf")
 position = Vector2(1, -2.5)
 texture = ExtResource("2_ohxry")
 region_enabled = true
-region_rect = Rect2(801, 290, 29, 30)
+region_rect = Rect2(262, 97, 23, 29)
 
 [node name="muzzle" type="Node2D" parent="."]
 position = Vector2(-13, 6)
