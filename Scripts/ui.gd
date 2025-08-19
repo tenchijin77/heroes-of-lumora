@@ -48,7 +48,7 @@ func _update_wave(wave: int) -> void:
 	wave_label.text = "Current Wave: %d" % wave
 
 func _update_time(time: String) -> void:
-	uptime_label.text = "Time: %s" % time
+	uptime_label.text = "Time Survived: %s" % time
 
 func _update_score(score: int) -> void:
 	score_label.text = "Score: %d" % score

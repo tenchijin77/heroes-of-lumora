@@ -12,7 +12,8 @@ extends CharacterBody2D
 @export var finale_rate: float = 45.0 # Cooldown for ultimate
 @export var illusory_double_rate: float = 25.0 # Cooldown for escape double
 @export var illusory_double_hp_threshold: float = 0.3 # HP to trigger escape
-@export var support_range: float = 300.0 # Increased range for better targeting
+@export var support_range: float = 300.0 # Range for targeting
+@export var finale_range: float = 250.0 # Range for Finale AoE
 @export var current_health: int = 75
 @export var max_health: int = 75
 
@@ -144,9 +145,7 @@ func _update_targets() -> void:
 		_perform_song_of_courage()
 		return
 	if _is_critical_situation() and ability_cooldowns["finale"] <= 0:
-		current_target = _find_closest_mob()
-		if current_target:
-			_perform_finale(current_target)
+		_perform_finale()
 		return
 	current_state = "FOLLOWING_PLAYER"
 
@@ -221,22 +220,18 @@ func _perform_symphony_of_fate(target: CharacterBody2D) -> void:
 	ability_cooldowns["symphony"] = symphony_of_fate_rate
 	current_state = "FOLLOWING_PLAYER"
 
-func _perform_finale(target: CharacterBody2D) -> void:
-	# Fire enhanced projectile for critical situations
+func _perform_finale() -> void:
+	# Deal instant 25 damage to all enemies within finale_range
 	_show_casting_text("Finale")
 	current_state = "CASTING"
-	if target and is_instance_valid(target):
-		current_target = target
-		print("Annadaeus: Targeting enemy %s at position %s for Finale" % [target.name, target.global_position])
-		_spawn_finale_projectile(target)
-	else:
-		var new_target = _find_closest_mob()
-		if new_target and is_instance_valid(new_target) and _has_clear_line_to_target(new_target):
-			current_target = new_target
-			print("Annadaeus: Retargeted enemy %s at position %s for Finale" % [new_target.name, new_target.global_position])
-			_spawn_finale_projectile(new_target)
-		else:
-			print("Annadaeus: No valid enemy target for Finale, skipping")
+	var hit_count: int = 0
+	for mob in get_tree().get_nodes_in_group("monsters"):
+		if is_instance_valid(mob) and mob.has_method("take_damage"):
+			var distance = global_position.distance_to(mob.global_position)
+			if distance <= finale_range:
+				mob.take_damage(25, null)
+				hit_count += 1
+	print("Annadaeus: Finale hit %d enemies within %.2f pixels" % [hit_count, finale_range])
 	ability_cooldowns["finale"] = finale_rate
 	current_state = "FOLLOWING_PLAYER"
 
