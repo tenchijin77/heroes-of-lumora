@@ -30,6 +30,7 @@ extends CharacterBody2D
 @onready var courage_aura: Area2D = $courage_aura
 @onready var renewal_aura_timer: Timer = $renewal_aura_timer
 @onready var courage_aura_timer: Timer = $courage_aura_timer
+@onready var finale_particles: GPUParticles2D = $finale_particles
 
 var current_target: CharacterBody2D = null
 var current_friendly_target: CharacterBody2D = null
@@ -221,28 +222,35 @@ func _perform_symphony_of_fate(target: CharacterBody2D) -> void:
 	current_state = "FOLLOWING_PLAYER"
 
 func _perform_finale() -> void:
-	# Deal instant 25 damage to all enemies within finale_range
+	# Deal instant damage to all enemies within finale_range, boosted by auras
 	_show_casting_text("Finale")
 	current_state = "CASTING"
+	if finale_particles and is_instance_valid(finale_particles):
+		finale_particles.emitting = true
+	var base_finale_damage: int = 25
+	var damage_boost: float = 1.0 + 0.5 * (int(courage_aura.visible) + int(renewal_aura.visible))
+	var final_damage: int = int(base_finale_damage * damage_boost)
 	var hit_count: int = 0
 	for mob in get_tree().get_nodes_in_group("monsters"):
 		if is_instance_valid(mob) and mob.has_method("take_damage"):
 			var distance = global_position.distance_to(mob.global_position)
 			if distance <= finale_range:
-				mob.take_damage(25, null)
+				mob.take_damage(final_damage, null)
 				hit_count += 1
-	print("Annadaeus: Finale hit %d enemies within %.2f pixels" % [hit_count, finale_range])
+	print("Annadaeus: Finale hit %d enemies within %.2f pixels for %d damage (boost=%.2f)" % [hit_count, finale_range, final_damage, damage_boost])
 	ability_cooldowns["finale"] = finale_rate
 	current_state = "FOLLOWING_PLAYER"
 
 func _perform_illusory_double() -> void:
-	# Spawn static decoy and enter escaping state
+	# Spawn static decoy and enter escaping state, return to following after 5s
 	_show_casting_text("Illusory Double")
 	current_state = "CASTING"
 	await get_tree().create_timer(1.0).timeout
 	ability_cooldowns["double"] = illusory_double_rate
 	_spawn_decoy()
 	current_state = "ESCAPING"
+	await get_tree().create_timer(5.0).timeout
+	current_state = "FOLLOWING_PLAYER"
 
 func _activate_courage_aura() -> void:
 	# Show courage aura (effects in aura script)
@@ -429,13 +437,20 @@ func _find_closest_mob() -> CharacterBody2D:
 	return closest_mob
 
 func _is_critical_situation() -> bool:
-	# Check for critical situation (many enemies or low player HP)
+	# Check for critical situation (more than 5 enemies or low player/Annadaeus HP)
 	var enemy_count = 0
 	for mob in get_tree().get_nodes_in_group("monsters"):
 		if is_instance_valid(mob) and global_position.distance_to(mob.global_position) < support_range:
 			enemy_count += 1
 	var player_low_hp = player and is_instance_valid(player) and player.has_method("get_health") and player.get_health() < player.get_max_health() * 0.5
-	return enemy_count > 3 or player_low_hp
+	var annadaeus_low_hp = current_health < max_health * 0.5
+	print("Annadaeus: Checking critical situation: enemies=%d, player_hp=%s, annadaeus_hp=%d, is_critical=%s" % [
+		enemy_count,
+		player.get_health() if player and player.has_method("get_health") else "N/A",
+		current_health,
+		enemy_count > 5 or player_low_hp or annadaeus_low_hp
+	])
+	return enemy_count > 5 or player_low_hp or annadaeus_low_hp
 
 func _move_wobble() -> void:
 	# Apply wobble animation to sprite
