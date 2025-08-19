@@ -6,15 +6,15 @@ signal wave_updated(wave: int)
 # -- Existing @exports --
 @export var min_spawn_time: float = 3.0
 @export var max_spawn_time: float = 5.0
-@export var spawn_radius: float = 100.0
+@export var spawn_radius: float = 200.0 # Increased to reduce clustering
 @export var monster_configs: Array[Dictionary] = [
-	{"scene": preload("res://Scenes/skeleton.tscn"), "weight": 0.8},
-	{"scene": preload("res://Scenes/wizard.tscn"), "weight": 0.4},
-	{"scene": preload("res://Scenes/goblin.tscn"), "weight": 0.4},
-	{"scene": preload("res://Scenes/beholder.tscn"), "weight": 0.2},
-	{"scene": preload("res://Scenes/lich.tscn"), "weight": 0.2},
+	{"scene": preload("res://Scenes/skeleton.tscn"), "weight": 0.7},
+	{"scene": preload("res://Scenes/wizard.tscn"), "weight": 0.3},
+	{"scene": preload("res://Scenes/goblin.tscn"), "weight": 0.3},
+	{"scene": preload("res://Scenes/beholder.tscn"), "weight": 0.1},
+	{"scene": preload("res://Scenes/lich.tscn"), "weight": 0.1},
 	{"scene": preload("res://Scenes/ogre.tscn"), "weight": 0.2},
-	{"scene": preload("res://Scenes/ghost.tscn"), "weight": 0.4}
+	{"scene": preload("res://Scenes/ghost.tscn"), "weight": 0.3}
 ]
 @export var boss_configs: Array[Dictionary] = [
 	{"scene": preload("res://Scenes/balrog.tscn"), "weight": 0.1},
@@ -98,14 +98,6 @@ func _calculate_total_weight() -> void:
 	for config in effective_monster_configs:
 		total_weight += config.weight
 
-func _on_wave_timer_timeout() -> void:
-	# Increment wave and update effective configs with bosses
-	Global.increment_wave()
-	current_wave = Global.current_wave
-	print("--- Wave %d Started! ---" % current_wave)
-	_update_effective_configs()
-	_increase_spawn_rate()
-
 func _update_effective_configs() -> void:
 	# Dynamically add bosses to effective configs based on wave
 	effective_monster_configs = monster_configs.duplicate(true)
@@ -145,8 +137,16 @@ func _update_spawn_timer_interval() -> void:
 	print("Spawn interval updated to %.2f (Range: %.2f-%.2f, Multiplier: %.2f)." % [
 		spawn_timer.wait_time, effective_min, effective_max, current_spawn_multiplier])
 
+func _on_wave_timer_timeout() -> void:
+	# Increment wave and update effective configs with bosses
+	Global.increment_wave()
+	current_wave = Global.current_wave
+	print("--- Wave %d Started! ---" % current_wave)
+	_update_effective_configs()
+	_increase_spawn_rate()
+
 func _on_spawn_timer_timeout() -> void:
-	# Spawn regular or boss monsters
+	# Spawn monsters
 	for i: int in range(current_mobs_per_spawn):
 		_spawn_monster()
 	_update_spawn_timer_interval()
@@ -196,7 +196,7 @@ func _is_obstacle_free(position: Vector2, shape: Shape2D) -> bool:
 	var shape_query: PhysicsShapeQueryParameters2D = PhysicsShapeQueryParameters2D.new()
 	shape_query.shape = shape
 	shape_query.transform = Transform2D(0, position)
-	shape_query.collision_mask = obstacle_collision_mask  # Layer 5
+	shape_query.collision_mask = obstacle_collision_mask # Layer 5
 	var intersects: Array = space.intersect_shape(shape_query)
 	if not intersects.is_empty():
 		print("Position %s blocked by obstacle: %s" % [position, intersects])
@@ -208,7 +208,7 @@ func _is_forbidden_free(position: Vector2, shape: Shape2D) -> bool:
 	var shape_query: PhysicsShapeQueryParameters2D = PhysicsShapeQueryParameters2D.new()
 	shape_query.shape = shape
 	shape_query.transform = Transform2D(0, position)
-	shape_query.collision_mask = forbidden_zone_mask  # Layer 8
+	shape_query.collision_mask = forbidden_zone_mask # Layer 8
 	var intersects: Array = space.intersect_shape(shape_query)
 	if not intersects.is_empty():
 		print("Position %s in forbidden zone: %s" % [position, intersects])

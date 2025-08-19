@@ -3,6 +3,7 @@ extends CharacterBody2D
 
 @export var base_damage: int = 4 # Base damage for projectiles
 @export var max_speed: float = 100.0
+@export var max_speed_cap: float = 200.0 # Cap at 2x base speed
 @export var acceleration: float = 0.2
 @export var braking: float = 0.15
 @export var firing_speed: float = 0.2
@@ -21,6 +22,7 @@ extends CharacterBody2D
 var move_input: Vector2
 var damage_modifier: float = 1.0 # Multiplier for damage buffs
 var last_shoot_time: float
+var speed_buff_active: bool = false # Prevent stacking speed buffs
 
 func _ready() -> void:
 	# Initialize player properties and connections
@@ -109,6 +111,12 @@ func _on_pickup_area_entered(area: Area2D) -> void:
 		Global.emit_signal("coins_updated", Global.coins_collected)
 		print("Picked up coin! Coins: %d" % Global.coins_collected)
 		area.collect()
+	# Handle potion pickup (assuming potion.gd calls apply_potion_effect)
+	if area.is_in_group("potion"):
+		var potion_data = area.get_potion_data() # Assume potion.gd has this
+		if potion_data:
+			apply_potion_effect(potion_data.effect_type, potion_data.effect_value, potion_data.effect_duration)
+		area.collect()
 
 func apply_potion_effect(effect_type: String, effect_value: float, effect_duration: float) -> void:
 	# Apply potion effect to player
@@ -116,8 +124,11 @@ func apply_potion_effect(effect_type: String, effect_value: float, effect_durati
 		"heal":
 			heal(int(effect_value))
 		"speed_boost":
-			max_speed *= effect_value
-			_start_effect_timer(effect_duration, "max_speed", 1.0 / effect_value)
+			if not speed_buff_active: # Prevent stacking
+				speed_buff_active = true
+				max_speed = min(max_speed * effect_value, max_speed_cap)
+				print("Player speed increased to %.2f (cap %.2f)" % [max_speed, max_speed_cap])
+				_start_effect_timer(effect_duration, "max_speed", 1.0 / effect_value)
 		"damage_boost":
 			damage_modifier *= effect_value
 			_start_effect_timer(effect_duration, "damage_modifier", 1.0 / effect_value)
@@ -129,6 +140,9 @@ func _start_effect_timer(duration: float, property: String, revert_multiplier: f
 	timer.one_shot = true
 	timer.timeout.connect(func():
 		set(property, get(property) * revert_multiplier)
+		if property == "max_speed":
+			speed_buff_active = false
+			print("Speed buff expired, now %.2f" % max_speed)
 		timer.queue_free()
 	)
 	add_child(timer)

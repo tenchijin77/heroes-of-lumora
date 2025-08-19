@@ -156,3 +156,7 @@ process_material = SubResource("ParticleProcessMaterial_4xvhl")
 
 [node name="finale_sound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("8_cti21")
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+avoidance_enabled = true
+radius = 30.0

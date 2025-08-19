@@ -7,18 +7,18 @@ signal mob_died
 @export var drag: float = 0.9
 @export var collision_damage: int = 3
 @export var shoot_rate: float = 1.5
-@export var shoot_range: float = 250.0
+@export var shoot_range: float = 150.0
 @export var current_health: int = 15
 @export var max_health: int = 15
 @export var bullet_scene: PackedScene
 @export var score_value: int = 10 # Points awarded when killed by player
 @onready var sprite: Sprite2D = $Sprite2D
-@onready var avoidance_ray: RayCast2D = $avoidance_ray
 @onready var muzzle: Node2D = $muzzle
 @onready var bullet_pool: NodePool = $bullet_pool
 @onready var potion_pool: NodePool = $potion_pool
 @onready var health_bar: ProgressBar = $health_bar
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
+@onready var navigation_agent: NavigationAgent2D = $NavigationAgent2D
 var potions_data: Dictionary = {}
 var target: Node2D
 var target_distance: float
@@ -28,9 +28,15 @@ var last_damage_source: Node = null # Track the last entity to damage this monst
 var last_damage_times: Dictionary = {} # Tracks last collision damage time per target
 
 func _ready() -> void:
+	# Initialize monster properties and navigation
 	add_to_group("monsters")
 	# Set collision mask to exclude monsters (layer 2), include player (1), player projectiles (3), environment (5), friendly (6), friendly projectiles (7), healing (10)
 	collision_mask = 1 + 4 + 16 + 32 + 64 + 512 # Layers 1, 3, 5, 6, 7, 10
+	# Configure navigation agent
+	navigation_agent.path_desired_distance = 4.0
+	navigation_agent.target_desired_distance = 4.0
+	navigation_agent.radius = 10.0 # Adjust to monster size
+	navigation_agent.avoidance_enabled = true
 	var file: FileAccess = FileAccess.open("res://Data/potions.json", FileAccess.READ)
 	if file:
 		potions_data = JSON.parse_string(file.get_as_text())
@@ -47,8 +53,10 @@ func _ready() -> void:
 		push_error("Monster %s: collision_shape is null!" % name)
 	_find_nearest_target()
 	reset()
+	_update_path()
 
 func reset() -> void:
+	# Reset monster state for reuse
 	visible = true
 	current_health = max_health
 	if health_bar:
@@ -68,44 +76,38 @@ func reset() -> void:
 		global_position = Vector2.ZERO # For reused nodes at origin
 
 func _process(_delta: float) -> void:
+	# Update target and shooting logic
 	_find_nearest_target()
 	if not target:
 		return
 	target_distance = global_position.distance_to(target.global_position)
 	target_direction = global_position.direction_to(target.global_position)
 	sprite.flip_h = target_direction.x > 0
-	_update_avoidance_ray(target, shoot_range)
-	if target_distance < shoot_range and _has_clear_line_to_target(target):
+	if target_distance < shoot_range:
 		if Time.get_unix_time_from_system() - last_shoot_time > shoot_rate:
 			_cast()
 	_move_wobble()
+	_update_path() # Update path every frame for dynamic targets
 
-func _cast() -> void:
-	last_shoot_time = Time.get_unix_time_from_system()
-	if not bullet_pool or not muzzle or not target:
-		push_warning("Monster %s: Cannot cast!" % name)
-		return
-	var projectile = bullet_pool.spawn()
-	if projectile:
-		projectile.global_position = muzzle.global_position
-		projectile.move_direction = muzzle.global_position.direction_to(target.global_position)
-		print("Monster %s: Cast projectile %s at %s" % [name, projectile.name, target.name])
-	else:
-		push_warning("Monster %s: Failed to spawn projectile!" % name)
+func _update_path() -> void:
+	# Update navigation path to target
+	if target:
+		navigation_agent.target_position = target.global_position
 
 func _physics_process(_delta: float) -> void:
-	if not target:
+	# Move using navigation path
+	if not target or navigation_agent.is_navigation_finished():
+		velocity = velocity.lerp(Vector2.ZERO, drag)
 		return
-	var move_direction = target_direction
-	var local_avoidance = _local_avoidance()
-	# Reduce avoidance influence to prioritize target direction
-	if local_avoidance.length() > 0 and target_distance > 50.0:
-		move_direction = (move_direction + local_avoidance * 0.5).normalized()
+	var next_path_position: Vector2 = navigation_agent.get_next_path_position()
+	var move_direction: Vector2 = global_position.direction_to(next_path_position).normalized()
 	if velocity.length() < max_speed:
 		velocity += move_direction * acceleration
 	else:
 		velocity *= drag
 	move_and_slide()
+	if not navigation_agent.is_navigation_finished():
+		print("Monster %s: Moving to path point %s, Distance=%.2f, Velocity=%s" % [name, next_path_position, target_distance, velocity])
 	for i in get_slide_collision_count():
 		var collision = get_slide_collision(i)
 		var body = collision.get_collider()
@@ -119,6 +121,7 @@ func _physics_process(_delta: float) -> void:
 					print("Monster %s dealt %d collision damage to %s" % [name, collision_damage, body.name])
 
 func _move_wobble() -> void:
+	# Apply sprite wobble animation
 	if velocity.length() == 0:
 		sprite.rotation_degrees = 0
 		return
@@ -126,28 +129,22 @@ func _move_wobble() -> void:
 	var rot = sin(t * 20) * 2
 	sprite.rotation_degrees = rot
 
-func _local_avoidance() -> Vector2:
-	avoidance_ray.target_position = to_local(target.global_position).normalized() * 80
-	if not avoidance_ray.is_colliding():
-		return Vector2.ZERO
-	var obstacle = avoidance_ray.get_collider()
-	if obstacle == target:
-		return Vector2.ZERO
-	var obstacle_point = avoidance_ray.get_collision_point()
-	var obstacle_direction = global_position.direction_to(obstacle_point)
-	return Vector2(-obstacle_direction.y, obstacle_direction.x)
-
-func _update_avoidance_ray(target_node: Node2D, range: float) -> void:
-	if avoidance_ray and target_node:
-		avoidance_ray.target_position = (target_node.global_position - global_position).normalized() * range
-		avoidance_ray.force_raycast_update()
-
-func _has_clear_line_to_target(target_node: Node2D) -> bool:
-	if not avoidance_ray or not target_node:
-		return false
-	return not avoidance_ray.is_colliding() or avoidance_ray.get_collider() == target_node
+func _cast() -> void:
+	# Fire projectile at target
+	last_shoot_time = Time.get_unix_time_from_system()
+	if not bullet_pool or not muzzle or not target:
+		push_warning("Monster %s: Cannot cast!" % name)
+		return
+	var projectile = bullet_pool.spawn()
+	if projectile:
+		projectile.global_position = muzzle.global_position
+		projectile.move_direction = muzzle.global_position.direction_to(target.global_position)
+		print("Monster %s: Cast projectile %s at %s" % [name, projectile.name, target.name])
+	else:
+		push_warning("Monster %s: Failed to spawn projectile!" % name)
 
 func _find_nearest_target() -> void:
+	# Find closest player or friendly target
 	var friendlies: Array = get_tree().get_nodes_in_group("friendly")
 	var players: Array = get_tree().get_nodes_in_group("player")
 	var all_targets: Array = friendlies + players
@@ -158,6 +155,7 @@ func _find_nearest_target() -> void:
 	target = all_targets[0]
 
 func take_damage(damage: int, projectile_instance: Node):
+	# Apply damage and handle death
 	current_health -= damage
 	if health_bar:
 		health_bar.value = current_health
@@ -186,6 +184,7 @@ func take_damage(damage: int, projectile_instance: Node):
 		_damage_flash()
 
 func _spawn_potion(potion_data: Dictionary) -> void:
+	# Spawn potion on death
 	if potion_pool:
 		var potion: Area2D = potion_pool.spawn() as Area2D
 		if potion:
@@ -193,11 +192,13 @@ func _spawn_potion(potion_data: Dictionary) -> void:
 			potion.setup(potion_data)
 
 func _damage_flash() -> void:
+	# Flash sprite on damage
 	sprite.modulate = Color.BLACK
 	await get_tree().create_timer(0.05).timeout
 	sprite.modulate = Color.WHITE
 
 func _on_visibility_changed() -> void:
+	# Handle visibility changes for pooling
 	if visible:
 		set_process(true)
 		set_physics_process(true)

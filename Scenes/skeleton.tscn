@@ -77,3 +77,7 @@ theme_override_styles/background = SubResource("StyleBoxFlat_pegji")
 theme_override_styles/fill = SubResource("StyleBoxFlat_5abox")
 rounded = true
 show_percentage = false
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+avoidance_enabled = true
+radius = 30.0
