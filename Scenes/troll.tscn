@@ -1,0 +1,64 @@
+[gd_scene load_steps=9 format=3 uid="uid://bdlq1sgvlmrwk"]
+
+[ext_resource type="Script" uid="uid://c4tbgdnoxqv5b" path="res://Scripts/troll.gd" id="1_necui"]
+[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="2_g1nw4"]
+[ext_resource type="PackedScene" uid="uid://k0eurtplf71g" path="res://Scenes/poison_bolt.tscn" id="2_olevf"]
+[ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="3_olevf"]
+[ext_resource type="PackedScene" uid="uid://d3rcusi22khhd" path="res://Scenes/potion.tscn" id="5_bp7kp"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sfdtf"]
+size = Vector2(78, 86)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pegji"]
+bg_color = Color(0.201527, 0.201527, 0.201527, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5abox"]
+bg_color = Color(0.94902, 0, 0, 1)
+
+[node name="troll" type="CharacterBody2D" groups=["monsters"]]
+collision_layer = 2
+collision_mask = 1655
+script = ExtResource("1_necui")
+max_speed = 50.0
+shoot_rate = 2.0
+shoot_range = 250.0
+current_health = 100
+max_health = 200
+bullet_scene = ExtResource("2_olevf")
+score_value = 250
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2(2, 0)
+shape = SubResource("RectangleShape2D_sfdtf")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(1, -2.5)
+scale = Vector2(2, 2)
+texture = ExtResource("2_g1nw4")
+region_enabled = true
+region_rect = Rect2(160, 96, 32, 32)
+
+[node name="muzzle" type="Node2D" parent="."]
+
+[node name="bullet_pool" type="Node" parent="."]
+script = ExtResource("3_olevf")
+node_scene = ExtResource("2_olevf")
+
+[node name="potion_pool" type="Node" parent="."]
+script = ExtResource("3_olevf")
+node_scene = ExtResource("5_bp7kp")
+
+[node name="avoidance_ray" type="RayCast2D" parent="."]
+target_position = Vector2(-50, 0)
+collision_mask = 1075
+
+[node name="health_bar" type="ProgressBar" parent="."]
+offset_left = -22.0
+offset_top = -50.0
+offset_right = 22.0
+offset_bottom = -47.0
+theme_override_styles/background = SubResource("StyleBoxFlat_pegji")
+theme_override_styles/fill = SubResource("StyleBoxFlat_5abox")
+rounded = true
+show_percentage = false

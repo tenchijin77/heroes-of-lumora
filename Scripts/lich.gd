@@ -1,5 +1,4 @@
-# lich.gd
-# Lich mob specific script (extends monsters.gd)
+# lich.gd Lich mob specific script (extends monsters.gd)
 
 extends "res://Scripts/monsters.gd"
 

@@ -1,0 +1,39 @@
+[gd_scene load_steps=6 format=3 uid="uid://dn3uy2cyajlqp"]
+
+[ext_resource type="Script" uid="uid://d6xrs2lxn4lc" path="res://Scripts/projectile.gd" id="1_tiio2"]
+[ext_resource type="AudioStream" uid="uid://k3wyw6j7ju8t" path="res://Assets/Audio/something-haunted-passing-by-190277.mp3" id="2_7ffry"]
+[ext_resource type="AudioStream" uid="uid://c1vu8nwvpucsq" path="res://Assets/Audio/fireball-impact-351961.mp3" id="2_x53bk"]
+[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="3_7ffry"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tiio2"]
+size = Vector2(15, 27)
+
+[node name="lifedrain" type="Area2D"]
+collision_layer = 8
+collision_mask = 1073
+script = ExtResource("1_tiio2")
+speed = 300.0
+owner_group = "monsters"
+damage = 30
+sound_stream = ExtResource("2_7ffry")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("3_7ffry")
+region_enabled = true
+region_rect = Rect2(518, 355, 17, 28)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2(0.5, -0.5)
+shape = SubResource("RectangleShape2D_tiio2")
+
+[node name="destroy_timer" type="Timer" parent="."]
+wait_time = 4.0
+autostart = true
+
+[node name="projectile_sound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("2_x53bk")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
+[connection signal="timeout" from="destroy_timer" to="." method="_on_destroy_timer_timeout"]

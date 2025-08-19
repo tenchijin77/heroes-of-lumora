@@ -1,0 +1,37 @@
+[gd_scene load_steps=5 format=3 uid="uid://dbt61vebx6k37"]
+
+[ext_resource type="Script" uid="uid://d6xrs2lxn4lc" path="res://Scripts/projectile.gd" id="1_ann0h"]
+[ext_resource type="AudioStream" uid="uid://c1vu8nwvpucsq" path="res://Assets/Audio/fireball-impact-351961.mp3" id="2_ann0h"]
+[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="2_btltc"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_btltc"]
+radius = 14.0
+
+[node name="malfire" type="Area2D"]
+collision_layer = 8
+collision_mask = 1073
+script = ExtResource("1_ann0h")
+speed = 300.0
+owner_group = "monsters"
+damage = 20
+sound_stream = ExtResource("2_ann0h")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_btltc")
+region_enabled = true
+region_rect = Rect2(573, 321, 37, 33)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-1, 0)
+shape = SubResource("CircleShape2D_btltc")
+
+[node name="destroy_timer" type="Timer" parent="."]
+wait_time = 4.0
+autostart = true
+
+[node name="projectile_sound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("2_ann0h")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
+[connection signal="timeout" from="destroy_timer" to="." method="_on_destroy_timer_timeout"]

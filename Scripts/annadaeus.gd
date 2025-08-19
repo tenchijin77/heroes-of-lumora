@@ -34,11 +34,13 @@ var current_friendly_target: CharacterBody2D = null
 var current_state: String = "FOLLOWING_PLAYER"
 var last_ability_time: float = 0.0
 var damage_modifier: float = 1.0 # Multiplier for damage buffs
+var is_decoy: bool = false # Flag to identify decoys
 var ability_cooldowns: Dictionary = {
-	"courage": 0.0,
-	"renewal": 0.0,
-	"symphony": 0.0,
-	"finale": 0.0
+	"courage": 5.0,
+	"renewal": 4.0,
+	"symphony": 2.0,
+	"double": 25.0,
+	"finale": 50.0
 }
 var casting_lines: Dictionary = {}
 var target_update_timer: float = 0.0
@@ -62,7 +64,9 @@ func _update_cooldowns(delta: float) -> void:
 			ability_cooldowns[key] -= delta
 
 func _process(delta: float) -> void:
-	# Update Annadaeus's logic each frame
+	# Update Annadaeus's logic each frame, skip for decoys
+	if is_decoy:
+		return
 	target_update_timer += delta
 	if target_update_timer >= target_update_interval:
 		_update_targets()
@@ -86,7 +90,9 @@ func _process(delta: float) -> void:
 	_update_flip_h()
 
 func _physics_process(delta: float) -> void:
-	# Handle physics-based movement
+	# Handle physics-based movement, skip for decoys
+	if is_decoy:
+		return
 	move_and_slide()
 
 # --- Setup Logic ---
@@ -119,7 +125,7 @@ func _update_targets() -> void:
 		return
 	current_target = null
 	current_friendly_target = null
-	if current_health <= max_health * illusory_double_hp_threshold and ability_cooldowns["finale"] <= 0:
+	if current_health <= max_health * illusory_double_hp_threshold and ability_cooldowns["double"] <= 0:
 		_perform_illusory_double()
 		return
 	var enemy_target = _find_closest_mob()
@@ -237,7 +243,7 @@ func _perform_illusory_double() -> void:
 	_show_casting_text("Illusory Double")
 	current_state = "CASTING"
 	await get_tree().create_timer(1.0).timeout
-	ability_cooldowns["finale"] = finale_rate
+	ability_cooldowns["double"] = 25.0 # Use double cooldown
 	_spawn_decoy()
 	current_state = "ESCAPING"
 
@@ -295,15 +301,33 @@ func _spawn_finale_projectile(target: CharacterBody2D) -> void:
 		print("Annadaeus: Failed to spawn Finale projectile, target=%s, bullet_pool=%s, muzzle=%s" % [target.name if target else "null", bullet_pool, muzzle])
 
 func _spawn_decoy() -> void:
-	# Spawn static duplicate of Annadaeus
+	# Spawn static duplicate of Annadaeus with 40 health
 	var decoy = duplicate()
+	decoy.is_decoy = true # Mark as decoy
 	decoy.global_position = global_position
-	decoy.set_process(false)
-	decoy.set_physics_process(false)
+	decoy.current_health = 40
+	decoy.max_health = 40
+	if decoy.get_node_or_null("health_bar"):
+		var decoy_health_bar = decoy.get_node("health_bar")
+		decoy_health_bar.max_value = 40
+		decoy_health_bar.value = 40
+	decoy.set_process(false) # Disable AI logic
+	decoy.set_physics_process(false) # Disable movement
 	if decoy.get_node_or_null("CollisionShape2D"):
-		decoy.get_node("CollisionShape2D").set_deferred("disabled", true)
+		decoy.get_node("CollisionShape2D").set_deferred("disabled", false) # Keep collision for damage
 	get_tree().current_scene.add_child(decoy)
-	get_tree().create_timer(5.0).timeout.connect(func(): if decoy and is_instance_valid(decoy): decoy.queue_free())
+	# Add timer to despawn after 5 seconds
+	var timer = Timer.new()
+	timer.wait_time = 5.0
+	timer.one_shot = true
+	timer.timeout.connect(func():
+		if is_instance_valid(decoy):
+			decoy.queue_free()
+		timer.queue_free()
+	)
+	decoy.add_child(timer)
+	timer.start()
+	print("Annadaeus: Spawned decoy at %s with 40 HP" % decoy.global_position)
 
 # --- Utility ---
 func _update_avoidance_ray(target: Node2D, range: float) -> void:
@@ -353,7 +377,11 @@ func _damage_flash() -> void:
 		sprite.modulate = Color.WHITE
 
 func _die() -> void:
-	# Handle death
+	# Handle death, queue_free for decoys
+	if is_decoy:
+		print("Annadaeus decoy died at %s!" % global_position)
+		queue_free()
+		return
 	print("Annadaeus died!")
 	if get_parent() is NodePool:
 		get_parent().despawn(self)
@@ -448,7 +476,7 @@ func heal(amount: int) -> void:
 	current_health = clamp(current_health + amount, 0, max_health)
 	if health_bar and is_instance_valid(health_bar):
 		health_bar.value = current_health
-	print("Annadaeus %s healed for %d → current_health = %d" % [name, amount, current_health])
+	print("Annadaeus %s healed for %d - current_health = %d" % [name, amount, current_health])
 
 func set_damage_modifier(modifier: float) -> void:
 	# Set damage multiplier for courage aura
