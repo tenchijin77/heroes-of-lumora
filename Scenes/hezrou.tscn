@@ -17,11 +17,10 @@ bg_color = Color(0.94902, 0, 0, 1)
 
 [node name="hezrou" type="CharacterBody2D" groups=["monsters"]]
 collision_layer = 2
-collision_mask = 1655
+collision_mask = 1653
 script = ExtResource("1_lmg06")
 max_speed = 50.0
 shoot_rate = 2.0
-shoot_range = 250.0
 current_health = 100
 max_health = 350
 bullet_scene = ExtResource("5_x8tu6")

@@ -1,13 +1,13 @@
-# monsters.gd
-# Base script for monster behavior, targeting nearest friendly or player.
+# monsters.gd - Base script for monster behavior, targeting nearest friendly or player
 extends CharacterBody2D
 signal mob_died
+
 @export var max_speed: float = 35.0
 @export var acceleration: float = 10.0
 @export var drag: float = 0.9
 @export var collision_damage: int = 3
 @export var shoot_rate: float = 1.5
-@export var shoot_range: float = 150.0
+@export var shoot_range: float = 250.0
 @export var current_health: int = 15
 @export var max_health: int = 15
 @export var bullet_scene: PackedScene
@@ -25,10 +25,12 @@ var target_distance: float
 var target_direction: Vector2
 var last_shoot_time: float = 0.0
 var last_damage_source: Node = null # Track the last entity to damage this monster
-var last_damage_times: Dictionary = {}  # Tracks last collision damage time per target
+var last_damage_times: Dictionary = {} # Tracks last collision damage time per target
 
 func _ready() -> void:
 	add_to_group("monsters")
+	# Set collision mask to exclude monsters (layer 2), include player (1), player projectiles (3), environment (5), friendly (6), friendly projectiles (7), healing (10)
+	collision_mask = 1 + 4 + 16 + 32 + 64 + 512 # Layers 1, 3, 5, 6, 7, 10
 	var file: FileAccess = FileAccess.open("res://Data/potions.json", FileAccess.READ)
 	if file:
 		potions_data = JSON.parse_string(file.get_as_text())
@@ -55,7 +57,7 @@ func reset() -> void:
 	velocity = Vector2.ZERO
 	last_shoot_time = 0.0
 	last_damage_source = null
-	last_damage_times = {}  # Reset collision damage tracker
+	last_damage_times = {} # Reset collision damage tracker
 	set_process(true)
 	set_physics_process(true)
 	set_deferred("process_mode", Node.PROCESS_MODE_INHERIT)
@@ -63,7 +65,7 @@ func reset() -> void:
 		collision_shape.set_deferred("disabled", false)
 	# Conditionally reset position only if reused node is at origin (pool-specific)
 	if get_parent() is NodePool and global_position == Vector2.ZERO:
-		global_position = Vector2.ZERO  # This only for reused nodes at origin
+		global_position = Vector2.ZERO # For reused nodes at origin
 
 func _process(_delta: float) -> void:
 	_find_nearest_target()
@@ -96,8 +98,9 @@ func _physics_process(_delta: float) -> void:
 		return
 	var move_direction = target_direction
 	var local_avoidance = _local_avoidance()
-	if local_avoidance.length() > 0:
-		move_direction = local_avoidance
+	# Reduce avoidance influence to prioritize target direction
+	if local_avoidance.length() > 0 and target_distance > 50.0:
+		move_direction = (move_direction + local_avoidance * 0.5).normalized()
 	if velocity.length() < max_speed:
 		velocity += move_direction * acceleration
 	else:

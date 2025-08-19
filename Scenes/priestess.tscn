@@ -30,7 +30,7 @@ shader_parameter/max_alpha = 0.1
 
 [node name="priestess" type="CharacterBody2D" groups=["healer"]]
 collision_layer = 1024
-collision_mask = 59
+collision_mask = 27
 script = ExtResource("1_ewup4")
 max_speed = 30.0
 heal_rate = 4.0

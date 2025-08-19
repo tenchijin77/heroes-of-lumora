@@ -5,7 +5,7 @@ extends CharacterBody2D
 @export var acceleration: float = 10.0
 @export var drag: float = 0.9
 @export var attack_rate: float = 1.0
-@export var attack_range: float = 250.0
+@export var attack_range: float = 200.0
 @export var heal_rate: float = 2.0
 @export var heal_range: float = 250.0
 @export var base_damage: int = 5 # Base damage for projectiles

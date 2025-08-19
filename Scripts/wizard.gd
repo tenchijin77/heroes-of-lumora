@@ -10,7 +10,7 @@ func _ready() -> void:
 	acceleration = 0.2
 	drag = 0.15
 	shoot_rate = 0.4
-	shoot_range = 200.0
+	shoot_range = 250.0
 	max_health = 25
 	collision_damage = 3
 	current_health = max_health

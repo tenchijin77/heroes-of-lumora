@@ -17,7 +17,7 @@ bg_color = Color(0.94902, 0, 0, 1)
 
 [node name="beholder" type="CharacterBody2D" groups=["monsters"]]
 collision_layer = 2
-collision_mask = 1655
+collision_mask = 1653
 motion_mode = 1
 script = ExtResource("1_4eqte")
 shoot_rate = 2.5

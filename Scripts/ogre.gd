@@ -9,8 +9,8 @@ func _ready() -> void:
 	max_speed = 24.0  # Slow, heavy
 	acceleration = 0.3
 	drag = 0.2
-	shoot_rate = 2.5  # Slower attacks
-	shoot_range = 100.0  # Short range for heavy projectile
+	shoot_rate = 1.5  # Slower attacks
+	shoot_range = 250.0  # Short range for heavy projectile
 	max_health = 50  # Very tanky
 	collision_damage = 6  # Strong melee
 	current_health = max_health

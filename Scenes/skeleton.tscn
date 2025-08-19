@@ -37,7 +37,7 @@ bg_color = Color(0.94902, 0, 0, 1)
 
 [node name="skeleton" type="CharacterBody2D" groups=["monsters"]]
 collision_layer = 2
-collision_mask = 631
+collision_mask = 629
 script = ExtResource("5_5abox")
 bullet_scene = ExtResource("5_v8sxu")
 
