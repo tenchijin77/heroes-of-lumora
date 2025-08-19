@@ -10,6 +10,7 @@ extends CharacterBody2D
 @export var song_of_renewal_rate: float = 10.0 # Cooldown for healing
 @export var symphony_of_fate_rate: float = 2.0 # Cooldown for AoE
 @export var finale_rate: float = 45.0 # Cooldown for ultimate
+@export var illusory_double_rate: float = 25.0 # Cooldown for escape double
 @export var illusory_double_hp_threshold: float = 0.3 # HP to trigger escape
 @export var support_range: float = 300.0 # Increased range for better targeting
 @export var current_health: int = 75
@@ -36,11 +37,11 @@ var last_ability_time: float = 0.0
 var damage_modifier: float = 1.0 # Multiplier for damage buffs
 var is_decoy: bool = false # Flag to identify decoys
 var ability_cooldowns: Dictionary = {
-	"courage": 5.0,
-	"renewal": 4.0,
-	"symphony": 2.0,
-	"double": 25.0,
-	"finale": 50.0
+	"courage": 0.0,
+	"renewal": 0.0,
+	"symphony": 0.0,
+	"double": 0.0,
+	"finale": 0.0
 }
 var casting_lines: Dictionary = {}
 var target_update_timer: float = 0.0
@@ -126,6 +127,7 @@ func _update_targets() -> void:
 	current_target = null
 	current_friendly_target = null
 	if current_health <= max_health * illusory_double_hp_threshold and ability_cooldowns["double"] <= 0:
+		print("Annadaeus: Health=%d, Double CD=%.2f, triggering Illusory Double" % [current_health, ability_cooldowns["double"]])
 		_perform_illusory_double()
 		return
 	var enemy_target = _find_closest_mob()
@@ -243,7 +245,7 @@ func _perform_illusory_double() -> void:
 	_show_casting_text("Illusory Double")
 	current_state = "CASTING"
 	await get_tree().create_timer(1.0).timeout
-	ability_cooldowns["double"] = 25.0 # Use double cooldown
+	ability_cooldowns["double"] = illusory_double_rate
 	_spawn_decoy()
 	current_state = "ESCAPING"
 
