@@ -7,9 +7,9 @@ extends CanvasLayer
 @onready var coin_label: Label = $VBoxContainer/coins
 @onready var saved_villagers_label: Label = $VBoxContainer/saved_villagers
 @onready var lost_villagers_label: Label = $VBoxContainer/lost_villagers
-@onready var remaining_villagers_label: Label = $VBoxContainer/remaining_villagers  # Added for remaining count
-@onready var time_label : Label = $VBoxContainer/time_label
-@onready var date_label : Label = $VBoxContainer/date_label
+@onready var remaining_villagers_label: Label = $VBoxContainer/remaining_villagers
+@onready var time_label: Label = $VBoxContainer/time_label
+@onready var date_label: Label = $VBoxContainer/date_label
 
 func _ready() -> void:
 	# Hide UI by default, show only for main scene
@@ -22,13 +22,23 @@ func _ready() -> void:
 	Global.coins_updated.connect(_update_coins)
 	Global.villagers_updated.connect(_update_villagers)
 	_check_scene()
-	TimeManager.connect("time_updated", _on_time_updated)	
+	TimeManager.connect("time_updated", _on_time_updated)
 	_on_time_updated(TimeManager.current_time) # Initial update
+
+	# Connect to the scene change signal
+	get_tree().connect("tree_exiting", _on_scene_change)
+
+func _on_scene_change() -> void:
+	# This function will be called whenever the scene is about to change.
+	# We can use it to reset the visibility.
+	visible = false
 
 func _check_scene() -> void:
 	var current_scene = get_tree().current_scene
 	if current_scene and current_scene.name == "main":
 		visible = true
+	else:
+		visible = false
 	get_tree().node_added.connect(_on_node_added)
 
 func _on_node_added(node: Node) -> void:
@@ -60,7 +70,7 @@ func _update_villagers(saved: int, lost: int, total: int) -> void:
 	saved_villagers_label.text = "Villagers Saved: %d" % saved
 	lost_villagers_label.text = "Villagers Lost: %d" % lost
 	remaining_villagers_label.text = "Villagers Remaining: %d" % (total - (saved + lost))
-	
+
 # Update time and date labels when time changes
 func _on_time_updated(current_time: float) -> void:
 	time_label.text = TimeManager.get_time_string()

@@ -43,7 +43,7 @@ func _ready() -> void:
 		potions_data = JSON.parse_string(file.get_as_text())
 		file.close()
 	else:
-		print("Monster %s: Failed to open potions.json!" % name)
+		push_warning("Monster %s: Failed to open potions.json!" % name)
 	if bullet_scene:
 		bullet_pool.node_scene = bullet_scene
 	else:
@@ -107,8 +107,6 @@ func _physics_process(_delta: float) -> void:
 	else:
 		velocity *= drag
 	move_and_slide()
-	if not navigation_agent.is_navigation_finished():
-		print("Monster %s: Moving to path point %s, Distance=%.2f, Velocity=%s" % [name, next_path_position, target_distance, velocity])
 	for i in get_slide_collision_count():
 		var collision = get_slide_collision(i)
 		var body = collision.get_collider()
@@ -119,7 +117,6 @@ func _physics_process(_delta: float) -> void:
 				if current_time - last_time >= 2.0:
 					last_damage_times[body] = current_time
 					body.call_deferred("take_damage", collision_damage, null)
-					print("Monster %s dealt %d collision damage to %s" % [name, collision_damage, body.name])
 
 func _move_wobble() -> void:
 	# Apply sprite wobble animation
@@ -140,7 +137,6 @@ func _cast() -> void:
 	if projectile:
 		projectile.global_position = muzzle.global_position
 		projectile.move_direction = muzzle.global_position.direction_to(target.global_position)
-		print("Monster %s: Cast projectile %s at %s" % [name, projectile.name, target.name])
 	else:
 		push_warning("Monster %s: Failed to spawn projectile!" % name)
 

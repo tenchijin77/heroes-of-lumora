@@ -8,15 +8,24 @@ func _ready() -> void:
 	
 	add_to_group("ui_hidden")
 
-	get_tree().paused = false  # Ensure unpaused
+	get_tree().paused = true  # Ensure paused to freeze game
+	
+	if leader_board:
+		leader_board.process_mode = Node.PROCESS_MODE_ALWAYS
+	if restart_button:
+		restart_button.process_mode = Node.PROCESS_MODE_ALWAYS
+	if $quit_button:
+		$quit_button.process_mode = Node.PROCESS_MODE_ALWAYS
+
 	if not leader_board:
 		push_error("GameOver2: leader_board is null!")
 	if not restart_button:
 		push_error("GameOver2: restart_button is null!")
 	update_leader_board()
+	# Pause the survival stopwatch
+	Global.game_active = false
 
 # Update leaderboard display with requested format
-# In game_over2.gd
 func update_leader_board() -> void:
 	if not leader_board:
 		push_error("GameOver2: Cannot update leaderboard, leader_board is null!")
@@ -37,6 +46,7 @@ func update_leader_board() -> void:
 # Restart game
 func _on_restart_button_pressed() -> void:
 	Global.reset()
+	get_tree().paused = false  # Unpause the game tree
 	get_tree().change_scene_to_file("res://Scenes/main.tscn")
 
 # Quit game
