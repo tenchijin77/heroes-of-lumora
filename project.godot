@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="Heroes of Lumora"
+config/description="Heroes of Lumora, a bullet-hell game by Kuro Neko Sama Studios"
 run/main_scene="uid://b6e5clcrioodm"
 config/features=PackedStringArray("4.4", "Mobile")
 config/icon="res://icon.svg"

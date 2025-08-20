@@ -32,7 +32,6 @@ position = Vector2(2, 0)
 shape = SubResource("RectangleShape2D_sfdtf")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(1, -2.5)
 scale = Vector2(2, 2)
 texture = ExtResource("3_aebgk")
 region_enabled = true
@@ -64,4 +63,4 @@ show_percentage = false
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 avoidance_enabled = true
-radius = 16.0
+radius = 32.0

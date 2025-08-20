@@ -31,7 +31,6 @@ position = Vector2(1, -2.5)
 shape = SubResource("RectangleShape2D_sfdtf")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(1, -2.5)
 texture = ExtResource("3_thbej")
 flip_h = true
 region_enabled = true

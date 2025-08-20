@@ -31,7 +31,6 @@ position = Vector2(0, -2.5)
 shape = SubResource("RectangleShape2D_sfdtf")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(1, -2.5)
 texture = ExtResource("3_fkbyy")
 region_enabled = true
 region_rect = Rect2(98, 65, 31, 33)
