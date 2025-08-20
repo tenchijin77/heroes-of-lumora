@@ -46,10 +46,23 @@ func _physics_process(_delta: float) -> void:
 func _process(delta: float) -> void:
 	# Handle shooting and sprite orientation
 	sprite.flip_h = get_global_mouse_position().x > global_position.x
-	if Input.is_action_pressed("shoot"):
+	if Input.is_action_pressed("shoot") or Input.get_action_strength("shoot") > 0.1:  # Check mouse or trigger axis
 		if Time.get_unix_time_from_system() - last_shoot_time > firing_speed:
 			open_fire()
 	_move_wobble()
+
+	# Calculate aim direction from right joystick with deadzone
+	var aim_x: float = Input.get_action_strength("aim_right") - Input.get_action_strength("aim_left")
+	var aim_y: float = Input.get_action_strength("aim_down") - Input.get_action_strength("aim_up")
+	var aim_vector: Vector2 = Vector2(aim_x, aim_y).normalized()
+	if aim_vector.length() > 0.2:  # Deadzone to ignore small movements
+		# Use joystick aim if active
+		sprite.flip_h = aim_vector.x > 0
+	else:
+		# Fallback to mouse aim
+		var mouse_position = get_global_mouse_position()
+		aim_vector = muzzle.global_position.direction_to(mouse_position)
+		sprite.flip_h = mouse_position.x > global_position.x
 
 func _handle_game_over() -> void:
 	# Handle game over logic when player's health hits zero
@@ -82,9 +95,13 @@ func open_fire() -> void:
 	var arrow = arrow_pool.spawn()
 	arrow.global_position = muzzle.global_position
 	arrow.owner_group = "player"
-	var mouse_position = get_global_mouse_position()
-	var mouse_direction = muzzle.global_position.direction_to(mouse_position)
-	arrow.move_direction = mouse_direction
+	var aim_vector: Vector2
+	var joystick_active: bool = Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down").length() > 0.2
+	if joystick_active:
+		aim_vector = Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down").normalized()
+	else:
+		aim_vector = muzzle.global_position.direction_to(get_global_mouse_position())
+	arrow.move_direction = aim_vector
 	if arrow.has_method("set_damage"):
 		arrow.set_damage(base_damage * damage_modifier)
 	print("Player: Spawned arrow %s, move_direction=%s, position=%s" % [arrow.name, arrow.move_direction, arrow.global_position])

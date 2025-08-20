@@ -9,11 +9,8 @@ extends Control
 var current_score: int
 
 func _ready() -> void:
-	
 	add_to_group("ui_hidden")
-
 	get_tree().paused = true  # Ensure paused to freeze game
-	
 	if leader_board:
 		leader_board.process_mode = Node.PROCESS_MODE_ALWAYS
 	if initials_input:
@@ -24,7 +21,6 @@ func _ready() -> void:
 		restart_button.process_mode = Node.PROCESS_MODE_ALWAYS
 	if $quit_button:
 		$quit_button.process_mode = Node.PROCESS_MODE_ALWAYS
-	
 	if not leader_board:
 		push_error("GameOver: leader_board is null!")
 	if not initials_input:
@@ -45,6 +41,17 @@ func _ready() -> void:
 			initials_input.grab_focus()
 	# Pause the survival stopwatch
 	Global.game_active = false
+
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("interact"):
+		var focused_control = get_viewport().gui_get_focus_owner()
+		if focused_control:
+			if focused_control == submit_button:
+				_on_submit_button_pressed()
+			elif focused_control == restart_button:
+				_on_restart_button_pressed()
+		if focused_control == initials_input:
+			_on_initials_input_text_submitted(initials_input.text)
 
 func update_leader_board() -> void:
 	if not leader_board:

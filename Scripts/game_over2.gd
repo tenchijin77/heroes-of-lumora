@@ -5,18 +5,14 @@ extends Control
 @onready var restart_button: Button = $restart_button
 
 func _ready() -> void:
-	
 	add_to_group("ui_hidden")
-
 	get_tree().paused = true  # Ensure paused to freeze game
-	
 	if leader_board:
 		leader_board.process_mode = Node.PROCESS_MODE_ALWAYS
 	if restart_button:
 		restart_button.process_mode = Node.PROCESS_MODE_ALWAYS
 	if $quit_button:
 		$quit_button.process_mode = Node.PROCESS_MODE_ALWAYS
-
 	if not leader_board:
 		push_error("GameOver2: leader_board is null!")
 	if not restart_button:
@@ -25,7 +21,13 @@ func _ready() -> void:
 	# Pause the survival stopwatch
 	Global.game_active = false
 
-# Update leaderboard display with requested format
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("interact"):
+		var focused_control = get_viewport().gui_get_focus_owner()
+		if focused_control:
+			if focused_control == restart_button:
+				_on_restart_button_pressed()
+
 func update_leader_board() -> void:
 	if not leader_board:
 		push_error("GameOver2: Cannot update leaderboard, leader_board is null!")

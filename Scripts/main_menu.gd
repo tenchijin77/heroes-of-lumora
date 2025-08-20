@@ -26,6 +26,19 @@ func _ready() -> void:
 	if Global and Global.has_node("UI"):
 		Global.ui.visible = false
 
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("interact"):
+		var focused_control = get_viewport().gui_get_focus_owner()
+		if focused_control:
+			if focused_control == start_button:
+				_on_start_button_pressed()
+			elif focused_control == skip_button:
+				_on_skip_button_pressed()
+			elif focused_control == scores_button:
+				_on_scores_button_pressed()
+			elif focused_control == quit_button:
+				_on_quit_button_pressed()
+
 func _on_start_button_pressed() -> void:
 	get_tree().change_scene_to_file("res://Scenes/intro_scene.tscn")
 
