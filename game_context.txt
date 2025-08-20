@@ -60,6 +60,11 @@ ghost: ghost_fire.tscn and projectile.gd
 beholder: disintegration_ray.tscn and projectile.gd
 lich: necro_bolt.tscn and projectile.gd
 ogre: ogre.tscn and projectile.gd
+troll: troll.tscn and poison_bolt.gd
+balrog: balrog.tscn and malfire.gd
+hezrou: hezrou.tscn and bile_spew.gd
+wraith: wraith.tscn and lifedrain.gd
+
 
 NPC Projectile layouts:
 
