@@ -37,6 +37,7 @@ func _ready() -> void:
 	navigation_agent.target_desired_distance = 4.0
 	navigation_agent.radius = 10.0 # Adjust to monster size
 	navigation_agent.avoidance_enabled = true
+	navigation_agent.avoidance_layers = 1 << 4
 	var file: FileAccess = FileAccess.open("res://Data/potions.json", FileAccess.READ)
 	if file:
 		potions_data = JSON.parse_string(file.get_as_text())

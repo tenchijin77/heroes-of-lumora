@@ -66,4 +66,4 @@ show_percentage = false
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 avoidance_enabled = true
-radius = 30.0
+radius = 16.0
