@@ -38,20 +38,26 @@ completed:
 -move all ui elements into a ui.tscn for a persistent UI
 -update villagers to start spawning in at wave 2, with 100 villager total, counting down.
 -added a time/date system and dynamic lighting based on TOD
+-add boss monsters, starting every 4 waves
+-continue expanding the tilemap for the first level
+-add particle effects to the healer's aura (green circle that starts at the healer, then expands to the end of the aura with particles and loops
+
+
+in progress:
+-add a store with an npc vendor (Timot the villager) that the player can buy upgrades from
+-eventually add npcs to introduce famous npcs from aldenexia
+
+
 
 to do: (in order of importance)
-
-
 -add a messenger that runs to town before the enemies show up announcing their arrival
 -add walls and camera boundaries at world edge
--continue expanding the tilemap for the first level
 -add reinforcements on a timer (guards/healers) and add the ability to buy more in the shop (need to limit it to prevent overpowering the player)
--add particle effects to the healer's aura (green circle that starts at the player, then expands to the end of the aura with particles and loops
 -add particle effects to player and monster projectile attacks
--add a store with an npc vendor (Timot the villager) that the player can buy upgrades from
+-add lighting effects to fireballs and similar spells (project light as they fly)
 -add new weapons or spell pickups for the player
--eventually add npcs to introduce famous npcs from aldenexia
--add boss monsters, starting every 4 waves
+
+
 
 
 
