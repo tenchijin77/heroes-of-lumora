@@ -28,7 +28,7 @@ completed:
 -standardized monster projectiles
 -implement area2d collision zones so the player can pickup loot; coins, potions, etc.
 -add a loot drop system
--add dialogue for the main screen to setup the game (use dialogic addon for godot to create this)
+-add dialogue for the main screen to setup the game, and explain the controller features to the player (use dialogic addon for godot to create this)
 -add coin drops for future upgrade system
 -add player potions (increase attack speed, increase movement speed, increase damage) each buff lasts 10 seconds.
 -build out some of the town elements: buildings, terrain with collisions, etc

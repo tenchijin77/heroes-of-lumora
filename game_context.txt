@@ -58,6 +58,7 @@ Projectiles:
 -healing projectiles: Layer 10 - needs to collide with 1 (player), 2 (monsters), 5 (environment), 6 (friendly), (logic needs to be called so if it enters a collision for the player, or friendly groups it heals the unit; if it enters a monster it does damage. It uses the same projectile for both: heal_bolt.tscn and healing_projectile.gd)
 -monster projectiles: Layer 4 - needs to collide with 1 (player), 5 (enviroment), uses projectile.gd
 
+
 Monster Projectile layouts:
 skeleton: bone.tscn and projectile.gd
 wizard: fireball.tscn and projectile.gd
@@ -95,6 +96,7 @@ Behaviour:
 -projectiles are all based off of projectile.tscn and projectile.gd; each unique attack will have its own file i.e. arrow.tscn and .gd for the player's attack, and bone.tscn and gd, and fireball.tscn and gd, and axe.tscn and gd for the enemies' attacks.
 -mobs use a navigationregion2d and navigationagent2d to find their way to 3 different marker2d points: village_center, extraction_point, and extraction_point2
 -every 2 minutes increments the current wave number. At the 2 minute mark, villagers start spawning and run towards the extraction points to flee the siege, at wave 4, 6, 8, 10 and onwards, boss mobs start spawning to make the siege more intense. Also the monsters' spawn count increases over time. 
+-there are 100 villagers, and it counts down as they are killed or saved; need to tie this into the ui.gd 
 
 Monsters:
 -monsters logic is handled by monster.tscn (the script that all unique mobs will inherit from) and monsters.gd
