@@ -14,7 +14,7 @@ Environmental Variables:
 -I am using Godot 4.4.1, and dialogic alpha 16 for dialogue
 
 Files:
--snakecase is used for all file names, with all words in lowercase
+-snakecase is used for all file names, and node_names, (that are unique, except things like Sprite2d, CollisionShape2d, etc) with all words in lowercase
 -pascalcase is used for folders, (i.e. first letter capital like /Data)
 -all variables should have their type explicitly called to avoid error messages
 -when creating elements in scene files, i will use snakecase for all names, i.e. (sound file named enemy_attack)
@@ -22,7 +22,7 @@ Files:
 -all scripts are stored in res://Scripts/
 -all scenes are stored in res://Scenes
 -all assets like sounds and images are in res://Assets/
--user data is saved in user://saves/ (not yet implemented)
+-user data is saved in user://saves/
 -my player information is in player.gd
 -all scripts should start with a comment designating the script name, i.e. (# snake.gd)
 -all json files should start with a comment designating the file name and purpose, i.e. ("_comment": "monsters.json - this table is used for monster's stats ")
@@ -45,6 +45,12 @@ Collisions:
 -player should be able to collide with 2, 4, 5, 6, 9, 10
 -friendly should be able to collide with 1, 2, 4, 5, 6, 10
 -monsters should be able to collide with 1, 2, 3, 5, 6, 7, 10
+
+collision exceptions: 
+-villagers have been made to not collide with other NPCs as they were getting stuck
+-monsters have been made to not collide with other monsters as it was affecting pathing in large groups
+-friendly npcs have been made not to collide with each other as it was affecting pathing. 
+
 
 Projectiles:
 -player: Layer 3 - needs to collide with 2 (monsters), and 5 (environment), uses projectile.gd
@@ -76,16 +82,19 @@ Groups:
 Player is in player node group.
 Friendly NPCs are in friendly node group.
 Priestess (Healing NPC) is in healer node group.
-Monsters are in monster node group.
+Monsters are in monsters node group.
 
 Naming:
 -scenes or levels are referred to as zones
 -monsters are referred to as mobs (moving objects)
+-friendly units: guard, priestess, villager, named units are referred to as npcs
 
 Behaviour:
 -spawns are instantiated and handled by node_pool.gd
 -mobs are randomly generated via enemy_spawner.tscn with enemy_spawner.gd
 -projectiles are all based off of projectile.tscn and projectile.gd; each unique attack will have its own file i.e. arrow.tscn and .gd for the player's attack, and bone.tscn and gd, and fireball.tscn and gd, and axe.tscn and gd for the enemies' attacks.
+-mobs use a navigationregion2d and navigationagent2d to find their way to 3 different marker2d points: village_center, extraction_point, and extraction_point2
+-every 2 minutes increments the current wave number. At the 2 minute mark, villagers start spawning and run towards the extraction points to flee the siege, at wave 4, 6, 8, 10 and onwards, boss mobs start spawning to make the siege more intense. Also the monsters' spawn count increases over time. 
 
 Monsters:
 -monsters logic is handled by monster.tscn (the script that all unique mobs will inherit from) and monsters.gd
@@ -108,17 +117,21 @@ Villagers:
 
 Controls:
 
+
 global.gd is the script that handles updating the score labels, and awarding points, etc. This is a global super ready called Global.
 game_data.gd is a superready that handles the villager's information called GameData.
 
-Move: Arrow keys or WASD
+Move: Arrow keys or WASD, or left joystick, or left touch screen joystick for mobile devices
 
-Melee Attack: Left mouse click - calls arrow.tscn and projectile.gd
+Melee Attack: Left mouse click, right joystick, right touch joystick - calls arrow.tscn and projectile.gd
 
+related files: touch_controls.tscn and gd, touch_controls.gd, touch_joystick.gd
 
 Time System:
 
 I'm thinking time will advance very quickly in the game world; 30sec - 1 min of real time will be equal to 1 hour in game time. This will be connected to a time_manager function that will make the lighting change in game.
+
+related files: time_manager.gd, main.gd, ui.gd
 
 Months & Seasons
 - Number of Months: 10 (for a distinct feel)
