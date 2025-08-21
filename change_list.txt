@@ -3,6 +3,7 @@ Heroes of Lumora
 change list:
 
 completed:
+
 -created change list to track upcoming and completed tasks, created game context file with program variables, and layout
 -added player, skeleton, and wizard to the game
 -created an arrow projectile for the player (left mouse button), a bone ranged attack, and a fireball attack for the mobs
@@ -44,18 +45,24 @@ completed:
 
 
 in progress:
--add a store with an npc vendor (Timot the villager) that the player can buy upgrades from
--eventually add npcs to introduce famous npcs from aldenexia
 
+-add a store with an npc vendor (Timot the villager) that the player can buy upgrades from
+-add npcs to introduce famous npcs from aldenexia (Annadaeus completed; working on Tenchijin)
+-add mobile (touch controls)
+-add ui updates for touch controls
 
 
 to do: (in order of importance)
+
+-address issues with mob pathing, larger mobs still getting stuck on the town walls and do not move into the town.
 -add a messenger that runs to town before the enemies show up announcing their arrival
 -add walls and camera boundaries at world edge
 -add reinforcements on a timer (guards/healers) and add the ability to buy more in the shop (need to limit it to prevent overpowering the player)
 -add particle effects to player and monster projectile attacks
 -add lighting effects to fireballs and similar spells (project light as they fly)
 -add new weapons or spell pickups for the player
+-add final boss at wave 20
+-possibly add the ability for mobs to destroy the environment, i.e. city walls, houses to destroy their way into the town. 
 
 
 
