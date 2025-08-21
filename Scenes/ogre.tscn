@@ -20,10 +20,9 @@ collision_layer = 2
 collision_mask = 1653
 script = ExtResource("1_t5uq8")
 max_speed = 24.0
-shoot_rate = 2.5
-shoot_range = 100.0
-current_health = 50
-max_health = 50
+shoot_range = 250.0
+current_health = 75
+max_health = 75
 bullet_scene = ExtResource("5_7kbme")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

@@ -35,8 +35,9 @@ func _ready() -> void:
 	pickup_area.area_entered.connect(_on_pickup_area_entered)
 
 func _physics_process(_delta: float) -> void:
-	# Handle player movement
+	# Handle player movement with priority
 	move_input = Input.get_vector("move_left", "move_right", "move_up", "move_down")
+	print("Move input: ", move_input)  # Debug movement
 	if move_input.length() > 0:
 		velocity = velocity.lerp(move_input * max_speed, acceleration)
 	else:
@@ -45,24 +46,31 @@ func _physics_process(_delta: float) -> void:
 
 func _process(delta: float) -> void:
 	# Handle shooting and sprite orientation
-	sprite.flip_h = get_global_mouse_position().x > global_position.x
-	if Input.is_action_pressed("shoot") or Input.get_action_strength("shoot") > 0.1:  # Check mouse or trigger axis
-		if Time.get_unix_time_from_system() - last_shoot_time > firing_speed:
-			open_fire()
-	_move_wobble()
+	var aim_vector: Vector2 = Vector2.ZERO
+	var use_touch: bool = OS.has_feature("touchscreen")
+	var joystick_connected: bool = Input.get_joy_name(0) != ""
+	var aim_active: bool = Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down").length() > 0.2
+	var shoot_active: bool = (joystick_connected and aim_active) or Input.is_action_pressed("shoot") or Input.get_action_strength("shoot") > 0.1
+	var mode: String = "Touch" if use_touch else "Keyboard/Mouse" if not joystick_connected else "Joystick"
+	print("Input mode: ", mode, " | Aim active: ", aim_active, " | Shoot active: ", shoot_active)  # Debug
 
-	# Calculate aim direction from right joystick with deadzone
-	var aim_x: float = Input.get_action_strength("aim_right") - Input.get_action_strength("aim_left")
-	var aim_y: float = Input.get_action_strength("aim_down") - Input.get_action_strength("aim_up")
-	var aim_vector: Vector2 = Vector2(aim_x, aim_y).normalized()
-	if aim_vector.length() > 0.2:  # Deadzone to ignore small movements
-		# Use joystick aim if active
+	if joystick_connected and aim_active:
+		# Joystick active for aiming
+		aim_vector = Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down").normalized()
 		sprite.flip_h = aim_vector.x > 0
-	else:
-		# Fallback to mouse aim
+	elif not use_touch:
+		# Keyboard/Mouse fallback
 		var mouse_position = get_global_mouse_position()
 		aim_vector = muzzle.global_position.direction_to(mouse_position)
 		sprite.flip_h = mouse_position.x > global_position.x
+	else:
+		# Touch fallback if touchscreen and active
+		aim_vector = Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down").normalized()
+		sprite.flip_h = aim_vector.x > 0
+
+	if shoot_active and Time.get_unix_time_from_system() - last_shoot_time > firing_speed:
+		open_fire()
+	_move_wobble()
 
 func _handle_game_over() -> void:
 	# Handle game over logic when player's health hits zero
@@ -96,8 +104,7 @@ func open_fire() -> void:
 	arrow.global_position = muzzle.global_position
 	arrow.owner_group = "player"
 	var aim_vector: Vector2
-	var joystick_active: bool = Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down").length() > 0.2
-	if joystick_active:
+	if Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down").length() > 0.2:
 		aim_vector = Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down").normalized()
 	else:
 		aim_vector = muzzle.global_position.direction_to(get_global_mouse_position())
@@ -181,5 +188,5 @@ func heal(amount: int) -> void:
 	print("Player %s healed for %d → current_health = %d" % [name, amount, current_health])
 
 func set_damage_modifier(modifier: float) -> void:
-	# Set damage multiplier for courage aura
+	# Set damage modifier for courage aura
 	damage_modifier = modifier

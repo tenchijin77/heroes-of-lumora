@@ -33,18 +33,28 @@ file_logging/enable_file_logging=true
 
 directories/dch_directory={
 "Brimble": "res://Dialogic/Brimble.dch",
+"Dialogic/Brimble": "res://android/build/assets/Dialogic/Brimble.dch",
+"Dialogic/Narrator": "res://android/build/assets/Dialogic/Narrator.dch",
+"Dialogic/Timot": "res://android/build/assets/Dialogic/Timot.dch",
 "Narrator": "res://Dialogic/Narrator.dch",
-"Timot": "res://Dialogic/Timot.dch"
+"Timot": "res://Dialogic/Timot.dch",
+"standardDebug/Dialogic/Brimble": "res://android/build/build/intermediates/assets/standardDebug/Dialogic/Brimble.dch",
+"standardDebug/Dialogic/Narrator": "res://android/build/build/intermediates/assets/standardDebug/Dialogic/Narrator.dch",
+"standardDebug/Dialogic/Timot": "res://android/build/build/intermediates/assets/standardDebug/Dialogic/Timot.dch"
 }
 directories/dtl_directory={
+"Dialogic/Timot-Intro": "res://android/build/assets/Dialogic/Timot-Intro.dtl",
+"Dialogic/villager_generic_plea": "res://android/build/assets/Dialogic/villager_generic_plea.dtl",
 "Timot-Intro": "res://Dialogic/Timot-Intro.dtl",
+"standardDebug/Dialogic/Timot-Intro": "res://android/build/build/intermediates/assets/standardDebug/Dialogic/Timot-Intro.dtl",
+"standardDebug/Dialogic/villager_generic_plea": "res://android/build/build/intermediates/assets/standardDebug/Dialogic/villager_generic_plea.dtl",
 "villager_generic_plea": "res://Dialogic/villager_generic_plea.dtl"
 }
 extensions_folder="res://addons/dialogic_additions"
 text/letter_speed=0.01
 text/initial_text_reveal_skippable=true
 text/text_reveal_skip_delay=0.1
-text/advance_delay=0.1
+text/advance_delay=0.6
 text/autoadvance_per_character_delay=0.1
 text/autoadvance_ignored_characters_enabled=true
 audio/max_channels=4.0
@@ -62,7 +72,7 @@ save/encryption_on_exports_only=true
 text/autopauses={}
 variables={}
 text/autocolor_names=true
-text/autoadvance_fixed_delay=0.0
+text/autoadvance_fixed_delay=0.6
 text/autoadvance_enabled=true
 
 [display]

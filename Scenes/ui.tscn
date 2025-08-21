@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://b3xg8350uwuwl"]
+[gd_scene load_steps=4 format=3 uid="uid://b3xg8350uwuwl"]
 
 [ext_resource type="FontFile" uid="uid://cam7bapqpcdf8" path="res://Assets/Fonts/_bitmap_font____romulus_by_pix3m-d6aokem.ttf" id="1_jxero"]
 [ext_resource type="Script" uid="uid://cqaxmrjstwvis" path="res://Scripts/ui.gd" id="1_qdvrb"]
+[ext_resource type="PackedScene" uid="uid://bevlo3crof07w" path="res://Scenes/touch_controls.tscn" id="3_nf4gj"]
 
 [node name="CanvasLayer" type="CanvasLayer"]
 script = ExtResource("1_qdvrb")
@@ -80,3 +81,5 @@ size_flags_vertical = 6
 theme_override_fonts/font = ExtResource("1_jxero")
 theme_override_font_sizes/font_size = 20
 text = "In-Game Date:"
+
+[node name="touch_controls" parent="." instance=ExtResource("3_nf4gj")]

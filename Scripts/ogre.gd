@@ -11,7 +11,7 @@ func _ready() -> void:
 	drag = 0.2
 	shoot_rate = 1.5  # Slower attacks
 	shoot_range = 250.0  # Short range for heavy projectile
-	max_health = 50  # Very tanky
+	max_health = 75  # Very tanky
 	collision_damage = 6  # Strong melee
 	current_health = max_health
 	score_value = 35  # Sets monster's score value to 35

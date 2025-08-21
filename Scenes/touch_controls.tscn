@@ -1,0 +1,37 @@
+[gd_scene load_steps=5 format=3 uid="uid://bevlo3crof07w"]
+
+[ext_resource type="Script" uid="uid://bsvqkfhlvtkeo" path="res://Scripts/touch_joystick.gd" id="1_poon4"]
+[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="2_wjfjn"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_poon4"]
+radius = 50.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_wjfjn"]
+radius = 50.0
+
+[node name="touch_controls" type="CanvasLayer"]
+
+[node name="left_joystick" type="TouchScreenButton" parent="."]
+top_level = true
+position = Vector2(165, 500)
+scale = Vector2(2, 2)
+shape = SubResource("CircleShape2D_poon4")
+action = "move"
+script = ExtResource("1_poon4")
+
+[node name="Sprite2D" type="Sprite2D" parent="left_joystick"]
+texture = ExtResource("2_wjfjn")
+region_enabled = true
+region_rect = Rect2(228, 772, 23, 23)
+
+[node name="right_joystick" type="TouchScreenButton" parent="."]
+position = Vector2(990, 500)
+scale = Vector2(2, 2)
+shape = SubResource("CircleShape2D_wjfjn")
+action = "aim"
+script = ExtResource("1_poon4")
+
+[node name="Sprite2D" type="Sprite2D" parent="right_joystick"]
+texture = ExtResource("2_wjfjn")
+region_enabled = true
+region_rect = Rect2(228, 772, 23, 23)

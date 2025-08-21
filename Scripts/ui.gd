@@ -10,6 +10,7 @@ extends CanvasLayer
 @onready var remaining_villagers_label: Label = $VBoxContainer/remaining_villagers
 @onready var time_label: Label = $VBoxContainer/time_label
 @onready var date_label: Label = $VBoxContainer/date_label
+@onready var touch_controls: Node = $touch_controls  # Reference to touch_controls.tscn
 
 func _ready() -> void:
 	# Hide UI by default, show only for main scene
@@ -23,15 +24,17 @@ func _ready() -> void:
 	Global.villagers_updated.connect(_update_villagers)
 	_check_scene()
 	TimeManager.connect("time_updated", _on_time_updated)
-	_on_time_updated(TimeManager.current_time) # Initial update
-
+	_on_time_updated(TimeManager.current_time)  # Initial update
 	# Connect to the scene change signal
 	get_tree().connect("tree_exiting", _on_scene_change)
+	# Initialize touch controls visibility
+	_toggle_touch_controls()
 
 func _on_scene_change() -> void:
 	# This function will be called whenever the scene is about to change.
 	# We can use it to reset the visibility.
 	visible = false
+	_toggle_touch_controls()
 
 func _check_scene() -> void:
 	var current_scene = get_tree().current_scene
@@ -46,6 +49,7 @@ func _on_node_added(node: Node) -> void:
 		visible = true
 	elif node.name in ["main_menu", "intro_scene", "game_over", "game_over2", "shop_zone"]:
 		visible = false
+	_toggle_touch_controls()
 
 func _update_all() -> void:
 	_update_wave(Global.current_wave)
@@ -75,3 +79,14 @@ func _update_villagers(saved: int, lost: int, total: int) -> void:
 func _on_time_updated(current_time: float) -> void:
 	time_label.text = TimeManager.get_time_string()
 	date_label.text = TimeManager.get_date_string()
+
+func _toggle_touch_controls() -> void:
+	if touch_controls and is_instance_valid(touch_controls):
+		if not OS.has_feature("touchscreen"):
+			touch_controls.visible = false
+			touch_controls.process_mode = PROCESS_MODE_DISABLED  # Disable input processing
+			print("Touch controls: Disabled")
+		else:
+			touch_controls.visible = visible  # Match UI visibility
+			touch_controls.process_mode = PROCESS_MODE_INHERIT if visible else PROCESS_MODE_DISABLED
+			print("Touch controls: Enabled")
