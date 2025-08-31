@@ -22,18 +22,12 @@ func _ready() -> void:
 	Global.score_updated.connect(_update_score)
 	Global.coins_updated.connect(_update_coins)
 	Global.villagers_updated.connect(_update_villagers)
-	_check_scene()
 	TimeManager.connect("time_updated", _on_time_updated)
 	_on_time_updated(TimeManager.current_time)  # Initial update
-	# Connect to the scene change signal
-	get_tree().connect("tree_exiting", _on_scene_change)
+	# Connect to node_added signal
+	get_tree().node_added.connect(_on_node_added)
+	_check_scene()
 	# Initialize touch controls visibility
-	_toggle_touch_controls()
-
-func _on_scene_change() -> void:
-	# This function will be called whenever the scene is about to change.
-	# We can use it to reset the visibility.
-	visible = false
 	_toggle_touch_controls()
 
 func _check_scene() -> void:
@@ -42,12 +36,16 @@ func _check_scene() -> void:
 		visible = true
 	else:
 		visible = false
-	get_tree().node_added.connect(_on_node_added)
+	_toggle_touch_controls()
 
 func _on_node_added(node: Node) -> void:
+	print("Node added: %s, is_in_group(ui_hidden): %s" % [node.name, node.is_in_group("ui_hidden")])  # Debug
 	if node.name == "main":
 		visible = true
 	elif node.name in ["main_menu", "intro_scene", "game_over", "game_over2", "shop_zone"]:
+		visible = false
+	# Check for ui_hidden group
+	if node.is_in_group("ui_hidden"):
 		visible = false
 	_toggle_touch_controls()
 

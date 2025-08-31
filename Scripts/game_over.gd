@@ -11,6 +11,12 @@ var current_score: int
 func _ready() -> void:
 	add_to_group("ui_hidden")
 	get_tree().paused = true  # Ensure paused to freeze game
+	# Explicitly hide UI
+	var ui = get_node_or_null("/root/UI")
+	if ui:
+		ui.visible = false
+	else:
+		push_error("GameOver: UI node not found at /root/UI!")
 	if leader_board:
 		leader_board.process_mode = Node.PROCESS_MODE_ALWAYS
 	if initials_input:

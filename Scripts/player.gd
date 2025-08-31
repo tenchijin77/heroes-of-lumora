@@ -78,6 +78,12 @@ func _handle_game_over() -> void:
 	print("Game Over! Final Score: %d | Wave: %d | Coins: %d | Time: %s | Saved: %d | Lost: %d" % [
 		Global.current_score, Global.current_wave, Global.coins_collected, Global.format_time(Global.current_time_survived),
 		Global.saved_villagers, Global.lost_villagers])
+	# Explicitly hide UI
+	var ui = get_node_or_null("/root/UI")
+	if ui:
+		ui.visible = false
+	else:
+		push_error("Player: UI node not found at /root/UI!")
 	if get_tree():
 		if Global.is_high_score(Global.current_score):
 			get_tree().change_scene_to_file("res://Scenes/game_over.tscn")
@@ -155,7 +161,7 @@ func apply_potion_effect(effect_type: String, effect_value: float, effect_durati
 				_start_effect_timer(effect_duration, "max_speed", 1.0 / effect_value)
 		"damage_boost":
 			damage_modifier *= effect_value
-			_start_effect_timer(effect_duration, "damage_modifier", 1.0 / effect_value)
+			_start_effect_timer(effect_duration, "max_speed", 1.0 / effect_value)
 
 func _start_effect_timer(duration: float, property: String, revert_multiplier: float) -> void:
 	# Helper to revert temporary effects
