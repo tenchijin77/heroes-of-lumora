@@ -7,7 +7,7 @@ signal mob_died
 @export var drag: float = 0.9
 @export var collision_damage: int = 3
 @export var shoot_rate: float = 1.5
-@export var shoot_range: float = 150.0
+@export var shoot_range: float = 250.0
 @export var current_health: int = 15
 @export var max_health: int = 15
 @export var bullet_scene: PackedScene

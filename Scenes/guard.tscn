@@ -21,7 +21,6 @@ radius = 173.072
 collision_layer = 32
 collision_mask = 539
 script = ExtResource("1_mk1iy")
-shoot_range = 200.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false

@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://b3xg8350uwuwl"]
+[gd_scene load_steps=5 format=3 uid="uid://b3xg8350uwuwl"]
 
 [ext_resource type="FontFile" uid="uid://cam7bapqpcdf8" path="res://Assets/Fonts/_bitmap_font____romulus_by_pix3m-d6aokem.ttf" id="1_jxero"]
 [ext_resource type="Script" uid="uid://cqaxmrjstwvis" path="res://Scripts/ui.gd" id="1_qdvrb"]
 [ext_resource type="PackedScene" uid="uid://bevlo3crof07w" path="res://Scenes/touch_controls.tscn" id="3_nf4gj"]
+[ext_resource type="FontFile" uid="uid://djcjuyoolr6e1" path="res://Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf" id="4_2246s"]
 
 [node name="CanvasLayer" type="CanvasLayer"]
 script = ExtResource("1_qdvrb")
@@ -83,3 +84,41 @@ theme_override_font_sizes/font_size = 20
 text = "In-Game Date:"
 
 [node name="touch_controls" parent="." instance=ExtResource("3_nf4gj")]
+
+[node name="stats_container" type="HBoxContainer" parent="."]
+layout_direction = 2
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -127.0
+offset_top = -24.0
+offset_right = 127.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 15
+alignment = 1
+
+[node name="player_damage" type="Label" parent="stats_container"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_2246s")
+theme_override_font_sizes/font_size = 20
+text = "⚔:"
+horizontal_alignment = 1
+
+[node name="player_speed" type="Label" parent="stats_container"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_2246s")
+theme_override_font_sizes/font_size = 20
+text = "🏃:"
+horizontal_alignment = 1
+
+[node name="player_health" type="Label" parent="stats_container"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_2246s")
+theme_override_font_sizes/font_size = 20
+text = "❤️:"
+horizontal_alignment = 1

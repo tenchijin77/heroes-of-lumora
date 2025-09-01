@@ -1,6 +1,11 @@
 # player.gd - main character script
 extends CharacterBody2D
 
+# Signals for UI updates
+signal damage_updated(damage: float)
+signal speed_updated(speed: float)
+signal health_updated(current: int, max: int)
+
 @export var base_damage: int = 4 # Base damage for projectiles
 @export var max_speed: float = 100.0
 @export var max_speed_cap: float = 200.0 # Cap at 2x base speed
@@ -23,6 +28,7 @@ var move_input: Vector2
 var damage_modifier: float = 1.0 # Multiplier for damage buffs
 var last_shoot_time: float
 var speed_buff_active: bool = false # Prevent stacking speed buffs
+var base_max_speed: float = 100.0 # Base speed to avoid floating-point drift
 
 func _ready() -> void:
 	# Initialize player properties and connections
@@ -33,11 +39,14 @@ func _ready() -> void:
 	regeneration_timer.wait_time = 1.0
 	regeneration_timer.autostart = true
 	pickup_area.area_entered.connect(_on_pickup_area_entered)
+	# Emit initial stat values
+	emit_signal("damage_updated", base_damage * damage_modifier)
+	emit_signal("speed_updated", max_speed)
+	emit_signal("health_updated", current_health, max_health)
 
 func _physics_process(_delta: float) -> void:
 	# Handle player movement with priority
 	move_input = Input.get_vector("move_left", "move_right", "move_up", "move_down")
-	print("Move input: ", move_input)  # Debug movement
 	if move_input.length() > 0:
 		velocity = velocity.lerp(move_input * max_speed, acceleration)
 	else:
@@ -52,7 +61,6 @@ func _process(delta: float) -> void:
 	var aim_active: bool = Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down").length() > 0.2
 	var shoot_active: bool = (joystick_connected and aim_active) or Input.is_action_pressed("shoot") or Input.get_action_strength("shoot") > 0.1
 	var mode: String = "Touch" if use_touch else "Keyboard/Mouse" if not joystick_connected else "Joystick"
-	print("Input mode: ", mode, " | Aim active: ", aim_active, " | Shoot active: ", shoot_active)  # Debug
 
 	if joystick_connected and aim_active:
 		# Joystick active for aiming
@@ -97,6 +105,7 @@ func take_damage(damage: int, _projectile_instance) -> void:
 	current_health -= damage
 	if health_bar and is_instance_valid(health_bar):
 		health_bar.value = current_health
+	emit_signal("health_updated", current_health, max_health)
 	if current_health <= 0:
 		_handle_game_over()
 	else:
@@ -133,6 +142,7 @@ func _on_regeneration_timer_timeout() -> void:
 	current_health = clamp(current_health, 0, max_health)
 	if health_bar and is_instance_valid(health_bar):
 		health_bar.value = current_health
+	emit_signal("health_updated", current_health, max_health)
 
 func _on_pickup_area_entered(area: Area2D) -> void:
 	# Handle loot pickup when entering pickup area
@@ -141,7 +151,7 @@ func _on_pickup_area_entered(area: Area2D) -> void:
 		Global.emit_signal("coins_updated", Global.coins_collected)
 		print("Picked up coin! Coins: %d" % Global.coins_collected)
 		area.collect()
-	# Handle potion pickup (assuming potion.gd calls apply_potion_effect)
+	# Handle potion pickup
 	if area.is_in_group("potion"):
 		var potion_data = area.get_potion_data() # Assume potion.gd has this
 		if potion_data:
@@ -154,25 +164,29 @@ func apply_potion_effect(effect_type: String, effect_value: float, effect_durati
 		"heal":
 			heal(int(effect_value))
 		"speed_boost":
-			if not speed_buff_active: # Prevent stacking
+			if not speed_buff_active:
 				speed_buff_active = true
 				max_speed = min(max_speed * effect_value, max_speed_cap)
-				print("Player speed increased to %.2f (cap %.2f)" % [max_speed, max_speed_cap])
-				_start_effect_timer(effect_duration, "max_speed", 1.0 / effect_value)
+				_start_effect_timer(effect_duration, "max_speed", base_max_speed)
+				emit_signal("speed_updated", max_speed)
 		"damage_boost":
 			damage_modifier *= effect_value
-			_start_effect_timer(effect_duration, "max_speed", 1.0 / effect_value)
+			_start_effect_timer(effect_duration, "damage_modifier", 1.0 / effect_value)
+			emit_signal("damage_updated", base_damage * damage_modifier)
 
-func _start_effect_timer(duration: float, property: String, revert_multiplier: float) -> void:
+func _start_effect_timer(duration: float, property: String, revert_value: float) -> void:
 	# Helper to revert temporary effects
 	var timer: Timer = Timer.new()
 	timer.wait_time = duration
 	timer.one_shot = true
 	timer.timeout.connect(func():
-		set(property, get(property) * revert_multiplier)
+		var new_value: float = revert_value
+		set(property, new_value)
 		if property == "max_speed":
 			speed_buff_active = false
-			print("Speed buff expired, now %.2f" % max_speed)
+			emit_signal("speed_updated", max_speed)
+		else:
+			emit_signal("damage_updated", base_damage * damage_modifier)
 		timer.queue_free()
 	)
 	add_child(timer)
@@ -191,8 +205,10 @@ func heal(amount: int) -> void:
 	current_health = clamp(current_health + amount, 0, max_health)
 	if health_bar and is_instance_valid(health_bar):
 		health_bar.value = current_health
+	emit_signal("health_updated", current_health, max_health)
 	print("Player %s healed for %d → current_health = %d" % [name, amount, current_health])
 
 func set_damage_modifier(modifier: float) -> void:
 	# Set damage modifier for courage aura
 	damage_modifier = modifier
+	emit_signal("damage_updated", base_damage * damage_modifier)

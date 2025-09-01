@@ -10,7 +10,10 @@ extends CanvasLayer
 @onready var remaining_villagers_label: Label = $VBoxContainer/remaining_villagers
 @onready var time_label: Label = $VBoxContainer/time_label
 @onready var date_label: Label = $VBoxContainer/date_label
-@onready var touch_controls: Node = $touch_controls  # Reference to touch_controls.tscn
+@onready var touch_controls: Node = $touch_controls
+@onready var player_damage: Label = $stats_container/player_damage
+@onready var player_speed: Label = $stats_container/player_speed
+@onready var player_health: Label = $stats_container/player_health
 
 func _ready() -> void:
 	# Hide UI by default, show only for main scene
@@ -23,7 +26,7 @@ func _ready() -> void:
 	Global.coins_updated.connect(_update_coins)
 	Global.villagers_updated.connect(_update_villagers)
 	TimeManager.connect("time_updated", _on_time_updated)
-	_on_time_updated(TimeManager.current_time)  # Initial update
+	_on_time_updated(TimeManager.current_time)
 	# Connect to node_added signal
 	get_tree().node_added.connect(_on_node_added)
 	_check_scene()
@@ -39,14 +42,20 @@ func _check_scene() -> void:
 	_toggle_touch_controls()
 
 func _on_node_added(node: Node) -> void:
-	print("Node added: %s, is_in_group(ui_hidden): %s" % [node.name, node.is_in_group("ui_hidden")])  # Debug
-	if node.name == "main":
-		visible = true
-	elif node.name in ["main_menu", "intro_scene", "game_over", "game_over2", "shop_zone"]:
+	if node.name in ["main_menu", "intro_scene", "game_over", "game_over2", "shop_zone"]:
 		visible = false
-	# Check for ui_hidden group
 	if node.is_in_group("ui_hidden"):
 		visible = false
+	if node.name == "main":
+		visible = true
+	if node.name == "player" and node.is_in_group("player"):
+		node.damage_updated.connect(_update_player_damage)
+		node.speed_updated.connect(_update_player_speed)
+		node.health_updated.connect(_update_player_health)
+		# Update initial stat values
+		_update_player_damage(node.base_damage * node.damage_modifier)
+		_update_player_speed(node.max_speed)
+		_update_player_health(node.current_health, node.max_health)
 	_toggle_touch_controls()
 
 func _update_all() -> void:
@@ -73,18 +82,33 @@ func _update_villagers(saved: int, lost: int, total: int) -> void:
 	lost_villagers_label.text = "Villagers Lost: %d" % lost
 	remaining_villagers_label.text = "Villagers Remaining: %d" % (total - (saved + lost))
 
-# Update time and date labels when time changes
+func _update_player_damage(damage: float) -> void:
+	if player_damage:
+		player_damage.text = "🗡️ %.1f" % damage
+	else:
+		push_error("UI: player_damage label is null!")
+
+func _update_player_speed(speed: float) -> void:
+	if player_speed:
+		player_speed.text = "👟 %.1f" % speed
+	else:
+		push_error("UI: player_speed label is null!")
+
+func _update_player_health(current: int, max: int) -> void:
+	if player_health:
+		player_health.text = "❤️ %d/%d" % [current, max]
+	else:
+		push_error("UI: player_health label is null!")
+
 func _on_time_updated(current_time: float) -> void:
 	time_label.text = TimeManager.get_time_string()
-	date_label.text = TimeManager.get_date_string()
+	#date_label.text = TimeManager.get_date_string() # removed as is not needed for game play
 
 func _toggle_touch_controls() -> void:
 	if touch_controls and is_instance_valid(touch_controls):
 		if not OS.has_feature("touchscreen"):
 			touch_controls.visible = false
-			touch_controls.process_mode = PROCESS_MODE_DISABLED  # Disable input processing
-			print("Touch controls: Disabled")
+			touch_controls.process_mode = PROCESS_MODE_DISABLED
 		else:
-			touch_controls.visible = visible  # Match UI visibility
+			touch_controls.visible = visible
 			touch_controls.process_mode = PROCESS_MODE_INHERIT if visible else PROCESS_MODE_DISABLED
-			print("Touch controls: Enabled")
