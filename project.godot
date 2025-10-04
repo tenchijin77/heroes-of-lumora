@@ -13,7 +13,7 @@ config_version=5
 config/name="Heroes of Lumora"
 config/description="Heroes of Lumora, a bullet-hell game by Kuro Neko Sama Studios"
 run/main_scene="uid://b6e5clcrioodm"
-config/features=PackedStringArray("4.4", "Mobile")
+config/features=PackedStringArray("4.5", "Mobile")
 config/icon="res://icon.svg"
 
 [autoload]
@@ -33,21 +33,11 @@ file_logging/enable_file_logging=true
 
 directories/dch_directory={
 "Brimble": "res://Dialogic/Brimble.dch",
-"Dialogic/Brimble": "res://android/build/assets/Dialogic/Brimble.dch",
-"Dialogic/Narrator": "res://android/build/assets/Dialogic/Narrator.dch",
-"Dialogic/Timot": "res://android/build/assets/Dialogic/Timot.dch",
 "Narrator": "res://Dialogic/Narrator.dch",
-"Timot": "res://Dialogic/Timot.dch",
-"standardDebug/Dialogic/Brimble": "res://android/build/build/intermediates/assets/standardDebug/Dialogic/Brimble.dch",
-"standardDebug/Dialogic/Narrator": "res://android/build/build/intermediates/assets/standardDebug/Dialogic/Narrator.dch",
-"standardDebug/Dialogic/Timot": "res://android/build/build/intermediates/assets/standardDebug/Dialogic/Timot.dch"
+"Timot": "res://Dialogic/Timot.dch"
 }
 directories/dtl_directory={
-"Dialogic/Timot-Intro": "res://android/build/assets/Dialogic/Timot-Intro.dtl",
-"Dialogic/villager_generic_plea": "res://android/build/assets/Dialogic/villager_generic_plea.dtl",
 "Timot-Intro": "res://Dialogic/Timot-Intro.dtl",
-"standardDebug/Dialogic/Timot-Intro": "res://android/build/build/intermediates/assets/standardDebug/Dialogic/Timot-Intro.dtl",
-"standardDebug/Dialogic/villager_generic_plea": "res://android/build/build/intermediates/assets/standardDebug/Dialogic/villager_generic_plea.dtl",
 "villager_generic_plea": "res://Dialogic/villager_generic_plea.dtl"
 }
 extensions_folder="res://addons/dialogic_additions"

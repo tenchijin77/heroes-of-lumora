@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://b6e5clcrioodm"]
 
 [ext_resource type="Script" uid="uid://cwmujphakr5tc" path="res://Scripts/main_menu.gd" id="1_1ehe0"]
-[ext_resource type="FontFile" uid="uid://djcjuyoolr6e1" path="res://Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf" id="2_ce3w2"]
-[ext_resource type="FontFile" uid="uid://cam7bapqpcdf8" path="res://Assets/Fonts/_bitmap_font____romulus_by_pix3m-d6aokem.ttf" id="3_ce3w2"]
-[ext_resource type="AudioStream" uid="uid://dxgau1n2wwj6h" path="res://Assets/Audio/HeroesOfLumora-STMix.ogg" id="3_n45e2"]
+[ext_resource type="FontFile" uid="uid://clj15jl3dlmcl" path="res://Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf" id="2_ce3w2"]
+[ext_resource type="FontFile" uid="uid://bqh0ykx0lrbmn" path="res://Assets/Fonts/_bitmap_font____romulus_by_pix3m-d6aokem.ttf" id="3_ce3w2"]
+[ext_resource type="AudioStream" uid="uid://bacjlefmxgmax" path="res://Assets/Audio/HeroesOfLumora-STMix.ogg" id="3_n45e2"]
 
 [node name="Control" type="Control"]
 layout_mode = 3
