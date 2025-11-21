@@ -1,7 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://cvvk7iwbqhlpu"]
+[gd_scene load_steps=7 format=3 uid="uid://bgfaj16qrlyhf"]
 
-[ext_resource type="Script" uid="uid://by6pa02k3u6d6" path="res://Scripts/villager.gd" id="1_7u53x"]
-[ext_resource type="Texture2D" uid="uid://dwi6caya0fwot" path="res://Assets/Sprites/Spritesheet.png" id="1_clim2"]
+[ext_resource type="Script" uid="uid://5nsfrut0l8bb" path="res://Scripts/messenger.gd" id="1_jdkcu"]
+[ext_resource type="Texture2D" uid="uid://dwi6caya0fwot" path="res://Assets/Sprites/Spritesheet.png" id="2_fx8ed"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7u53x"]
 size = Vector2(16, 24)
@@ -9,25 +9,22 @@ size = Vector2(16, 24)
 [sub_resource type="CircleShape2D" id="CircleShape2D_gn4cm"]
 radius = 74.0
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_7u53x"]
-radius = 108.0
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7u53x"]
 bg_color = Color(0.201527, 0.201527, 0.201527, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gn4cm"]
 bg_color = Color(0.94902, 0, 0, 1)
 
-[node name="villager" type="CharacterBody2D" groups=["friendly", "villagers"]]
+[node name="messenger" type="CharacterBody2D" groups=["friendly"]]
 collision_layer = 32
-collision_mask = 539
-script = ExtResource("1_7u53x")
-max_health = 50
+collision_mask = 571
+script = ExtResource("1_jdkcu")
 
 [node name="sprite_2d" type="Sprite2D" parent="."]
-texture = ExtResource("1_clim2")
+texture = ExtResource("2_fx8ed")
+flip_h = true
 region_enabled = true
-region_rect = Rect2(135, 68, 20, 28)
+region_rect = Rect2(995.36224, 32.659813, 26.602478, 32.97908)
 
 [node name="collision_shape_2d" type="CollisionShape2D" parent="."]
 visible = false
@@ -48,25 +45,9 @@ collision_layer = 0
 visible = false
 shape = SubResource("CircleShape2D_gn4cm")
 
-[node name="fear_area" type="Area2D" parent="."]
-visible = false
-collision_layer = 0
-collision_mask = 2
-
-[node name="collision_shape_2d" type="CollisionShape2D" parent="fear_area"]
-shape = SubResource("CircleShape2D_7u53x")
-
 [node name="avoidance_ray" type="RayCast2D" parent="." groups=["friendly"]]
-target_position = Vector2(50, 0)
+target_position = Vector2(70, 0)
 collision_mask = 1075
-
-[node name="fear_timer" type="Timer" parent="."]
-wait_time = 3.0
-one_shot = true
-
-[node name="popup_timer" type="Timer" parent="."]
-wait_time = 3.0
-one_shot = true
 
 [node name="health_bar" type="ProgressBar" parent="."]
 offset_left = -10.0
@@ -77,3 +58,6 @@ theme_override_styles/background = SubResource("StyleBoxFlat_7u53x")
 theme_override_styles/fill = SubResource("StyleBoxFlat_gn4cm")
 rounded = true
 show_percentage = false
+
+[node name="check_timer" type="Timer" parent="."]
+wait_time = 2.0

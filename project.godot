@@ -86,6 +86,8 @@ loot=""
 friendly=""
 healer=""
 extraction_points=""
+villagers=""
+gate_detectors=""
 
 [input]
 

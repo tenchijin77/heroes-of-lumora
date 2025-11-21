@@ -1,0 +1,56 @@
+[gd_scene load_steps=3 format=3 uid="uid://duxegpyq1i8q1"]
+
+[sub_resource type="GDScript" id="GDScript_0fxhb"]
+script/source = "# gate_detector.gd
+
+extends Area2D
+
+signal threat_detected(side: String)
+signal threat_cleared(side: String)
+
+@onready var clear_timer: Timer = $clear_timer
+
+var side: String = \"west\"  # \"north\", \"west\", \"town\"
+var monster_count: int = 0
+
+func _ready() -> void:
+	body_entered.connect(_on_body_entered)
+	body_exited.connect(_on_body_exited)
+	clear_timer.timeout.connect(_on_clear_timer_timeout)
+
+# Called when monster enters gate area.
+func _on_body_entered(body: Node2D) -> void:
+	if body.is_in_group(\"monsters\") and is_instance_valid(body):
+		monster_count += 1
+		if monster_count == 1:  # First monster
+			threat_detected.emit(side)
+		print(\"Gate %s: %d monsters detected\" % [side, monster_count])
+
+# Called when monster exits gate area.
+func _on_body_exited(body: Node2D) -> void:
+	if body.is_in_group(\"monsters\"):
+		monster_count -= 1
+		if monster_count <= 0:
+			monster_count = 0
+			clear_timer.start()  # Debounce: confirm clear after 1s
+
+# Confirms area is clear after debounce.
+func _on_clear_timer_timeout() -> void:
+	if monster_count == 0:
+		threat_cleared.emit(side)
+"
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1bbu1"]
+radius = 162.92636
+
+[node name="gate_detector" type="Area2D" groups=["gate_detectors"]]
+collision_layer = 0
+collision_mask = 2
+script = SubResource("GDScript_0fxhb")
+
+[node name="collision_shape" type="CollisionShape2D" parent="."]
+rotation = -0.25364012
+shape = SubResource("CircleShape2D_1bbu1")
+
+[node name="clear_timer" type="Timer" parent="."]
+one_shot = true
