@@ -42,7 +42,7 @@ completed:
 -add boss monsters, starting every 4 waves
 -continue expanding the tilemap for the first level
 -add particle effects to the healer's aura (green circle that starts at the healer, then expands to the end of the aura with particles and loops
-
+-add a messenger that runs to town before the enemies show up announcing their arrival, and the direction that the attacks are coming from.
 
 in progress:
 
@@ -55,7 +55,7 @@ in progress:
 to do: (in order of importance)
 
 -address issues with mob pathing, larger mobs still getting stuck on the town walls and do not move into the town.
--add a messenger that runs to town before the enemies show up announcing their arrival
+
 -add walls and camera boundaries at world edge
 -add reinforcements on a timer (guards/healers) and add the ability to buy more in the shop (need to limit it to prevent overpowering the player)
 -add particle effects to player and monster projectile attacks
