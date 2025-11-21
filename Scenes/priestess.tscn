@@ -1,12 +1,12 @@
 [gd_scene load_steps=14 format=3 uid="uid://bhm0mxnnqdj6x"]
 
 [ext_resource type="Script" uid="uid://cv70j56i2fo7u" path="res://Scripts/healer.gd" id="1_ewup4"]
-[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="2_2kld1"]
+[ext_resource type="Texture2D" uid="uid://dwi6caya0fwot" path="res://Assets/Sprites/Spritesheet.png" id="2_2kld1"]
 [ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="3_owegj"]
 [ext_resource type="PackedScene" uid="uid://dkjn4u5pvci4p" path="res://Scenes/heal_bolt.tscn" id="4_6h5py"]
 [ext_resource type="Script" uid="uid://dirtd7uwkj0xb" path="res://Scripts/healing_aura.gd" id="5_2kld1"]
 [ext_resource type="Shader" uid="uid://5a3hd36av1m" path="res://Assets/green_glow_shader.gdshader" id="6_bwqxu"]
-[ext_resource type="Texture2D" uid="uid://cgr378xi2neye" path="res://Assets/Sprites/green aura glow.png" id="7_bwqxu"]
+[ext_resource type="Texture2D" uid="uid://c0q26pyxct5if" path="res://Assets/Sprites/green aura glow.png" id="7_bwqxu"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sfdtf"]
 size = Vector2(20, 28)

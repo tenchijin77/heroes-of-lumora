@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://2g470it6g0jt"]
 
 [ext_resource type="Script" uid="uid://bg5vu64dmauk4" path="res://Scripts/guard.gd" id="1_mk1iy"]
-[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="3_36pg4"]
+[ext_resource type="Texture2D" uid="uid://dwi6caya0fwot" path="res://Assets/Sprites/Spritesheet.png" id="3_36pg4"]
 [ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="4_1rcvf"]
 [ext_resource type="PackedScene" uid="uid://ehxlmudkbinc" path="res://Scenes/guard_arrow.tscn" id="4_mk1iy"]
 
@@ -15,7 +15,7 @@ bg_color = Color(0.201527, 0.201527, 0.201527, 1)
 bg_color = Color(0.94902, 0, 0, 1)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_dmkvq"]
-radius = 173.072
+radius = 422.11847
 
 [node name="guard" type="CharacterBody2D" groups=["friendly"]]
 collision_layer = 32
@@ -58,7 +58,7 @@ show_percentage = false
 collision_layer = 0
 collision_mask = 2
 
-[node name="defense_zone" type="CollisionShape2D" parent="Area2D"]
+[node name="defense_zone" type="CollisionShape2D" parent="Area2D" groups=["friendly"]]
 visible = false
 shape = SubResource("CircleShape2D_dmkvq")
 
