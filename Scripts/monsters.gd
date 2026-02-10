@@ -7,7 +7,7 @@ signal mob_died
 @export var drag: float = 0.9
 @export var collision_damage: int = 3
 @export var shoot_rate: float = 1.5
-@export var shoot_range: float = 250.0 # Adjust this value if still too far
+@export var shoot_range: float = 250.0
 @export var current_health: int = 15
 @export var max_health: int = 15
 @export var bullet_scene: PackedScene
@@ -19,53 +19,97 @@ signal mob_died
 @onready var health_bar: ProgressBar = $health_bar
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
 @onready var navigation_agent: NavigationAgent2D = $NavigationAgent2D
-@onready var avoidance_ray: RayCast2D = $avoidance_ray # Using existing RayCast2D
+@onready var avoidance_ray: RayCast2D = $avoidance_ray
 
 var potions_data: Dictionary = {}
-var target: Node2D # <<< This is now ONLY the attack target (for shooting/facing)
+var target: Node2D # Attack target (for shooting/facing)
 var target_distance: float
 var target_direction: Vector2
 var last_shoot_time: float = 0.0
 var last_damage_source: Node = null
 var last_damage_times: Dictionary = {}
+var monster_size: String = "medium"
+
+# Waypoint system for sequential pathfinding
+var current_waypoint: Node2D = null
+var waypoint_stage: int = 0  # 0 = move to town center, 1 = move to extraction
+
+# Debug tracking
+var debug_frame_counter: int = 0
 
 func _ready() -> void:
 	# Initialize monster properties and navigation
 	add_to_group("monsters")
 	collision_mask = 1 + 4 + 16 + 32 + 64 + 512
+	
+	# Navigation settings - radius varies by monster size
 	navigation_agent.path_desired_distance = 15.0
 	navigation_agent.target_desired_distance = 32.0
-	navigation_agent.radius = 12.0
 	navigation_agent.avoidance_enabled = true
 	navigation_agent.avoidance_layers = 1 << 4
+	navigation_agent.max_neighbors = 5
+	navigation_agent.neighbor_distance = 50.0
 	
 	navigation_agent.velocity_computed.connect(_on_navigation_agent_velocity_computed)
 	
-	# 🛑 CRITICAL FIX: Setup avoidance_ray for line-of-sight checks
+	# Setup avoidance_ray for line-of-sight checks
 	if avoidance_ray:
-		# Setting collision mask to 1 assumes walls/buildings are on Layer 1 (Static Environment)
 		avoidance_ray.collision_mask = 1 
 		avoidance_ray.enabled = true
 	
+	# Load potions data
 	var file: FileAccess = FileAccess.open("res://Data/potions.json", FileAccess.READ)
 	if file:
 		potions_data = JSON.parse_string(file.get_as_text())
 		file.close()
 	else:
 		push_warning("Monster %s: Failed to open potions.json!" % name)
+	
+	# Setup bullet pool
 	if bullet_scene:
 		bullet_pool.node_scene = bullet_scene
 	else:
 		push_warning("Monster %s: bullet_scene not set!" % name)
+	
+	# Validate required nodes
 	if not health_bar:
 		push_error("Monster %s: health_bar is null!" % name)
 	if not collision_shape:
 		push_error("Monster %s: collision_shape is null!" % name)
-		
-	# Initial path setting
+	
+	# Initial setup - defer until scene tree is fully ready
 	_find_nearest_attack_target()
-	_update_path()
 	reset()
+	
+	# Defer waypoint initialization to next frame when scene tree is ready
+	call_deferred("_initialize_waypoint")
+	_auto_tune_from_collision()
+
+func _auto_tune_from_collision() -> void:
+	if not collision_shape or not collision_shape.shape or not navigation_agent:
+		return
+
+	var max_dim: float = 0.0
+
+	# Determine footprint from collision shape
+	if collision_shape.shape is RectangleShape2D:
+		var size: Vector2 = collision_shape.shape.size
+		max_dim = max(size.x, size.y)
+	elif collision_shape.shape is CircleShape2D:
+		max_dim = collision_shape.shape.radius * 2.0
+	else:
+		return
+
+	# Classify monster size based on footprint
+	if max_dim < 48.0:
+		monster_size = "small"
+	elif max_dim < 96.0:
+		monster_size = "medium"
+	else:
+		monster_size = "large"
+
+	# Tune navigation radius from footprint
+	navigation_agent.radius = max_dim * 0.6
 
 func reset() -> void:
 	# Reset monster state for reuse
@@ -78,6 +122,8 @@ func reset() -> void:
 	last_shoot_time = 0.0
 	last_damage_source = null
 	last_damage_times = {}
+	debug_frame_counter = 0
+	waypoint_stage = 0  # Reset to stage 0 (village center)
 	set_process(true)
 	set_physics_process(true)
 	set_deferred("process_mode", Node.PROCESS_MODE_INHERIT)
@@ -85,12 +131,19 @@ func reset() -> void:
 		collision_shape.set_deferred("disabled", false)
 	if get_parent() is NodePool and global_position == Vector2.ZERO:
 		global_position = Vector2.ZERO
+	
+	# Defer waypoint update to ensure scene tree is ready
+	if is_inside_tree():
+		call_deferred("_update_waypoint")
+	else:
+		# Will be called by _initialize_waypoint when added to tree
+		pass
 
 func _process(_delta: float) -> void:
 	# 1. Find Attack Target (who to shoot at and face)
 	_find_nearest_attack_target()
 	
-	# 2. If we have a target, calculate distance/direction, face it, and shoot.
+	# 2. If we have a target, calculate distance/direction, face it, and shoot
 	if is_instance_valid(target):
 		target_distance = global_position.distance_to(target.global_position)
 		target_direction = global_position.direction_to(target.global_position)
@@ -98,41 +151,76 @@ func _process(_delta: float) -> void:
 		
 		# Shooting logic
 		if target_distance < shoot_range:
-			# 🛑 CRITICAL FIX: Only shoot if we have a clear line of sight
+			# Only shoot if we have a clear line of sight
 			if _has_line_of_sight():
 				if Time.get_unix_time_from_system() - last_shoot_time > shoot_rate:
 					_cast()
-			
+	
 	_move_wobble()
 	
-	# 3. Always update the path to the Extraction Point (Movement Target)
-	_update_path()
+	# 3. Check if we've reached current waypoint
+	_check_waypoint_reached()
 
-# 🛑 CRITICAL NEW FUNCTION: Checks for obstacles between the monster and its target
+# Checks for obstacles between the monster and its target
 func _has_line_of_sight() -> bool:
 	if not avoidance_ray or not target:
 		return false
 	
-	# 1. Set the ray's end point to the target's position (in local space)
+	# Set the ray's end point to the target's position (in local space)
 	var target_local_pos = to_local(target.global_position)
 	avoidance_ray.target_position = target_local_pos
 	
-	# 2. Force the raycast to update its collision detection immediately
+	# Force the raycast to update its collision detection immediately
 	avoidance_ray.force_raycast_update()
 	
-	# 3. Check if the ray collided with anything
+	# Check if the ray collided with anything
 	if avoidance_ray.is_colliding():
-		# It hit something, check if the collision was *not* the target itself
 		var collider = avoidance_ray.get_collider()
-		
-		# If the collider is NOT the target, it means the shot is blocked by a wall/building.
+		# If the collider is NOT the target, shot is blocked
 		if collider != target:
 			return false
 	
-	return true # Either no collision, or the collision was the target itself
+	return true
 
-# Finds the closest available node in the "extraction_points" group (Movement Target)
+# Initialize waypoint - start with village center, then extraction point
+func _initialize_waypoint() -> void:
+	waypoint_stage = 0
+	_update_waypoint()
+
+func _update_waypoint() -> void:
+	# Safety check: Make sure scene tree is available
+	if not is_inside_tree():
+		push_warning("Monster %s: Not in scene tree yet, deferring waypoint update" % name)
+		call_deferred("_update_waypoint")
+		return
+	
+	match waypoint_stage:
+		0:
+			# Stage 0: Move to village center first
+			var village_centers = get_tree().get_nodes_in_group("village_center")
+			if not village_centers.is_empty():
+				current_waypoint = village_centers[0]
+				navigation_agent.target_position = current_waypoint.global_position
+				print("Monster %s: Waypoint set to village_center at (%.1f, %.1f)" % [name, current_waypoint.global_position.x, current_waypoint.global_position.y])
+			else:
+				push_warning("Monster %s: No village_center found! Skipping to extraction." % name)
+				waypoint_stage = 1
+				call_deferred("_update_waypoint")
+		1:
+			# Stage 1: Move to nearest extraction point
+			current_waypoint = _find_nearest_extraction_point()
+			if current_waypoint:
+				navigation_agent.target_position = current_waypoint.global_position
+				print("Monster %s: Waypoint set to extraction_point at (%.1f, %.1f)" % [name, current_waypoint.global_position.x, current_waypoint.global_position.y])
+			else:
+				push_error("Monster %s: No extraction points found!" % name)
+
+# Finds the closest extraction point (Movement Target)
 func _find_nearest_extraction_point() -> Node2D:
+	# Safety check: Make sure scene tree is available
+	if not is_inside_tree():
+		return null
+	
 	var extraction_points: Array = get_tree().get_nodes_in_group("extraction_points")
 	
 	if extraction_points.is_empty():
@@ -145,14 +233,35 @@ func _find_nearest_extraction_point() -> Node2D:
 	)
 	return extraction_points[0]
 
-func _update_path() -> void:
-	# CRITICAL: Movement target is always the nearest Extraction Point
-	var movement_target = _find_nearest_extraction_point()
-	if movement_target:
-		navigation_agent.target_position = movement_target.global_position
+func _check_waypoint_reached() -> void:
+	# Check if we've reached current waypoint and advance to next stage
+	if not current_waypoint or not is_instance_valid(current_waypoint):
+		_update_waypoint()
+		return
+	
+	var distance_to_waypoint = global_position.distance_to(current_waypoint.global_position)
+	
+	match waypoint_stage:
+		0:
+			# Reached village center - advance to extraction point
+			if distance_to_waypoint < 100.0:  # Larger radius for town center
+				print("Monster %s: Reached village center, moving to extraction..." % name)
+				waypoint_stage = 1
+				_update_waypoint()
+		1:
+			# Reached extraction point - STAY HERE and hunt villagers
+			if distance_to_waypoint < 50.0:
+				print("Monster %s: Reached extraction point - hunting villagers!" % name)
+				waypoint_stage = 2  # Mark as "arrived at hunting grounds"
+				velocity = Vector2.ZERO  # Stop moving
 
 # Finds the closest enemy (Attack Target)
 func _find_nearest_attack_target() -> void:
+	# Safety check: Make sure scene tree is available
+	if not is_inside_tree():
+		target = null
+		return
+	
 	var attack_targets: Array = []
 	
 	# Target groups for Attack: player, friendly, healer, villagers (in order of proximity)
@@ -163,9 +272,8 @@ func _find_nearest_attack_target() -> void:
 			if is_instance_valid(node):
 				attack_targets.append(node)
 
-	# Set 'target' to the closest enemy for shooting/facing.
+	# Set 'target' to the closest enemy for shooting/facing
 	if not attack_targets.is_empty():
-		# Sort all potential attack targets by distance to find the absolute nearest
 		attack_targets.sort_custom(func(a, b):
 			return global_position.distance_to(a.global_position) < global_position.distance_to(b.global_position)
 		)
@@ -175,33 +283,83 @@ func _find_nearest_attack_target() -> void:
 
 func _physics_process(_delta: float) -> void:
 	var desired_velocity: Vector2 = Vector2.ZERO
-	var movement_target = _find_nearest_extraction_point()
-
-	if movement_target:
-		# 1. Try to move using the Navigation Agent (safe pathfinding)
+	
+	# Stage 2 (hunting grounds) - monsters have reached extraction point, now just hunt
+	if waypoint_stage == 2:
+		# No pathfinding needed - just attack nearby targets
+		# Target finding happens in _process(), shooting happens automatically
+		velocity = Vector2.ZERO
+		move_and_slide()
+		_process_collisions()
+		return
+	
+	# Ensure we have a valid waypoint for stages 0 and 1
+	if not current_waypoint or not is_instance_valid(current_waypoint):
+		_update_waypoint()
+	
+	if current_waypoint and is_instance_valid(current_waypoint):
+		# 🔍 DEBUG: Print status every 60 frames (once per second at 60fps)
+		debug_frame_counter += 1
+		if debug_frame_counter >= 60:
+			debug_frame_counter = 0
+			var distance_to_waypoint = global_position.distance_to(current_waypoint.global_position)
+			var nav_finished = navigation_agent.is_navigation_finished()
+			var stage_name = "village_center" if waypoint_stage == 0 else "extraction_point"
+			print("Monster %s: Stage=%s | Distance=%.1f | NavFinished=%s | Pos=(%.1f,%.1f)" % [
+				name, 
+				stage_name,
+				distance_to_waypoint, 
+				nav_finished,
+				global_position.x,
+				global_position.y
+			])
+		
+		# Follow the navigation path
 		if not navigation_agent.is_navigation_finished():
+			# Normal pathfinding - follow NavigationAgent's calculated path
 			var next_path_position: Vector2 = navigation_agent.get_next_path_position()
 			var move_direction: Vector2 = global_position.direction_to(next_path_position).normalized()
 			desired_velocity = move_direction * max_speed
 		else:
-			# 2. AGGRESSIVE OVERRIDE: If NavAgent is "finished" (i.e., blocked by wall/boundary),
-			# force direct, non-navigated movement towards the extraction point.
-			var move_direction: Vector2 = global_position.direction_to(movement_target.global_position).normalized()
-			desired_velocity = move_direction * max_speed
+			# Navigation says "finished" but we might not be at waypoint yet
+			var distance_to_waypoint = global_position.distance_to(current_waypoint.global_position)
+			
+			# Check if we're close enough to waypoint (different thresholds per stage)
+			var arrival_threshold = 100.0 if waypoint_stage == 0 else 50.0
+			
+			if distance_to_waypoint < arrival_threshold:
+				# Actually at waypoint - this will be handled by _check_waypoint_reached()
+				desired_velocity = Vector2.ZERO
+			else:
+				# Navigation failed but we're not at waypoint - request new path
+				print("Monster %s: Nav finished but not at waypoint (dist=%.1f). Requesting new path..." % [name, distance_to_waypoint])
+				navigation_agent.target_position = current_waypoint.global_position
+				
+				# Wait one frame for recalculation
+				await get_tree().process_frame
+				
+				if not navigation_agent.is_navigation_finished():
+					var next_path_position: Vector2 = navigation_agent.get_next_path_position()
+					var move_direction: Vector2 = global_position.direction_to(next_path_position).normalized()
+					desired_velocity = move_direction * max_speed
+				else:
+					# Still can't path - likely stuck on obstacle
+					print("Monster %s: WARNING - Unable to path! Stuck on obstacle?" % name)
+					desired_velocity = Vector2.ZERO
 	
-	# If no movement is desired (no extraction point), apply drag to stop.
+	# If no movement is desired, apply drag to stop
 	if desired_velocity.is_zero_approx():
 		velocity = velocity.lerp(Vector2.ZERO, drag)
 		move_and_slide()
 		_process_collisions()
 		return
 	
-	# 3. Submit the calculated velocity to the NavigationAgent for RVO/avoidance calculation
+	# Submit velocity to NavigationAgent for avoidance calculation
 	navigation_agent.set_velocity(desired_velocity)
 
-	# 4. Process collisions
+	# Process collisions
 	_process_collisions()
-	
+
 # Receives safe velocity from NavigationAgent2D and applies movement
 func _on_navigation_agent_velocity_computed(safe_velocity: Vector2) -> void:
 	# Use the safe velocity for movement
@@ -211,7 +369,7 @@ func _on_navigation_agent_velocity_computed(safe_velocity: Vector2) -> void:
 	var new_velocity = velocity.lerp(safe_velocity, acceleration * get_physics_process_delta_time())
 	velocity = new_velocity.limit_length(max_speed)
 	
-	# Move is performed here using the safe velocity
+	# Move using the safe velocity
 	move_and_slide()
 
 # Separated collision logic

@@ -94,6 +94,7 @@ healer=""
 extraction_points=""
 villagers=""
 gate_detectors=""
+village_center=""
 
 [input]
 

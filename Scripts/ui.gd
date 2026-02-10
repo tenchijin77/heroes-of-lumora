@@ -32,7 +32,11 @@ func _ready() -> void:
 	_check_scene()
 	# Initialize touch controls visibility
 	_toggle_touch_controls()
-
+	await get_tree().process_frame
+	var player = get_tree().get_first_node_in_group("player")
+	if player:
+		_connect_player(player)
+		
 func _check_scene() -> void:
 	var current_scene = get_tree().current_scene
 	if current_scene and current_scene.name == "main":
@@ -48,10 +52,11 @@ func _on_node_added(node: Node) -> void:
 		visible = false
 	if node.name == "main":
 		visible = true
-	if node.name == "player" and node.is_in_group("player"):
+	if node.is_in_group("player"):
 		node.damage_updated.connect(_update_player_damage)
 		node.speed_updated.connect(_update_player_speed)
 		node.health_updated.connect(_update_player_health)
+		_connect_player(node)
 		# Update initial stat values
 		_update_player_damage(node.base_damage * node.damage_modifier)
 		_update_player_speed(node.max_speed)
@@ -112,3 +117,13 @@ func _toggle_touch_controls() -> void:
 		else:
 			touch_controls.visible = visible
 			touch_controls.process_mode = PROCESS_MODE_INHERIT if visible else PROCESS_MODE_DISABLED
+
+func _connect_player(player):
+	player.damage_updated.connect(_update_player_damage)
+	player.speed_updated.connect(_update_player_speed)
+	player.health_updated.connect(_update_player_health)
+
+	_update_player_damage(player.base_damage * player.damage_modifier)
+	_update_player_speed(player.max_speed)
+	_update_player_health(player.current_health, player.max_health)
+	
