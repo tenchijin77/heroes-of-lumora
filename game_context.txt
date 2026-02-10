@@ -53,8 +53,18 @@ Behaviour:
 Monsters:
 -monsters logic is handled by monster.tscn (the script that all unique mobs will inherit from) and monsters.gd
 -monsters will have their own scene based off of monster.tscn. i.e. skeleton.tscn; when monsters have unique stats or logic, they will have their own script like skeleton.gd
--skeleton.tscn and gd - fires projectile, bone.tscn and gd
--wizard.tscn and gd - fires projectile, fireball.tsn and gd
+-skeleton.tscn and gd - fires projectile, bone.tscn
+-wizard.tscn and gd - fires projectile, fireball.tscn
+-balrog.tscn and gd - fires projectile with malfire.tscn
+-beholder.tscn and gd - fires projectile with disintegration_ray.tscn
+-ghost.tscn and gd - fires projectile with ghost_fire.tscn
+-goblin.tscn and gd - fires projectile with dagger.tscn
+-hezrou.tscn and gd - fires projectile with bile_spew.tscn
+-lich.tscn and gd - fires projectile with death_bolt.tscn
+-ogre.tscn and gd - fires projectile with boulder.tscn
+-troll.tscn and gd - fires projectile with poison_bolt.tscn
+-wraith.tscn and gd - fires projectile with life_drain.tscn
+
 
 Controls:
 

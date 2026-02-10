@@ -26,6 +26,7 @@ completed:
 -updated monster spawning rate and logic
 -standardized monster projectiles
 -updated the intro dialogue to make it shorter and more to the point
+-standardized npc behaviours and added auto-sizing based on pixel size for both npcs and monsters; this also will fix with pixel radius for collision calcluations
 
 
 to do: (in order of importance)
