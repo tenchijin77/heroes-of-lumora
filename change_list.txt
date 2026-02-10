@@ -27,20 +27,20 @@ completed:
 -standardized monster projectiles
 -updated the intro dialogue to make it shorter and more to the point
 -standardized npc behaviours and added auto-sizing based on pixel size for both npcs and monsters; this also will fix with pixel radius for collision calcluations
-
+-implemented area2d collision zones so the player can pickup loot; coins, potions, etc.
+-added player potions (increase attack speed, increase movement speed, increase damage) each buff lasts 10 seconds.
+-expanded the tilemap for the first level.
+-added a loot drop system: monsters randomly drop coins and potions
+-added dialogue for the main screen to setup the game with dialogic- Timot and Brimble movie introduces the game and controls
+-added Annadaeus NPC to assist in later waves
 
 to do: (in order of importance)
 
 -add particle effects to player and monster projectile attacks
-
--expand the tilemap for the first level.
-
--implement area2d collision zones so the player can pickup loot; coins, potions, etc.
--add player potions (increase attack speed, increase movement speed, increase damage) each buff lasts 10 seconds.
--add a loot drop system
--add dialogue for the main screen to setup the game (use dialogic addon for godot to create this)
--add coin drops for future upgrade system
--eventually add npcs to introduce famous npcs from aldenexia
+-create Tenchijin NPC and spells/skills
+-create shop area and ability for player to buy buffs
+-create the ability to buy and place turrets that help defend the town
+-create an endless mode for players who have beaten the main game
 
 
 
