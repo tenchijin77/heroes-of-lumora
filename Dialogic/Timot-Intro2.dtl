@@ -1,0 +1,69 @@
+[music path="res://Assets/Audio/Loading Screen Loop.wav" fade="0.0" volume="0.0"]
+
+join Timot leftmost [animation="Slide In" length="0.3"]
+Timot: MOVE! NOW!
+
+join Brimble rightmost [animation="Slide In" length="0.3"]
+Brimble: HISSS!
+
+Timot: (grabbing your arm, yanking you down the path) They broke the gate at dawn—the town's being overrun!
+
+Timot: (stops abruptly, breathless, sizing you up) Wait. You can fight?
+
+Timot: Thank Aurethiel. Then listen fast\:
+
+Timot: Joystick—left stick moves, right aims, trigger fires.
+Timot: Keyboard—W-A-S-D moves, left click attacks.
+Timot: Mobile—left touch moves, right touch aims and fires.
+
+Timot: Stay mobile. Stop moving and you're dead. Simple as that.
+
+Brimble: Meow! (frantic, clawing at Timot's cloak)
+
+Timot: Not now, Brimble!
+
+Timot: (back to you) Creatures of The Moribund Order—pouring in from every direction.
+
+Timot: Necromancers. Death knights. Things that shouldn't walk.
+
+Timot: They want the village. They want the people.
+
+Timot: We don't know why. We just know they can't have them.
+
+Timot: We're evacuating but we need time.
+
+Timot: That's you. You're the time.
+
+Timot: (pulls a glowing vial from his cloak) See this? Speed. Strength. Fire in a bottle.
+
+Timot: My shop's open—kill monsters, take their coin, buy survival.
+
+Timot: Every second you hold them, another villager escapes.
+
+join Narrator rightmost
+Narrator: A roar tears through the valley. The ground shakes. Steel rings against steel in the distance.
+leave Narrator
+
+Timot: (voice drops) Annadaeus warned us this would come. Back when we thought we were safe.
+Timot: She sang of the storm before any of us could see the clouds.
+
+Timot: (slight smile, grim but defiant) If we survive this… maybe she'll sing of our victory too.
+
+Brimble: MEOW! (sharp, desperate)
+
+Timot: Fine! Go! Back to the shop!
+leave Brimble
+
+Timot: (grips your shoulder, fear and steel in his eyes) This is it, hero.
+Timot: Lumora stands or falls on what you do next.
+
+Timot: You're the light now.
+join Narrator rightmost
+
+Narrator: The screams grow louder. Closer.
+leave Narrator
+
+Timot: (releases you, steps back) Make them remember why they fear the dawn.
+leave Timot
+
+[end_timeline]
