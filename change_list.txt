@@ -38,17 +38,108 @@ to do: (in order of importance)
 
 -add particle effects to player and monster projectile attacks
 -create Tenchijin NPC and spells/skills
--create shop area and ability for player to buy buffs
+-create shop area and ability for player to buy buffs and reinforcements
 -create the ability to buy and place turrets that help defend the town
 -create an endless mode for players who have beaten the main game
 
-
-
 sites for assets:
 
-pixabay.com 
+pixabay.com
 itch.io
 https://opengameart.org
 https://kenney.nl
 https://itch.io/game-assets/free
 freepik.com
+
+
+latest changes, as of 3/21/2026:
+
+Critical Fixes Implemented:
+1. Object Pooling Architecture (NodePool)
+
+Fixed: NodePool to add nodes to main scene instead of its immediate parent
+Fixed: _create_new() to use call_deferred("add_child") to prevent physics state errors
+Fixed: Monster/NPC/Potion spawning to work correctly with deferred operations
+Impact: Eliminated "Can't change this state while flushing queries" errors
+
+2. Projectile System
+
+Fixed: Projectiles moving with firing entity (player strafing issue)
+Added: _reparent_to_main() function to automatically move projectiles to main scene
+Fixed: Audio playing infinitely by stopping sound when projectile becomes invisible
+Impact: Player can strafe while shooting, arrows fire correctly
+
+3. Monster System
+
+Fixed: Monsters not dying (health instantly refilling)
+Fixed: Monsters shooting randomly in circles at invalid targets
+Added: target = null in reset() to clear stale targets
+Removed: reset() call from take_damage() - now just hides and disables
+Impact: Monsters die properly and target correctly when respawned
+
+4. Potion Spawning
+
+Fixed: Potions teleporting to killer instead of spawning at monster death location
+Fixed: Game freezing when potions dropped (infinite bounce loop)
+Changed: Removed start_bounce() from reset(), moved to setup() after position is set
+Added: Deferred scene tree modifications in _spawn_potion() to prevent physics errors
+Added: Check to prevent re-adding potion to main if already a child
+Impact: Potions spawn at correct location, no more freezes
+
+5. Coin Dropping
+
+Fixed: Coin spawning during physics callbacks causing crashes
+Added: _spawn_coins() helper function called via call_deferred()
+Changed: "Coins" → "Solari" in UI (line 83 in ui.gd)
+Impact: Coins drop without errors, proper currency name displayed
+
+6. Villager System
+
+CRITICAL: Restored villager.gd - was completely corrupted (replaced with projectile.gd content)
+Fixed: villager_spawner.gd to not re-add villagers to tree (NodePool already did it)
+Added: Tree safety checks to shout() and update_navigation_target()
+Added: _deferred_reset_actions() for delayed initialization
+Fixed: Navigation agent not found - changed $NavigationAgent2D → $navigation_agent_2d in npc.gd
+Fixed: String formatting error in villager_spawner.gd line 45
+Impact: Villagers spawn without crashes and navigate to extraction points
+
+7. UI Improvements
+
+Added: Labels to stat display (now shows "Damage:", "Speed:", "Health:" before values)
+Changed: Currency display from "Coins" to "Solari"
+Impact: Better readability of player stats
+
+8. Enemy Spawner
+
+Fixed: Removed parent checking logic since NodePool handles tree placement
+Simplified: Monster spawn flow - just set position, visibility, and call reset
+Impact: Cleaner spawning code, fewer edge cases
+
+
+Files Modified:
+
+node_pool.gd - Fixed tree placement and deferred operations
+projectile.gd - Added auto-reparenting, fixed audio
+monsters.gd - Fixed death, targeting, potion spawning
+enemy_spawner.gd - Simplified spawn logic, deferred coin drops
+potion.gd - Fixed bounce timing, removed from reset
+villager.gd - Restored from git, added tree safety checks
+villager_spawner.gd - Fixed spawning logic, string formatting
+npc.gd - Fixed navigation_agent node reference
+ui.gd - Added stat labels, renamed Coins → Solari
+
+
+Key Architectural Changes:
+Before:
+
+Pooled objects added randomly to different parents
+Scene tree modifications during physics callbacks
+Reset called at wrong times causing invalid state
+
+After:
+
+All pooled objects added to main scene via NodePool
+All scene tree modifications use call_deferred()
+Reset only sets state, tree operations happen separately
+Position set before reset, bounce/navigation after tree placement
+
