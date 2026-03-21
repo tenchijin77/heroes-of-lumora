@@ -71,6 +71,10 @@ func setup(potion_data: Dictionary) -> void:
 		potion_data["sprite_region"][2],
 		potion_data["sprite_region"][3]
 	)
+	
+	# FIXED: Start bounce AFTER position is set correctly
+	initial_y = global_position.y
+	start_bounce()
 
 # Signal pickup to play sound and apply effect
 func collect() -> void:
@@ -119,7 +123,5 @@ func reset() -> void:
 	if is_inside_tree():
 		target = get_tree().get_first_node_in_group("player")
 	
-	# Restart bounce when added back to tree
-	if is_inside_tree():
-		initial_y = global_position.y
-		start_bounce()
+	# DON'T start bounce here - position isn't set yet!
+	# Bounce will be started in setup() after position is correct

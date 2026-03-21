@@ -139,6 +139,7 @@ func reset() -> void:
 	debug_frame_counter = 0
 	waypoint_stage = 0  # Reset to stage 0 (village center)
 	target_update_timer = 0.0  # Reset target timer
+	target = null  # FIXED: Clear target so monster finds new one
 	set_process(true)
 	set_physics_process(true)
 	set_deferred("process_mode", Node.PROCESS_MODE_INHERIT)
@@ -473,8 +474,11 @@ func _spawn_potion(potion_data: Dictionary) -> void:
 			# Store the death position BEFORE any operations
 			var death_position = global_position
 			
-			# FIXED: Don't set position here - will be set in deferred helper
-			# ALL scene tree modifications must be deferred during physics callbacks
+			# FIXED: Use call_deferred for all scene tree modifications
+			# This prevents "flushing queries" error during physics callbacks
+			
+			# Set position first
+			potion.global_position = death_position
 			
 			# Reparent potion to main scene so it doesn't disappear with monster
 			if potion.get_parent():
@@ -496,11 +500,14 @@ func _add_potion_to_main(potion: Area2D, death_position: Vector2, potion_data: D
 	if not is_instance_valid(potion):
 		return
 		
-	# Add to main scene
+	# Add to main scene if not already there
 	var main_scene = get_tree().root.get_node_or_null("main")
 	if main_scene:
-		main_scene.add_child(potion)
-		# Restore position after reparenting
+		# FIXED: Only add if not already a child of main
+		if potion.get_parent() != main_scene:
+			main_scene.add_child(potion)
+		
+		# Set position (whether we just added it or it was already there)
 		potion.global_position = death_position
 		# Setup the potion
 		potion.setup(potion_data)

@@ -42,7 +42,7 @@ func _ready() -> void:
 				if key != "_comment" and key is String:
 					villager_types.append(key)
 			if OS.has_feature("editor"):
-				print("VillagerSpawner: Loaded villager types: %s" % villager_types)
+				print("VillagerSpawner: Loaded villager types: %s" % str(villager_types))
 		else:
 			if OS.has_feature("editor"):
 				push_error("VillagerSpawner: Failed to parse villagers.json!")
@@ -97,12 +97,21 @@ func _spawn_villager() -> void:
 	if villager_pool:
 		var villager = villager_pool.spawn()
 		if villager:
+			# Set villager type before reset
 			if not villager_types.is_empty():
 				villager.villager_type = villager_types[randi() % villager_types.size()]
+			
+			# Set position
 			villager.global_position = _get_random_spawn_position()
-			get_tree().current_scene.add_child.call_deferred(villager)
+			
+			# FIXED: Don't add_child - NodePool already added to main
+			# Just call reset with the villager type
+			if villager.has_method("reset"):
+				villager.reset(villager.villager_type)
+			
 			if OS.has_feature("editor"):
 				print("Spawner: Spawned villager %s with type %s at %s" % [villager.name, villager.villager_type, villager.global_position])
+			
 			# Connect the signals to the spawner's handler functions
 			if not villager.villager_died.is_connected(_on_villager_died):
 				villager.villager_died.connect(_on_villager_died.bind(villager))

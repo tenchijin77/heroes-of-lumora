@@ -14,7 +14,7 @@ signal health_updated(current: int, max: int)
 @export var firing_speed: float = 0.2
 @export var current_health: int = 100
 @export var max_health: int = 100
-@export var regeneration_per_second: float = 1.0 # Health regenerated per second
+@export var regeneration_per_second: float = .25 # Health regenerated per second
 @export var debug_enabled: bool = false  # NEW: Toggle debug printing
 
 @onready var sprite: Sprite2D = $Sprite2D

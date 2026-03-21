@@ -80,7 +80,7 @@ func _update_score(score: int) -> void:
 	score_label.text = "Score: %d" % score
 
 func _update_coins(coins: int) -> void:
-	coin_label.text = "Coins: %d" % coins
+	coin_label.text = "Solari: %d" % coins
 
 func _update_villagers(saved: int, lost: int, total: int) -> void:
 	saved_villagers_label.text = "Villagers Saved: %d" % saved
@@ -89,19 +89,19 @@ func _update_villagers(saved: int, lost: int, total: int) -> void:
 
 func _update_player_damage(damage: float) -> void:
 	if player_damage:
-		player_damage.text = "🗡️ %.1f" % damage
+		player_damage.text = "Damage: 🗡️ %.1f" % damage
 	else:
 		push_error("UI: player_damage label is null!")
 
 func _update_player_speed(speed: float) -> void:
 	if player_speed:
-		player_speed.text = "👟 %.1f" % speed
+		player_speed.text = "Speed: 👟 %.1f" % speed
 	else:
 		push_error("UI: player_speed label is null!")
 
 func _update_player_health(current: int, max: int) -> void:
 	if player_health:
-		player_health.text = "❤️ %d/%d" % [current, max]
+		player_health.text = "Health: ❤️ %d/%d" % [current, max]
 	else:
 		push_error("UI: player_health label is null!")
 
@@ -126,4 +126,3 @@ func _connect_player(player):
 	_update_player_damage(player.base_damage * player.damage_modifier)
 	_update_player_speed(player.max_speed)
 	_update_player_health(player.current_health, player.max_health)
-	

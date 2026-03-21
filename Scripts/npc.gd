@@ -1,9 +1,10 @@
+#npc.gd - NPC Shared behaviours
 extends CharacterBody2D
 
 var npc_size: String = "medium"
 
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
-@onready var navigation_agent: NavigationAgent2D = $NavigationAgent2D
+@onready var navigation_agent: NavigationAgent2D = $navigation_agent_2d
 
 func _ready() -> void:
 	if navigation_agent:

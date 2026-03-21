@@ -41,7 +41,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 6
 theme_override_fonts/font = ExtResource("1_jxero")
 theme_override_font_sizes/font_size = 20
-text = "Coins: 0"
+text = "Solari: 0"
 
 [node name="saved_villagers" type="Label" parent="VBoxContainer" unique_id=1111764610]
 layout_mode = 2
