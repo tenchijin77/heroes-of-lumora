@@ -473,11 +473,8 @@ func _spawn_potion(potion_data: Dictionary) -> void:
 			# Store the death position BEFORE any operations
 			var death_position = global_position
 			
-			# FIXED: Use call_deferred for all scene tree modifications
-			# This prevents "flushing queries" error during physics callbacks
-			
-			# Set position first
-			potion.global_position = death_position
+			# FIXED: Don't set position here - will be set in deferred helper
+			# ALL scene tree modifications must be deferred during physics callbacks
 			
 			# Reparent potion to main scene so it doesn't disappear with monster
 			if potion.get_parent():
