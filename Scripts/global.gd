@@ -47,12 +47,12 @@ func load_high_scores() -> void:
 					high_scores.append(entry)
 		if OS.has_feature("editor"):
 			print("Global: Loaded high scores: %s" % JSON.stringify(high_scores))
-		file.close()  # ✅ Safe close inside the if-block
+		file.close()
 	else:
+		# File doesn't exist yet - create default empty scores (first run)
 		high_scores = []
-		push_error("Global: Failed to open high_scores.json for reading")
-		if OS.has_feature("editor"):
-			print("Global: No valid high scores data, initialized empty array")
+		print("Global: high_scores.json not found (first run), creating default file")
+		save_high_scores()  # Create the file with empty array
 
 func save_high_scores() -> void:
 	var dir: DirAccess = DirAccess.open("user://")

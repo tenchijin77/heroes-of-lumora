@@ -16,14 +16,14 @@ const DIRECT_RETURN_THRESHOLD: float = 200.0
 const SHOUT_COOLDOWN: float = 6.0
 const VILLAGER_CHECK_INTERVAL: float = 2.0
 const SNAP_THRESHOLD: float = 5.0
-const THREAT_CHECK_INTERVAL: float = 0.3
+const FLEE_DURATION: float = 3.0  # NEW: How long to flee after taking damage
 
 enum State { RUNNING, STANDING, FLEEING, RETURNING }
 
 var state: State = State.RUNNING
 var town_center_pos: Vector2 = Vector2(808, 379)
 var current_threat: CharacterBody2D = null
-var last_threat_check: float = 0.0
+var flee_timer: float = 0.0  # NEW: Tracks flee time
 
 var cooldowns: Dictionary = {
 	"north": 0.0,
@@ -117,10 +117,14 @@ func _deferred_ready() -> void:
 	shout("initial")
 
 func _physics_process(delta: float) -> void:
-	var current_time = Time.get_ticks_msec() / 1000.0
-	if state != State.RUNNING and (current_time - last_threat_check) > THREAT_CHECK_INTERVAL:
-		current_threat = _get_nearest_monster()
-		last_threat_check = current_time
+	# FIXED: Only check for threats when fleeing, not when standing
+	if state == State.FLEEING:
+		flee_timer -= delta
+		if flee_timer <= 0.0:
+			# Flee time expired, return to town
+			state = State.RETURNING
+			current_threat = null
+			_set_navigation_target(town_center_pos)
 
 	match state:
 		State.RUNNING:
@@ -138,24 +142,23 @@ func _physics_process(delta: float) -> void:
 					sprite.flip_h = dir.x < 0
 
 		State.STANDING:
-			if is_instance_valid(current_threat) and global_position.distance_to(current_threat.global_position) < FLEE_DISTANCE:
-				state = State.FLEEING
-			else:
-				velocity = Vector2.ZERO
-				current_threat = null
+			# FIXED: Just stand still, don't check for threats
+			# Only flee when actually taking damage (in take_damage function)
+			velocity = Vector2.ZERO
+			current_threat = null
 
 		State.FLEEING:
-			if not is_instance_valid(current_threat) or global_position.distance_to(current_threat.global_position) > RETURN_DISTANCE:
-				state = State.RETURNING
-				current_threat = null
-				_set_navigation_target(town_center_pos)
-			else:
+			# Flee from the threat for FLEE_DURATION seconds
+			if is_instance_valid(current_threat):
 				_flee_from_threat(current_threat, delta)
+			else:
+				# Threat is gone, start returning
+				state = State.RETURNING
+				_set_navigation_target(town_center_pos)
 
 		State.RETURNING:
-			if is_instance_valid(current_threat) and global_position.distance_to(current_threat.global_position) < FLEE_DISTANCE:
-				state = State.FLEEING
-			elif global_position.distance_to(town_center_pos) <= ARRIVE_DISTANCE:
+			# FIXED: Don't re-enter fleeing unless actually damaged again
+			if global_position.distance_to(town_center_pos) <= ARRIVE_DISTANCE:
 				state = State.STANDING
 				velocity = Vector2.ZERO
 				current_threat = null
@@ -183,7 +186,7 @@ func _snap_velocity_to_zero() -> void:
 
 func _get_nearest_monster() -> CharacterBody2D:
 	var nearest: CharacterBody2D = null
-	var min_dist = FLEE_DISTANCE
+	var min_dist = INF  # Changed from FLEE_DISTANCE to find actual nearest
 	for monster in get_tree().get_nodes_in_group("monsters"):
 		if not is_instance_valid(monster):
 			continue
@@ -231,6 +234,15 @@ func take_damage(damage: int, _projectile_instance) -> void:
 
 	if health <= 0:
 		queue_free()
+		return
+	
+	# FIXED: Only flee when actually taking damage
+	if state == State.STANDING or state == State.RETURNING:
+		current_threat = _get_nearest_monster()
+		if is_instance_valid(current_threat):
+			state = State.FLEEING
+			flee_timer = FLEE_DURATION
+			print("Messenger: Taking damage! Fleeing for %.1f seconds" % FLEE_DURATION)
 
 func shout(key: String) -> void:
 	if not shout_texts.has(key):

@@ -1,5 +1,4 @@
 # node_pool.gd
-
 class_name NodePool
 extends Node
 
@@ -15,14 +14,43 @@ func _create_new() -> Node2D:
 		push_error("NodePool: Failed to instantiate node_scene!")
 		return null
 	cached_nodes.append(node)
-	get_tree().get_root().add_child.call_deferred(node)
+	
+	# FIXED: Find the 'main' scene instead of just using get_parent()
+	# This ensures nodes are added to the correct place regardless of NodePool hierarchy
+	var target_parent = _find_main_scene()
+	if target_parent:
+		target_parent.call_deferred("add_child", node)
+	else:
+		# Fallback to parent if main not found
+		if get_parent():
+			get_parent().add_child(node)
+	
 	node.visible = true
 	if node.has_method("reset"):
 		node.reset()
-	else:
-		push_warning("NodePool: Spawned node %s has no reset method!" % node.name)
 	print("NodePool: Created new node %s" % node.name)
 	return node
+
+func _find_main_scene() -> Node:
+	"""Find the main scene node in the tree"""
+	if not is_inside_tree():
+		return null
+	
+	# Try to find 'main' node
+	var root = get_tree().root
+	if root:
+		var main = root.get_node_or_null("main")
+		if main:
+			return main
+	
+	# Fallback: traverse up to find a node named 'main'
+	var current = get_parent()
+	while current:
+		if current.name == "main":
+			return current
+		current = current.get_parent()
+	
+	return null
 
 func spawn() -> Node2D:
 	for node in cached_nodes:
@@ -30,8 +58,16 @@ func spawn() -> Node2D:
 			node.visible = true
 			if node.has_method("reset"):
 				node.reset()
-			else:
-				push_warning("NodePool: Reused node %s has no reset method!" % node.name)
 			print("NodePool: Reused node %s" % node.name)
 			return node
 	return _create_new()
+
+func despawn(node: Node2D) -> void:
+	"""Hide and reset a node, returning it to the pool"""
+	if node in cached_nodes:
+		node.visible = false
+		if node.has_method("reset"):
+			node.reset()
+		print("NodePool: Despawned node %s" % node.name)
+	else:
+		push_warning("NodePool: Tried to despawn node %s not in pool" % node.name)

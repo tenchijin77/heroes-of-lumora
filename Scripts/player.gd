@@ -15,6 +15,7 @@ signal health_updated(current: int, max: int)
 @export var current_health: int = 100
 @export var max_health: int = 100
 @export var regeneration_per_second: float = 1.0 # Health regenerated per second
+@export var debug_enabled: bool = false  # NEW: Toggle debug printing
 
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var muzzle = $muzzle
@@ -29,6 +30,8 @@ var damage_modifier: float = 1.0 # Multiplier for damage buffs
 var last_shoot_time: float
 var speed_buff_active: bool = false # Prevent stacking speed buffs
 var base_max_speed: float = 100.0 # Base speed to avoid floating-point drift
+var active_effect_timers: Dictionary = {}  # NEW: Track active effect timers to prevent leaks
+var cached_aim_vector: Vector2 = Vector2.ZERO  # NEW: Cache aim vector to avoid recalculation
 
 func _ready() -> void:
 	# Initialize player properties and connections
@@ -55,26 +58,24 @@ func _physics_process(_delta: float) -> void:
 
 func _process(delta: float) -> void:
 	# Handle shooting and sprite orientation
-	var aim_vector: Vector2 = Vector2.ZERO
 	var use_touch: bool = OS.has_feature("touchscreen")
 	var joystick_connected: bool = Input.get_joy_name(0) != ""
 	var aim_active: bool = Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down").length() > 0.2
 	var shoot_active: bool = (joystick_connected and aim_active) or Input.is_action_pressed("shoot") or Input.get_action_strength("shoot") > 0.1
-	var mode: String = "Touch" if use_touch else "Keyboard/Mouse" if not joystick_connected else "Joystick"
 
 	if joystick_connected and aim_active:
 		# Joystick active for aiming
-		aim_vector = Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down").normalized()
-		sprite.flip_h = aim_vector.x > 0
+		cached_aim_vector = Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down").normalized()
+		sprite.flip_h = cached_aim_vector.x > 0
 	elif not use_touch:
 		# Keyboard/Mouse fallback
 		var mouse_position = get_global_mouse_position()
-		aim_vector = muzzle.global_position.direction_to(mouse_position)
+		cached_aim_vector = muzzle.global_position.direction_to(mouse_position)
 		sprite.flip_h = mouse_position.x > global_position.x
 	else:
 		# Touch fallback if touchscreen and active
-		aim_vector = Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down").normalized()
-		sprite.flip_h = aim_vector.x > 0
+		cached_aim_vector = Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down").normalized()
+		sprite.flip_h = cached_aim_vector.x > 0
 
 	if shoot_active and Time.get_unix_time_from_system() - last_shoot_time > firing_speed:
 		open_fire()
@@ -83,9 +84,10 @@ func _process(delta: float) -> void:
 func _handle_game_over() -> void:
 	# Handle game over logic when player's health hits zero
 	Global.game_active = false
-	print("Game Over! Final Score: %d | Wave: %d | Coins: %d | Time: %s | Saved: %d | Lost: %d" % [
-		Global.current_score, Global.current_wave, Global.coins_collected, Global.format_time(Global.current_time_survived),
-		Global.saved_villagers, Global.lost_villagers])
+	if debug_enabled:
+		print("Game Over! Final Score: %d | Wave: %d | Coins: %d | Time: %s | Saved: %d | Lost: %d" % [
+			Global.current_score, Global.current_wave, Global.coins_collected, Global.format_time(Global.current_time_survived),
+			Global.saved_villagers, Global.lost_villagers])
 	# Explicitly hide UI
 	var ui = get_node_or_null("/root/UI")
 	if ui:
@@ -118,15 +120,19 @@ func open_fire() -> void:
 	var arrow = arrow_pool.spawn()
 	arrow.global_position = muzzle.global_position
 	arrow.owner_group = "player"
-	var aim_vector: Vector2
-	if Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down").length() > 0.2:
-		aim_vector = Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down").normalized()
-	else:
+	
+	# FIXED: Use cached aim_vector instead of recalculating
+	var aim_vector: Vector2 = cached_aim_vector
+	if aim_vector.is_zero_approx():
+		# Fallback if no aim input
 		aim_vector = muzzle.global_position.direction_to(get_global_mouse_position())
+	
 	arrow.move_direction = aim_vector
 	if arrow.has_method("set_damage"):
 		arrow.set_damage(base_damage * damage_modifier)
-	print("Player: Spawned arrow %s, move_direction=%s, position=%s" % [arrow.name, arrow.move_direction, arrow.global_position])
+	
+	if debug_enabled:
+		print("Player: Spawned arrow %s, move_direction=%s, position=%s" % [arrow.name, arrow.move_direction, arrow.global_position])
 
 func _move_wobble() -> void:
 	# Handle sprite wobble animation
@@ -149,7 +155,8 @@ func _on_pickup_area_entered(area: Area2D) -> void:
 	if area.is_in_group("loot"):
 		Global.coins_collected += 1
 		Global.emit_signal("coins_updated", Global.coins_collected)
-		print("Picked up coin! Coins: %d" % Global.coins_collected)
+		if debug_enabled:
+			print("Picked up coin! Coins: %d" % Global.coins_collected)
 		area.collect()
 	# Handle potion pickup
 	if area.is_in_group("potion"):
@@ -175,7 +182,16 @@ func apply_potion_effect(effect_type: String, effect_value: float, effect_durati
 			emit_signal("damage_updated", base_damage * damage_modifier)
 
 func _start_effect_timer(duration: float, property: String, revert_value: float) -> void:
-	# Helper to revert temporary effects
+	# FIXED: Helper to revert temporary effects - now prevents timer leaks
+	
+	# Cancel existing timer for this property to prevent stacking/leaks
+	if property in active_effect_timers:
+		var old_timer = active_effect_timers[property]
+		if is_instance_valid(old_timer):
+			old_timer.stop()
+			old_timer.queue_free()
+		active_effect_timers.erase(property)
+	
 	var timer: Timer = Timer.new()
 	timer.wait_time = duration
 	timer.one_shot = true
@@ -187,9 +203,13 @@ func _start_effect_timer(duration: float, property: String, revert_value: float)
 			emit_signal("speed_updated", max_speed)
 		else:
 			emit_signal("damage_updated", base_damage * damage_modifier)
+		
+		# Clean up timer reference
+		active_effect_timers.erase(property)
 		timer.queue_free()
 	)
 	add_child(timer)
+	active_effect_timers[property] = timer
 	timer.start()
 
 func get_health() -> int:
@@ -206,7 +226,8 @@ func heal(amount: int) -> void:
 	if health_bar and is_instance_valid(health_bar):
 		health_bar.value = current_health
 	emit_signal("health_updated", current_health, max_health)
-	print("Player %s healed for %d → current_health = %d" % [name, amount, current_health])
+	if debug_enabled:
+		print("Player %s healed for %d → current_health = %d" % [name, amount, current_health])
 
 func set_damage_modifier(modifier: float) -> void:
 	# Set damage modifier for courage aura

@@ -14,6 +14,9 @@ extends "res://Scripts/npc.gd"
 @export var patrol_radius: float = 300.0
 @export var projectile_scene: PackedScene
 
+# FIXED: New export for heal priority threshold
+@export var critical_health_threshold: float = 0.3  # Heal if unit is below 30% HP
+
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var muzzle: Node2D = $muzzle
 @onready var bullet_pool: NodePool = $bullet_pool
@@ -76,49 +79,96 @@ func _has_clear_line_to_target(target: Node2D) -> bool:
 		return false
 	return not avoidance_ray.is_colliding() or avoidance_ray.get_collider() == target
 
+# FIXED: Completely rewritten priority logic
 func _update_targets() -> void:
 	var heal_target = _find_low_health_friendly()
 	var enemy_target = _find_closest_mob()
 
-	if heal_target and enemy_target:
-		var heal_dist = global_position.distance_to(heal_target.global_position)
-		var enemy_dist = global_position.distance_to(enemy_target.global_position)
-		if heal_dist < enemy_dist:
+	# FIXED: Prioritize healing critical targets first
+	if heal_target and heal_target.has_method("get_health") and heal_target.has_method("get_max_health"):
+		var health_percent = float(heal_target.get_health()) / float(heal_target.get_max_health())
+		
+		# If someone is critically wounded, ALWAYS heal them first
+		if health_percent < critical_health_threshold:
 			current_friendly_target = heal_target
 			current_state = "HEALING"
 			current_target = null
+			return
+		
+		# Otherwise, heal if they're closer than enemies OR there are no enemies
+		if enemy_target:
+			var heal_dist = global_position.distance_to(heal_target.global_position)
+			var enemy_dist = global_position.distance_to(enemy_target.global_position)
+			
+			# Heal if friendly is closer OR if friendly is moderately hurt (< 70% HP)
+			if heal_dist < enemy_dist or health_percent < 0.7:
+				current_friendly_target = heal_target
+				current_state = "HEALING"
+				current_target = null
+			else:
+				current_target = enemy_target
+				current_state = "ATTACKING"
+				current_friendly_target = null
 		else:
-			current_target = enemy_target
-			current_state = "ATTACKING"
-			current_friendly_target = null
-	elif heal_target:
-		current_friendly_target = heal_target
-		current_state = "HEALING"
-		current_target = null
+			# No enemies, just heal
+			current_friendly_target = heal_target
+			current_state = "HEALING"
+			current_target = null
 	elif enemy_target:
+		# No one needs healing, attack
 		current_target = enemy_target
 		current_state = "ATTACKING"
 		current_friendly_target = null
 	else:
+		# Nothing to do, patrol
 		current_state = "PATROL"
 
+# FIXED: Find the MOST wounded friendly, not just closest
 func _find_low_health_friendly() -> CharacterBody2D:
-	var closest_unit: CharacterBody2D = null
-	var min_distance: float = heal_range
+	var most_wounded: CharacterBody2D = null
+	var lowest_health_percent: float = 1.0  # 100%
 
 	var friendlies = get_tree().get_nodes_in_group("friendly")
 	if player and is_instance_valid(player):
 		friendlies.append(player)
 
 	for unit in friendlies:
-		if unit != self and is_instance_valid(unit) and unit.has_method("get_health") and unit.has_method("get_max_health"):
-			if unit.get_health() < unit.get_max_health():
-				var distance = global_position.distance_to(unit.global_position)
-				if distance < min_distance:
-					min_distance = distance
-					closest_unit = unit
+		if unit == self:
+			continue
+			
+		if not is_instance_valid(unit):
+			continue
+			
+		if not unit.has_method("get_health") or not unit.has_method("get_max_health"):
+			continue
+		
+		var current_hp = unit.get_health()
+		var max_hp = unit.get_max_health()
+		
+		# Only consider units that are wounded and in range
+		if current_hp >= max_hp:
+			continue
+		
+		var distance = global_position.distance_to(unit.global_position)
+		if distance > heal_range:
+			continue
+		
+		# Calculate health percentage
+		var health_percent = float(current_hp) / float(max_hp)
+		
+		# FIXED: Prioritize by health percentage, not distance
+		# If tied on health, prefer closer target
+		if health_percent < lowest_health_percent:
+			lowest_health_percent = health_percent
+			most_wounded = unit
+		elif health_percent == lowest_health_percent and most_wounded:
+			# Tiebreaker: prefer closer
+			var dist_to_current = global_position.distance_to(unit.global_position)
+			var dist_to_best = global_position.distance_to(most_wounded.global_position)
+			if dist_to_current < dist_to_best:
+				most_wounded = unit
 
-	return closest_unit
+	return most_wounded
 
 func _find_closest_mob() -> CharacterBody2D:
 	var closest_mob: CharacterBody2D = null

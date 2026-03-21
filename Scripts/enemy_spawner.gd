@@ -160,6 +160,7 @@ func _spawn_monster() -> void:
 	if not player:
 		push_error("Spawner: Player reference is null!")
 		return
+	
 	var monster: CharacterBody2D = mob_pools[monster_scene.resource_path].spawn() as CharacterBody2D
 	if monster:
 		var spawn_pos: Vector2 = _get_spawn_position()
@@ -174,11 +175,16 @@ func _spawn_monster() -> void:
 				print("Spawner: Failed to find valid spawn position for %s after %d attempts!" % [monster.name, max_attempts])
 				monster.queue_free()
 				return
+		
+		# Set position and make visible
 		monster.global_position = spawn_pos
-		get_parent().add_child(monster)
 		monster.visible = true
+		
+		# Call reset AFTER position is set
 		if monster.has_method("reset"):
 			monster.reset()
+		
+		# Connect signals
 		if monster.has_signal("mob_died") and player.has_method("increment_score") and not monster.is_connected("mob_died", Callable(player, "increment_score")):
 			monster.mob_died.connect(Callable(player, "increment_score"))
 		if monster.has_signal("mob_died") and not monster.is_connected("mob_died", _on_mob_died):
@@ -247,13 +253,18 @@ func _on_mob_died(mob: Node2D) -> void:
 	if randf() < coin_drop_chance:
 		var drop_position: Vector2 = mob.global_position
 		var coin_count: int = randi_range(coin_drop_amount_range.x, coin_drop_amount_range.y)
-		for i in range(coin_count):
-			var coin: Area2D = coin_scene.instantiate() as Area2D
-			if coin:
-				coin.collision_layer = 256 # Layer 9 (loot)
-				coin.collision_mask = 1 # Layer 1 (player)
-				coin.global_position = drop_position + Vector2(randf_range(-20.0, 20.0), randf_range(-20.0, 20.0))
-				get_parent().add_child(coin)
-				print("Dropped %d coins at %s (total %d)" % [coin_count, coin.global_position, i + 1])
-			else:
-				print("Failed to instantiate coin at %s" % drop_position)
+		# FIXED: Defer coin spawning to avoid physics state error
+		call_deferred("_spawn_coins", drop_position, coin_count)
+
+func _spawn_coins(drop_position: Vector2, coin_count: int) -> void:
+	"""Helper function to spawn coins outside of physics callback"""
+	for i in range(coin_count):
+		var coin: Area2D = coin_scene.instantiate() as Area2D
+		if coin:
+			coin.collision_layer = 256 # Layer 9 (loot)
+			coin.collision_mask = 1 # Layer 1 (player)
+			coin.global_position = drop_position + Vector2(randf_range(-20.0, 20.0), randf_range(-20.0, 20.0))
+			get_parent().add_child(coin)
+			print("Dropped %d coins at %s (total %d)" % [coin_count, coin.global_position, i + 1])
+		else:
+			print("Failed to instantiate coin at %s" % drop_position)

@@ -95,7 +95,7 @@ func _spawn_villager() -> void:
 	if OS.has_feature("editor"):
 		print("Spawner: Attempting to spawn villager.")
 	if villager_pool:
-		var villager: Villager = villager_pool.spawn()
+		var villager = villager_pool.spawn()
 		if villager:
 			if not villager_types.is_empty():
 				villager.villager_type = villager_types[randi() % villager_types.size()]

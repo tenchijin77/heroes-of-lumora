@@ -12,6 +12,7 @@ signal mob_died
 @export var max_health: int = 15
 @export var bullet_scene: PackedScene
 @export var score_value: int = 10
+@export var debug_enabled: bool = false  # NEW: Toggle debug printing
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var muzzle: Node2D = $muzzle
 @onready var bullet_pool: NodePool = $bullet_pool
@@ -37,14 +38,18 @@ var waypoint_stage: int = 0  # 0 = move to town center, 1 = move to extraction
 # Debug tracking
 var debug_frame_counter: int = 0
 
+# NEW: Target finding optimization
+var target_update_timer: float = 0.0
+const TARGET_UPDATE_INTERVAL: float = 0.5  # Update target twice per second
+
 func _ready() -> void:
 	# Initialize monster properties and navigation
 	add_to_group("monsters")
 	collision_mask = 1 + 4 + 16 + 32 + 64 + 512
 	
-	# Navigation settings - radius varies by monster size
+	# Navigation settings will be auto-tuned by _auto_tune_from_collision()
 	navigation_agent.path_desired_distance = 15.0
-	navigation_agent.target_desired_distance = 32.0
+	# Target desired distance will be set in _auto_tune_from_collision()
 	navigation_agent.avoidance_enabled = true
 	navigation_agent.avoidance_layers = 1 << 4
 	navigation_agent.max_neighbors = 5
@@ -110,6 +115,15 @@ func _auto_tune_from_collision() -> void:
 
 	# Tune navigation radius from footprint
 	navigation_agent.radius = max_dim * 0.6
+	
+	# FIXED: Set target_desired_distance based on monster size
+	# Small monsters can get closer, large monsters need more space
+	navigation_agent.target_desired_distance = max(10.0, max_dim * 0.3)
+	
+	if debug_enabled:
+		print("Monster %s: Auto-tuned - size=%s, max_dim=%.1f, radius=%.1f, target_desired=%.1f" % [
+			name, monster_size, max_dim, navigation_agent.radius, navigation_agent.target_desired_distance
+		])
 
 func reset() -> void:
 	# Reset monster state for reuse
@@ -124,6 +138,7 @@ func reset() -> void:
 	last_damage_times = {}
 	debug_frame_counter = 0
 	waypoint_stage = 0  # Reset to stage 0 (village center)
+	target_update_timer = 0.0  # Reset target timer
 	set_process(true)
 	set_physics_process(true)
 	set_deferred("process_mode", Node.PROCESS_MODE_INHERIT)
@@ -132,19 +147,19 @@ func reset() -> void:
 	if get_parent() is NodePool and global_position == Vector2.ZERO:
 		global_position = Vector2.ZERO
 	
-	# Defer waypoint update to ensure scene tree is ready
-	if is_inside_tree():
-		call_deferred("_update_waypoint")
-	else:
-		# Will be called by _initialize_waypoint when added to tree
-		pass
+	# Always defer to be safe
+	call_deferred("_update_waypoint")
 
-func _process(_delta: float) -> void:
-	# 1. Find Attack Target (who to shoot at and face)
-	_find_nearest_attack_target()
+func _process(delta: float) -> void:
+	# NEW: Update target less frequently for performance
+	target_update_timer += delta
+	if target_update_timer >= TARGET_UPDATE_INTERVAL:
+		target_update_timer = 0.0
+		_find_nearest_attack_target()
 	
-	# 2. If we have a target, calculate distance/direction, face it, and shoot
-	if is_instance_valid(target):
+	# If we have a target, calculate distance/direction, face it, and shoot
+	var has_valid_target: bool = is_instance_valid(target)
+	if has_valid_target:
 		target_distance = global_position.distance_to(target.global_position)
 		target_direction = global_position.direction_to(target.global_position)
 		sprite.flip_h = target_direction.x > 0
@@ -158,7 +173,7 @@ func _process(_delta: float) -> void:
 	
 	_move_wobble()
 	
-	# 3. Check if we've reached current waypoint
+	# Check if we've reached current waypoint
 	_check_waypoint_reached()
 
 # Checks for obstacles between the monster and its target
@@ -201,7 +216,8 @@ func _update_waypoint() -> void:
 			if not village_centers.is_empty():
 				current_waypoint = village_centers[0]
 				navigation_agent.target_position = current_waypoint.global_position
-				print("Monster %s: Waypoint set to village_center at (%.1f, %.1f)" % [name, current_waypoint.global_position.x, current_waypoint.global_position.y])
+				if debug_enabled:
+					print("Monster %s: Waypoint set to village_center at (%.1f, %.1f)" % [name, current_waypoint.global_position.x, current_waypoint.global_position.y])
 			else:
 				push_warning("Monster %s: No village_center found! Skipping to extraction." % name)
 				waypoint_stage = 1
@@ -211,7 +227,8 @@ func _update_waypoint() -> void:
 			current_waypoint = _find_nearest_extraction_point()
 			if current_waypoint:
 				navigation_agent.target_position = current_waypoint.global_position
-				print("Monster %s: Waypoint set to extraction_point at (%.1f, %.1f)" % [name, current_waypoint.global_position.x, current_waypoint.global_position.y])
+				if debug_enabled:
+					print("Monster %s: Waypoint set to extraction_point at (%.1f, %.1f)" % [name, current_waypoint.global_position.x, current_waypoint.global_position.y])
 			else:
 				push_error("Monster %s: No extraction points found!" % name)
 
@@ -233,25 +250,26 @@ func _find_nearest_extraction_point() -> Node2D:
 	)
 	return extraction_points[0]
 
+# Check if we've arrived at the current waypoint
 func _check_waypoint_reached() -> void:
-	# Check if we've reached current waypoint and advance to next stage
 	if not current_waypoint or not is_instance_valid(current_waypoint):
-		_update_waypoint()
 		return
 	
 	var distance_to_waypoint = global_position.distance_to(current_waypoint.global_position)
 	
 	match waypoint_stage:
 		0:
-			# Reached village center - advance to extraction point
-			if distance_to_waypoint < 100.0:  # Larger radius for town center
-				print("Monster %s: Reached village center, moving to extraction..." % name)
+			# Reached village center - advance to next stage
+			if distance_to_waypoint < 100.0:
+				if debug_enabled:
+					print("Monster %s: Reached village center - moving to extraction!" % name)
 				waypoint_stage = 1
 				_update_waypoint()
 		1:
 			# Reached extraction point - STAY HERE and hunt villagers
 			if distance_to_waypoint < 50.0:
-				print("Monster %s: Reached extraction point - hunting villagers!" % name)
+				if debug_enabled:
+					print("Monster %s: Reached extraction point - hunting villagers!" % name)
 				waypoint_stage = 2  # Mark as "arrived at hunting grounds"
 				velocity = Vector2.ZERO  # Stop moving
 
@@ -294,11 +312,13 @@ func _physics_process(_delta: float) -> void:
 		return
 	
 	# Ensure we have a valid waypoint for stages 0 and 1
-	if not current_waypoint or not is_instance_valid(current_waypoint):
+	if not is_instance_valid(current_waypoint):
 		_update_waypoint()
+		return
 	
-	if current_waypoint and is_instance_valid(current_waypoint):
-		# 🔍 DEBUG: Print status every 60 frames (once per second at 60fps)
+	# FIXED: Simplified navigation logic without await
+	# Debug printing (only if enabled)
+	if debug_enabled:
 		debug_frame_counter += 1
 		if debug_frame_counter >= 60:
 			debug_frame_counter = 0
@@ -313,39 +333,25 @@ func _physics_process(_delta: float) -> void:
 				global_position.x,
 				global_position.y
 			])
+	
+	# FIXED: New simplified navigation logic
+	if navigation_agent.is_navigation_finished():
+		# Check if we're actually close to the waypoint
+		var distance_to_waypoint = global_position.distance_to(current_waypoint.global_position)
+		var arrival_threshold = 100.0 if waypoint_stage == 0 else 50.0
 		
-		# Follow the navigation path
-		if not navigation_agent.is_navigation_finished():
-			# Normal pathfinding - follow NavigationAgent's calculated path
-			var next_path_position: Vector2 = navigation_agent.get_next_path_position()
-			var move_direction: Vector2 = global_position.direction_to(next_path_position).normalized()
-			desired_velocity = move_direction * max_speed
+		if distance_to_waypoint > arrival_threshold:
+			# Not actually there - force path recalculation (NO AWAIT!)
+			navigation_agent.target_position = current_waypoint.global_position
 		else:
-			# Navigation says "finished" but we might not be at waypoint yet
-			var distance_to_waypoint = global_position.distance_to(current_waypoint.global_position)
-			
-			# Check if we're close enough to waypoint (different thresholds per stage)
-			var arrival_threshold = 100.0 if waypoint_stage == 0 else 50.0
-			
-			if distance_to_waypoint < arrival_threshold:
-				# Actually at waypoint - this will be handled by _check_waypoint_reached()
-				desired_velocity = Vector2.ZERO
-			else:
-				# Navigation failed but we're not at waypoint - request new path
-				print("Monster %s: Nav finished but not at waypoint (dist=%.1f). Requesting new path..." % [name, distance_to_waypoint])
-				navigation_agent.target_position = current_waypoint.global_position
-				
-				# Wait one frame for recalculation
-				await get_tree().process_frame
-				
-				if not navigation_agent.is_navigation_finished():
-					var next_path_position: Vector2 = navigation_agent.get_next_path_position()
-					var move_direction: Vector2 = global_position.direction_to(next_path_position).normalized()
-					desired_velocity = move_direction * max_speed
-				else:
-					# Still can't path - likely stuck on obstacle
-					print("Monster %s: WARNING - Unable to path! Stuck on obstacle?" % name)
-					desired_velocity = Vector2.ZERO
+			# Actually arrived
+			desired_velocity = Vector2.ZERO
+
+	# If navigation isn't finished, follow the path normally
+	if not navigation_agent.is_navigation_finished():
+		var next_path_position: Vector2 = navigation_agent.get_next_path_position()
+		var move_direction: Vector2 = global_position.direction_to(next_path_position).normalized()
+		desired_velocity = move_direction * max_speed
 	
 	# If no movement is desired, apply drag to stop
 	if desired_velocity.is_zero_approx():
@@ -372,19 +378,30 @@ func _on_navigation_agent_velocity_computed(safe_velocity: Vector2) -> void:
 	# Move using the safe velocity
 	move_and_slide()
 
-# Separated collision logic
+# OPTIMIZED: Separated collision logic with early exit
 func _process_collisions():
-	for i in get_slide_collision_count():
+	var collision_count = get_slide_collision_count()
+	if collision_count == 0:
+		return  # Early exit - most common case
+	
+	var current_time: float = Time.get_unix_time_from_system()
+	
+	for i in collision_count:
 		var collision = get_slide_collision(i)
 		var body = collision.get_collider()
-		# Only collide damage the player/friendly groups
-		if body and (body.is_in_group("player") or body.is_in_group("friendly") or body.is_in_group("healer")):
-			if body.has_method("take_damage"):
-				var current_time: float = Time.get_unix_time_from_system()
-				var last_time: float = last_damage_times.get(body, 0.0)
-				if current_time - last_time >= 2.0:
-					last_damage_times[body] = current_time
-					body.call_deferred("take_damage", collision_damage, null)
+		
+		# Quick group check first (faster than has_method)
+		if not (body.is_in_group("player") or body.is_in_group("friendly") or body.is_in_group("healer")):
+			continue
+		
+		# Check cooldown before expensive method check
+		var last_time: float = last_damage_times.get(body, 0.0)
+		if current_time - last_time < 2.0:
+			continue
+		
+		if body.has_method("take_damage"):
+			last_damage_times[body] = current_time
+			body.call_deferred("take_damage", collision_damage, null)
 
 func _move_wobble() -> void:
 	# Apply sprite wobble animation
@@ -438,24 +455,61 @@ func take_damage(damage: int, projectile_instance: Node):
 				if drop_chance <= cumulative_chance:
 					_spawn_potion(potion)
 					break
-		if get_parent() is NodePool:
-			get_parent().despawn(self)
-		else:
-			visible = false
-			set_process(false)
-			set_physics_process(false)
-			if collision_shape:
-				collision_shape.set_deferred("disabled", true)
+		
+		# FIXED: Just hide and disable, DON'T call reset yet!
+		visible = false
+		set_process(false)
+		set_physics_process(false)
+		if collision_shape:
+			collision_shape.set_deferred("disabled", true)
+		# Reset will be called when monster is re-spawned from pool
 	else:
 		_damage_flash()
 
 func _spawn_potion(potion_data: Dictionary) -> void:
-	# Spawn potion on death
 	if potion_pool:
 		var potion: Area2D = potion_pool.spawn() as Area2D
 		if potion:
-			potion.global_position = global_position
-			potion.setup(potion_data)
+			# Store the death position BEFORE any operations
+			var death_position = global_position
+			
+			# FIXED: Use call_deferred for all scene tree modifications
+			# This prevents "flushing queries" error during physics callbacks
+			
+			# Set position first
+			potion.global_position = death_position
+			
+			# Reparent potion to main scene so it doesn't disappear with monster
+			if potion.get_parent():
+				var old_parent = potion.get_parent()
+				# Use call_deferred to avoid physics state error
+				call_deferred("_reparent_potion", potion, old_parent, death_position, potion_data)
+			else:
+				# No parent yet, just add to main
+				call_deferred("_add_potion_to_main", potion, death_position, potion_data)
+
+func _reparent_potion(potion: Area2D, old_parent: Node, death_position: Vector2, potion_data: Dictionary) -> void:
+	"""Helper function to reparent potion outside of physics callback"""
+	if is_instance_valid(old_parent) and is_instance_valid(potion):
+		old_parent.remove_child(potion)
+	_add_potion_to_main(potion, death_position, potion_data)
+
+func _add_potion_to_main(potion: Area2D, death_position: Vector2, potion_data: Dictionary) -> void:
+	"""Helper function to add potion to main scene"""
+	if not is_instance_valid(potion):
+		return
+		
+	# Add to main scene
+	var main_scene = get_tree().root.get_node_or_null("main")
+	if main_scene:
+		main_scene.add_child(potion)
+		# Restore position after reparenting
+		potion.global_position = death_position
+		# Setup the potion
+		potion.setup(potion_data)
+		
+		if debug_enabled:
+			print("Monster %s: Spawned potion at %s" % [name, death_position])
 
 func _damage_flash() -> void:
 	# Flash sprite on damage

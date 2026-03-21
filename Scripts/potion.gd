@@ -35,7 +35,9 @@ func _process(delta: float) -> void:
 		if distance <= activation_radius:
 			var direction = to_target.normalized()
 			global_position += direction * speed * delta
-			print("Potion moving toward player at %s, distance: %f" % [str(global_position), distance])
+			# Reduced debug spam
+			if OS.has_feature("editor") and randf() < 0.1:
+				print("Potion moving toward player, distance: %.1f" % distance)
 
 # Start the bounce animation
 func start_bounce() -> void:
@@ -48,17 +50,12 @@ func start_bounce() -> void:
 # Play the pickup sound
 func play_pickup_sound() -> void:
 	if potion_sound and potion_sound.stream:
-		print("Attempting to play potion sound at %s, volume: %s, stream_paused: %s" % [str(global_position), potion_sound.volume_db, potion_sound.stream_paused])
 		potion_sound.volume_db = 0.0  # Ensure volume is audible
 		potion_sound.stream_paused = false  # Ensure not paused
 		potion_sound.play()
-		await get_tree().create_timer(0.1).timeout
-		if potion_sound.playing:
-			print("Potion sound playing at %s" % str(global_position))
-		else:
-			print("Potion sound failed to play at %s, playing status: %s" % [str(global_position), potion_sound.playing])
 	else:
-		print("Potion sound setup failed: potion_sound=%s, stream=%s" % [potion_sound, potion_sound.stream if potion_sound else "null"])
+		if OS.has_feature("editor"):
+			print("Potion sound setup failed: potion_sound=%s, stream=%s" % [potion_sound, potion_sound.stream if potion_sound else "null"])
 
 func setup(potion_data: Dictionary) -> void:
 	potion_id = potion_data["id"]
@@ -84,11 +81,45 @@ func collect() -> void:
 		if tween and tween.is_running():  # Check if tween exists and is running
 			tween.kill()
 			
-			if poof_sprite:
-				$Sprite2D.hide()  # Hide the coin
-				poof_sprite.show()
-				poof_sprite.play("poof")  # Your animation name
-				
-		await get_tree().create_timer(0.3).timeout
-		queue_free()
-		print("Picked up potion!")  # Updated debug message
+		if poof_sprite:
+			$Sprite2D.hide()  # Hide the coin
+			poof_sprite.show()
+			poof_sprite.play("poof")  # Your animation name
+			
+	await get_tree().create_timer(0.3).timeout
+	queue_free()
+	if OS.has_feature("editor"):
+		print("Picked up potion!")
+
+# FIXED: Added reset() method for NodePool compatibility
+func reset() -> void:
+	"""Reset potion state for object pooling"""
+	# Stop any active tween
+	if tween and tween.is_running():
+		tween.kill()
+	
+	# Reset all variables to defaults
+	potion_id = ""
+	effect_type = ""
+	effect_value = 0.0
+	effect_duration = 0.0
+	speed = 100.0
+	
+	# Reset position
+	global_position = Vector2.ZERO
+	initial_y = 0.0
+	
+	# Show sprite, hide poof
+	if has_node("Sprite2D"):
+		$Sprite2D.show()
+	if poof_sprite:
+		poof_sprite.hide()
+	
+	# Re-find player target
+	if is_inside_tree():
+		target = get_tree().get_first_node_in_group("player")
+	
+	# Restart bounce when added back to tree
+	if is_inside_tree():
+		initial_y = global_position.y
+		start_bounce()
