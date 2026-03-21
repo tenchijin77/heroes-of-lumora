@@ -1,5 +1,4 @@
 #tenchijin.gd - AI for Tenchijin's logic
-#tenchijin.gd - AI for Tenchijin's logic
 extends CharacterBody2D
 
 @export var max_speed: float = 30.0
@@ -32,6 +31,13 @@ var last_cast_time: float = 0.0
 
 func _ready():
 	add_to_group("friendly")
+	add_to_group("tenchijin")
+	
+	# Start invisible and inactive - will be activated by dramatic_entrance()
+	visible = false
+	set_process(false)
+	set_physics_process(false)
+	
 	if health_bar:
 		health_bar.max_value = max_health
 		health_bar.value = current_health
@@ -40,6 +46,18 @@ func _ready():
 		detection_area.body_exited.connect(_on_detection_area_body_exited)
 	if casting_timer:
 		casting_timer.timeout.connect(func(): casting_label.text = "")
+
+func dramatic_entrance() -> void:
+	"""Called by tenchijin_spawner to trigger Tenchijin's arrival"""
+	visible = true
+	set_process(true)
+	set_physics_process(true)
+	
+	_show_casting_text("The Archmage has arrived!")
+	print("Tenchijin: Fear not! I shall turn the tide of battle!")
+	
+	# TODO: Add particle effects, screen shake, sound
+	# You can add GPUParticles2D for teleport effect here
 
 func _process(delta: float) -> void:
 	_update_target()
@@ -180,3 +198,50 @@ func _cast_arcane_power():
 
 func _cast_disintegrate():
 	print("Ten: Casting Disintegrate!")
+
+# --- Helper Methods ---
+func get_health() -> int:
+	"""Return current health for healing/targeting logic"""
+	return current_health
+
+func get_max_health() -> int:
+	"""Return maximum health"""
+	return max_health
+
+func heal(amount: int) -> void:
+	"""Heal Tenchijin and update health bar"""
+	current_health = clamp(current_health + amount, 0, max_health)
+	if health_bar and is_instance_valid(health_bar):
+		health_bar.value = current_health
+	print("Tenchijin healed for %d - current_health = %d" % [amount, current_health])
+
+func take_damage(damage: int, _projectile_instance) -> void:
+	"""Apply damage to Tenchijin - he's powerful so takes reduced damage"""
+	# Tenchijin is an archmage - 50% damage reduction
+	var actual_damage = int(damage * 0.5)
+	current_health -= actual_damage
+	
+	if health_bar and is_instance_valid(health_bar):
+		health_bar.value = current_health
+	
+	if current_health <= 0:
+		_die()
+	else:
+		print("Tenchijin: Merely a scratch! (%d damage reduced to %d, HP: %d/%d)" % [damage, actual_damage, current_health, max_health])
+		_damage_flash()
+
+func _damage_flash() -> void:
+	"""Flash sprite on damage"""
+	if sprite and is_instance_valid(sprite):
+		sprite.modulate = Color.BLUE  # Arcane blue flash instead of red
+		await get_tree().create_timer(0.05).timeout
+		sprite.modulate = Color.WHITE
+
+func _die() -> void:
+	"""Handle Tenchijin's death"""
+	print("Tenchijin: The archmage has fallen...")
+	visible = false
+	set_process(false)
+	set_physics_process(false)
+	if $CollisionShape2D and is_instance_valid($CollisionShape2D):
+		$CollisionShape2D.set_deferred("disabled", true)

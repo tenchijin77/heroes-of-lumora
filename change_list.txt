@@ -143,3 +143,76 @@ All scene tree modifications use call_deferred()
 Reset only sets state, tree operations happen separately
 Position set before reset, bounce/navigation after tree placement
 
+Major Features Added:
+1. Tenchijin Spawn System
+New Files Created:
+
+Scripts/tenchijin_spawner.gd - Manages Tenchijin's dramatic entrance
+
+Files Modified:
+
+Scripts/annadaeus.gd - Added health_critical and died signals
+Scripts/tenchijin.gd - Starts inactive, activates on spawn trigger
+
+Spawn Triggers:
+
+Anna drops to ≤30% health
+Anna dies
+Wave 20+ reached
+
+How It Works:
+
+Anna fights normally
+When trigger occurs → Tenchijin teleports in near Anna
+Shows message: "The Archmage has arrived!"
+Becomes active and ready to cast spells
+
+To Activate: Add tenchijin_spawner node to main.tscn with the script attached
+
+2. Annadaeus Entrance & Speech System
+Improvements:
+
+Anna spawns outside town and runs toward player
+At 400 pixels: "You, outsider! Help me defend Lumora! To arms!"
+Speech text fades after 2 seconds (was permanent)
+8-second cooldown between shouts (prevents spam)
+Entrance message bypasses cooldown (always shows first)
+
+New Functions:
+
+_announce_arrival() - Entrance shout
+_force_show_text() - Bypass cooldown for important messages
+_show_casting_text() - Updated with cooldown logic
+
+
+Critical Bugs Fixed:
+1. TypedArray Error (878 errors eliminated!)
+Problem: Anna trying to add CollisionShape2D/RayCast2D to CharacterBody2D array
+Fix: Added and unit is CharacterBody2D type checking
+Functions Fixed:
+
+_find_friendlies_in_range()
+_find_damaged_friendlies_in_range()
+
+Impact: Went from 878 errors per frame → 0 errors
+
+2. NPC/Villager Collision Sticking
+Problem: NPCs getting stuck on walls/houses
+Fix: Changed npc.gd collision_mask from 20 to 4
+
+NPCs now only physically collide with monsters (for damage)
+Navigation handled by NavigationAgent2D (no wall physics)
+
+Files Modified:
+
+Scripts/npc.gd
+
+Impact: NPCs/villagers/guards slide smoothly around walls
+
+Files Modified This Session:
+File Changes:
+annadaeus.gd-Added signals, entrance system, speech cooldown, fixed TypedArray bug
+tenchijin.gd-Added dramatic_entrance(), health/damage functions, starts inactive
+tenchijin_spawner.gd-NEW FILE - spawn managernpc.gdFixed collision mask, added avoidance layers
+ui.gd-Changed "Coins" → "Solari" (previous session)
+

@@ -1,33 +1,125 @@
 [gd_scene format=3 uid="uid://dw75c4av0rk1e"]
 
-[ext_resource type="Script" uid="uid://d6xrs2lxn4lc" path="res://Scripts/projectile.gd" id="1_tl4hk"]
-[ext_resource type="Texture2D" uid="uid://dhln4w4t2sc8n" path="res://Assets/Sprites/Spritesheet.png" id="2_d4467"]
-[ext_resource type="AudioStream" uid="uid://cm6p6fqhakrfl" path="res://Assets/Audio/arrow-swish_03-306040.mp3" id="3_e1077"]
+[ext_resource type="Script" uid="uid://cqaxmrjstwvis" path="res://Scripts/ui.gd" id="1_d4467"]
+[ext_resource type="FontFile" uid="uid://d1g3p034nbu18" path="res://Assets/Fonts/_bitmap_font____romulus_by_pix3m-d6aokem.ttf" id="2_e1077"]
+[ext_resource type="PackedScene" uid="uid://bevlo3crof07w" path="res://Scenes/touch_controls.tscn" id="3_cgh1o"]
+[ext_resource type="FontFile" uid="uid://blnxrqwyomqn" path="res://Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf" id="4_cu5m1"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_h5x2m"]
-size = Vector2(30, 24)
+[node name="CanvasLayer" type="CanvasLayer" unique_id=850927418]
+script = ExtResource("1_d4467")
 
-[node name="projectile" type="Area2D" unique_id=625339207]
-collision_layer = 8
-collision_mask = 1073
-script = ExtResource("1_tl4hk")
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=223040249]
+z_index = 100
+offset_right = 40.0
+offset_bottom = 40.0
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1815891846]
-texture = ExtResource("2_d4467")
-region_enabled = true
-region_rect = Rect2(962, 741, 30, 25)
+[node name="wave" type="Label" parent="VBoxContainer" unique_id=1555208306]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_e1077")
+theme_override_font_sizes/font_size = 20
+text = "Current Wave: 0"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=659705258]
-position = Vector2(-1, 0)
-shape = SubResource("RectangleShape2D_h5x2m")
+[node name="uptime" type="Label" parent="VBoxContainer" unique_id=952940174]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 6
+theme_override_fonts/font = ExtResource("2_e1077")
+theme_override_font_sizes/font_size = 20
+text = "Time Survived: 00:00"
 
-[node name="destroy_timer" type="Timer" parent="." unique_id=241477481]
-wait_time = 4.0
-autostart = true
+[node name="score" type="Label" parent="VBoxContainer" unique_id=1135282406]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 6
+theme_override_fonts/font = ExtResource("2_e1077")
+theme_override_font_sizes/font_size = 20
+text = "Score: 0"
 
-[node name="projectile_sound" type="AudioStreamPlayer2D" parent="." unique_id=1952129012]
-stream = ExtResource("3_e1077")
+[node name="coins" type="Label" parent="VBoxContainer" unique_id=2068528625]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 6
+theme_override_fonts/font = ExtResource("2_e1077")
+theme_override_font_sizes/font_size = 20
+text = "Solari: 0"
 
-[connection signal="body_entered" from="." to="." method="_on_body_entered"]
-[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
-[connection signal="timeout" from="destroy_timer" to="." method="_on_destroy_timer_timeout"]
+[node name="saved_villagers" type="Label" parent="VBoxContainer" unique_id=1111764610]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 6
+theme_override_fonts/font = ExtResource("2_e1077")
+theme_override_font_sizes/font_size = 20
+text = "Villagers Saved: 0"
+
+[node name="lost_villagers" type="Label" parent="VBoxContainer" unique_id=979709998]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 6
+theme_override_fonts/font = ExtResource("2_e1077")
+theme_override_font_sizes/font_size = 20
+text = "Villagers Lost: 0"
+
+[node name="remaining_villagers" type="Label" parent="VBoxContainer" unique_id=202575153]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 6
+theme_override_fonts/font = ExtResource("2_e1077")
+theme_override_font_sizes/font_size = 20
+text = "Villagers Left: 0"
+
+[node name="time_label" type="Label" parent="VBoxContainer" unique_id=811525983]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 6
+theme_override_fonts/font = ExtResource("2_e1077")
+theme_override_font_sizes/font_size = 20
+text = "In-Game Time:"
+
+[node name="date_label" type="Label" parent="VBoxContainer" unique_id=1618054683]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 6
+theme_override_fonts/font = ExtResource("2_e1077")
+theme_override_font_sizes/font_size = 20
+text = "In-Game Date:"
+
+[node name="touch_controls" parent="." unique_id=1964900123 instance=ExtResource("3_cgh1o")]
+
+[node name="stats_container" type="HBoxContainer" parent="." unique_id=1211336185]
+layout_direction = 2
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -127.0
+offset_top = -24.0
+offset_right = 127.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 15
+alignment = 1
+
+[node name="player_damage" type="Label" parent="stats_container" unique_id=147786404]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_cu5m1")
+theme_override_font_sizes/font_size = 20
+text = "DMG:"
+horizontal_alignment = 1
+
+[node name="player_speed" type="Label" parent="stats_container" unique_id=617319804]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_cu5m1")
+theme_override_font_sizes/font_size = 20
+text = "SPD:"
+horizontal_alignment = 1
+
+[node name="player_health" type="Label" parent="stats_container" unique_id=1347122443]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_cu5m1")
+theme_override_font_sizes/font_size = 20
+text = "HP:"
+horizontal_alignment = 1

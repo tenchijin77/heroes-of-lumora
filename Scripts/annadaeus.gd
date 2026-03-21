@@ -1,6 +1,10 @@
 # annadaeus.gd - AI for Annadaeus's logic
 extends CharacterBody2D
 
+# --- Signals ---
+signal health_critical  # Emitted when health drops to 30%
+signal died  # Emitted when Annadaeus dies
+
 # --- Annadaeus's Abilities ---
 @export var max_speed: float = 125.0
 @export var acceleration: float = 10.0
@@ -49,14 +53,28 @@ var ability_cooldowns: Dictionary = {
 var casting_lines: Dictionary = {}
 var target_update_timer: float = 0.0
 var target_update_interval: float = 0.25 # Update more frequently
+var has_emitted_health_critical: bool = false  # Track if critical health signal sent
+var has_announced_arrival: bool = false  # Track if entrance shout has played
+var last_shout_time: float = 0.0  # Track last time she shouted to prevent spam
+var shout_cooldown: float = 8.0  # Minimum 8 seconds between shouts
 
 func _ready() -> void:
 	# Initialize Annadaeus in the scene
 	add_to_group("friendly")
+	
+	# Setup collision layers - don't block player or other NPCs
+	collision_layer = 32  # Layer 6 (friendly)
+	collision_mask = 20  # Only monsters (4) and environment (16)
+	
 	if health_bar:
 		health_bar.max_value = max_health
 		health_bar.value = current_health
-	casting_timer.timeout.connect(func(): _show_casting_text(""))
+	
+	# FIXED: Set timer to 2 seconds and connect to clear text
+	if casting_timer:
+		casting_timer.wait_time = 2.0  # Text fades after 2 seconds
+		casting_timer.one_shot = true
+		casting_timer.timeout.connect(func(): casting_label.text = "")
 	velocity = Vector2.ZERO
 	_load_casting_lines()
 	_configure_auras()
@@ -160,6 +178,12 @@ func _following_player_state(delta: float) -> void:
 	# Move toward player, stopping at 75-pixel distance
 	if player and is_instance_valid(player):
 		var distance = global_position.distance_to(player.global_position)
+		
+		# Announce arrival when first getting close to player
+		if not has_announced_arrival and distance < 400.0:
+			has_announced_arrival = true
+			_announce_arrival()
+		
 		if distance > 75.0:
 			var direction = global_position.direction_to(player.global_position)
 			velocity = velocity.lerp(direction * max_speed, acceleration * delta)
@@ -167,6 +191,20 @@ func _following_player_state(delta: float) -> void:
 			velocity = Vector2.ZERO
 	else:
 		velocity = Vector2.ZERO
+
+func _announce_arrival() -> void:
+	"""Shout dramatic entrance line when first approaching player"""
+	# FIXED: Use _force_show_text to bypass cooldown for important entrance message
+	_force_show_text("You, outsider! Help me defend Lumora! To arms!")
+	print("Annadaeus: Charging into battle alongside the outsider!")
+
+func _force_show_text(text: String) -> void:
+	"""Show text immediately, bypassing cooldown (for important messages only)"""
+	if casting_label and casting_timer:
+		casting_label.text = text
+		casting_timer.start()
+		# Update last_shout_time so next regular shout respects cooldown
+		last_shout_time = Time.get_unix_time_from_system()
 
 func _casting_state(delta: float) -> void:
 	# Stop movement during casting
@@ -358,22 +396,41 @@ func _has_clear_line_to_target(target: Node2D) -> bool:
 	return true
 
 func _show_casting_text(ability_name: String) -> void:
-	# Display ability casting text
-	if casting_label and casting_timer:
-		if casting_lines.has(ability_name):
-			var lines = casting_lines[ability_name]
-			var random_line = lines[randi() % lines.size()]
-			casting_label.text = random_line
-		else:
-			casting_label.text = ability_name
-		casting_timer.start()
+	# Display ability casting text with cooldown to prevent spam
+	if not casting_label or not casting_timer:
+		return
+	
+	var current_time = Time.get_unix_time_from_system()
+	
+	# Check if enough time has passed since last shout
+	if current_time - last_shout_time < shout_cooldown:
+		return  # Skip this shout, too soon
+	
+	last_shout_time = current_time
+	
+	if casting_lines.has(ability_name):
+		var lines = casting_lines[ability_name]
+		var random_line = lines[randi() % lines.size()]
+		casting_label.text = random_line
+	else:
+		casting_label.text = ability_name
+	casting_timer.start()
 
 func take_damage(damage: int, _projectile_instance) -> void:
 	# Apply damage and update health
 	current_health -= damage
 	if health_bar and is_instance_valid(health_bar):
 		health_bar.value = current_health
+	
+	# Emit health_critical signal at 30% threshold
+	if current_health <= max_health * 0.3 and current_health > 0:
+		if not has_emitted_health_critical:
+			has_emitted_health_critical = true
+			health_critical.emit()
+			print("Annadaeus: Health critical! (%d/%d) - Calling for reinforcements!" % [current_health, max_health])
+	
 	if current_health <= 0:
+		died.emit()  # Emit death signal for Tenchijin
 		_die()
 	else:
 		_damage_flash()
@@ -405,7 +462,8 @@ func _find_damaged_friendlies_in_range() -> Array[CharacterBody2D]:
 	# Find friendlies in range with less than max health, including self
 	var friendlies: Array[CharacterBody2D] = []
 	for unit in get_tree().get_nodes_in_group("friendly") + get_tree().get_nodes_in_group("player"):
-		if is_instance_valid(unit) and unit.has_method("get_health") and unit.has_method("get_max_health"):
+		# FIXED: Only add CharacterBody2D objects (skip child nodes)
+		if is_instance_valid(unit) and unit is CharacterBody2D and unit.has_method("get_health") and unit.has_method("get_max_health"):
 			if unit.get_health() < unit.get_max_health():
 				var distance = global_position.distance_to(unit.global_position)
 				if distance < support_range or unit == self:
@@ -416,7 +474,8 @@ func _find_friendlies_in_range() -> Array[CharacterBody2D]:
 	# Find friendlies in range
 	var friendlies: Array[CharacterBody2D] = []
 	for unit in get_tree().get_nodes_in_group("friendly") + get_tree().get_nodes_in_group("player"):
-		if unit != self and is_instance_valid(unit):
+		# FIXED: Only add CharacterBody2D objects (skip child nodes like CollisionShape2D)
+		if unit != self and is_instance_valid(unit) and unit is CharacterBody2D:
 			var distance = global_position.distance_to(unit.global_position)
 			if distance < support_range:
 				friendlies.append(unit)

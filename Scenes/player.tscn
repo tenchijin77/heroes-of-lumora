@@ -1,11 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://docxyuvykeqmf"]
+[gd_scene format=3 uid="uid://docxyuvykeqmf"]
 
 [ext_resource type="Script" uid="uid://btptpi22vbosd" path="res://Scripts/player.gd" id="1_cvnsp"]
-[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="1_v0iea"]
+[ext_resource type="Texture2D" uid="uid://dhln4w4t2sc8n" path="res://Assets/Sprites/Spritesheet.png" id="1_v0iea"]
 [ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="3_6t5aa"]
 [ext_resource type="PackedScene" uid="uid://qabuch25b3i1" path="res://Scenes/arrow.tscn" id="4_fkybt"]
-[ext_resource type="AudioStream" uid="uid://ro2pdpul83eq" path="res://Assets/Audio/Minifantasy_Dungeon_SFX/11_human_damage_3.wav" id="5_fkybt"]
-[ext_resource type="AudioStream" uid="uid://8wu4bhgfiyeu" path="res://Assets/Audio/385046__mortisblack__damage.ogg" id="6_x3wgy"]
+[ext_resource type="AudioStream" uid="uid://d2fmprf4y58rx" path="res://Assets/Audio/Minifantasy_Dungeon_SFX/11_human_damage_3.wav" id="5_fkybt"]
+[ext_resource type="AudioStream" uid="uid://b73tm8s20y6vp" path="res://Assets/Audio/385046__mortisblack__damage.ogg" id="6_x3wgy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cvnsp"]
 size = Vector2(27, 31)
@@ -19,17 +19,17 @@ bg_color = Color(0.94902, 0, 0, 1)
 [sub_resource type="CircleShape2D" id="CircleShape2D_x3wgy"]
 radius = 53.0094
 
-[node name="player" type="CharacterBody2D" groups=["player"]]
+[node name="player" type="CharacterBody2D" unique_id=1925221135 groups=["player"]]
 top_level = true
 collision_mask = 538
 script = ExtResource("1_cvnsp")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=371758023]
 visible = false
 position = Vector2(0.5, -0.5)
 shape = SubResource("RectangleShape2D_cvnsp")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=498423765]
 position = Vector2(0, 12)
 texture = ExtResource("1_v0iea")
 offset = Vector2(0, -12)
@@ -37,14 +37,14 @@ flip_h = true
 region_enabled = true
 region_rect = Rect2(1956, 258, 25, 31)
 
-[node name="muzzle" type="Node2D" parent="."]
+[node name="muzzle" type="Node2D" parent="." unique_id=1733921568]
 position = Vector2(13, 1)
 
-[node name="player_bullet_pool" type="Node" parent="."]
+[node name="player_bullet_pool" type="Node" parent="." unique_id=393439219]
 script = ExtResource("3_6t5aa")
 node_scene = ExtResource("4_fkybt")
 
-[node name="health_bar" type="ProgressBar" parent="."]
+[node name="health_bar" type="ProgressBar" parent="." unique_id=1754191083]
 offset_left = -12.0
 offset_top = -25.0
 offset_right = 13.0
@@ -54,20 +54,20 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_vgqql")
 rounded = true
 show_percentage = false
 
-[node name="hit_sound" type="AudioStreamPlayer2D" parent="."]
+[node name="hit_sound" type="AudioStreamPlayer2D" parent="." unique_id=2109725659]
 stream = ExtResource("5_fkybt")
 
-[node name="regeneration_timer" type="Timer" parent="."]
+[node name="regeneration_timer" type="Timer" parent="." unique_id=617375915]
 autostart = true
 
-[node name="player_damage_sound" type="AudioStreamPlayer2D" parent="."]
+[node name="player_damage_sound" type="AudioStreamPlayer2D" parent="." unique_id=1948517000]
 stream = ExtResource("6_x3wgy")
 
-[node name="pickup_area" type="Area2D" parent="."]
+[node name="pickup_area" type="Area2D" parent="." unique_id=2147307476]
 collision_layer = 0
 collision_mask = 256
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="pickup_area"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="pickup_area" unique_id=87495343]
 visible = false
 shape = SubResource("CircleShape2D_x3wgy")
 

@@ -1,4 +1,4 @@
-#npc.gd - NPC Shared behaviours
+#npc.gd - controls NPC characters' behaviours
 extends CharacterBody2D
 
 var npc_size: String = "medium"
@@ -7,10 +7,25 @@ var npc_size: String = "medium"
 @onready var navigation_agent: NavigationAgent2D = $navigation_agent_2d
 
 func _ready() -> void:
+	# Setup collision layers - NPCs use navigation, not physical blocking
+	# Layer 6 (friendly) = 32
+	collision_layer = 32  # NPCs are on layer 6
+	
+	# FIXED: NPCs should only physically collide with monsters (for damage)
+	# They navigate around walls using NavigationAgent2D, not physics collisions
+	# Collide with: Layer 2 (monsters=4) only
+	# Do NOT collide with: Layer 1 (player), Layer 5 (environment), or Layer 6 (other NPCs)
+	collision_mask = 4  # Only monsters for taking damage
+	
 	if navigation_agent:
 		navigation_agent.path_desired_distance = 12.0
 		navigation_agent.target_desired_distance = 24.0
 		navigation_agent.avoidance_enabled = true
+		
+		# CRITICAL: Set avoidance layers properly
+		# Avoid other NPCs on layer 6 (bit 5 = 1 << 5 = 32)
+		navigation_agent.avoidance_layers = 32  # Avoid other friendly NPCs
+		
 		navigation_agent.max_neighbors = 5
 		navigation_agent.neighbor_distance = 40.0
 		_auto_tune_from_collision()
