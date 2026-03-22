@@ -91,19 +91,31 @@ func _ready() -> void:
 	_auto_tune_from_collision()
 
 func _auto_tune_from_collision() -> void:
-	if not collision_shape or not collision_shape.shape or not navigation_agent:
+	if not sprite or not navigation_agent:
 		return
 
 	var max_dim: float = 0.0
 
-	# Determine footprint from collision shape
-	if collision_shape.shape is RectangleShape2D:
-		var size: Vector2 = collision_shape.shape.size
-		max_dim = max(size.x, size.y)
-	elif collision_shape.shape is CircleShape2D:
-		max_dim = collision_shape.shape.radius * 2.0
+	# FIXED: Determine footprint from SPRITE size (not collision shape)
+	# This works correctly when monsters are atlas regions from a spritesheet
+	if sprite.region_enabled:
+		# Use the region rectangle size (actual sprite pixels)
+		var region_size = sprite.region_rect.size
+		max_dim = max(region_size.x, region_size.y)
+	elif sprite.texture:
+		# Fallback to full texture size if no region
+		var texture_size = sprite.texture.get_size()
+		max_dim = max(texture_size.x, texture_size.y)
 	else:
-		return
+		# Last resort: use collision shape if sprite has no size info
+		if collision_shape and collision_shape.shape:
+			if collision_shape.shape is RectangleShape2D:
+				var size: Vector2 = collision_shape.shape.size
+				max_dim = max(size.x, size.y)
+			elif collision_shape.shape is CircleShape2D:
+				max_dim = collision_shape.shape.radius * 2.0
+		if max_dim == 0.0:
+			return
 
 	# Classify monster size based on footprint
 	if max_dim < 48.0:
@@ -113,15 +125,15 @@ func _auto_tune_from_collision() -> void:
 	else:
 		monster_size = "large"
 
-	# Tune navigation radius from footprint
-	navigation_agent.radius = max_dim * 0.6
+	# Tune navigation radius from sprite footprint (50% of sprite size)
+	navigation_agent.radius = max_dim * 0.5
 	
-	# FIXED: Set target_desired_distance based on monster size
+	# Set target_desired_distance based on monster size
 	# Small monsters can get closer, large monsters need more space
 	navigation_agent.target_desired_distance = max(10.0, max_dim * 0.3)
 	
 	if debug_enabled:
-		print("Monster %s: Auto-tuned - size=%s, max_dim=%.1f, radius=%.1f, target_desired=%.1f" % [
+		print("Monster %s: Auto-tuned - size=%s, sprite_dim=%.1f, radius=%.1f, target_desired=%.1f" % [
 			name, monster_size, max_dim, navigation_agent.radius, navigation_agent.target_desired_distance
 		])
 
@@ -335,7 +347,7 @@ func _physics_process(_delta: float) -> void:
 				global_position.y
 			])
 	
-	# FIXED: New simplified navigation logic
+	# FIXED: New simplified navigation logic with fallback for stuck monsters
 	if navigation_agent.is_navigation_finished():
 		# Check if we're actually close to the waypoint
 		var distance_to_waypoint = global_position.distance_to(current_waypoint.global_position)
@@ -344,6 +356,14 @@ func _physics_process(_delta: float) -> void:
 		if distance_to_waypoint > arrival_threshold:
 			# Not actually there - force path recalculation (NO AWAIT!)
 			navigation_agent.target_position = current_waypoint.global_position
+			
+			# FALLBACK: If still stuck after recalculation, force direct movement
+			# This helps large enemies that can't fit through narrow NavMesh gaps
+			if distance_to_waypoint > 200.0:  # Far away but navigation finished = stuck
+				var direct_direction = global_position.direction_to(current_waypoint.global_position).normalized()
+				desired_velocity = direct_direction * max_speed
+				if debug_enabled:
+					print("Monster %s: FALLBACK DIRECT MOVE - Navigation stuck, forcing movement toward waypoint" % name)
 		else:
 			# Actually arrived
 			desired_velocity = Vector2.ZERO
