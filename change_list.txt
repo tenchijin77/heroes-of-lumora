@@ -1,4 +1,4 @@
-Heroes of Lumora 
+Heroes of Lumora
 
 change list:
 
@@ -32,13 +32,14 @@ completed:
 -expanded the tilemap for the first level.
 -added a loot drop system: monsters randomly drop coins and potions
 -added dialogue for the main screen to setup the game with dialogic- Timot and Brimble movie introduces the game and controls
--added Annadaeus NPC to assist in later waves
+-added Annadaeus NPC to assist in later waves (working on when to add her to the game)
+-began design on Tenchijin NPC; still working on spells and narrative for his entry
 
 to do: (in order of importance)
 
 -add particle effects to player and monster projectile attacks
 -create Tenchijin NPC and spells/skills
--create shop area and ability for player to buy buffs and reinforcements
+-create shop area and ability for player to buy buffs and reinforcements - this may become an npc that pauses the game and offers upgrades
 -create the ability to buy and place turrets that help defend the town
 -create an endless mode for players who have beaten the main game
 
@@ -215,4 +216,3 @@ annadaeus.gd-Added signals, entrance system, speech cooldown, fixed TypedArray b
 tenchijin.gd-Added dramatic_entrance(), health/damage functions, starts inactive
 tenchijin_spawner.gd-NEW FILE - spawn managernpc.gdFixed collision mask, added avoidance layers
 ui.gd-Changed "Coins" → "Solari" (previous session)
-
