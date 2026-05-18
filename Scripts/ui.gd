@@ -14,10 +14,16 @@ extends CanvasLayer
 @onready var player_damage: Label = $stats_container/player_damage
 @onready var player_speed: Label = $stats_container/player_speed
 @onready var player_health: Label = $stats_container/player_health
+@onready var pause_overlay: ColorRect = $pause_overlay
+@onready var resume_button: Button = $pause_overlay/pause_panel/VBoxContainer/resume_button
+
+var is_paused: bool = false
 
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	# Hide UI by default, show only for main scene
 	visible = false
+	pause_overlay.visible = false
 	# Update with initial values
 	_update_all()
 	Global.wave_updated.connect(_update_wave)
@@ -37,6 +43,42 @@ func _ready() -> void:
 	if player:
 		_connect_player(player)
 		
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("pause"):
+		var current_scene: Node = get_tree().current_scene
+		if current_scene and current_scene.name == "main":
+			_toggle_pause()
+
+func _toggle_pause() -> void:
+	if is_paused:
+		_resume_game()
+	else:
+		_pause_game()
+
+func _pause_game() -> void:
+	get_tree().paused = true
+	pause_overlay.visible = true
+	Global.game_active = false
+	is_paused = true
+	resume_button.grab_focus()
+
+func _resume_game() -> void:
+	get_tree().paused = false
+	pause_overlay.visible = false
+	Global.game_active = true
+	is_paused = false
+
+func _on_resume_button_pressed() -> void:
+	_resume_game()
+
+func _on_quit_button_pressed() -> void:
+	get_tree().paused = false
+	is_paused = false
+	pause_overlay.visible = false
+	visible = false
+	Global.reset()
+	get_tree().change_scene_to_file("res://Scenes/main_menu.tscn")
+
 func _check_scene() -> void:
 	var current_scene = get_tree().current_scene
 	if current_scene and current_scene.name == "main":
@@ -48,6 +90,8 @@ func _check_scene() -> void:
 func _on_node_added(node: Node) -> void:
 	if node.name in ["main_menu", "intro_scene", "game_over", "game_over2", "shop_zone"]:
 		visible = false
+		is_paused = false
+		pause_overlay.visible = false
 	if node.is_in_group("ui_hidden"):
 		visible = false
 	if node.name == "main":

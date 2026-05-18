@@ -123,3 +123,63 @@ theme_override_fonts/font = ExtResource("4_2246s")
 theme_override_font_sizes/font_size = 20
 text = "HP:"
 horizontal_alignment = 1
+
+[node name="pause_overlay" type="ColorRect" parent="." unique_id=700000001]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+process_mode = 3
+
+[node name="pause_panel" type="Panel" parent="pause_overlay" unique_id=700000002]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -170.0
+offset_top = -110.0
+offset_right = 170.0
+offset_bottom = 110.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="pause_overlay/pause_panel" unique_id=700000003]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 15.0
+offset_top = 10.0
+offset_right = -15.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="paused_label" type="Label" parent="pause_overlay/pause_panel/VBoxContainer" unique_id=700000004]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_2246s")
+theme_override_font_sizes/font_size = 42
+text = "PAUSED"
+horizontal_alignment = 1
+
+[node name="resume_button" type="Button" parent="pause_overlay/pause_panel/VBoxContainer" unique_id=700000005]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_jxero")
+theme_override_font_sizes/font_size = 26
+text = "Resume"
+
+[node name="quit_button" type="Button" parent="pause_overlay/pause_panel/VBoxContainer" unique_id=700000006]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_jxero")
+theme_override_font_sizes/font_size = 26
+text = "Quit to Main Menu"
+
+[connection signal="pressed" from="pause_overlay/pause_panel/VBoxContainer/resume_button" to="." method="_on_resume_button_pressed"]
+[connection signal="pressed" from="pause_overlay/pause_panel/VBoxContainer/quit_button" to="." method="_on_quit_button_pressed"]
