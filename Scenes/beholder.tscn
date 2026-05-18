@@ -22,8 +22,8 @@ motion_mode = 1
 script = ExtResource("1_4eqte")
 shoot_rate = 2.5
 shoot_range = 300.0
-current_health = 50
-max_health = 50
+current_health = 100
+max_health = 100
 bullet_scene = ExtResource("2_g16p2")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1193483041]

@@ -1,7 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://cvvk7iwbqhlpu"]
+[gd_scene format=3 uid="uid://cvvk7iwbqhlpu"]
 
 [ext_resource type="Script" uid="uid://by6pa02k3u6d6" path="res://Scripts/villager.gd" id="1_7u53x"]
-[ext_resource type="Texture2D" uid="uid://dwi6caya0fwot" path="res://Assets/Sprites/Spritesheet.png" id="1_clim2"]
+[ext_resource type="Texture2D" uid="uid://dhln4w4t2sc8n" path="res://Assets/Sprites/Spritesheet.png" id="1_clim2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7u53x"]
 size = Vector2(16, 24)
@@ -18,57 +18,57 @@ bg_color = Color(0.201527, 0.201527, 0.201527, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gn4cm"]
 bg_color = Color(0.94902, 0, 0, 1)
 
-[node name="villager" type="CharacterBody2D" groups=["friendly", "villagers"]]
+[node name="villager" type="CharacterBody2D" unique_id=912789495 groups=["friendly", "villagers"]]
 collision_layer = 32
-collision_mask = 539
+collision_mask = 586
 script = ExtResource("1_7u53x")
 max_health = 50
 
-[node name="sprite_2d" type="Sprite2D" parent="."]
+[node name="sprite_2d" type="Sprite2D" parent="." unique_id=63664077]
 texture = ExtResource("1_clim2")
 region_enabled = true
 region_rect = Rect2(135, 68, 20, 28)
 
-[node name="collision_shape_2d" type="CollisionShape2D" parent="."]
+[node name="collision_shape_2d" type="CollisionShape2D" parent="." unique_id=1246428409]
 visible = false
 position = Vector2(0, 1)
 shape = SubResource("RectangleShape2D_7u53x")
 
-[node name="navigation_agent_2d" type="NavigationAgent2D" parent="."]
+[node name="navigation_agent_2d" type="NavigationAgent2D" parent="." unique_id=107988170]
 path_desired_distance = 5.0
 target_desired_distance = 5.0
 navigation_layers = 19
 avoidance_enabled = true
 radius = 8.0
 
-[node name="interaction_area" type="Area2D" parent="."]
+[node name="interaction_area" type="Area2D" parent="." unique_id=901774186]
 collision_layer = 0
 
-[node name="collision_shape_2d" type="CollisionShape2D" parent="interaction_area"]
+[node name="collision_shape_2d" type="CollisionShape2D" parent="interaction_area" unique_id=87590043]
 visible = false
 shape = SubResource("CircleShape2D_gn4cm")
 
-[node name="fear_area" type="Area2D" parent="."]
+[node name="fear_area" type="Area2D" parent="." unique_id=994675332]
 visible = false
 collision_layer = 0
 collision_mask = 2
 
-[node name="collision_shape_2d" type="CollisionShape2D" parent="fear_area"]
+[node name="collision_shape_2d" type="CollisionShape2D" parent="fear_area" unique_id=1973336960]
 shape = SubResource("CircleShape2D_7u53x")
 
-[node name="avoidance_ray" type="RayCast2D" parent="." groups=["friendly"]]
+[node name="avoidance_ray" type="RayCast2D" parent="." unique_id=847601937 groups=["friendly"]]
 target_position = Vector2(50, 0)
 collision_mask = 1075
 
-[node name="fear_timer" type="Timer" parent="."]
+[node name="fear_timer" type="Timer" parent="." unique_id=568730480]
 wait_time = 3.0
 one_shot = true
 
-[node name="popup_timer" type="Timer" parent="."]
+[node name="popup_timer" type="Timer" parent="." unique_id=1531242745]
 wait_time = 3.0
 one_shot = true
 
-[node name="health_bar" type="ProgressBar" parent="."]
+[node name="health_bar" type="ProgressBar" parent="." unique_id=1895270821]
 offset_left = -10.0
 offset_top = -19.0
 offset_right = 8.0

@@ -8,19 +8,23 @@ signal wave_updated(wave: int)
 @export var max_spawn_time: float = 5.0
 @export var spawn_radius: float = 200.0 # Increased to reduce clustering
 @export var monster_configs: Array[Dictionary] = [
-	{"scene": preload("res://Scenes/skeleton.tscn"), "weight": 0.7},
-	{"scene": preload("res://Scenes/wizard.tscn"), "weight": 0.3},
-	{"scene": preload("res://Scenes/goblin.tscn"), "weight": 0.3},
-	{"scene": preload("res://Scenes/beholder.tscn"), "weight": 0.1},
-	{"scene": preload("res://Scenes/lich.tscn"), "weight": 0.1},
-	{"scene": preload("res://Scenes/ogre.tscn"), "weight": 0.2},
-	{"scene": preload("res://Scenes/ghost.tscn"), "weight": 0.3}
+	# Lower tier — always in pool
+	{"scene": preload("res://Scenes/skeleton.tscn"), "weight": 5.0},
+	{"scene": preload("res://Scenes/wizard.tscn"), "weight": 3.0},
+	{"scene": preload("res://Scenes/goblin.tscn"), "weight": 3.0},
+	{"scene": preload("res://Scenes/ghost.tscn"), "weight": 3.0},
+	# Middle tier — always in pool but rare
+	{"scene": preload("res://Scenes/ogre.tscn"), "weight": 0.5}
 ]
 @export var boss_configs: Array[Dictionary] = [
-	{"scene": preload("res://Scenes/balrog.tscn"), "weight": 0.1},
-	{"scene": preload("res://Scenes/hezrou.tscn"), "weight": 0.1},
-	{"scene": preload("res://Scenes/wraith.tscn"), "weight": 0.1},
-	{"scene": preload("res://Scenes/troll.tscn"), "weight": 0.1}
+	# Middle tier — unlocks progressively
+	{"scene": preload("res://Scenes/lich.tscn"),    "weight": 0.5, "min_wave": 3},
+	{"scene": preload("res://Scenes/hezrou.tscn"),  "weight": 0.4, "min_wave": 4},
+	# Upper tier — late-wave only
+	{"scene": preload("res://Scenes/beholder.tscn"),"weight": 0.2, "min_wave": 6},
+	{"scene": preload("res://Scenes/wraith.tscn"),  "weight": 0.15,"min_wave": 8},
+	{"scene": preload("res://Scenes/balrog.tscn"),  "weight": 0.1, "min_wave": 9},
+	{"scene": preload("res://Scenes/troll.tscn"),   "weight": 0.1, "min_wave": 10}
 ]
 @export var use_fixed_points: bool = false
 @export var fixed_points_paths: Array[NodePath] = []
@@ -99,25 +103,15 @@ func _calculate_total_weight() -> void:
 		total_weight += config.weight
 
 func _update_effective_configs() -> void:
-	# Dynamically add bosses to effective configs based on wave
+	# Add each boss type once its min_wave threshold is reached
 	effective_monster_configs = monster_configs.duplicate(true)
-	var num_bosses_to_add: int = 0
-	if current_wave >= 10:
-		num_bosses_to_add = 4
-	elif current_wave >= 8:
-		num_bosses_to_add = 3
-	elif current_wave >= 6:
-		num_bosses_to_add = 2
-	elif current_wave >= 4:
-		num_bosses_to_add = 1
-	
-	if num_bosses_to_add > 0:
-		# Shuffle bosses and add the first num_bosses_to_add
-		var shuffled_bosses = boss_configs.duplicate(true)
-		shuffled_bosses.shuffle()
-		for i in range(num_bosses_to_add):
-			effective_monster_configs.append(shuffled_bosses[i])
-		print("Wave %d: Added %d boss types to spawn pool" % [current_wave, num_bosses_to_add])
+	var added: int = 0
+	for boss in boss_configs:
+		if current_wave >= boss.get("min_wave", 1):
+			effective_monster_configs.append(boss)
+			added += 1
+	if added > 0:
+		print("Wave %d: %d boss type(s) in spawn pool" % [current_wave, added])
 	_calculate_total_weight()
 
 func _increase_spawn_rate() -> void:

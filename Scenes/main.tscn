@@ -19,6 +19,7 @@
 [ext_resource type="PackedScene" uid="uid://bgfaj16qrlyhf" path="res://Scenes/messenger.tscn" id="15_wsu2k"]
 [ext_resource type="Script" uid="uid://7fwlm6n6y3sq" path="res://Scripts/gate_detector.gd" id="16_h1bgf"]
 [ext_resource type="PackedScene" uid="uid://cdfbj1oyr0vl5" path="res://Scenes/annadaeus.tscn" id="18_b3802"]
+[ext_resource type="PackedScene" uid="uid://cvu1l5283jic0" path="res://Scenes/tenchijin.tscn" id="18_hibaj"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_344ge"]
 size = Vector2(1569, 703)
@@ -6527,7 +6528,7 @@ sources/1 = SubResource("TileSetAtlasSource_d1ilt")
 sources/2 = SubResource("TileSetAtlasSource_jkdf5")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fdnlq"]
-size = Vector2(37.75, 50.5)
+size = Vector2(34.75, 31.5)
 
 [node name="main" type="Node2D" unique_id=118099431]
 script = ExtResource("1_fdnlq")
@@ -6714,14 +6715,12 @@ position = Vector2(58, 327)
 position = Vector2(49, 494)
 
 [node name="priestess" parent="." unique_id=407663265 instance=ExtResource("11_d1ilt")]
-position = Vector2(422, 337)
-max_speed = 40.0
+position = Vector2(91, 406)
 heal_rate = 2.0
 projectile_scene = null
 
 [node name="priestess2" parent="." unique_id=75149223 instance=ExtResource("11_d1ilt")]
-position = Vector2(935, 340)
-max_speed = 40.0
+position = Vector2(910, 131)
 heal_rate = 2.0
 projectile_scene = null
 
@@ -6748,7 +6747,7 @@ collision_layer = 16
 script = ExtResource("14_wsu2k")
 
 [node name="shop_door" type="CollisionShape2D" parent="doorway_area" unique_id=1060444960]
-position = Vector2(154.125, 63.75)
+position = Vector2(152, 68)
 shape = SubResource("RectangleShape2D_fdnlq")
 
 [node name="spawner_marker" type="Sprite2D" parent="." unique_id=179218430]
@@ -6795,8 +6794,12 @@ side = "west"
 position = Vector2(808, 379)
 
 [node name="town_center_detector" parent="town_markers/town_center" unique_id=328858013 instance=ExtResource("15_k12tt")]
+position = Vector2(4, 3)
 script = ExtResource("16_h1bgf")
 side = "town"
+
+[node name="tenchijin" parent="town_markers/town_center" unique_id=291352951 instance=ExtResource("18_hibaj")]
+position = Vector2(-357, 7)
 
 [node name="messenger" parent="town_markers" unique_id=1627267044 instance=ExtResource("15_wsu2k")]
 position = Vector2(-2277, 464)

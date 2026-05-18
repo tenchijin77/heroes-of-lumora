@@ -11,6 +11,10 @@ extends Area2D
 @onready var collision_shape : CollisionShape2D = $CollisionShape2D
 
 var move_direction : Vector2 = Vector2.ZERO
+var home_target: Node = null
+@export var home_strength: float = 0.0  # turn rate radians/sec; 0 = straight flight
+var slow_percent: float = 0.0
+var slow_duration: float = 0.0
 
 func _ready() -> void:
 	if not is_connected("body_entered", Callable(self, "_on_body_entered")):
@@ -44,13 +48,21 @@ func reset() -> void:
 			projectile_sound.play()
 	else:
 		push_warning("Projectile %s: projectile_sound is null in reset—check scene node!" % name)
+	home_target = null
 	move_direction = Vector2.ZERO
 	rotation = 0.0
 	position = Vector2.ZERO
+	slow_percent = 0.0
+	slow_duration = 0.0
+	modulate = Color.WHITE
 	print("Projectile %s: Reset, move_direction=%s, position=%s, owner_group=%s" % [name, move_direction, global_position, owner_group])
 
 
 func _process(delta: float) -> void:
+	if home_target != null and is_instance_valid(home_target) and home_strength > 0.0:
+		var to_target: Vector2 = global_position.direction_to(home_target.global_position)
+		var turn: float = clamp(move_direction.angle_to(to_target), -home_strength * delta, home_strength * delta)
+		move_direction = move_direction.rotated(turn).normalized()
 	if move_direction != Vector2.ZERO:
 		translate(move_direction * speed * delta)
 		rotation = move_direction.angle()
@@ -81,6 +93,8 @@ func _on_body_entered(body: Node) -> void:
 
 	if body.has_method("take_damage") and body.is_in_group("monsters"):
 		body.take_damage(damage, self)
+		if slow_percent > 0.0 and body.has_method("apply_slow"):
+			body.apply_slow(slow_percent, slow_duration)
 		print("Projectile from '%s' damaged monster %s for %d" % [owner_group, body.name, damage])
 		despawn()
 		return
@@ -115,6 +129,10 @@ func despawn() -> void:
 	else:
 		print("Projectile %s: Despawn fallback (no NodePool parent)—test mode OK" % name)
 	print("Projectile %s: Despawned, move_direction=%s, position=%s" % [name, move_direction, global_position])
+
+
+func set_damage(new_damage: int) -> void:
+	damage = new_damage
 
 
 func launch(start_pos: Vector2, direction: Vector2) -> void:

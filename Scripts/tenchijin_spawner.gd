@@ -2,7 +2,7 @@
 extends Node
 
 @export var tenchijin_scene: PackedScene = preload("res://Scenes/tenchijin.tscn")
-@export var spawn_wave_threshold: int = 20
+@export var spawn_wave_threshold: int = 8
 
 var has_spawned: bool = false
 var tenchijin_instance: Node2D = null

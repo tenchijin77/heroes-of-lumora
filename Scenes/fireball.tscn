@@ -1,8 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://d1sakl0e37oo2"]
+[gd_scene format=3 uid="uid://d1sakl0e37oo2"]
 
-[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="1_0mxqg"]
+[ext_resource type="Texture2D" uid="uid://dhln4w4t2sc8n" path="res://Assets/Sprites/Spritesheet.png" id="1_0mxqg"]
 [ext_resource type="Script" uid="uid://d6xrs2lxn4lc" path="res://Scripts/projectile.gd" id="1_ne4qj"]
-[ext_resource type="AudioStream" uid="uid://dw2ivmc1p3drn" path="res://Assets/Audio/fireball-whoosh-2-179126.mp3" id="2_ne4qj"]
+[ext_resource type="AudioStream" uid="uid://msquneaovfvs" path="res://Assets/Audio/fireball-whoosh-2-179126.mp3" id="2_ne4qj"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ne4qj"]
 radius = 7.25

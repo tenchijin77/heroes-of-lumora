@@ -28,6 +28,7 @@ var guard_home_position: Vector2
 
 func _ready() -> void:
 	add_to_group("friendly")
+	collision_mask = 16  # Environment/walls only — don't collide with player or friendlies
 	guard_home_position = global_position + guard_center_offset
 	velocity = Vector2.ZERO
 
@@ -73,7 +74,7 @@ func _update_flip_h() -> void:
 
 func _update_target() -> void:
 	detected_monsters = detected_monsters.filter(
-		func(m): return is_instance_valid(m) and m.is_in_group("monsters")
+		func(m): return is_instance_valid(m) and m.visible and m.is_in_group("monsters")
 	)
 
 	detected_monsters.sort_custom(
@@ -137,14 +138,15 @@ func _perform_attack() -> void:
 
 		var projectile = bullet_pool.spawn()
 		if projectile:
-			projectile.global_position = muzzle.global_position
-			projectile.move_direction = muzzle.global_position.direction_to(current_target.global_position)
+			var direction := muzzle.global_position.direction_to(current_target.global_position)
 			projectile.owner_group = "friendly"
-
 			if projectile.has_method("set_damage"):
 				projectile.set_damage(base_damage * damage_modifier)
-
-			print("Guard %s: Fired arrow at %s" % [name, current_target.name])
+			if projectile.has_method("launch"):
+				projectile.launch(muzzle.global_position, direction)
+			else:
+				projectile.global_position = muzzle.global_position
+				projectile.move_direction = direction
 		else:
 			push_warning("Guard %s: Failed to spawn projectile!" % name)
 
@@ -187,7 +189,7 @@ func _die() -> void:
 			$CollisionShape2D.set_deferred("disabled", true)
 
 func _on_detection_area_body_entered(body: Node2D) -> void:
-	if body.is_in_group("monsters") and body is CharacterBody2D and not detected_monsters.has(body):
+	if body.is_in_group("monsters") and body.visible and body is CharacterBody2D and not detected_monsters.has(body):
 		detected_monsters.append(body)
 
 func _on_detection_area_body_exited(body: Node2D) -> void:
@@ -210,3 +212,16 @@ func heal(amount: int) -> void:
 
 func set_damage_modifier(modifier: float) -> void:
 	damage_modifier = modifier
+
+func apply_speed_buff(bonus_percent: float, duration: float) -> void:
+	var saved_speed := max_speed
+	max_speed *= (1.0 + bonus_percent)
+	var timer := Timer.new()
+	timer.wait_time = duration
+	timer.one_shot = true
+	timer.timeout.connect(func():
+		max_speed = saved_speed
+		timer.queue_free()
+	)
+	add_child(timer)
+	timer.start()

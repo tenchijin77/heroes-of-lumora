@@ -75,6 +75,7 @@ var max_health: float = 80.0
 
 func _ready() -> void:
 	add_to_group("friendly")
+	collision_mask = 16  # Environment/walls only — don't collide with player or friendlies
 	call_deferred("_deferred_ready")
 
 func _deferred_ready() -> void:

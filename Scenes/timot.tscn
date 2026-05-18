@@ -1,0 +1,48 @@
+[gd_scene format=3 uid="uid://0kauotxtf0sn"]
+
+[ext_resource type="Script" uid="uid://dv8shopnpc001" path="res://Scripts/shop_npc.gd" id="1_shopnpc"]
+[ext_resource type="Texture2D" uid="uid://dhln4w4t2sc8n" path="res://Assets/Sprites/Spritesheet.png" id="2_baxxi"]
+[ext_resource type="FontFile" uid="uid://d1g3p034nbu18" path="res://Assets/Fonts/_bitmap_font____romulus_by_pix3m-d6aokem.ttf" id="3_romulus"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cvnsp"]
+size = Vector2(27, 31)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_interact"]
+radius = 80.0
+
+[node name="timot" type="CharacterBody2D" unique_id=1925221135]
+top_level = true
+collision_layer = 32
+collision_mask = 4
+script = ExtResource("1_shopnpc")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=371758023]
+visible = false
+position = Vector2(0.5, -0.5)
+shape = SubResource("RectangleShape2D_cvnsp")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=498423765]
+position = Vector2(0, 12)
+texture = ExtResource("2_baxxi")
+offset = Vector2(0, -12)
+flip_h = true
+region_enabled = true
+region_rect = Rect2(228.1568, 288.43024, 24.534576, 30.588562)
+
+[node name="interaction_area" type="Area2D" parent="." unique_id=800100001]
+collision_layer = 0
+collision_mask = 1
+monitoring = true
+monitorable = false
+
+[node name="interaction_shape" type="CollisionShape2D" parent="interaction_area" unique_id=800100002]
+shape = SubResource("CircleShape2D_interact")
+
+[node name="prompt_label" type="Label" parent="." unique_id=800100003]
+position = Vector2(-60, -45)
+custom_minimum_size = Vector2(120, 0)
+theme_override_fonts/font = ExtResource("3_romulus")
+theme_override_font_sizes/font_size = 14
+text = "Press E to Shop"
+horizontal_alignment = 1
+visible = false

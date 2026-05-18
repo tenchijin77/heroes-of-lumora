@@ -1,10 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://cvu1l5283jic0"]
+[gd_scene format=3 uid="uid://cvu1l5283jic0"]
 
-[ext_resource type="Script" uid="uid://cv70j56i2fo7u" path="res://Scripts/healer.gd" id="1_b5tfo"]
-[ext_resource type="PackedScene" uid="uid://dkjn4u5pvci4p" path="res://Scenes/heal_bolt.tscn" id="2_cflju"]
-[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="2_ohxry"]
+[ext_resource type="Script" uid="uid://dt5n5d0p7y8g3" path="res://Scripts/tenchijin.gd" id="1_ohxry"]
+[ext_resource type="Texture2D" uid="uid://dhln4w4t2sc8n" path="res://Assets/Sprites/Spritesheet.png" id="2_ohxry"]
 [ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="3_jajwk"]
-[ext_resource type="FontFile" uid="uid://djcjuyoolr6e1" path="res://Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf" id="5_ohxry"]
+[ext_resource type="PackedScene" uid="uid://bo8nnyu2jjtr2" path="res://Scenes/frost_bolt.tscn" id="5_jajwk"]
+[ext_resource type="FontFile" uid="uid://blnxrqwyomqn" path="res://Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf" id="5_ohxry"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sfdtf"]
 size = Vector2(20, 28)
@@ -18,37 +18,37 @@ bg_color = Color(0.94902, 0, 0, 1)
 [sub_resource type="CircleShape2D" id="CircleShape2D_dmkvq"]
 radius = 288.014
 
-[node name="tenchijin" type="CharacterBody2D" groups=["friendly"]]
+[node name="tenchijin" type="CharacterBody2D" unique_id=291352951 groups=["friendly"]]
 collision_layer = 32
-collision_mask = 571
-script = ExtResource("1_b5tfo")
-max_speed = 30.0
-heal_rate = 4.0
-projectile_scene = ExtResource("2_cflju")
+collision_mask = 586
+script = ExtResource("1_ohxry")
+cast_range = 400.0
+frost_nova_rate = 20.0
+disintegrate_rate = 30.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=591954426]
 visible = false
 position = Vector2(2, -1)
 shape = SubResource("RectangleShape2D_sfdtf")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=371730454]
 position = Vector2(1, -2.5)
 texture = ExtResource("2_ohxry")
 region_enabled = true
 region_rect = Rect2(262, 97, 23, 29)
 
-[node name="muzzle" type="Node2D" parent="."]
+[node name="muzzle" type="Node2D" parent="." unique_id=2082776260]
 position = Vector2(-13, 6)
 
-[node name="bullet_pool" type="Node" parent="."]
+[node name="bullet_pool" type="Node" parent="." unique_id=1200147362]
 script = ExtResource("3_jajwk")
-node_scene = ExtResource("2_cflju")
+node_scene = ExtResource("5_jajwk")
 
-[node name="avoidance_ray" type="RayCast2D" parent="."]
+[node name="avoidance_ray" type="RayCast2D" parent="." unique_id=1279344539]
 target_position = Vector2(-64, 0)
 collision_mask = 1075
 
-[node name="health_bar" type="ProgressBar" parent="."]
+[node name="health_bar" type="ProgressBar" parent="." unique_id=214094090]
 offset_left = -8.0
 offset_top = -22.0
 offset_right = 11.0
@@ -58,19 +58,19 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_5abox")
 rounded = true
 show_percentage = false
 
-[node name="Area2D" type="Area2D" parent="."]
+[node name="Area2D" type="Area2D" parent="." unique_id=1668484059]
 collision_layer = 0
 collision_mask = 2
 
-[node name="defense_zone" type="CollisionShape2D" parent="Area2D" groups=["friendly"]]
+[node name="defense_zone" type="CollisionShape2D" parent="Area2D" unique_id=2006018793 groups=["friendly"]]
 visible = false
 light_mask = 35
 visibility_layer = 35
 shape = SubResource("CircleShape2D_dmkvq")
 
-[node name="patrol_timer" type="Timer" parent="."]
+[node name="patrol_timer" type="Timer" parent="." unique_id=1432702700]
 
-[node name="casting_label" type="Label" parent="."]
+[node name="casting_label" type="Label" parent="." unique_id=1845578253]
 offset_left = -48.0
 offset_top = -42.0
 offset_right = 55.0
@@ -80,10 +80,10 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("5_ohxry")
 theme_override_font_sizes/font_size = 16
 
-[node name="casting_timer" type="Timer" parent="."]
+[node name="casting_timer" type="Timer" parent="." unique_id=614621887]
 wait_time = 2.5
 one_shot = true
 
-[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=776368032]
 avoidance_enabled = true
 radius = 30.0

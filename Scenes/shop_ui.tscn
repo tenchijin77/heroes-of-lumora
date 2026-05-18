@@ -1,0 +1,234 @@
+[gd_scene format=3 uid="uid://dv0shoptscn01"]
+
+[ext_resource type="Script" uid="uid://dv9shopui0001" path="res://Scripts/shop_ui.gd" id="1_shopui"]
+[ext_resource type="FontFile" uid="uid://d1g3p034nbu18" path="res://Assets/Fonts/_bitmap_font____romulus_by_pix3m-d6aokem.ttf" id="2_romulus"]
+[ext_resource type="FontFile" uid="uid://blnxrqwyomqn" path="res://Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf" id="3_alagard"]
+
+[node name="ShopUI" type="CanvasLayer"]
+layer = 10
+script = ExtResource("1_shopui")
+
+[node name="background_dim" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.7)
+process_mode = 3
+
+[node name="shop_panel" type="Panel" parent="background_dim"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -270.0
+offset_top = -215.0
+offset_right = 270.0
+offset_bottom = 215.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="background_dim/shop_panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 15.0
+offset_top = 10.0
+offset_right = -15.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="title" type="Label" parent="background_dim/shop_panel/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_alagard")
+theme_override_font_sizes/font_size = 34
+text = "TIMOT'S EMPORIUM"
+horizontal_alignment = 1
+
+[node name="subtitle" type="Label" parent="background_dim/shop_panel/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_romulus")
+theme_override_font_sizes/font_size = 16
+text = "Welcome, traveler! What'll it be?"
+horizontal_alignment = 1
+
+[node name="separator_1" type="HSeparator" parent="background_dim/shop_panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="upgrades_header" type="Label" parent="background_dim/shop_panel/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_alagard")
+theme_override_font_sizes/font_size = 20
+text = "Upgrades"
+
+[node name="upgrades" type="VBoxContainer" parent="background_dim/shop_panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="health_row" type="HBoxContainer" parent="background_dim/shop_panel/VBoxContainer/upgrades"]
+layout_mode = 2
+
+[node name="health_name" type="Label" parent="background_dim/shop_panel/VBoxContainer/upgrades/health_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("2_romulus")
+theme_override_font_sizes/font_size = 18
+text = "Max Health  +25"
+
+[node name="health_cost" type="Label" parent="background_dim/shop_panel/VBoxContainer/upgrades/health_row"]
+layout_mode = 2
+custom_minimum_size = Vector2(110, 0)
+theme_override_fonts/font = ExtResource("2_romulus")
+theme_override_font_sizes/font_size = 18
+text = "20 Solari"
+horizontal_alignment = 2
+
+[node name="health_buy" type="Button" parent="background_dim/shop_panel/VBoxContainer/upgrades/health_row"]
+layout_mode = 2
+custom_minimum_size = Vector2(60, 0)
+theme_override_fonts/font = ExtResource("2_romulus")
+theme_override_font_sizes/font_size = 18
+text = "Buy"
+
+[node name="damage_row" type="HBoxContainer" parent="background_dim/shop_panel/VBoxContainer/upgrades"]
+layout_mode = 2
+
+[node name="damage_name" type="Label" parent="background_dim/shop_panel/VBoxContainer/upgrades/damage_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("2_romulus")
+theme_override_font_sizes/font_size = 18
+text = "Damage  +2"
+
+[node name="damage_cost" type="Label" parent="background_dim/shop_panel/VBoxContainer/upgrades/damage_row"]
+layout_mode = 2
+custom_minimum_size = Vector2(110, 0)
+theme_override_fonts/font = ExtResource("2_romulus")
+theme_override_font_sizes/font_size = 18
+text = "30 Solari"
+horizontal_alignment = 2
+
+[node name="damage_buy" type="Button" parent="background_dim/shop_panel/VBoxContainer/upgrades/damage_row"]
+layout_mode = 2
+custom_minimum_size = Vector2(60, 0)
+theme_override_fonts/font = ExtResource("2_romulus")
+theme_override_font_sizes/font_size = 18
+text = "Buy"
+
+[node name="speed_row" type="HBoxContainer" parent="background_dim/shop_panel/VBoxContainer/upgrades"]
+layout_mode = 2
+
+[node name="speed_name" type="Label" parent="background_dim/shop_panel/VBoxContainer/upgrades/speed_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("2_romulus")
+theme_override_font_sizes/font_size = 18
+text = "Speed  +10"
+
+[node name="speed_cost" type="Label" parent="background_dim/shop_panel/VBoxContainer/upgrades/speed_row"]
+layout_mode = 2
+custom_minimum_size = Vector2(110, 0)
+theme_override_fonts/font = ExtResource("2_romulus")
+theme_override_font_sizes/font_size = 18
+text = "25 Solari"
+horizontal_alignment = 2
+
+[node name="speed_buy" type="Button" parent="background_dim/shop_panel/VBoxContainer/upgrades/speed_row"]
+layout_mode = 2
+custom_minimum_size = Vector2(60, 0)
+theme_override_fonts/font = ExtResource("2_romulus")
+theme_override_font_sizes/font_size = 18
+text = "Buy"
+
+[node name="separator_2" type="HSeparator" parent="background_dim/shop_panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="reinforcements_header" type="Label" parent="background_dim/shop_panel/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_alagard")
+theme_override_font_sizes/font_size = 20
+text = "Reinforcements"
+
+[node name="reinforcements" type="VBoxContainer" parent="background_dim/shop_panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="guard_row" type="HBoxContainer" parent="background_dim/shop_panel/VBoxContainer/reinforcements"]
+layout_mode = 2
+
+[node name="guard_name" type="Label" parent="background_dim/shop_panel/VBoxContainer/reinforcements/guard_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("2_romulus")
+theme_override_font_sizes/font_size = 18
+text = "Deploy Guard"
+
+[node name="guard_cost" type="Label" parent="background_dim/shop_panel/VBoxContainer/reinforcements/guard_row"]
+layout_mode = 2
+custom_minimum_size = Vector2(110, 0)
+theme_override_fonts/font = ExtResource("2_romulus")
+theme_override_font_sizes/font_size = 18
+text = "50 Solari"
+horizontal_alignment = 2
+
+[node name="guard_buy" type="Button" parent="background_dim/shop_panel/VBoxContainer/reinforcements/guard_row"]
+layout_mode = 2
+custom_minimum_size = Vector2(60, 0)
+theme_override_fonts/font = ExtResource("2_romulus")
+theme_override_font_sizes/font_size = 18
+text = "Buy"
+
+[node name="magi_row" type="HBoxContainer" parent="background_dim/shop_panel/VBoxContainer/reinforcements"]
+layout_mode = 2
+
+[node name="magi_name" type="Label" parent="background_dim/shop_panel/VBoxContainer/reinforcements/magi_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("2_romulus")
+theme_override_font_sizes/font_size = 18
+text = "Deploy Magi"
+
+[node name="magi_cost" type="Label" parent="background_dim/shop_panel/VBoxContainer/reinforcements/magi_row"]
+layout_mode = 2
+custom_minimum_size = Vector2(110, 0)
+theme_override_fonts/font = ExtResource("2_romulus")
+theme_override_font_sizes/font_size = 18
+text = "75 Solari"
+horizontal_alignment = 2
+
+[node name="magi_buy" type="Button" parent="background_dim/shop_panel/VBoxContainer/reinforcements/magi_row"]
+layout_mode = 2
+custom_minimum_size = Vector2(60, 0)
+theme_override_fonts/font = ExtResource("2_romulus")
+theme_override_font_sizes/font_size = 18
+text = "Buy"
+
+[node name="separator_3" type="HSeparator" parent="background_dim/shop_panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="footer" type="HBoxContainer" parent="background_dim/shop_panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="solari_label" type="Label" parent="background_dim/shop_panel/VBoxContainer/footer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("3_alagard")
+theme_override_font_sizes/font_size = 20
+text = "Solari: 0"
+
+[node name="close_btn" type="Button" parent="background_dim/shop_panel/VBoxContainer/footer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_romulus")
+theme_override_font_sizes/font_size = 20
+text = "Close Shop"
+
+[connection signal="pressed" from="background_dim/shop_panel/VBoxContainer/upgrades/health_row/health_buy" to="." method="_on_health_buy_pressed"]
+[connection signal="pressed" from="background_dim/shop_panel/VBoxContainer/upgrades/damage_row/damage_buy" to="." method="_on_damage_buy_pressed"]
+[connection signal="pressed" from="background_dim/shop_panel/VBoxContainer/upgrades/speed_row/speed_buy" to="." method="_on_speed_buy_pressed"]
+[connection signal="pressed" from="background_dim/shop_panel/VBoxContainer/reinforcements/guard_row/guard_buy" to="." method="_on_guard_buy_pressed"]
+[connection signal="pressed" from="background_dim/shop_panel/VBoxContainer/reinforcements/magi_row/magi_buy" to="." method="_on_magi_buy_pressed"]
+[connection signal="pressed" from="background_dim/shop_panel/VBoxContainer/footer/close_btn" to="." method="_on_close_pressed"]

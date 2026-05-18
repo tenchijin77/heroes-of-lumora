@@ -97,14 +97,7 @@ func _on_node_added(node: Node) -> void:
 	if node.name == "main":
 		visible = true
 	if node.is_in_group("player"):
-		node.damage_updated.connect(_update_player_damage)
-		node.speed_updated.connect(_update_player_speed)
-		node.health_updated.connect(_update_player_health)
 		_connect_player(node)
-		# Update initial stat values
-		_update_player_damage(node.base_damage * node.damage_modifier)
-		_update_player_speed(node.max_speed)
-		_update_player_health(node.current_health, node.max_health)
 	_toggle_touch_controls()
 
 func _update_all() -> void:
@@ -162,10 +155,13 @@ func _toggle_touch_controls() -> void:
 			touch_controls.visible = visible
 			touch_controls.process_mode = PROCESS_MODE_INHERIT if visible else PROCESS_MODE_DISABLED
 
-func _connect_player(player):
-	player.damage_updated.connect(_update_player_damage)
-	player.speed_updated.connect(_update_player_speed)
-	player.health_updated.connect(_update_player_health)
+func _connect_player(player) -> void:
+	if not player.damage_updated.is_connected(_update_player_damage):
+		player.damage_updated.connect(_update_player_damage)
+	if not player.speed_updated.is_connected(_update_player_speed):
+		player.speed_updated.connect(_update_player_speed)
+	if not player.health_updated.is_connected(_update_player_health):
+		player.health_updated.connect(_update_player_health)
 
 	_update_player_damage(player.base_damage * player.damage_modifier)
 	_update_player_speed(player.max_speed)

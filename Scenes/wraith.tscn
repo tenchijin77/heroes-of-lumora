@@ -1,7 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://dwimhytymppo5"]
+[gd_scene format=3 uid="uid://dwimhytymppo5"]
 
 [ext_resource type="Script" uid="uid://dxasexg88xf87" path="res://Scripts/balrog.gd" id="1_2x62h"]
-[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="2_ojwq7"]
+[ext_resource type="Texture2D" uid="uid://dhln4w4t2sc8n" path="res://Assets/Sprites/Spritesheet.png" id="2_ojwq7"]
 [ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="3_u6wn1"]
 [ext_resource type="PackedScene" uid="uid://dn3uy2cyajlqp" path="res://Scenes/lifedrain.tscn" id="4_2x62h"]
 [ext_resource type="PackedScene" uid="uid://d3rcusi22khhd" path="res://Scenes/potion.tscn" id="5_3r47x"]
@@ -15,7 +15,7 @@ bg_color = Color(0.201527, 0.201527, 0.201527, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5abox"]
 bg_color = Color(0.94902, 0, 0, 1)
 
-[node name="wraith" type="CharacterBody2D" groups=["monsters"]]
+[node name="wraith" type="CharacterBody2D" unique_id=928670538 groups=["monsters"]]
 collision_layer = 2
 collision_mask = 1653
 motion_mode = 1
@@ -27,33 +27,33 @@ current_health = 300
 max_health = 300
 bullet_scene = ExtResource("4_2x62h")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=874875956]
 visible = false
 position = Vector2(0, -2)
 shape = SubResource("RectangleShape2D_sfdtf")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=336630730]
 scale = Vector2(2.5, 2.5)
 texture = ExtResource("2_ojwq7")
 region_enabled = true
 region_rect = Rect2(639, 159, 34, 34)
 
-[node name="muzzle" type="Node2D" parent="."]
+[node name="muzzle" type="Node2D" parent="." unique_id=1404348973]
 
-[node name="bullet_pool" type="Node" parent="."]
+[node name="bullet_pool" type="Node" parent="." unique_id=1388544999]
 script = ExtResource("3_u6wn1")
 node_scene = ExtResource("4_2x62h")
 
-[node name="potion_pool" type="Node" parent="."]
+[node name="potion_pool" type="Node" parent="." unique_id=1234049984]
 script = ExtResource("3_u6wn1")
 node_scene = ExtResource("5_3r47x")
 
-[node name="avoidance_ray" type="RayCast2D" parent="."]
+[node name="avoidance_ray" type="RayCast2D" parent="." unique_id=812250930]
 position = Vector2(-1, 0)
 target_position = Vector2(-50, 0)
 collision_mask = 1075
 
-[node name="health_bar" type="ProgressBar" parent="."]
+[node name="health_bar" type="ProgressBar" parent="." unique_id=553212626]
 offset_left = -22.0
 offset_top = -49.0
 offset_right = 21.0
@@ -63,6 +63,6 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_5abox")
 rounded = true
 show_percentage = false
 
-[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=977781548]
 avoidance_enabled = true
 radius = 44.0

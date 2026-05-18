@@ -42,6 +42,11 @@ var debug_frame_counter: int = 0
 var target_update_timer: float = 0.0
 const TARGET_UPDATE_INTERVAL: float = 0.5  # Update target twice per second
 
+# Status effects
+var _is_rooted: bool = false
+var _is_slowed: bool = false
+var _waypoint_offset: Vector2 = Vector2.ZERO
+
 func _ready() -> void:
 	# Initialize monster properties and navigation
 	add_to_group("monsters")
@@ -145,6 +150,8 @@ func reset() -> void:
 		health_bar.max_value = max_health
 		health_bar.value = current_health
 	velocity = Vector2.ZERO
+	_is_rooted = false
+	_is_slowed = false
 	last_shoot_time = 0.0
 	last_damage_source = null
 	last_damage_times = {}
@@ -213,6 +220,7 @@ func _has_line_of_sight() -> bool:
 # Initialize waypoint - start with village center, then extraction point
 func _initialize_waypoint() -> void:
 	waypoint_stage = 0
+	_waypoint_offset = Vector2(randf_range(-80.0, 80.0), randf_range(-80.0, 80.0))
 	_update_waypoint()
 
 func _update_waypoint() -> void:
@@ -228,7 +236,7 @@ func _update_waypoint() -> void:
 			var village_centers = get_tree().get_nodes_in_group("village_center")
 			if not village_centers.is_empty():
 				current_waypoint = village_centers[0]
-				navigation_agent.target_position = current_waypoint.global_position
+				navigation_agent.target_position = current_waypoint.global_position + _waypoint_offset
 				if debug_enabled:
 					print("Monster %s: Waypoint set to village_center at (%.1f, %.1f)" % [name, current_waypoint.global_position.x, current_waypoint.global_position.y])
 			else:
@@ -313,8 +321,13 @@ func _find_nearest_attack_target() -> void:
 		target = null
 
 func _physics_process(_delta: float) -> void:
+	if _is_rooted:
+		velocity = Vector2.ZERO
+		move_and_slide()
+		_process_collisions()
+		return
 	var desired_velocity: Vector2 = Vector2.ZERO
-	
+
 	# Stage 2 (hunting grounds) - monsters have reached extraction point, now just hunt
 	if waypoint_stage == 2:
 		# No pathfinding needed - just attack nearby targets
@@ -556,3 +569,48 @@ func _on_visibility_changed() -> void:
 		set_physics_process(false)
 		if collision_shape:
 			collision_shape.set_deferred("disabled", true)
+
+func apply_slow(percent: float, duration: float) -> void:
+	if _is_slowed:
+		return
+	_is_slowed = true
+	var saved_speed := max_speed
+	max_speed *= (1.0 - percent)
+	var timer := Timer.new()
+	timer.wait_time = duration
+	timer.one_shot = true
+	timer.timeout.connect(func():
+		max_speed = saved_speed
+		_is_slowed = false
+		timer.queue_free()
+	)
+	add_child(timer)
+	timer.start()
+
+func apply_root(duration: float) -> void:
+	_is_rooted = true
+	velocity = Vector2.ZERO
+	var timer := Timer.new()
+	timer.wait_time = duration
+	timer.one_shot = true
+	timer.timeout.connect(func():
+		_is_rooted = false
+		timer.queue_free()
+	)
+	add_child(timer)
+	timer.start()
+
+func apply_dot(damage_per_tick: int, ticks: int) -> void:
+	var remaining := ticks
+	var dot_timer := Timer.new()
+	dot_timer.wait_time = 1.0
+	dot_timer.timeout.connect(func():
+		remaining -= 1
+		if is_instance_valid(self) and visible:
+			take_damage(damage_per_tick, null)
+		if remaining <= 0:
+			dot_timer.stop()
+			dot_timer.queue_free()
+	)
+	add_child(dot_timer)
+	dot_timer.start()

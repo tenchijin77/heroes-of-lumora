@@ -17,6 +17,11 @@ var saved_villagers: int = 0
 var lost_villagers: int = 0
 var total_villagers: int = 100
 var game_active: bool = true
+var guard_spawn_index: int = 0
+var magi_spawn_index: int = 0
+
+# Shop / scene-transition state preservation
+var shop_purchase_counts: Dictionary = {"health": 0, "damage": 0, "speed": 0, "guard": 0, "magi": 0}
 
 func _ready() -> void:
 	DirAccess.make_dir_absolute("user://saves/")
@@ -107,6 +112,9 @@ func reset() -> void:
 	lost_villagers = 0
 	total_villagers = 100
 	game_active = true
+	guard_spawn_index = 0
+	magi_spawn_index = 0
+	shop_purchase_counts = {"health": 0, "damage": 0, "speed": 0, "guard": 0, "magi": 0}
 	emit_signal("score_updated", current_score)
 	emit_signal("coins_updated", coins_collected)
 	emit_signal("wave_updated", current_wave)

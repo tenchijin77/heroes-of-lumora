@@ -1,12 +1,12 @@
-[gd_scene load_steps=14 format=3 uid="uid://bhm0mxnnqdj6x"]
+[gd_scene format=3 uid="uid://bhm0mxnnqdj6x"]
 
 [ext_resource type="Script" uid="uid://cv70j56i2fo7u" path="res://Scripts/healer.gd" id="1_ewup4"]
-[ext_resource type="Texture2D" uid="uid://dwi6caya0fwot" path="res://Assets/Sprites/Spritesheet.png" id="2_2kld1"]
+[ext_resource type="Texture2D" uid="uid://dhln4w4t2sc8n" path="res://Assets/Sprites/Spritesheet.png" id="2_2kld1"]
 [ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="3_owegj"]
 [ext_resource type="PackedScene" uid="uid://dkjn4u5pvci4p" path="res://Scenes/heal_bolt.tscn" id="4_6h5py"]
 [ext_resource type="Script" uid="uid://dirtd7uwkj0xb" path="res://Scripts/healing_aura.gd" id="5_2kld1"]
 [ext_resource type="Shader" uid="uid://5a3hd36av1m" path="res://Assets/green_glow_shader.gdshader" id="6_bwqxu"]
-[ext_resource type="Texture2D" uid="uid://c0q26pyxct5if" path="res://Assets/Sprites/green aura glow.png" id="7_bwqxu"]
+[ext_resource type="Texture2D" uid="uid://cdratucivf3ji" path="res://Assets/Sprites/green aura glow.png" id="7_bwqxu"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sfdtf"]
 size = Vector2(20, 28)
@@ -28,37 +28,36 @@ shader = ExtResource("6_bwqxu")
 shader_parameter/pulse_speed = 2.0
 shader_parameter/max_alpha = 0.1
 
-[node name="priestess" type="CharacterBody2D" groups=["healer"]]
+[node name="priestess" type="CharacterBody2D" unique_id=1803817363 groups=["healer"]]
 collision_layer = 1024
-collision_mask = 27
+collision_mask = 10
 script = ExtResource("1_ewup4")
-max_speed = 30.0
 heal_rate = 4.0
 projectile_scene = ExtResource("4_6h5py")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1154312849]
 visible = false
 position = Vector2(2, -1)
 shape = SubResource("RectangleShape2D_sfdtf")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=731010838]
 position = Vector2(1, -2.5)
 texture = ExtResource("2_2kld1")
 region_enabled = true
 region_rect = Rect2(64, 288, 32, 33)
 
-[node name="muzzle" type="Node2D" parent="."]
+[node name="muzzle" type="Node2D" parent="." unique_id=1442754440]
 position = Vector2(-13, 6)
 
-[node name="bullet_pool" type="Node" parent="."]
+[node name="bullet_pool" type="Node" parent="." unique_id=1571201804]
 script = ExtResource("3_owegj")
 node_scene = ExtResource("4_6h5py")
 
-[node name="avoidance_ray" type="RayCast2D" parent="."]
+[node name="avoidance_ray" type="RayCast2D" parent="." unique_id=1707946898]
 target_position = Vector2(-64, 0)
 collision_mask = 51
 
-[node name="health_bar" type="ProgressBar" parent="."]
+[node name="health_bar" type="ProgressBar" parent="." unique_id=711579162]
 offset_left = -8.0
 offset_top = -22.0
 offset_right = 11.0
@@ -68,29 +67,29 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_5abox")
 rounded = true
 show_percentage = false
 
-[node name="Area2D" type="Area2D" parent="."]
+[node name="Area2D" type="Area2D" parent="." unique_id=1286348289]
 collision_layer = 0
 collision_mask = 2
 
-[node name="defense_zone" type="CollisionShape2D" parent="Area2D" groups=["friendly"]]
+[node name="defense_zone" type="CollisionShape2D" parent="Area2D" unique_id=769780019 groups=["friendly"]]
 visible = false
 light_mask = 35
 visibility_layer = 35
 shape = SubResource("CircleShape2D_dmkvq")
 
-[node name="patrol_timer" type="Timer" parent="."]
+[node name="patrol_timer" type="Timer" parent="." unique_id=1438076711]
 
-[node name="heal_aura" type="Area2D" parent="." groups=["healer"]]
+[node name="heal_aura" type="Area2D" parent="." unique_id=653269423 groups=["healer"]]
 collision_layer = 1024
 collision_mask = 1057
 script = ExtResource("5_2kld1")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="heal_aura"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="heal_aura" unique_id=542107520]
 shape = SubResource("CircleShape2D_6h5py")
 
-[node name="heal_aura_timer" type="Timer" parent="heal_aura"]
+[node name="heal_aura_timer" type="Timer" parent="heal_aura" unique_id=1951356396]
 
-[node name="aura_glow" type="Sprite2D" parent="heal_aura"]
+[node name="aura_glow" type="Sprite2D" parent="heal_aura" unique_id=1769830873]
 modulate = Color(0.3, 1, 0.3, 1)
 show_behind_parent = true
 material = SubResource("ShaderMaterial_nmwim")
@@ -98,6 +97,6 @@ position = Vector2(-1.50002, 2.00001)
 scale = Vector2(0.551758, 0.552734)
 texture = ExtResource("7_bwqxu")
 
-[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=1660293745]
 avoidance_enabled = true
 radius = 30.0

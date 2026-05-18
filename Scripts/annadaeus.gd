@@ -56,11 +56,12 @@ var target_update_interval: float = 0.25 # Update more frequently
 var has_emitted_health_critical: bool = false  # Track if critical health signal sent
 var has_announced_arrival: bool = false  # Track if entrance shout has played
 var last_shout_time: float = 0.0  # Track last time she shouted to prevent spam
-var shout_cooldown: float = 8.0  # Minimum 8 seconds between shouts
+var shout_cooldown: float = 30.0  # Minimum 30 seconds between shouts
 
 func _ready() -> void:
 	# Initialize Annadaeus in the scene
 	add_to_group("friendly")
+	add_to_group("annadaeus")
 	
 	# Setup collision layers - don't block player or other NPCs
 	collision_layer = 32  # Layer 6 (friendly)
@@ -100,6 +101,9 @@ func _process(delta: float) -> void:
 			_move_wobble()
 		"FOLLOWING_PLAYER":
 			_following_player_state(delta)
+			_move_wobble()
+		"SEEKING_HEALER":
+			_seeking_healer_state(delta)
 			_move_wobble()
 		"CASTING":
 			_casting_state(delta)
@@ -144,6 +148,21 @@ func _configure_auras() -> void:
 func _update_targets() -> void:
 	# Determine current target and state
 	if current_state == "CASTING":
+		return
+	# Seek a healer when below 50% HP
+	if current_health < max_health * 0.5 and current_state != "SEEKING_HEALER":
+		var healer := _find_nearest_healer()
+		if healer:
+			current_state = "SEEKING_HEALER"
+			current_friendly_target = healer
+			current_target = null
+			return
+	# Stop seeking healer once health recovers
+	if current_state == "SEEKING_HEALER" and current_health >= max_health * 0.8:
+		current_state = "FOLLOWING_PLAYER"
+		current_friendly_target = null
+		return
+	if current_state == "SEEKING_HEALER":
 		return
 	current_target = null
 	current_friendly_target = null
@@ -195,7 +214,7 @@ func _following_player_state(delta: float) -> void:
 func _announce_arrival() -> void:
 	"""Shout dramatic entrance line when first approaching player"""
 	# FIXED: Use _force_show_text to bypass cooldown for important entrance message
-	_force_show_text("You, outsider! Help me defend Lumora! To arms!")
+	_force_show_text("You, outsider To arms! Help me defend Lumora!")
 	print("Annadaeus: Charging into battle alongside the outsider!")
 
 func _force_show_text(text: String) -> void:
@@ -218,6 +237,29 @@ func _escaping_state(delta: float) -> void:
 		velocity = velocity.lerp(-direction * max_speed, acceleration * delta)
 	else:
 		velocity = velocity.lerp(Vector2.ZERO, drag)
+
+func _seeking_healer_state(delta: float) -> void:
+	if not current_friendly_target or not is_instance_valid(current_friendly_target):
+		current_state = "FOLLOWING_PLAYER"
+		current_friendly_target = null
+		return
+	var distance := global_position.distance_to(current_friendly_target.global_position)
+	if distance > 48.0:
+		var direction := global_position.direction_to(current_friendly_target.global_position)
+		velocity = velocity.lerp(direction * max_speed, acceleration * delta)
+	else:
+		velocity = Vector2.ZERO
+
+func _find_nearest_healer() -> CharacterBody2D:
+	var nearest: CharacterBody2D = null
+	var min_dist: float = INF
+	for healer in get_tree().get_nodes_in_group("healing_npcs"):
+		if is_instance_valid(healer) and healer is CharacterBody2D:
+			var dist := global_position.distance_to(healer.global_position)
+			if dist < min_dist:
+				min_dist = dist
+				nearest = healer as CharacterBody2D
+	return nearest
 
 # --- Abilities ---
 func _perform_song_of_courage() -> void:
@@ -246,17 +288,12 @@ func _perform_symphony_of_fate(target: CharacterBody2D) -> void:
 	current_state = "CASTING"
 	if target and is_instance_valid(target):
 		current_target = target
-		print("Annadaeus: Targeting enemy %s at position %s for Symphony of Fate" % [target.name, target.global_position])
 		_spawn_ability_projectile(target)
 	else:
 		var new_target = _find_closest_mob()
 		if new_target and is_instance_valid(new_target) and _has_clear_line_to_target(new_target):
 			current_target = new_target
-			print("Annadaeus: Retargeted enemy %s at position %s for Symphony of Fate" % [new_target.name, new_target.global_position])
 			_spawn_ability_projectile(new_target)
-		else:
-			print("Annadaeus: No valid enemy target for Symphony of Fate, firing randomly")
-			_spawn_ability_projectile_random()
 	ability_cooldowns["symphony"] = symphony_of_fate_rate
 	current_state = "FOLLOWING_PLAYER"
 
@@ -274,7 +311,7 @@ func _perform_finale() -> void:
 	var final_damage: int = int(base_finale_damage * damage_boost)
 	var hit_count: int = 0
 	for mob in get_tree().get_nodes_in_group("monsters"):
-		if is_instance_valid(mob) and mob.has_method("take_damage"):
+		if is_instance_valid(mob) and mob.visible and mob.has_method("take_damage"):
 			var distance = global_position.distance_to(mob.global_position)
 			if distance <= finale_range:
 				mob.take_damage(final_damage, null)
@@ -305,17 +342,20 @@ func _activate_renewal_aura() -> void:
 	renewal_aura_timer.start()
 
 func _spawn_ability_projectile(target: CharacterBody2D) -> void:
-	# Spawn sonic projectile from bullet pool targeting enemy
-	if bullet_pool and muzzle and target and is_instance_valid(target):
-		var projectile = bullet_pool.spawn()
-		if projectile:
-			projectile.global_position = muzzle.global_position
-			projectile.move_direction = muzzle.global_position.direction_to(target.global_position)
-			if projectile.has_method("set_damage"):
-				projectile.set_damage(base_damage * damage_modifier)
-			print("Annadaeus: Fired Symphony of Fate projectile at %s, direction=%s" % [target.name, projectile.move_direction])
+	if not bullet_pool or not muzzle or not target or not is_instance_valid(target):
+		return
+	var projectile = bullet_pool.spawn()
+	if not projectile:
+		return
+	var direction := muzzle.global_position.direction_to(target.global_position)
+	projectile.owner_group = "friendly"
+	if projectile.has_method("set_damage"):
+		projectile.set_damage(base_damage * damage_modifier)
+	if projectile.has_method("launch"):
+		projectile.launch(muzzle.global_position, direction)
 	else:
-		print("Annadaeus: Failed to spawn Symphony of Fate projectile, target=%s, bullet_pool=%s, muzzle=%s" % [target.name if target else "null", bullet_pool, muzzle])
+		projectile.global_position = muzzle.global_position
+		projectile.move_direction = direction
 
 func _spawn_ability_projectile_random() -> void:
 	# Fallback to random direction if no target
@@ -330,22 +370,25 @@ func _spawn_ability_projectile_random() -> void:
 			print("Annadaeus: Fired Symphony of Fate projectile in random direction=%s" % projectile.move_direction)
 
 func _spawn_finale_projectile(target: CharacterBody2D) -> void:
-	# Spawn enhanced projectile, boosted by active auras
-	if bullet_pool and muzzle and target and is_instance_valid(target):
-		var projectile = bullet_pool.spawn()
-		if projectile:
-			projectile.global_position = muzzle.global_position
-			projectile.move_direction = muzzle.global_position.direction_to(target.global_position)
-			var damage_boost = 1.0
-			if courage_aura.visible:
-				damage_boost += 0.5
-			if renewal_aura.visible:
-				damage_boost += 0.5
-			if projectile.has_method("set_damage"):
-				projectile.set_damage(base_damage * damage_modifier * damage_boost)
-			print("Annadaeus: Fired Finale projectile at %s, direction=%s, damage_boost=%.2f" % [target.name, projectile.move_direction, damage_boost])
+	if not bullet_pool or not muzzle or not target or not is_instance_valid(target):
+		return
+	var projectile = bullet_pool.spawn()
+	if not projectile:
+		return
+	var direction := muzzle.global_position.direction_to(target.global_position)
+	var damage_boost := 1.0
+	if courage_aura.visible:
+		damage_boost += 0.5
+	if renewal_aura.visible:
+		damage_boost += 0.5
+	projectile.owner_group = "friendly"
+	if projectile.has_method("set_damage"):
+		projectile.set_damage(base_damage * damage_modifier * damage_boost)
+	if projectile.has_method("launch"):
+		projectile.launch(muzzle.global_position, direction)
 	else:
-		print("Annadaeus: Failed to spawn Finale projectile, target=%s, bullet_pool=%s, muzzle=%s" % [target.name if target else "null", bullet_pool, muzzle])
+		projectile.global_position = muzzle.global_position
+		projectile.move_direction = direction
 
 func _spawn_decoy() -> void:
 	# Spawn static duplicate of Annadaeus with 40 health
@@ -422,15 +465,17 @@ func take_damage(damage: int, _projectile_instance) -> void:
 	if health_bar and is_instance_valid(health_bar):
 		health_bar.value = current_health
 	
-	# Emit health_critical signal at 30% threshold
-	if current_health <= max_health * 0.3 and current_health > 0:
-		if not has_emitted_health_critical:
-			has_emitted_health_critical = true
-			health_critical.emit()
-			print("Annadaeus: Health critical! (%d/%d) - Calling for reinforcements!" % [current_health, max_health])
-	
+	# Only real Anna emits distress signals — decoys must not trigger Tenchijin
+	if not is_decoy:
+		if current_health <= max_health * 0.3 and current_health > 0:
+			if not has_emitted_health_critical:
+				has_emitted_health_critical = true
+				health_critical.emit()
+				print("Annadaeus: Health critical! (%d/%d) - Calling for reinforcements!" % [current_health, max_health])
+
 	if current_health <= 0:
-		died.emit()  # Emit death signal for Tenchijin
+		if not is_decoy:
+			died.emit()
 		_die()
 	else:
 		_damage_flash()
@@ -487,7 +532,7 @@ func _find_closest_mob() -> CharacterBody2D:
 	var min_distance: float = support_range
 	var enemy_count: int = 0
 	for mob in get_tree().get_nodes_in_group("monsters"):
-		if is_instance_valid(mob):
+		if is_instance_valid(mob) and mob.visible:
 			enemy_count += 1
 			var distance = global_position.distance_to(mob.global_position)
 			if distance < min_distance:
@@ -503,7 +548,7 @@ func _is_critical_situation() -> bool:
 	# Check for critical situation (more than 5 enemies or low player/Annadaeus HP)
 	var enemy_count = 0
 	for mob in get_tree().get_nodes_in_group("monsters"):
-		if is_instance_valid(mob) and global_position.distance_to(mob.global_position) < support_range:
+		if is_instance_valid(mob) and mob.visible and global_position.distance_to(mob.global_position) < support_range:
 			enemy_count += 1
 	var player_low_hp = player and is_instance_valid(player) and player.has_method("get_health") and player.get_health() < player.get_max_health() * 0.5
 	var annadaeus_low_hp = current_health < max_health * 0.5
@@ -556,3 +601,16 @@ func heal(amount: int) -> void:
 func set_damage_modifier(modifier: float) -> void:
 	# Set damage multiplier for courage aura
 	damage_modifier = modifier
+
+func apply_speed_buff(bonus_percent: float, duration: float) -> void:
+	var saved_speed := max_speed
+	max_speed *= (1.0 + bonus_percent)
+	var timer := Timer.new()
+	timer.wait_time = duration
+	timer.one_shot = true
+	timer.timeout.connect(func():
+		max_speed = saved_speed
+		timer.queue_free()
+	)
+	add_child(timer)
+	timer.start()

@@ -34,13 +34,12 @@ completed:
 -added dialogue for the main screen to setup the game with dialogic- Timot and Brimble movie introduces the game and controls
 -added Annadaeus NPC to assist in later waves (working on when to add her to the game)
 -began design on Tenchijin NPC; still working on spells and narrative for his entry
+-added a pause menu with ESC with an option to quit to the main menu
+-added the shop, and timot npc in the shop with stat upgrades, guard replacements, and magi (turret npcs)
 
 to do: (in order of importance)
 
 -add particle effects to player and monster projectile attacks
--create Tenchijin NPC and spells/skills
--create shop area and ability for player to buy buffs and reinforcements - this may become an npc that pauses the game and offers upgrades
--create the ability to buy and place turrets that help defend the town
 -create an endless mode for players who have beaten the main game
 
 sites for assets:

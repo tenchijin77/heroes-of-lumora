@@ -21,6 +21,7 @@ var target_position: Vector2
 func _ready() -> void:
 	print("Villager %s: _ready() called" % name)
 	add_to_group("villagers")
+	collision_mask = 2  # Monsters only — don't get stuck on environment or friendlies
 
 	if health_bar:
 		health_bar.max_value = max_health

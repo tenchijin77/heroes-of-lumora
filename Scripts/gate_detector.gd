@@ -21,14 +21,14 @@ func _ready() -> void:
 	print("Gate detector '%s' ready at %s" % [side, global_position])
 
 func _on_body_entered(body: Node2D) -> void:
-	if body.is_in_group("monsters"):
+	if body.is_in_group("monsters") and body.visible:
 		monster_count += 1
 		if monster_count == 1:
 			threat_detected.emit(side)
 			print(">>> %s gate under attack!" % side.to_upper())
 
 func _on_body_exited(body: Node2D) -> void:
-	if body.is_in_group("monsters"):
+	if body.is_in_group("monsters") and body.visible:
 		monster_count -= 1
 		if monster_count <= 0:
 			monster_count = 0

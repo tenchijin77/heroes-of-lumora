@@ -1,7 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://dgfdgfgyxwky6"]
+[gd_scene format=3 uid="uid://dgfdgfgyxwky6"]
 
 [ext_resource type="Script" uid="uid://bxdcw03f401hl" path="res://Scripts/hezrou.gd" id="1_lmg06"]
-[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="3_aebgk"]
+[ext_resource type="Texture2D" uid="uid://dhln4w4t2sc8n" path="res://Assets/Sprites/Spritesheet.png" id="3_aebgk"]
 [ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="4_ual8j"]
 [ext_resource type="PackedScene" uid="uid://d3rcusi22khhd" path="res://Scenes/potion.tscn" id="5_uprq3"]
 [ext_resource type="PackedScene" uid="uid://b3u85ibipyv8w" path="res://Scenes/bile_spew.tscn" id="5_x8tu6"]
@@ -15,43 +15,43 @@ bg_color = Color(0.201527, 0.201527, 0.201527, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5abox"]
 bg_color = Color(0.94902, 0, 0, 1)
 
-[node name="hezrou" type="CharacterBody2D" groups=["monsters"]]
+[node name="hezrou" type="CharacterBody2D" unique_id=1545009077 groups=["monsters"]]
 collision_layer = 2
 collision_mask = 1653
 script = ExtResource("1_lmg06")
 max_speed = 50.0
 shoot_rate = 2.0
 current_health = 100
-max_health = 350
+max_health = 100
 bullet_scene = ExtResource("5_x8tu6")
 score_value = 300
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1097151433]
 visible = false
 position = Vector2(2, 0)
 shape = SubResource("RectangleShape2D_sfdtf")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1479097181]
 scale = Vector2(2, 2)
 texture = ExtResource("3_aebgk")
 region_enabled = true
 region_rect = Rect2(321, 160, 31, 32)
 
-[node name="muzzle" type="Node2D" parent="."]
+[node name="muzzle" type="Node2D" parent="." unique_id=1575981973]
 
-[node name="bullet_pool" type="Node" parent="."]
+[node name="bullet_pool" type="Node" parent="." unique_id=262365963]
 script = ExtResource("4_ual8j")
 node_scene = ExtResource("5_x8tu6")
 
-[node name="potion_pool" type="Node" parent="."]
+[node name="potion_pool" type="Node" parent="." unique_id=503211968]
 script = ExtResource("4_ual8j")
 node_scene = ExtResource("5_uprq3")
 
-[node name="avoidance_ray" type="RayCast2D" parent="."]
+[node name="avoidance_ray" type="RayCast2D" parent="." unique_id=1414778301]
 target_position = Vector2(-50, 0)
 collision_mask = 1075
 
-[node name="health_bar" type="ProgressBar" parent="."]
+[node name="health_bar" type="ProgressBar" parent="." unique_id=783357312]
 offset_left = -22.0
 offset_top = -50.0
 offset_right = 22.0
@@ -61,6 +61,6 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_5abox")
 rounded = true
 show_percentage = false
 
-[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=427235897]
 avoidance_enabled = true
 radius = 32.0

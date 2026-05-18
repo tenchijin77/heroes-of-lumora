@@ -177,8 +177,8 @@ func apply_potion_effect(effect_type: String, effect_value: float, effect_durati
 				_start_effect_timer(effect_duration, "max_speed", base_max_speed)
 				emit_signal("speed_updated", max_speed)
 		"damage_boost":
-			damage_modifier *= effect_value
-			_start_effect_timer(effect_duration, "damage_modifier", 1.0 / effect_value)
+			damage_modifier = effect_value
+			_start_effect_timer(effect_duration, "damage_modifier", 1.0)
 			emit_signal("damage_updated", base_damage * damage_modifier)
 
 func _start_effect_timer(duration: float, property: String, revert_value: float) -> void:
@@ -233,3 +233,6 @@ func set_damage_modifier(modifier: float) -> void:
 	# Set damage modifier for courage aura
 	damage_modifier = modifier
 	emit_signal("damage_updated", base_damage * damage_modifier)
+
+func apply_speed_buff(bonus_percent: float, duration: float) -> void:
+	apply_potion_effect("speed_boost", 1.0 + bonus_percent, duration)
