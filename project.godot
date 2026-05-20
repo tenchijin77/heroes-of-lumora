@@ -42,6 +42,7 @@ directories/dch_directory={
 }
 directories/dtl_directory={
 "Timot-Intro": "res://Dialogic/Timot-Intro.dtl",
+"Timot-Intro-Old": "res://Dialogic/Timot-Intro-Old.dtl",
 "Timot-Intro2": "res://Dialogic/Timot-Intro2.dtl",
 "villager_generic_plea": "res://Dialogic/villager_generic_plea.dtl"
 }
@@ -64,10 +65,12 @@ choices/reveal_delay=0
 choices/reveal_by_input=false
 save/autosave_delay=60.0
 save/encryption_on_exports_only=true
-text/autopauses={}
+text/autopauses={
+"": 2.0
+}
 variables={}
 text/autocolor_names=true
-text/autoadvance_fixed_delay=0.6
+text/autoadvance_fixed_delay=0.8
 text/autoadvance_enabled=true
 glossary/default_case_sensitive=true
 layout/style_list=[]
