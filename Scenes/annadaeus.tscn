@@ -95,9 +95,9 @@ shape = SubResource("CircleShape2D_dmkvq")
 
 [node name="casting_label" type="Label" parent="." unique_id=286366070]
 offset_left = -75.0
-offset_top = -44.0
+offset_top = -90.0
 offset_right = 76.0
-offset_bottom = -21.0
+offset_bottom = -50.0
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("5_20pnm")

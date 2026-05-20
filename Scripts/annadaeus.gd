@@ -86,6 +86,18 @@ func _ready() -> void:
 	_regen_timer.timeout.connect(_on_regen_tick)
 	add_child(_regen_timer)
 
+	var _name_label := Label.new()
+	_name_label.text = "<Annadaeus>"
+	_name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_name_label.add_theme_font_override("font", load("res://Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf"))
+	_name_label.add_theme_font_size_override("font_size", 13)
+	_name_label.add_theme_color_override("font_color", Color(0.5, 0.85, 1.0, 1.0))
+	_name_label.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 1.0))
+	_name_label.add_theme_constant_override("outline_size", 5)
+	_name_label.position = Vector2(-60.0, -38.0)
+	_name_label.size = Vector2(120.0, 18.0)
+	add_child(_name_label)
+
 func _update_cooldowns(delta: float) -> void:
 	# Decrease ability cooldowns over time
 	for key in ability_cooldowns:

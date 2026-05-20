@@ -69,6 +69,12 @@ func get_night_alpha() -> float:
 	return _night_overlay.color.a if _night_overlay else 0.0
 
 func _input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.physical_keycode == KEY_QUOTELEFT:
+			if _chat_panel:
+				_chat_panel.visible = not _chat_panel.visible
+			get_viewport().set_input_as_handled()
+			return
 	if event.is_action_pressed("pause"):
 		var current_scene: Node = get_tree().current_scene
 		if current_scene and current_scene.name == "main":
@@ -147,7 +153,7 @@ func _update_coins(coins: int) -> void:
 func _update_villagers(saved: int, lost: int, total: int) -> void:
 	saved_villagers_label.text = "Villagers Saved: %d" % saved
 	lost_villagers_label.text = "Villagers Lost: %d" % lost
-	remaining_villagers_label.text = "Villagers Remaining: %d" % (total - (saved + lost))
+	remaining_villagers_label.text = "Still Needed: %d" % max(0, total - saved)
 
 func _update_player_damage(damage: float) -> void:
 	if player_damage:
@@ -225,6 +231,7 @@ func _setup_chat_box() -> void:
 	style.corner_radius_bottom_left = 6
 	style.corner_radius_bottom_right = 6
 	_chat_panel.add_theme_stylebox_override("panel", style)
+	_chat_panel.visible = false
 	add_child(_chat_panel)
 
 	var vbox := VBoxContainer.new()
@@ -271,8 +278,8 @@ func chat_add(text: String, speaker: String = "") -> void:
 	var color := Color(1.0, 1.0, 0.85, 1.0)
 	match speaker:
 		"System":    color = Color(0.65, 0.65, 0.65, 1.0)
-		"Tenchijin": color = Color(0.4, 0.9, 1.0, 1.0)
-		"Annadaeus": color = Color(1.0, 0.85, 0.35, 1.0)
+		"Tenchijin": color = Color(1.0, 0.25, 0.25, 1.0)
+		"Annadaeus": color = Color(0.5, 0.85, 1.0, 1.0)
 		"Messenger": color = Color(1.0, 1.0, 0.3, 1.0)
 	label.add_theme_color_override("font_color", color)
 	label.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 1.0))

@@ -73,10 +73,10 @@ shape = SubResource("CircleShape2D_dmkvq")
 [node name="patrol_timer" type="Timer" parent="." unique_id=1432702700]
 
 [node name="casting_label" type="Label" parent="." unique_id=1845578253]
-offset_left = -48.0
-offset_top = -42.0
-offset_right = 55.0
-offset_bottom = -19.0
+offset_left = -75.0
+offset_top = -90.0
+offset_right = 76.0
+offset_bottom = -50.0
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("5_ohxry")

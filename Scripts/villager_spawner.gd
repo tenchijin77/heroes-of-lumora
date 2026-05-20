@@ -76,19 +76,12 @@ func _on_wave_updated(wave: int) -> void:
 			print("VillagerSpawner: Started spawning at wave %d" % wave)
 
 func _on_villager_spawn_timer_timeout() -> void:
-	# Handle timer timeout to spawn a villager
-	if OS.has_feature("editor"):
-		print("VillagerSpawner: Timer timeout fired!")
-	if Global.saved_villagers + Global.lost_villagers < Global.total_villagers:
-		_spawn_villager()
-	else:
-		spawn_timer.stop()
-		if OS.has_feature("editor"):
-			print("VillagerSpawner: Stopped spawning, villager limit reached")
+	_spawn_villager()
 	spawn_timer.wait_time = randf_range(spawn_interval_range.x, spawn_interval_range.y)
 	spawn_timer.start()
-	if OS.has_feature("editor"):
-		print("VillagerSpawner: Timer restarted with wait_time %s" % spawn_timer.wait_time)
+
+func stop_spawning() -> void:
+	spawn_timer.stop()
 
 func _spawn_villager() -> void:
 	# Spawns a villager with a random type and position

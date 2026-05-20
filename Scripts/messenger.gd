@@ -13,8 +13,8 @@ const ARRIVE_DISTANCE: float = 50.0
 const FLEE_DISTANCE: float = 250.0
 const RETURN_DISTANCE: float = 400.0
 const DIRECT_RETURN_THRESHOLD: float = 200.0
-const SHOUT_COOLDOWN: float = 6.0
-const VILLAGER_CHECK_INTERVAL: float = 2.0
+const SHOUT_COOLDOWN: float = 45.0
+const VILLAGER_CHECK_INTERVAL: float = 5.0
 const SNAP_THRESHOLD: float = 5.0
 const FLEE_DURATION: float = 3.0  # NEW: How long to flee after taking damage
 
@@ -343,9 +343,8 @@ func _on_threat_detected(side: String) -> void:
 		shout(key)
 		cooldowns[key] = now
 
-func _on_threat_cleared(side: String) -> void:
-	var key = side.to_lower()
-	cooldowns[key] = 0.0
+func _on_threat_cleared(_side: String) -> void:
+	pass  # Let the per-gate cooldown expire naturally — resetting here caused spam
 
 func _check_villagers_only() -> void:
 	var now = Time.get_unix_time_from_system()
