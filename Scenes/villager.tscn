@@ -29,7 +29,7 @@ texture = ExtResource("1_clim2")
 region_enabled = true
 region_rect = Rect2(135, 68, 20, 28)
 
-[node name="collision_shape_2d" type="CollisionShape2D" parent="." unique_id=1246428409]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1246428409]
 visible = false
 position = Vector2(0, 1)
 shape = SubResource("RectangleShape2D_7u53x")

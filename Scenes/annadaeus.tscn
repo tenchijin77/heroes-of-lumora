@@ -50,6 +50,8 @@ color_ramp = SubResource("GradientTexture1D_cti21")
 collision_layer = 32
 collision_mask = 586
 script = ExtResource("1_4xvhl")
+current_health = 500
+max_health = 500
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=698963861]
 visible = false
@@ -60,7 +62,7 @@ shape = SubResource("RectangleShape2D_sfdtf")
 position = Vector2(1, -2.5)
 texture = ExtResource("2_20pnm")
 region_enabled = true
-region_rect = Rect2(1604, 257, 25, 31)
+region_rect = Rect2(1604, 257, 21.633057, 31)
 
 [node name="muzzle" type="Node2D" parent="." unique_id=472072671]
 position = Vector2(-8, 0)

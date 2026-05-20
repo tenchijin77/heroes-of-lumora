@@ -33,9 +33,11 @@ completed:
 -added a loot drop system: monsters randomly drop coins and potions
 -added dialogue for the main screen to setup the game with dialogic- Timot and Brimble movie introduces the game and controls
 -added Annadaeus NPC to assist in later waves (working on when to add her to the game)
--began design on Tenchijin NPC; still working on spells and narrative for his entry
+-began Tenchijin NPC; still working on spells and narrative for his entry
 -added a pause menu with ESC with an option to quit to the main menu
--added the shop, and timot npc in the shop with stat upgrades, guard replacements, and magi (turret npcs)
+-added the shop, with stat upgrades, guard replacements, and magi (turret npcs)
+-fixed day/night cycle to start at early morning and make darkness less severe
+
 
 to do: (in order of importance)
 

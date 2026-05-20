@@ -50,7 +50,7 @@ var _waypoint_offset: Vector2 = Vector2.ZERO
 func _ready() -> void:
 	# Initialize monster properties and navigation
 	add_to_group("monsters")
-	collision_mask = 1 + 4 + 16 + 32 + 64 + 512
+	collision_mask = 1 + 4 + 2048 + 32 + 64 + 512  # Player, ProjP, Walls, FriendlyNPCs, FriendlyProj, HealProj
 	
 	# Navigation settings will be auto-tuned by _auto_tune_from_collision()
 	navigation_agent.path_desired_distance = 15.0
@@ -303,8 +303,8 @@ func _find_nearest_attack_target() -> void:
 	
 	var attack_targets: Array = []
 	
-	# Target groups for Attack: player, friendly, healer, villagers (in order of proximity)
-	var priority_groups = ["player", "friendly", "healer", "villagers"]
+	# Target groups for Attack: player, friendly fighters, villagers — healers/priestesses excluded
+	var priority_groups = ["player", "friendly", "villagers"]
 
 	for group_name in priority_groups:
 		for node in get_tree().get_nodes_in_group(group_name):
@@ -425,7 +425,7 @@ func _process_collisions():
 		var body = collision.get_collider()
 		
 		# Quick group check first (faster than has_method)
-		if not (body.is_in_group("player") or body.is_in_group("friendly") or body.is_in_group("healer")):
+		if not (body.is_in_group("player") or body.is_in_group("friendly")):
 			continue
 		
 		# Check cooldown before expensive method check

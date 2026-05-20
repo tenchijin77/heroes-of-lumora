@@ -1,52 +1,75 @@
 extends Camera2D
 
-# --- Existing Camera Follow Properties ---
 @onready var target = $"../player"
 @export var follow_rate: float = 2.0
 
-# --- Zoom Properties ---
-@export var zoom_speed: float = 0.01
-var touch_positions: Dictionary = {}
-var initial_pinch_distance: float = 0.0
-var initial_zoom: Vector2 = Vector2.ONE
+# The vertical world-units the game was designed to show at 1x zoom.
+# Matches the Godot 4 default viewport height so existing scenes look unchanged.
+@export var base_height: float = 648.0
+
+# Screen shake
+var _shake_intensity: float = 0.0
+var _shake_timer: float = 0.0
+
+# Zoom — user_zoom is applied on top of the auto-fit base zoom
+var _base_zoom: float = 1.0
+var _user_zoom: float = 1.0
+var _pinch_start_user_zoom: float = 1.0
+var _pinch_start_distance: float = 0.0
+var _touch_positions: Dictionary = {}
+
+func _ready() -> void:
+	get_viewport().size_changed.connect(_recalc_zoom)
+	_recalc_zoom()
+
+func shake(intensity: float, duration: float) -> void:
+	_shake_intensity = intensity
+	_shake_timer = duration
 
 func _process(delta: float) -> void:
-	# This line keeps the camera following the player smoothly
 	global_position = global_position.lerp(target.global_position, follow_rate * delta)
+	if _shake_timer > 0.0:
+		_shake_timer -= delta
+		offset = Vector2(
+			randf_range(-_shake_intensity, _shake_intensity),
+			randf_range(-_shake_intensity, _shake_intensity)
+		)
+	else:
+		offset = Vector2.ZERO
+
+func _recalc_zoom() -> void:
+	# Scale so base_height world-units always fill the viewport vertically.
+	var vp_h := get_viewport().get_visible_rect().size.y
+	if vp_h > 0.0:
+		_base_zoom = vp_h / base_height
+	zoom = Vector2.ONE * (_base_zoom * _user_zoom)
 
 func _unhandled_input(event: InputEvent) -> void:
-	# Handle mouse wheel scrolling for zooming
-	if event is InputEventMouseButton:
-		if event.is_pressed():
-			if event.button_index == MOUSE_BUTTON_WHEEL_UP:
-				zoom *= 1.1  # Zoom in
-			elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-				zoom /= 1.1  # Zoom out
-				
-	# Handle touch events for pinch-to-zoom
-	if event is InputEventScreenTouch:
-		var touch_index = event.index
-		if event.pressed:
-			touch_positions[touch_index] = event.position
-		else:
-			if touch_positions.has(touch_index):
-				touch_positions.erase(touch_index)
-			if touch_positions.size() < 2:
-				initial_pinch_distance = 0.0
-				initial_zoom = zoom
+	# Mouse-wheel zoom
+	if event is InputEventMouseButton and event.is_pressed():
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+			_user_zoom *= 1.1
+			_recalc_zoom()
+		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			_user_zoom /= 1.1
+			_recalc_zoom()
 
-	# Check for pinch gesture
-	if touch_positions.size() == 2:
-		var touches = touch_positions.values()
-		var touch1_pos = touches[0]
-		var touch2_pos = touches[1]
-		
-		var current_pinch_distance = touch1_pos.distance_to(touch2_pos)
-		
-		if initial_pinch_distance == 0.0:
-			initial_pinch_distance = current_pinch_distance
-			initial_zoom = zoom
+	# Touch: track finger positions
+	if event is InputEventScreenTouch:
+		if event.pressed:
+			_touch_positions[event.index] = event.position
+		else:
+			_touch_positions.erase(event.index)
+			if _touch_positions.size() < 2:
+				_pinch_start_distance = 0.0
+
+	# Pinch-to-zoom
+	if _touch_positions.size() == 2:
+		var pts := _touch_positions.values()
+		var dist: float = pts[0].distance_to(pts[1])
+		if _pinch_start_distance == 0.0:
+			_pinch_start_distance = dist
+			_pinch_start_user_zoom = _user_zoom
 			return
-		
-		var zoom_factor = current_pinch_distance / initial_pinch_distance
-		zoom = initial_zoom * zoom_factor
+		_user_zoom = _pinch_start_user_zoom * (dist / _pinch_start_distance)
+		_recalc_zoom()

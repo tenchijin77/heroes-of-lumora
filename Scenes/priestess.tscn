@@ -97,6 +97,6 @@ position = Vector2(-1.50002, 2.00001)
 scale = Vector2(0.551758, 0.552734)
 texture = ExtResource("7_bwqxu")
 
-[node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=1660293745]
+[node name="navigation_agent_2d" type="NavigationAgent2D" parent="." unique_id=1660293745]
 avoidance_enabled = true
 radius = 30.0

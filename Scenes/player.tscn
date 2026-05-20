@@ -23,6 +23,8 @@ radius = 53.0094
 top_level = true
 collision_mask = 538
 script = ExtResource("1_cvnsp")
+current_health = 150
+max_health = 150
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=371758023]
 visible = false

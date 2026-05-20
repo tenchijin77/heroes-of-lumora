@@ -67,6 +67,36 @@ var shout_texts: Dictionary = {
 		"Help the villagers! They are cornered and defenseless!",
 		"The beasts are slaughtering the innocents! Save the people!",
 		"Villagers under attack! Prioritize their safety!"
+	],
+	"anna_arrived": [
+		"Annadaeus has joined the fight! Her song lifts our spirits!",
+		"The bard Annadaeus is here! Courage, defenders!",
+		"Annadaeus arrives! Her music bolsters the faithful!"
+	],
+	"anna_critical": [
+		"Annadaeus is gravely wounded! Rally to her side!",
+		"The bard is close to death! Protect Annadaeus!",
+		"Annadaeus needs aid—she cannot hold much longer!"
+	],
+	"anna_died": [
+		"Annadaeus has fallen! We fight on in her honor!",
+		"The bard is gone... Annadaeus has been slain!",
+		"Annadaeus is dead! Hold the line in her memory!"
+	],
+	"tenchi_arrived": [
+		"The Archmage Tenchijin has arrived! Victory is within reach!",
+		"Tenchijin comes! The tide of battle turns!",
+		"The Archmage is here! Tenchijin shall drive back the darkness!"
+	],
+	"tenchi_critical": [
+		"The Archmage is gravely wounded! Even Tenchijin cannot endure forever!",
+		"Tenchijin falters—the great archmage needs our aid!",
+		"Tenchijin is nearly spent! Protect the Archmage!"
+	],
+	"tenchi_died": [
+		"Tenchijin has fallen! The Archmage is no more...",
+		"Even the great Tenchijin could not hold! We fight on!",
+		"The Archmage is slain! All is not lost—fight on!"
 	]
 }
 
@@ -75,7 +105,7 @@ var max_health: float = 80.0
 
 func _ready() -> void:
 	add_to_group("friendly")
-	collision_mask = 16  # Environment/walls only — don't collide with player or friendlies
+	collision_mask = 2048  # Walls layer only — don't get stuck on buildings
 	call_deferred("_deferred_ready")
 
 func _deferred_ready() -> void:
@@ -100,7 +130,27 @@ func _deferred_ready() -> void:
 
 	var markers = get_tree().current_scene.get_node_or_null("town_markers")
 	if markers and markers.has_node("town_center"):
-		town_center_pos = markers.get_node("town_center").global_position
+		var offset_angle := randf() * TAU
+		var offset_dist := randf_range(50.0, 90.0)
+		town_center_pos = markers.get_node("town_center").global_position + Vector2(cos(offset_angle), sin(offset_angle)) * offset_dist
+
+	var anna = get_tree().get_first_node_in_group("annadaeus")
+	if anna:
+		if anna.has_signal("arrived"):
+			anna.arrived.connect(func(): shout("anna_arrived"))
+		if anna.has_signal("health_critical"):
+			anna.health_critical.connect(func(): shout("anna_critical"))
+		if anna.has_signal("died"):
+			anna.died.connect(func(): shout("anna_died"))
+
+	var tenchi = get_tree().get_first_node_in_group("tenchijin")
+	if tenchi:
+		if tenchi.has_signal("arrived"):
+			tenchi.arrived.connect(func(): shout("tenchi_arrived"))
+		if tenchi.has_signal("health_critical"):
+			tenchi.health_critical.connect(func(): shout("tenchi_critical"))
+		if tenchi.has_signal("died"):
+			tenchi.died.connect(func(): shout("tenchi_died"))
 
 	for detector in get_tree().get_nodes_in_group("gate_detectors"):
 		if detector is Area2D:
@@ -253,6 +303,10 @@ func shout(key: String) -> void:
 	text = "The messenger shouts: " + text
 	shout_label.size.x = 400.0
 	shout_label.set_deferred("text", text)
+
+	var ui = get_node_or_null("/root/UI")
+	if ui and ui.has_method("chat_add"):
+		ui.chat_add(text, "Messenger")
 
 	if not get_tree():
 		return

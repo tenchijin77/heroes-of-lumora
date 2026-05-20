@@ -28,7 +28,7 @@ var guard_home_position: Vector2
 
 func _ready() -> void:
 	add_to_group("friendly")
-	collision_mask = 16  # Environment/walls only — don't collide with player or friendlies
+	collision_mask = 2048  # Walls layer only — don't get stuck on buildings
 	guard_home_position = global_position + guard_center_offset
 	velocity = Vector2.ZERO
 

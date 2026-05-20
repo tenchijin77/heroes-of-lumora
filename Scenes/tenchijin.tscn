@@ -23,6 +23,8 @@ collision_layer = 32
 collision_mask = 586
 script = ExtResource("1_ohxry")
 cast_range = 400.0
+current_health = 500
+max_health = 500
 frost_nova_rate = 20.0
 disintegrate_rate = 30.0
 
@@ -35,7 +37,7 @@ shape = SubResource("RectangleShape2D_sfdtf")
 position = Vector2(1, -2.5)
 texture = ExtResource("2_ohxry")
 region_enabled = true
-region_rect = Rect2(262, 97, 23, 29)
+region_rect = Rect2(930.31104, 290.64066, 26.986084, 30.90335)
 
 [node name="muzzle" type="Node2D" parent="." unique_id=2082776260]
 position = Vector2(-13, 6)

@@ -4,6 +4,7 @@ extends CharacterBody2D
 # --- Signals ---
 signal health_critical  # Emitted when health drops to 30%
 signal died  # Emitted when Annadaeus dies
+signal arrived  # Emitted when Annadaeus first reaches the player
 
 # --- Annadaeus's Abilities ---
 @export var max_speed: float = 125.0
@@ -65,7 +66,7 @@ func _ready() -> void:
 	
 	# Setup collision layers - don't block player or other NPCs
 	collision_layer = 32  # Layer 6 (friendly)
-	collision_mask = 20  # Only monsters (4) and environment (16)
+	collision_mask = 2048  # Walls layer only — passes through buildings, respects map boundaries
 	
 	if health_bar:
 		health_bar.max_value = max_health
@@ -79,6 +80,11 @@ func _ready() -> void:
 	velocity = Vector2.ZERO
 	_load_casting_lines()
 	_configure_auras()
+	var _regen_timer := Timer.new()
+	_regen_timer.wait_time = 1.0
+	_regen_timer.autostart = true
+	_regen_timer.timeout.connect(_on_regen_tick)
+	add_child(_regen_timer)
 
 func _update_cooldowns(delta: float) -> void:
 	# Decrease ability cooldowns over time
@@ -212,18 +218,18 @@ func _following_player_state(delta: float) -> void:
 		velocity = Vector2.ZERO
 
 func _announce_arrival() -> void:
-	"""Shout dramatic entrance line when first approaching player"""
-	# FIXED: Use _force_show_text to bypass cooldown for important entrance message
-	_force_show_text("You, outsider To arms! Help me defend Lumora!")
+	_force_show_text("You, outsider! To arms! Help me defend Lumora!")
+	arrived.emit()
 	print("Annadaeus: Charging into battle alongside the outsider!")
 
 func _force_show_text(text: String) -> void:
-	"""Show text immediately, bypassing cooldown (for important messages only)"""
 	if casting_label and casting_timer:
 		casting_label.text = text
 		casting_timer.start()
-		# Update last_shout_time so next regular shout respects cooldown
 		last_shout_time = Time.get_unix_time_from_system()
+		var ui = get_node_or_null("/root/UI")
+		if ui and ui.has_method("chat_add"):
+			ui.chat_add(text, "Annadaeus")
 
 func _casting_state(delta: float) -> void:
 	# Stop movement during casting
@@ -458,6 +464,9 @@ func _show_casting_text(ability_name: String) -> void:
 	else:
 		casting_label.text = ability_name
 	casting_timer.start()
+	var ui = get_node_or_null("/root/UI")
+	if ui and ui.has_method("chat_add"):
+		ui.chat_add(casting_label.text, "Annadaeus")
 
 func take_damage(damage: int, _projectile_instance) -> void:
 	# Apply damage and update health
@@ -582,6 +591,11 @@ func _get_active_target() -> CharacterBody2D:
 	if current_friendly_target and is_instance_valid(current_friendly_target):
 		return current_friendly_target
 	return null
+
+func _on_regen_tick() -> void:
+	if is_decoy or current_health <= 0 or current_health >= max_health:
+		return
+	heal(2)
 
 func get_health() -> int:
 	# Return current health

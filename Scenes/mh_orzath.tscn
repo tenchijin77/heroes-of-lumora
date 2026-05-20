@@ -1,0 +1,65 @@
+[gd_scene format=3 uid="uid://cxo5aijkmm76j"]
+
+[ext_resource type="Script" uid="uid://dxasexg88xf87" path="res://Scripts/balrog.gd" id="1_c5ldm"]
+[ext_resource type="Texture2D" uid="uid://dhln4w4t2sc8n" path="res://Assets/Sprites/Spritesheet.png" id="2_jbshn"]
+[ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="3_6svg2"]
+[ext_resource type="PackedScene" uid="uid://3t2b01je16on" path="res://Scenes/abyss_touch.tscn" id="4_c5ldm"]
+[ext_resource type="PackedScene" uid="uid://d3rcusi22khhd" path="res://Scenes/potion.tscn" id="5_08tos"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sfdtf"]
+size = Vector2(109, 96)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pegji"]
+bg_color = Color(0.201527, 0.201527, 0.201527, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5abox"]
+bg_color = Color(0.94902, 0, 0, 1)
+
+[node name="mh\'orzath" type="CharacterBody2D" unique_id=164748168 groups=["monsters"]]
+collision_layer = 2
+collision_mask = 1653
+script = ExtResource("1_c5ldm")
+max_speed = 45.0
+current_health = 1000
+max_health = 1000
+bullet_scene = ExtResource("4_c5ldm")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1315675121]
+visible = false
+position = Vector2(2.5, 0)
+shape = SubResource("RectangleShape2D_sfdtf")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=548945303]
+scale = Vector2(3.5, 3.5)
+texture = ExtResource("2_jbshn")
+region_enabled = true
+region_rect = Rect2(1887.2703, 127.49361, 34.424927, 31.457306)
+
+[node name="muzzle" type="Node2D" parent="." unique_id=1762043902]
+
+[node name="bullet_pool" type="Node" parent="." unique_id=957668529]
+script = ExtResource("3_6svg2")
+node_scene = ExtResource("4_c5ldm")
+
+[node name="potion_pool" type="Node" parent="." unique_id=1160248444]
+script = ExtResource("3_6svg2")
+node_scene = ExtResource("5_08tos")
+
+[node name="avoidance_ray" type="RayCast2D" parent="." unique_id=1306372802]
+target_position = Vector2(127, 0)
+collision_mask = 1075
+
+[node name="health_bar" type="ProgressBar" parent="." unique_id=992865467]
+offset_left = -16.0
+offset_top = -48.0
+offset_right = 28.0
+offset_bottom = -45.0
+theme_override_styles/background = SubResource("StyleBoxFlat_pegji")
+theme_override_styles/fill = SubResource("StyleBoxFlat_5abox")
+rounded = true
+show_percentage = false
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=346707661]
+avoidance_enabled = true
+radius = 40.0
+avoidance_layers = 16

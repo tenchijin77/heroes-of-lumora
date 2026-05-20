@@ -5,7 +5,7 @@ extends Node2D
 # Global light node for dynamic day-night veil
 @onready var global_light: DirectionalLight2D = $global_light  
 
-# Process: Update world light based on TimeManager's chronomancy
+# Process: Update world light and screen overlay based on TimeManager's chronomancy
 func _process(delta: float) -> void:
 	var hour: float = TimeManager.current_time / 60.0
 	# Sin curve peaks at noon (factor=1.0, full brightness) and troughs at midnight (factor=0.0, darkest)
@@ -13,3 +13,6 @@ func _process(delta: float) -> void:
 	# Subtract mode: 0.0 = no subtraction (full bright), 0.55 = moonlit night
 	var target_subtract: float = lerp(0.55, 0.0, sun_factor)
 	global_light.energy = lerp(global_light.energy, target_subtract, 0.05 * delta)
+	# Screen overlay: up to 0.45 opacity at midnight, fully transparent at noon
+	var target_alpha: float = lerp(0.45, 0.0, sun_factor)
+	UI.set_night_alpha(lerp(UI.get_night_alpha(), target_alpha, 0.05 * delta))

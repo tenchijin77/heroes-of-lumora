@@ -14,7 +14,7 @@ signal health_updated(current: int, max: int)
 @export var firing_speed: float = 0.2
 @export var current_health: int = 100
 @export var max_health: int = 100
-@export var regeneration_per_second: float = .25 # Health regenerated per second
+@export var regeneration_per_second: float = 2.0 # Health regenerated per second
 @export var debug_enabled: bool = false  # NEW: Toggle debug printing
 
 @onready var sprite: Sprite2D = $Sprite2D
@@ -34,6 +34,7 @@ var active_effect_timers: Dictionary = {}  # NEW: Track active effect timers to 
 var cached_aim_vector: Vector2 = Vector2.ZERO  # NEW: Cache aim vector to avoid recalculation
 
 func _ready() -> void:
+	collision_mask = 16 + 2048  # Environment (buildings) + Walls
 	# Initialize player properties and connections
 	add_to_group("player")
 	if health_bar:
@@ -108,6 +109,9 @@ func take_damage(damage: int, _projectile_instance) -> void:
 	if health_bar and is_instance_valid(health_bar):
 		health_bar.value = current_health
 	emit_signal("health_updated", current_health, max_health)
+	var camera := get_viewport().get_camera_2d()
+	if camera and camera.has_method("shake"):
+		camera.shake(5.0, 0.2)
 	if current_health <= 0:
 		_handle_game_over()
 	else:

@@ -32,7 +32,7 @@ signal wave_updated(wave: int)
 @export var wave_duration_minutes: float = 2.0
 @export var spawn_rate_increase_per_wave: float = 0.1
 @export var min_multiplier_limit: float = 0.1
-@export var obstacle_collision_mask: int = 16 # Layer 5
+@export var obstacle_collision_mask: int = 2064 # Layer 5 (Environment=16) + Layer 12 (Walls=2048)
 @export var forbidden_zone_mask: int = 128 # Layer 8
 @export var initial_mobs_per_spawn: int = 1
 @export var mobs_increase_per_wave: int = 1
@@ -140,6 +140,8 @@ func _on_wave_timer_timeout() -> void:
 	_increase_spawn_rate()
 
 func _on_spawn_timer_timeout() -> void:
+	if Global.boss_fight_active:
+		return
 	# Spawn monsters
 	for i: int in range(current_mobs_per_spawn):
 		_spawn_monster()

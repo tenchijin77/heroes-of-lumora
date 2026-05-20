@@ -5,7 +5,6 @@ extends Area2D
 @export var heal_interval: float = 3.0
 @export var target_groups: Array[String] = ["healer", "friendly", "player"]
 @onready var heal_aura_timer: Timer = $heal_aura_timer
-@onready var aura_particles: Node2D = $aura_particles
 
 func _ready():
 	heal_aura_timer.wait_time = heal_interval
@@ -20,5 +19,3 @@ func _on_heal_tick():
 				body.heal(heal_amount)
 				print("HealingAura: Healed %s for %d" % [body.name, heal_amount])
 				break
-	if aura_particles and aura_particles.has_method("restart"):
-		aura_particles.restart()

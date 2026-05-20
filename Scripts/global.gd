@@ -15,8 +15,9 @@ var coins_collected: int = 0
 var current_time_survived: float = 0.0
 var saved_villagers: int = 0
 var lost_villagers: int = 0
-var total_villagers: int = 100
+var total_villagers: int = 50
 var game_active: bool = true
+var boss_fight_active: bool = false
 var guard_spawn_index: int = 0
 var magi_spawn_index: int = 0
 
@@ -24,6 +25,12 @@ var magi_spawn_index: int = 0
 var shop_purchase_counts: Dictionary = {"health": 0, "damage": 0, "speed": 0, "guard": 0, "magi": 0}
 
 func _ready() -> void:
+	var window := get_window()
+	window.content_scale_mode = Window.CONTENT_SCALE_MODE_VIEWPORT
+	window.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_IGNORE
+	window.content_scale_size = Vector2i(1152, 648)
+	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
+	print("Global: window size=%s scale_mode=%d scale_size=%s" % [window.size, window.content_scale_mode, window.content_scale_size])
 	DirAccess.make_dir_absolute("user://saves/")
 	load_high_scores()
 
@@ -110,8 +117,9 @@ func reset() -> void:
 	current_time_survived = 0.0
 	saved_villagers = 0
 	lost_villagers = 0
-	total_villagers = 100
+	total_villagers = 50
 	game_active = true
+	boss_fight_active = false
 	guard_spawn_index = 0
 	magi_spawn_index = 0
 	shop_purchase_counts = {"health": 0, "damage": 0, "speed": 0, "guard": 0, "magi": 0}

@@ -24,9 +24,9 @@ script = ExtResource("1_jdkcu")
 texture = ExtResource("2_fx8ed")
 flip_h = true
 region_enabled = true
-region_rect = Rect2(995.36224, 32.659813, 26.602478, 32.97908)
+region_rect = Rect2(1380.4675, 29.897171, 20.827026, 34.233063)
 
-[node name="collision_shape_2d" type="CollisionShape2D" parent="." unique_id=1729731236]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1729731236]
 visible = false
 position = Vector2(0, 1)
 shape = SubResource("RectangleShape2D_7u53x")

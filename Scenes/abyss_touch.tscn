@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://3t2b01je16on"]
+
+[ext_resource type="Script" uid="uid://d6xrs2lxn4lc" path="res://Scripts/projectile.gd" id="1_bjisp"]
+[ext_resource type="AudioStream" uid="uid://d2wej8da0f58c" path="res://Assets/Audio/636087__noahbangs__magic-flutter.mp3" id="2_lgjbv"]
+[ext_resource type="Texture2D" uid="uid://dhln4w4t2sc8n" path="res://Assets/Sprites/Spritesheet.png" id="3_odgg2"]
+[ext_resource type="AudioStream" uid="uid://tjlfi4jb3uqx" path="res://Assets/Audio/tanweraman-flesh-growing-horror-392360.mp3" id="4_lgjbv"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_lgjbv"]
+radius = 18.027756
+
+[node name="abyss_touch" type="Area2D" unique_id=333976846]
+collision_layer = 8
+collision_mask = 1073
+script = ExtResource("1_bjisp")
+speed = 180.0
+damage = 16
+sound_stream = ExtResource("2_lgjbv")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=173454585]
+texture = ExtResource("3_odgg2")
+region_enabled = true
+region_rect = Rect2(1339.8943, 322.71207, 35.81299, 32.126434)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=394509188]
+shape = SubResource("CircleShape2D_lgjbv")
+
+[node name="destroy_timer" type="Timer" parent="." unique_id=931588414]
+wait_time = 4.0
+autostart = true
+
+[node name="projectile_sound" type="AudioStreamPlayer2D" parent="." unique_id=686068265]
+stream = ExtResource("4_lgjbv")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
+[connection signal="timeout" from="destroy_timer" to="." method="_on_destroy_timer_timeout"]

@@ -114,9 +114,9 @@ func _spawn_villager() -> void:
 			
 			# Connect the signals to the spawner's handler functions
 			if not villager.villager_died.is_connected(_on_villager_died):
-				villager.villager_died.connect(_on_villager_died.bind(villager))
+				villager.villager_died.connect(_on_villager_died)
 			if not villager.villager_extracted.is_connected(_on_villager_extracted):
-				villager.villager_extracted.connect(_on_villager_extracted.bind(villager))
+				villager.villager_extracted.connect(_on_villager_extracted)
 	else:
 		if OS.has_feature("editor"):
 			push_error("VillagerSpawner: villager_pool is null!")

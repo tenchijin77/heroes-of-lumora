@@ -18,13 +18,21 @@ extends CanvasLayer
 @onready var resume_button: Button = $pause_overlay/pause_panel/VBoxContainer/resume_button
 
 var is_paused: bool = false
+var _night_overlay: ColorRect
+var _chat_panel: Panel = null
+var _chat_scroll: ScrollContainer = null
+var _chat_vbox: VBoxContainer = null
+var _chat_input: LineEdit = null
+const CHAT_MAX_MESSAGES: int = 50
+const CHAT_WIDTH: float = 380.0
+const CHAT_HEIGHT: float = 180.0
+const CHAT_MARGIN: float = 10.0
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	# Hide UI by default, show only for main scene
 	visible = false
 	pause_overlay.visible = false
-	# Update with initial values
+	_setup_night_overlay()
 	_update_all()
 	Global.wave_updated.connect(_update_wave)
 	Global.time_updated.connect(_update_time)
@@ -38,11 +46,28 @@ func _ready() -> void:
 	_check_scene()
 	# Initialize touch controls visibility
 	_toggle_touch_controls()
+	_setup_chat_box()
 	await get_tree().process_frame
 	var player = get_tree().get_first_node_in_group("player")
 	if player:
 		_connect_player(player)
 		
+func _setup_night_overlay() -> void:
+	_night_overlay = ColorRect.new()
+	_night_overlay.name = "night_overlay"
+	_night_overlay.color = Color(0.0, 0.02, 0.08, 0.0)  # Deep moonless-night blue, starts transparent
+	_night_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_night_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_night_overlay)
+	move_child(_night_overlay, 0)  # First child = renders behind all other UI elements
+
+func set_night_alpha(alpha: float) -> void:
+	if _night_overlay:
+		_night_overlay.color.a = alpha
+
+func get_night_alpha() -> float:
+	return _night_overlay.color.a if _night_overlay else 0.0
+
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause"):
 		var current_scene: Node = get_tree().current_scene
@@ -155,6 +180,27 @@ func _toggle_touch_controls() -> void:
 			touch_controls.visible = visible
 			touch_controls.process_mode = PROCESS_MODE_INHERIT if visible else PROCESS_MODE_DISABLED
 
+func show_announcement(text: String, duration: float = 5.0) -> void:
+	var vp_size := get_viewport().get_visible_rect().size
+	var label := Label.new()
+	label.text = text
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD
+	label.add_theme_font_size_override("font_size", 34)
+	label.add_theme_color_override("font_color", Color(1.0, 0.25, 0.1))
+	label.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0))
+	label.add_theme_constant_override("outline_size", 8)
+	label.size = Vector2(vp_size.x * 0.8, 120)
+	label.position = Vector2(vp_size.x * 0.1, vp_size.y * 0.36)
+	label.modulate.a = 0.0
+	add_child(label)
+	var tween := create_tween()
+	tween.tween_property(label, "modulate:a", 1.0, 0.4)
+	tween.tween_interval(duration - 0.9)
+	tween.tween_property(label, "modulate:a", 0.0, 0.5)
+	tween.tween_callback(label.queue_free)
+
 func _connect_player(player) -> void:
 	if not player.damage_updated.is_connected(_update_player_damage):
 		player.damage_updated.connect(_update_player_damage)
@@ -166,3 +212,161 @@ func _connect_player(player) -> void:
 	_update_player_damage(player.base_damage * player.damage_modifier)
 	_update_player_speed(player.max_speed)
 	_update_player_health(player.current_health, player.max_health)
+
+func _setup_chat_box() -> void:
+	_chat_panel = Panel.new()
+	_chat_panel.name = "chat_panel"
+	_chat_panel.position = Vector2(CHAT_MARGIN, 648.0 - CHAT_HEIGHT - CHAT_MARGIN)
+	_chat_panel.size = Vector2(CHAT_WIDTH, CHAT_HEIGHT)
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.0, 0.0, 0.0, 0.35)
+	style.corner_radius_top_left = 6
+	style.corner_radius_top_right = 6
+	style.corner_radius_bottom_left = 6
+	style.corner_radius_bottom_right = 6
+	_chat_panel.add_theme_stylebox_override("panel", style)
+	add_child(_chat_panel)
+
+	var vbox := VBoxContainer.new()
+	vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
+	vbox.offset_left = 4.0
+	vbox.offset_right = -4.0
+	vbox.offset_top = 4.0
+	vbox.offset_bottom = -4.0
+	vbox.add_theme_constant_override("separation", 2)
+	_chat_panel.add_child(vbox)
+
+	_chat_scroll = ScrollContainer.new()
+	_chat_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_chat_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	vbox.add_child(_chat_scroll)
+
+	_chat_vbox = VBoxContainer.new()
+	_chat_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_chat_vbox.add_theme_constant_override("separation", 1)
+	_chat_scroll.add_child(_chat_vbox)
+
+	_chat_input = LineEdit.new()
+	_chat_input.placeholder_text = "/ for commands"
+	_chat_input.add_theme_font_size_override("font_size", 12)
+	_chat_input.text_submitted.connect(_on_chat_submitted)
+	var input_style := StyleBoxFlat.new()
+	input_style.bg_color = Color(0.0, 0.0, 0.0, 0.5)
+	input_style.corner_radius_top_left = 3
+	input_style.corner_radius_top_right = 3
+	input_style.corner_radius_bottom_left = 3
+	input_style.corner_radius_bottom_right = 3
+	_chat_input.add_theme_stylebox_override("normal", input_style)
+	_chat_input.add_theme_stylebox_override("focus", input_style)
+	vbox.add_child(_chat_input)
+
+func chat_add(text: String, speaker: String = "") -> void:
+	if not _chat_vbox or not is_instance_valid(_chat_vbox):
+		return
+	var full_text := "[%s]: %s" % [speaker, text] if speaker != "" else text
+	var label := Label.new()
+	label.text = full_text
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD
+	label.add_theme_font_size_override("font_size", 13)
+	var color := Color(1.0, 1.0, 0.85, 1.0)
+	match speaker:
+		"System":    color = Color(0.65, 0.65, 0.65, 1.0)
+		"Tenchijin": color = Color(0.4, 0.9, 1.0, 1.0)
+		"Annadaeus": color = Color(1.0, 0.85, 0.35, 1.0)
+		"Messenger": color = Color(1.0, 1.0, 0.3, 1.0)
+	label.add_theme_color_override("font_color", color)
+	label.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 1.0))
+	label.add_theme_constant_override("outline_size", 2)
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_chat_vbox.add_child(label)
+	# remove_child first so get_child_count() drops immediately — queue_free() alone doesn't
+	if _chat_vbox.get_child_count() > CHAT_MAX_MESSAGES:
+		var old := _chat_vbox.get_child(0)
+		_chat_vbox.remove_child(old)
+		old.queue_free()
+	call_deferred("_scroll_chat_to_bottom")
+
+func _scroll_chat_to_bottom() -> void:
+	if _chat_scroll and is_instance_valid(_chat_scroll):
+		_chat_scroll.scroll_vertical = int(_chat_scroll.get_v_scroll_bar().max_value)
+
+func _on_chat_submitted(text: String) -> void:
+	_chat_input.clear()
+	_chat_input.release_focus()
+	var trimmed := text.strip_edges()
+	if trimmed == "":
+		return
+	if trimmed.begins_with("/"):
+		_handle_command(trimmed)
+	else:
+		chat_add(trimmed, "You")
+
+func _handle_command(text: String) -> void:
+	var parts := text.split(" ", false)
+	var cmd := parts[0].to_lower()
+	match cmd:
+		"/help":
+			chat_add("/kill — kill all monsters on screen", "System")
+			chat_add("/spawn <name> — spawn a monster (skeleton, wizard, goblin, ghost, ogre, lich...)", "System")
+			chat_add("/heal [amount] — heal the player (default 100)", "System")
+			chat_add("/coins [amount] — add coins (default 100)", "System")
+			chat_add("/wave [n] — jump to wave n", "System")
+		"/kill":
+			var killed := 0
+			for mob in get_tree().get_nodes_in_group("monsters"):
+				if is_instance_valid(mob) and mob.visible and mob.has_method("take_damage"):
+					mob.take_damage(99999, null)
+					killed += 1
+			chat_add("Killed %d monsters." % killed, "System")
+		"/spawn":
+			_spawn_enemy(parts[1].to_lower() if parts.size() > 1 else "skeleton")
+		"/heal":
+			var amount := int(parts[1]) if parts.size() > 1 else 100
+			var p := get_tree().get_first_node_in_group("player")
+			if p and p.has_method("heal"):
+				p.heal(amount)
+				chat_add("Healed player for %d HP." % amount, "System")
+			else:
+				chat_add("Player not found.", "System")
+		"/coins":
+			var amount := int(parts[1]) if parts.size() > 1 else 100
+			Global.coins_collected += amount
+			Global.emit_signal("coins_updated", Global.coins_collected)
+			chat_add("Added %d coins. Total: %d" % [amount, Global.coins_collected], "System")
+		"/wave":
+			if parts.size() > 1:
+				Global.current_wave = int(parts[1])
+				Global.emit_signal("wave_updated", Global.current_wave)
+				chat_add("Wave set to %d." % Global.current_wave, "System")
+			else:
+				chat_add("Current wave: %d. Usage: /wave [n]" % Global.current_wave, "System")
+		_:
+			chat_add("Unknown command '%s'. Type /help." % cmd, "System")
+
+func _spawn_enemy(enemy_name: String) -> void:
+	var scene_map := {
+		"skeleton": "res://Scenes/skeleton.tscn",
+		"wizard":   "res://Scenes/wizard.tscn",
+		"goblin":   "res://Scenes/goblin.tscn",
+		"ghost":    "res://Scenes/ghost.tscn",
+		"ogre":     "res://Scenes/ogre.tscn",
+		"lich":     "res://Scenes/lich.tscn",
+		"beholder": "res://Scenes/beholder.tscn",
+		"balrog":   "res://Scenes/balrog.tscn",
+		"wraith":   "res://Scenes/wraith.tscn",
+		"troll":    "res://Scenes/troll.tscn",
+		"hezrou":   "res://Scenes/hezrou.tscn",
+	}
+	if not scene_map.has(enemy_name):
+		chat_add("Unknown enemy '%s'. Try: skeleton, wizard, goblin, ghost, ogre, lich, beholder, balrog, wraith, troll, hezrou." % enemy_name, "System")
+		return
+	var scene := load(scene_map[enemy_name]) as PackedScene
+	if not scene:
+		chat_add("Failed to load scene for '%s'." % enemy_name, "System")
+		return
+	var p := get_tree().get_first_node_in_group("player")
+	var spawn_pos: Vector2 = p.global_position + Vector2(randf_range(-200.0, 200.0), randf_range(-200.0, 200.0)) if p else Vector2(400.0, 300.0)
+	var monster := scene.instantiate()
+	monster.global_position = spawn_pos
+	get_tree().current_scene.add_child(monster)
+	chat_add("Spawned %s." % enemy_name, "System")

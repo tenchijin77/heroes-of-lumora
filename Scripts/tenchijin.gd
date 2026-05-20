@@ -1,6 +1,10 @@
 # tenchijin.gd - Archmage who arrives to turn the tide; uses frost and arcane spells
 extends CharacterBody2D
 
+signal arrived
+signal health_critical
+signal died
+
 @export var max_speed: float = 80.0
 @export var acceleration: float = 10.0
 @export var drag: float = 0.9
@@ -38,10 +42,40 @@ extends CharacterBody2D
 @onready var health_bar: ProgressBar = $health_bar
 @onready var avoidance_ray: RayCast2D = $avoidance_ray
 @onready var player: CharacterBody2D = get_tree().get_first_node_in_group("player")
-@onready var casting_label: Label = $CastingLabel
-@onready var casting_timer: Timer = $CastingTimer
+@onready var casting_label: Label = $casting_label
+@onready var casting_timer: Timer = $casting_timer
+
+const CASTING_LINES: Dictionary = {
+	"frost_nova": [
+		"Freeze in place—Frost Nova!",
+		"The cold claims all who stand before me!",
+		"Be bound by ice!",
+		"Glacial chains hold fast!",
+	],
+	"improved_meteor": [
+		"Behold the fury of the heavens!",
+		"I call down the stars themselves—Meteor!",
+		"The cosmos answers my call!",
+		"Burn, wretches—Improved Meteor!",
+	],
+	"disintegrate": [
+		"Your very essence unravels!",
+		"Dissolution is your fate—Disintegrate!",
+		"I unmake you!",
+		"Come apart, creature!",
+	],
+	"time_warp": [
+		"The weave of time bends to my will!",
+		"Haste, companions—Time Warp!",
+		"I bend the flow of time itself!",
+		"Move swiftly—I part the veil of moments!",
+	],
+}
+
+var has_emitted_health_critical: bool = false
 
 var current_target: CharacterBody2D = null
+var current_healer_target: CharacterBody2D = null
 var detected_monsters: Array[CharacterBody2D] = []
 var current_state: String = "IDLE"
 var _strategic_target: Vector2 = Vector2.ZERO
@@ -56,7 +90,7 @@ var ability_cooldowns: Dictionary = {
 func _ready() -> void:
 	add_to_group("friendly")
 	add_to_group("tenchijin")
-	collision_mask = 16  # Environment only — don't collide with player or friendlies
+	collision_mask = 2048  # Walls layer only — passes through buildings, respects map boundaries
 
 	visible = false
 	set_process(false)
@@ -71,6 +105,12 @@ func _ready() -> void:
 	if casting_timer:
 		casting_timer.wait_time = 3.0
 		casting_timer.timeout.connect(func(): casting_label.text = "")
+
+	var _regen_timer := Timer.new()
+	_regen_timer.wait_time = 1.0
+	_regen_timer.autostart = true
+	_regen_timer.timeout.connect(_on_regen_tick)
+	add_child(_regen_timer)
 
 	# Connect to Anna's distress signals — deferred so all nodes are ready
 	_connect_spawn_triggers.call_deferred()
@@ -100,6 +140,7 @@ func dramatic_entrance() -> void:
 	set_process(true)
 	set_physics_process(true)
 	_show_casting_text("Tenchijin arrives! The tide turns now!")
+	arrived.emit()
 	print("Tenchijin: Stand firm! I shall turn the tide!")
 
 func _process(delta: float) -> void:
@@ -119,6 +160,10 @@ func _process(delta: float) -> void:
 			_strategic_move_state(delta)
 		"ESCAPING":
 			_escaping_state(delta)
+		"FOLLOWING_PLAYER":
+			_following_player_state(delta)
+		"SEEKING_HEALER":
+			_seeking_healer_state(delta)
 
 	_update_flip_h()
 
@@ -148,16 +193,27 @@ func _update_target() -> void:
 	if current_state == "ESCAPING":
 		return
 
+	# Seek healer when below 50% HP
+	if current_health < max_health * 0.5 and current_state != "SEEKING_HEALER":
+		var healer := _find_nearest_healer()
+		if healer:
+			current_healer_target = healer
+			current_state = "SEEKING_HEALER"
+			return
+	if current_state == "SEEKING_HEALER" and current_health >= max_health * 0.8:
+		current_state = "FOLLOWING_PLAYER"
+		current_healer_target = null
+	if current_state == "SEEKING_HEALER":
+		return
+
 	if not detected_monsters.is_empty():
 		current_target = detected_monsters[0]
-		if current_state in ["IDLE", "STRATEGIC_MOVE"]:
+		if current_state in ["IDLE", "STRATEGIC_MOVE", "FOLLOWING_PLAYER"]:
 			current_state = "POSITIONING"
 	else:
 		current_target = null
-		if current_state in ["POSITIONING", "ATTACKING"]:
-			if player and is_instance_valid(player):
-				_strategic_target = player.global_position + Vector2(-150, 0).rotated(randf_range(0.0, TAU))
-			current_state = "STRATEGIC_MOVE"
+		if current_state in ["POSITIONING", "ATTACKING", "IDLE", "STRATEGIC_MOVE"]:
+			current_state = "FOLLOWING_PLAYER"
 
 # --- States ---
 func _idle_state(delta: float) -> void:
@@ -202,6 +258,40 @@ func _escaping_state(delta: float) -> void:
 	else:
 		velocity = velocity.lerp(Vector2.ZERO, drag)
 
+func _following_player_state(delta: float) -> void:
+	if player and is_instance_valid(player):
+		var dist := global_position.distance_to(player.global_position)
+		if dist > 100.0:
+			var dir := global_position.direction_to(player.global_position)
+			velocity = velocity.lerp(dir * max_speed, acceleration * delta)
+		else:
+			velocity = velocity.lerp(Vector2.ZERO, drag)
+	else:
+		velocity = velocity.lerp(Vector2.ZERO, drag)
+
+func _seeking_healer_state(delta: float) -> void:
+	if not current_healer_target or not is_instance_valid(current_healer_target):
+		current_state = "FOLLOWING_PLAYER"
+		current_healer_target = null
+		return
+	var dist := global_position.distance_to(current_healer_target.global_position)
+	if dist > 48.0:
+		var dir := global_position.direction_to(current_healer_target.global_position)
+		velocity = velocity.lerp(dir * max_speed, acceleration * delta)
+	else:
+		velocity = velocity.lerp(Vector2.ZERO, drag)
+
+func _find_nearest_healer() -> CharacterBody2D:
+	var nearest: CharacterBody2D = null
+	var min_dist: float = INF
+	for healer in get_tree().get_nodes_in_group("healing_npcs"):
+		if is_instance_valid(healer) and healer is CharacterBody2D:
+			var dist := global_position.distance_to(healer.global_position)
+			if dist < min_dist:
+				min_dist = dist
+				nearest = healer as CharacterBody2D
+	return nearest
+
 # --- Spell Rotation ---
 func _perform_spell_rotation() -> void:
 	# Time Warp: fire when 3+ enemies are pressing the player
@@ -243,7 +333,7 @@ func _cast_frost_bolt() -> void:
 
 func _cast_frost_nova() -> void:
 	ability_cooldowns["frost_nova"] = frost_nova_rate
-	_show_casting_text("Frost Nova!")
+	_show_casting_text("frost_nova")
 	var hit_count := 0
 	for mob in get_tree().get_nodes_in_group("monsters"):
 		if is_instance_valid(mob) and mob.visible and global_position.distance_to(mob.global_position) <= frost_nova_range:
@@ -257,7 +347,7 @@ func _cast_meteor() -> void:
 	if not current_target or not is_instance_valid(current_target):
 		return
 	ability_cooldowns["meteor"] = meteor_rate
-	_show_casting_text("Improved Meteor!")
+	_show_casting_text("improved_meteor")
 	var target_pos := current_target.global_position
 	_spawn_meteor_windup_vfx(target_pos)
 	get_tree().create_timer(0.8).timeout.connect(func():
@@ -282,7 +372,7 @@ func _cast_disintegrate() -> void:
 	if not bullet_pool or not muzzle or not current_target or not is_instance_valid(current_target):
 		return
 	ability_cooldowns["disintegrate"] = disintegrate_rate
-	_show_casting_text("Disintegrate!")
+	_show_casting_text("disintegrate")
 	var projectile = bullet_pool.spawn()
 	if not projectile:
 		return
@@ -295,7 +385,7 @@ func _cast_disintegrate() -> void:
 
 func _cast_time_warp() -> void:
 	ability_cooldowns["time_warp"] = time_warp_rate
-	_show_casting_text("Time Warp!")
+	_show_casting_text("time_warp")
 	var targets: Array = []
 	targets.append_array(get_tree().get_nodes_in_group("friendly"))
 	targets.append_array(get_tree().get_nodes_in_group("player"))
@@ -439,10 +529,22 @@ func _on_detection_area_body_exited(body: Node2D) -> void:
 	if detected_monsters.has(body):
 		detected_monsters.erase(body)
 
-func _show_casting_text(text: String) -> void:
+func _show_casting_text(key: String) -> void:
 	if casting_label and casting_timer:
-		casting_label.text = text
+		if CASTING_LINES.has(key):
+			var lines: Array = CASTING_LINES[key]
+			casting_label.text = lines[randi() % lines.size()]
+		else:
+			casting_label.text = key
 		casting_timer.start()
+		var ui = get_node_or_null("/root/UI")
+		if ui and ui.has_method("chat_add"):
+			ui.chat_add(casting_label.text, "Tenchijin")
+
+func _on_regen_tick() -> void:
+	if not visible or current_health <= 0 or current_health >= max_health:
+		return
+	heal(2)
 
 # --- Health / Combat ---
 func get_health() -> int:
@@ -477,6 +579,9 @@ func take_damage(damage: int, _projectile_instance) -> void:
 	if current_health <= 0:
 		_die()
 	else:
+		if not has_emitted_health_critical and current_health <= max_health * 0.3:
+			has_emitted_health_critical = true
+			health_critical.emit()
 		_damage_flash()
 
 func _damage_flash() -> void:
@@ -487,6 +592,7 @@ func _damage_flash() -> void:
 
 func _die() -> void:
 	print("Tenchijin: The archmage has fallen...")
+	died.emit()
 	visible = false
 	set_process(false)
 	set_physics_process(false)

@@ -75,8 +75,10 @@ layout/default_style="Default"
 
 [display]
 
-window/size/mode=3
+window/size/viewport_width=2048
+window/size/viewport_height=1024
 window/stretch/mode="viewport"
+window/stretch/aspect="ignore"
 
 [dotnet]
 
@@ -189,6 +191,7 @@ pointing/emulate_touch_from_mouse=true
 2d_physics/layer_9="Loot"
 2d_physics/layer_10="Healing_Projectiles"
 2d_physics/layer_11="Healer_NPCs"
+\n2d_physics/layer_12="Walls"
 
 [rendering]
 

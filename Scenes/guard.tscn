@@ -21,6 +21,8 @@ radius = 422.11847
 collision_layer = 32
 collision_mask = 586
 script = ExtResource("1_mk1iy")
+current_health = 350
+max_health = 350
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1025979646]
 visible = false
@@ -62,6 +64,6 @@ collision_mask = 2
 visible = false
 shape = SubResource("CircleShape2D_dmkvq")
 
-[node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=332924828]
+[node name="navigation_agent_2d" type="NavigationAgent2D" parent="." unique_id=332924828]
 avoidance_enabled = true
 radius = 30.0
