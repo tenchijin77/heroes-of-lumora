@@ -97,9 +97,9 @@ func _handle_game_over() -> void:
 		push_error("Player: UI node not found at /root/UI!")
 	if get_tree():
 		if Global.is_high_score(Global.current_score):
-			get_tree().change_scene_to_file("res://Scenes/game_over.tscn")
+			get_tree().call_deferred("change_scene_to_file", "res://Scenes/game_over.tscn")
 		else:
-			get_tree().change_scene_to_file("res://Scenes/game_over2.tscn")
+			get_tree().call_deferred("change_scene_to_file", "res://Scenes/game_over2.tscn")
 	else:
 		push_error("SceneTree is null—cannot change to game over scene!")
 
