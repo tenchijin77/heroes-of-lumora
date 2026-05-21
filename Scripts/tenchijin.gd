@@ -9,6 +9,7 @@ signal died
 @export var acceleration: float = 10.0
 @export var drag: float = 0.9
 @export var cast_range: float = 280.0
+@export var preferred_range: float = 220.0
 @export var current_health: int = 200
 @export var max_health: int = 200
 
@@ -231,18 +232,17 @@ func _idle_state(delta: float) -> void:
 	velocity = velocity.lerp(Vector2.ZERO, drag)
 
 func _positioning_state(delta: float) -> void:
-	if current_target and is_instance_valid(current_target):
-		var dist := global_position.distance_to(current_target.global_position)
-		if dist <= cast_range:
-			current_state = "ATTACKING"
-		else:
-			var dir := global_position.direction_to(current_target.global_position)
-			velocity = velocity.lerp(dir * max_speed, acceleration * delta)
-	else:
+	if not current_target or not is_instance_valid(current_target):
 		current_state = "STRATEGIC_MOVE"
+		return
+	var dist := global_position.distance_to(current_target.global_position)
+	if dist <= preferred_range:
+		current_state = "ATTACKING"
+	else:
+		var dir := global_position.direction_to(current_target.global_position)
+		velocity = velocity.lerp(dir * max_speed, acceleration * delta)
 
-func _attacking_state(_delta: float) -> void:
-	velocity = Vector2.ZERO
+func _attacking_state(delta: float) -> void:
 	if not current_target or not is_instance_valid(current_target):
 		current_state = "POSITIONING"
 		return
@@ -250,6 +250,12 @@ func _attacking_state(_delta: float) -> void:
 	if dist > cast_range or not _has_clear_line_to_target(current_target):
 		current_state = "POSITIONING"
 		return
+	# Wizards don't stand in melee — back away if anything closes in
+	if dist < preferred_range:
+		var away := global_position.direction_to(current_target.global_position).normalized()
+		velocity = velocity.lerp(-away * max_speed, acceleration * delta)
+	else:
+		velocity = velocity.lerp(Vector2.ZERO, drag)
 	_perform_spell_rotation()
 
 func _strategic_move_state(delta: float) -> void:

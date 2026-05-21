@@ -6,20 +6,24 @@ const BOSS_MUSIC: AudioStreamMP3 = preload("res://Assets/Audio/audiodollar-adven
 const ARRIVAL_MESSAGE: String = "Your meddling has drawn the ire of Mh'orzath, the Eclipsed One! Tremble in fear!"
 
 @export var event_horizon_range: float = 300.0
-@export var event_horizon_damage: int = 80
-@export var event_horizon_pull_strength: float = 500.0
-@export var event_horizon_cooldown: float = 30.0
+@export var event_horizon_damage: int = 160
+@export var event_horizon_pull_strength: float = 600.0
+@export var event_horizon_cooldown: float = 15.0
 
 @export var nihil_storm_range: float = 400.0
-@export var nihil_storm_damage: int = 100
-@export var nihil_storm_cooldown: float = 45.0
+@export var nihil_storm_damage: int = 200
+@export var nihil_storm_cooldown: float = 20.0
 
 # Stagger the first uses so player has a moment to react
-var _event_horizon_timer: float = 12.0
-var _nihil_storm_timer: float = 22.0
+var _event_horizon_timer: float = 8.0
+var _nihil_storm_timer: float = 14.0
 
 func _ready() -> void:
 	score_value = 10000
+	# Override inherited monster defaults to boss-level values
+	shoot_rate = 0.8       # monsters.gd default is 1.5 — boss fires nearly 2x faster
+	shoot_range = 350.0    # longer reach so he doesn't have to chase
+	max_speed = 65.0       # was 45 — more mobile and harder to kite
 	super._ready()
 	add_to_group("final_boss")
 	call_deferred("_on_boss_spawned")

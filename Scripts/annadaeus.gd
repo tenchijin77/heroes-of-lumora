@@ -18,6 +18,7 @@ signal arrived  # Emitted when Annadaeus first reaches the player
 @export var illusory_double_rate: float = 25.0 # Cooldown for escape double
 @export var illusory_double_hp_threshold: float = 0.3 # HP to trigger escape
 @export var support_range: float = 300.0 # Range for targeting
+@export var min_enemy_range: float = 150.0 # Back away from enemies closer than this
 @export var finale_range: float = 250.0 # Range for Finale AoE
 @export var current_health: int = 75
 @export var max_health: int = 75
@@ -209,15 +210,22 @@ func _idle_state(delta: float) -> void:
 	velocity = velocity.lerp(Vector2.ZERO, drag)
 
 func _following_player_state(delta: float) -> void:
+	# Enemy too close — back away regardless of player distance
+	var closest := _find_closest_mob()
+	if closest and is_instance_valid(closest) and global_position.distance_to(closest.global_position) < min_enemy_range:
+		var away := global_position.direction_to(closest.global_position).normalized()
+		velocity = velocity.lerp(-away * max_speed, acceleration * delta)
+		return
+
 	# Move toward player, stopping at 75-pixel distance
 	if player and is_instance_valid(player):
 		var distance = global_position.distance_to(player.global_position)
-		
+
 		# Announce arrival when first getting close to player
 		if not has_announced_arrival and distance < 400.0:
 			has_announced_arrival = true
 			_announce_arrival()
-		
+
 		if distance > 75.0:
 			var direction = global_position.direction_to(player.global_position)
 			velocity = velocity.lerp(direction * max_speed, acceleration * delta)
@@ -240,8 +248,12 @@ func _force_show_text(text: String) -> void:
 			ui.chat_add(text, "Annadaeus")
 
 func _casting_state(delta: float) -> void:
-	# Stop movement during casting
-	velocity = Vector2.ZERO
+	var closest := _find_closest_mob()
+	if closest and is_instance_valid(closest) and global_position.distance_to(closest.global_position) < min_enemy_range:
+		var away := global_position.direction_to(closest.global_position).normalized()
+		velocity = velocity.lerp(-away * max_speed, acceleration * delta)
+	else:
+		velocity = velocity.lerp(Vector2.ZERO, drag)
 
 func _escaping_state(delta: float) -> void:
 	# Move away from closest enemy
