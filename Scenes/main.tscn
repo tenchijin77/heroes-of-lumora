@@ -20,6 +20,7 @@
 [ext_resource type="Script" uid="uid://7fwlm6n6y3sq" path="res://Scripts/gate_detector.gd" id="16_h1bgf"]
 [ext_resource type="PackedScene" uid="uid://cdfbj1oyr0vl5" path="res://Scenes/annadaeus.tscn" id="18_b3802"]
 [ext_resource type="PackedScene" uid="uid://cvu1l5283jic0" path="res://Scenes/tenchijin.tscn" id="18_hibaj"]
+[ext_resource type="Script" uid="uid://cdkupx0ayvt5u" path="res://Scripts/final_boss_spawner.gd" id="19_fboss"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_344ge"]
 size = Vector2(1569, 703)
@@ -6810,5 +6811,8 @@ position = Vector2(451, 386)
 
 [node name="annadaeus" parent="." unique_id=1265889869 instance=ExtResource("18_b3802")]
 position = Vector2(2906, 327)
+
+[node name="boss_spawner" type="Node" parent="." unique_id=1641295952]
+script = ExtResource("19_fboss")
 
 [connection signal="body_entered" from="doorway_area" to="doorway_area" method="_on_body_entered"]

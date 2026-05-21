@@ -322,6 +322,7 @@ func _handle_command(text: String) -> void:
 			chat_add("/set_speed <n> — set player move speed to n", "System")
 			chat_add("/set_damage <n> — set player projectile damage to n", "System")
 			chat_add("/set_solari <n> — set coin total to n", "System")
+			chat_add("/set_saved <n> — set villagers saved count to n", "System")
 			chat_add("/set_godmode — toggle invincibility", "System")
 		"/kill":
 			var killed := 0
@@ -404,6 +405,14 @@ func _handle_command(text: String) -> void:
 		"/set_godmode":
 			Global.godmode = not Global.godmode
 			chat_add("Godmode %s." % ("ON" if Global.godmode else "OFF"), "System")
+		"/set_saved":
+			if parts.size() < 2 or not parts[1].is_valid_int():
+				chat_add("Usage: /set_saved <amount>", "System")
+			else:
+				var amount := int(parts[1])
+				Global.saved_villagers = amount
+				Global.emit_signal("villagers_updated", Global.saved_villagers, Global.lost_villagers, Global.total_villagers)
+				chat_add("Villagers saved set to %d." % amount, "System")
 		_:
 			chat_add("Unknown command '%s'. Type /help." % cmd, "System")
 

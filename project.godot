@@ -16,7 +16,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 config/name="Heroes of Lumora"
 config/description="Heroes of Lumora, a bullet-hell game by Kuro Neko Sama Studios"
-run/main_scene="uid://b6e5clcrioodm"
+run/main_scene="res://Scenes/splash_screen.tscn"
 config/features=PackedStringArray("4.6", "Mobile")
 config/icon="res://icon.svg"
 

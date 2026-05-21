@@ -8,7 +8,9 @@
       "Bash(sed -n '55,62p' /home/rwilkinson/Documents/GitHub/heroes-of-lumora/Scripts/villager_spawner.gd)",
       "Bash(sed -n '100,106p' /home/rwilkinson/Documents/GitHub/heroes-of-lumora/Scripts/villager_spawner.gd)",
       "Bash(sed -n '333,338p' /home/rwilkinson/Documents/GitHub/heroes-of-lumora/Scripts/monsters.gd)",
-      "Bash(python3 *)"
+      "Bash(python3 *)",
+      "Bash(xargs ls -la)",
+      "Bash(sort -k5 -rn)"
     ]
   }
 }

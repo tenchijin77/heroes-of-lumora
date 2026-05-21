@@ -3,7 +3,6 @@
 # stops all spawners, clears monsters, announces Mh'orzath, then spawns him.
 extends Node
 
-const BOSS_MUSIC: AudioStreamMP3 = preload("res://Assets/Audio/audiodollar-adventure-game-334657.mp3")
 
 @export var boss_scene: PackedScene = preload("res://Scenes/mh_orzath.tscn")
 @export var win_villager_count: int = 50
@@ -55,19 +54,6 @@ func _spawn_boss() -> void:
 	get_tree().current_scene.add_child(_boss_instance)
 	if _boss_instance.has_signal("mob_died"):
 		_boss_instance.mob_died.connect(_on_boss_died)
-	_switch_to_boss_music()
-
-func _switch_to_boss_music() -> void:
-	var existing := get_tree().current_scene.get_node_or_null("AudioStreamPlayer")
-	if existing is AudioStreamPlayer:
-		existing.stop()
-	BOSS_MUSIC.loop = true
-	var player := AudioStreamPlayer.new()
-	player.name = "BossMusicPlayer"
-	player.stream = BOSS_MUSIC
-	player.volume_db = -2.0
-	add_child(player)
-	player.play()
 
 func _get_spawn_position() -> Vector2:
 	var player := get_tree().get_first_node_in_group("player")

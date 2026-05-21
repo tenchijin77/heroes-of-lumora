@@ -1,6 +1,8 @@
 # mh_orzath.gd - Final Boss: Mh'orzath, the Eclipsed One
 extends "res://Scripts/monsters.gd"
 
+const BOSS_MUSIC: AudioStreamMP3 = preload("res://Assets/Audio/audiodollar-adventure-game-334657.mp3")
+
 const ARRIVAL_MESSAGE: String = "Your meddling has drawn the ire of Mh'orzath, the Eclipsed One! Tremble in fear!"
 
 @export var event_horizon_range: float = 300.0
@@ -26,9 +28,22 @@ func _on_boss_spawned() -> void:
 	Global.boss_fight_active = true
 	_clear_regular_monsters()
 	_respawn_allies()
+	_start_boss_music()
 	var ui = get_node_or_null("/root/UI")
 	if ui and ui.has_method("show_announcement"):
 		ui.show_announcement(ARRIVAL_MESSAGE)
+
+func _start_boss_music() -> void:
+	var existing := get_tree().current_scene.get_node_or_null("AudioStreamPlayer")
+	if existing is AudioStreamPlayer:
+		existing.stop()
+	var stream := BOSS_MUSIC.duplicate() as AudioStreamMP3
+	stream.loop = true
+	var player := AudioStreamPlayer.new()
+	player.stream = stream
+	player.volume_db = -2.0
+	get_tree().current_scene.add_child(player)
+	player.play()
 
 func _process(delta: float) -> void:
 	super._process(delta)
