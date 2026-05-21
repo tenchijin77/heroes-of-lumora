@@ -1,14 +1,15 @@
-[gd_scene load_steps=2 format=3 uid="uid://bj2e54eikqriu"]
+[gd_scene format=3 uid="uid://bj2e54eikqriu"]
 
 [ext_resource type="Script" uid="uid://cggpeg7m5ovcj" path="res://Scripts/enemy_spawner.gd" id="1_cdqhx"]
 
-[node name="enemy_spawner" type="Node"]
+[node name="enemy_spawner" type="Node" unique_id=499145264]
 script = ExtResource("1_cdqhx")
+max_active_enemies = 200
 
-[node name="spawn_timer" type="Timer" parent="."]
+[node name="spawn_timer" type="Timer" parent="." unique_id=1174317620]
 autostart = true
 
-[node name="wave_timer" type="Timer" parent="."]
+[node name="wave_timer" type="Timer" parent="." unique_id=2079476253]
 wait_time = 120.0
 autostart = true
 

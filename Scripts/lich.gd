@@ -30,6 +30,5 @@ func _cast() -> void:
 		death_bolt.move_direction = direction.normalized() if direction.length() > 0.01 else Vector2.RIGHT  # Fallback to avoid zero vector
 		death_bolt.owner_group = "monsters"
 		death_bolt.launch(muzzle.global_position, death_bolt.move_direction)  # Call launch to play sound and activate
-		print("Lich %s: Cast death_bolt %s at %s, move_direction=%s, position=%s" % [name, death_bolt.name, target.name, death_bolt.move_direction, death_bolt.global_position])
 	else:
 		push_warning("Lich %s: Failed to spawn death_bolt!" % name)

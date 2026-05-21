@@ -31,6 +31,5 @@ func _cast() -> void:
 		disintegration_ray.move_direction = direction.normalized() if direction.length() > 0.01 else Vector2.RIGHT  # Fallback to avoid zero vector
 		disintegration_ray.owner_group = "monsters"
 		disintegration_ray.launch(muzzle.global_position, disintegration_ray.move_direction)  # Call launch to play sound and activate
-		print("Beholder %s: Cast disintegration_ray %s at %s, move_direction=%s, position=%s" % [name, disintegration_ray.name, target.name, disintegration_ray.move_direction, disintegration_ray.global_position])
 	else:
 		push_warning("Beholder %s: Failed to spawn disintegration_ray!" % name)

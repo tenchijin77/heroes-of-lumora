@@ -19,7 +19,6 @@ func _load_villagers_data() -> void:
 			villagers_data = json.data
 			if villagers_data.has("_comment"):
 				villagers_data.erase("_comment")
-			print("GameData: Loaded villagers.json successfully")
 		else:
 			push_error("GameData: Failed to parse villagers.json: %s" % json.get_error_message())
 	else:

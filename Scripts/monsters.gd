@@ -75,9 +75,12 @@ func _ready() -> void:
 	else:
 		push_warning("Monster %s: Failed to open potions.json!" % name)
 	
-	# Setup bullet pool
+	# Setup bullet pool - check both export variable and pool's node_scene
 	if bullet_scene:
 		bullet_pool.node_scene = bullet_scene
+	elif bullet_pool and bullet_pool.node_scene:
+		# Bullet scene is already set in the pool node directly (via .tscn file)
+		pass  # No warning needed - this is valid
 	else:
 		push_warning("Monster %s: bullet_scene not set!" % name)
 	
@@ -137,10 +140,6 @@ func _auto_tune_from_collision() -> void:
 	# Small monsters can get closer, large monsters need more space
 	navigation_agent.target_desired_distance = max(10.0, max_dim * 0.3)
 	
-	if debug_enabled:
-		print("Monster %s: Auto-tuned - size=%s, sprite_dim=%.1f, radius=%.1f, target_desired=%.1f" % [
-			name, monster_size, max_dim, navigation_agent.radius, navigation_agent.target_desired_distance
-		])
 
 func reset() -> void:
 	# Reset monster state for reuse
@@ -237,8 +236,6 @@ func _update_waypoint() -> void:
 			if not village_centers.is_empty():
 				current_waypoint = village_centers[0]
 				navigation_agent.target_position = current_waypoint.global_position + _waypoint_offset
-				if debug_enabled:
-					print("Monster %s: Waypoint set to village_center at (%.1f, %.1f)" % [name, current_waypoint.global_position.x, current_waypoint.global_position.y])
 			else:
 				push_warning("Monster %s: No village_center found! Skipping to extraction." % name)
 				waypoint_stage = 1
@@ -248,8 +245,6 @@ func _update_waypoint() -> void:
 			current_waypoint = _find_nearest_extraction_point()
 			if current_waypoint:
 				navigation_agent.target_position = current_waypoint.global_position
-				if debug_enabled:
-					print("Monster %s: Waypoint set to extraction_point at (%.1f, %.1f)" % [name, current_waypoint.global_position.x, current_waypoint.global_position.y])
 			else:
 				push_error("Monster %s: No extraction points found!" % name)
 
@@ -282,15 +277,11 @@ func _check_waypoint_reached() -> void:
 		0:
 			# Reached village center - advance to next stage
 			if distance_to_waypoint < 100.0:
-				if debug_enabled:
-					print("Monster %s: Reached village center - moving to extraction!" % name)
 				waypoint_stage = 1
 				_update_waypoint()
 		1:
 			# Reached extraction point - STAY HERE and hunt villagers
 			if distance_to_waypoint < 50.0:
-				if debug_enabled:
-					print("Monster %s: Reached extraction point - hunting villagers!" % name)
 				waypoint_stage = 2  # Mark as "arrived at hunting grounds"
 				velocity = Vector2.ZERO  # Stop moving
 
@@ -351,14 +342,6 @@ func _physics_process(_delta: float) -> void:
 			var distance_to_waypoint = global_position.distance_to(current_waypoint.global_position)
 			var nav_finished = navigation_agent.is_navigation_finished()
 			var stage_name = "village_center" if waypoint_stage == 0 else "extraction_point"
-			print("Monster %s: Stage=%s | Distance=%.1f | NavFinished=%s | Pos=(%.1f,%.1f)" % [
-				name, 
-				stage_name,
-				distance_to_waypoint, 
-				nav_finished,
-				global_position.x,
-				global_position.y
-			])
 	
 	# FIXED: New simplified navigation logic with fallback for stuck monsters
 	if navigation_agent.is_navigation_finished():
@@ -375,8 +358,6 @@ func _physics_process(_delta: float) -> void:
 			if distance_to_waypoint > 200.0:  # Far away but navigation finished = stuck
 				var direct_direction = global_position.direction_to(current_waypoint.global_position).normalized()
 				desired_velocity = direct_direction * max_speed
-				if debug_enabled:
-					print("Monster %s: FALLBACK DIRECT MOVE - Navigation stuck, forcing movement toward waypoint" % name)
 		else:
 			# Actually arrived
 			desired_velocity = Vector2.ZERO
@@ -529,12 +510,13 @@ func _reparent_potion(potion: Area2D, old_parent: Node, death_position: Vector2,
 	_add_potion_to_main(potion, death_position, potion_data)
 
 func _add_potion_to_main(potion: Area2D, death_position: Vector2, potion_data: Dictionary) -> void:
-	"""Helper function to add potion to main scene"""
 	if not is_instance_valid(potion):
 		return
-		
-	# Add to main scene if not already there
-	var main_scene = get_tree().root.get_node_or_null("main")
+
+	var scene_tree := Engine.get_main_loop() as SceneTree
+	if not scene_tree:
+		return
+	var main_scene = scene_tree.root.get_node_or_null("main")
 	if main_scene:
 		# FIXED: Only add if not already a child of main
 		if potion.get_parent() != main_scene:
@@ -545,8 +527,6 @@ func _add_potion_to_main(potion: Area2D, death_position: Vector2, potion_data: D
 		# Setup the potion
 		potion.setup(potion_data)
 		
-		if debug_enabled:
-			print("Monster %s: Spawned potion at %s" % [name, death_position])
 
 func _damage_flash() -> void:
 	# Flash sprite on damage

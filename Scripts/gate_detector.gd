@@ -18,14 +18,12 @@ func _ready() -> void:
 	body_exited.connect(_on_body_exited)
 	clear_timer.timeout.connect(_on_clear_timer_timeout)
 	add_to_group("gate_detectors")
-	print("Gate detector '%s' ready at %s" % [side, global_position])
 
 func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("monsters") and body.visible:
 		monster_count += 1
 		if monster_count == 1:
 			threat_detected.emit(side)
-			print(">>> %s gate under attack!" % side.to_upper())
 
 func _on_body_exited(body: Node2D) -> void:
 	if body.is_in_group("monsters") and body.visible:
@@ -37,4 +35,3 @@ func _on_body_exited(body: Node2D) -> void:
 func _on_clear_timer_timeout() -> void:
 	if monster_count == 0:
 		threat_cleared.emit(side)
-		print(">>> %s gate cleared" % side.to_upper())

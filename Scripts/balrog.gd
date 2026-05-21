@@ -34,7 +34,6 @@ func _cast() -> void:
 		malfire.move_direction = direction.normalized() if direction.length() > 0.01 else Vector2.RIGHT  # Fallback to avoid zero vector
 		malfire.owner_group = "monsters"
 		malfire.launch(muzzle.global_position, malfire.move_direction)  # Call launch to play sound and activate
-		print("Balrog %s: Cast malfire %s at %s, move_direction=%s, position=%s" % [name, malfire.name, target.name, malfire.move_direction, malfire.global_position])
 	else:
 		push_warning("Balrog %s: Failed to spawn malfire!" % name)
 

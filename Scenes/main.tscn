@@ -6752,27 +6752,31 @@ shape = SubResource("RectangleShape2D_fdnlq")
 
 [node name="spawner_marker" type="Sprite2D" parent="." unique_id=179218430]
 position = Vector2(-3369, 373)
+scale = Vector2(2.5, 2.5)
 texture = ExtResource("1_bo1nx")
 region_enabled = true
-region_rect = Rect2(1126, 480, 21, 31)
+region_rect = Rect2(1024.1211, 480.5161, 32.181763, 31.22583)
 
 [node name="spawner_marker2" type="Sprite2D" parent="." unique_id=1597850491]
 position = Vector2(-4134, 337)
+scale = Vector2(2.5, 2.5)
 texture = ExtResource("1_bo1nx")
 region_enabled = true
-region_rect = Rect2(1126, 480, 21, 31)
+region_rect = Rect2(1056.4263, 480.30994, 31.21521, 31.512451)
 
 [node name="spawner_marker3" type="Sprite2D" parent="." unique_id=774689763]
 position = Vector2(1067, -1456)
+scale = Vector2(2.5, 2.5)
 texture = ExtResource("1_bo1nx")
 region_enabled = true
-region_rect = Rect2(1126, 480, 21, 31)
+region_rect = Rect2(608.04553, 481.34647, 32.209106, 30.032806)
 
 [node name="spawner_marker4" type="Sprite2D" parent="." unique_id=559089987]
 position = Vector2(1097, -1964)
+scale = Vector2(2.5, 2.5)
 texture = ExtResource("1_bo1nx")
 region_enabled = true
-region_rect = Rect2(1126, 480, 21, 31)
+region_rect = Rect2(736.57935, 480.8439, 31.393494, 31.066528)
 
 [node name="town_markers" type="Node2D" parent="." unique_id=1039774906]
 

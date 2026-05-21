@@ -19,7 +19,6 @@ func _ready() -> void:
 		push_error("MainMenu: background_music is null!")
 	else:
 		background_music.play()
-		print("MainMenu: Playing background music")
 	if start_button:
 		start_button.grab_focus()
 	# Hide UI on main menu

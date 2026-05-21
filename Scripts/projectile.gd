@@ -31,8 +31,6 @@ func _ready() -> void:
 	else:
 		push_warning("Projectile %s: projectile_sound or sound_stream is null in _ready—check scene node!" % name)
 
-	print("Projectile %s: _ready, move_direction=%s, position=%s, owner_group=%s" %
-		[name, move_direction, global_position, owner_group])
 
 
 func reset() -> void:
@@ -46,8 +44,6 @@ func reset() -> void:
 			projectile_sound.stream = sound_stream
 		if not projectile_sound.playing:
 			projectile_sound.play()
-	else:
-		push_warning("Projectile %s: projectile_sound is null in reset—check scene node!" % name)
 	home_target = null
 	move_direction = Vector2.ZERO
 	rotation = 0.0
@@ -55,7 +51,6 @@ func reset() -> void:
 	slow_percent = 0.0
 	slow_duration = 0.0
 	modulate = Color.WHITE
-	print("Projectile %s: Reset, move_direction=%s, position=%s, owner_group=%s" % [name, move_direction, global_position, owner_group])
 
 
 func _process(delta: float) -> void:
@@ -66,8 +61,6 @@ func _process(delta: float) -> void:
 	if move_direction != Vector2.ZERO:
 		translate(move_direction * speed * delta)
 		rotation = move_direction.angle()
-	else:
-		print("Projectile %s: not moving, move_direction=%s, position=%s" % [name, move_direction, global_position])
 
 
 func _on_destroy_timer_timeout() -> void:
@@ -80,7 +73,6 @@ func _on_visibility_changed() -> void:
 
 
 func _on_body_entered(body: Node) -> void:
-	print("🟠 projectile.gd _on_body_entered called: hit %s from group %s" % [body.name, owner_group])
 
 	if body.is_in_group(owner_group):
 		return
@@ -95,24 +87,20 @@ func _on_body_entered(body: Node) -> void:
 		body.take_damage(damage, self)
 		if slow_percent > 0.0 and body.has_method("apply_slow"):
 			body.apply_slow(slow_percent, slow_duration)
-		print("Projectile from '%s' damaged monster %s for %d" % [owner_group, body.name, damage])
 		despawn()
 		return
 
 	if owner_group == "monsters":
 		if body.has_method("take_damage") and (body.is_in_group("player") or body.is_in_group("friendly") or body.is_in_group("healer")):
 			body.take_damage(damage, self)
-			print("Monster projectile hit %s for %d" % [body.name, damage])
 			despawn()
 			return
 
 	if owner_group == "player" and body.has_method("take_damage") and body.is_in_group("monsters"):
 		body.take_damage(damage, self)
-		print("Player projectile hit monster %s for %d" % [body.name, damage])
 		despawn()
 		return
 
-	print("Projectile from '%s' hit %s — no effect, despawning" % [owner_group, body.name])
 	despawn()
 
 
@@ -126,9 +114,6 @@ func despawn() -> void:
 		projectile_sound.stop()
 	if get_parent() is NodePool:
 		get_parent().despawn(self)
-	else:
-		print("Projectile %s: Despawn fallback (no NodePool parent)—test mode OK" % name)
-	print("Projectile %s: Despawned, move_direction=%s, position=%s" % [name, move_direction, global_position])
 
 
 func set_damage(new_damage: int) -> void:
@@ -148,8 +133,6 @@ func launch(start_pos: Vector2, direction: Vector2) -> void:
 		projectile_sound.stream = load("res://Assets/sounds/bone_whistle.ogg")
 	if projectile_sound:
 		projectile_sound.play()
-	else:
-		print("⚠️ projectile_sound is null!")
 
 	if destroy_timer:
 		destroy_timer.start()

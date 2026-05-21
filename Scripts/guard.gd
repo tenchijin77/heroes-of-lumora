@@ -222,7 +222,6 @@ func _damage_flash() -> void:
 		sprite.modulate = Color.WHITE
 
 func _die() -> void:
-	print("Guard %s died!" % name)
 
 	if get_parent() is NodePool:
 		get_parent().despawn(self)
@@ -254,7 +253,6 @@ func heal(amount: int) -> void:
 	if health_bar and is_instance_valid(health_bar):
 		health_bar.value = current_health
 
-	print("Guard %s healed for %d → current_health = %d" % [name, amount, current_health])
 
 func set_damage_modifier(modifier: float) -> void:
 	damage_modifier = modifier

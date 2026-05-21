@@ -39,7 +39,6 @@ func _trigger_boss_sequence() -> void:
 	if ui and ui.has_method("chat_add"):
 		ui.chat_add("The darkness recoils... something far worse stirs.", "System")
 
-	print("FinalBossSpawner: win condition met — boss sequence begins")
 	await get_tree().create_timer(3.5).timeout
 
 	if not is_instance_valid(self):
@@ -54,7 +53,6 @@ func _spawn_boss() -> void:
 	get_tree().current_scene.add_child(_boss_instance)
 	if _boss_instance.has_signal("mob_died"):
 		_boss_instance.mob_died.connect(_on_boss_died)
-	print("FinalBossSpawner: Mh'orzath has entered the world!")
 
 func _get_spawn_position() -> Vector2:
 	var player := get_tree().get_first_node_in_group("player")

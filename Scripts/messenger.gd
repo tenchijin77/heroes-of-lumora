@@ -293,7 +293,6 @@ func take_damage(damage: int, _projectile_instance) -> void:
 		if is_instance_valid(current_threat):
 			state = State.FLEEING
 			flee_timer = FLEE_DURATION
-			print("Messenger: Taking damage! Fleeing for %.1f seconds" % FLEE_DURATION)
 
 func shout(key: String) -> void:
 	if not shout_texts.has(key):

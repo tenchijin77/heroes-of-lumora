@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cxo5aijkmm76j"]
 
-[ext_resource type="Script" uid="uid://dxasexg88xf87" path="res://Scripts/balrog.gd" id="1_c5ldm"]
+[ext_resource type="Script" uid="uid://ivlg33ki3dws" path="res://Scripts/mh_orzath.gd" id="1_c5ldm"]
 [ext_resource type="Texture2D" uid="uid://dhln4w4t2sc8n" path="res://Assets/Sprites/Spritesheet.png" id="2_jbshn"]
 [ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="3_6svg2"]
 [ext_resource type="PackedScene" uid="uid://3t2b01je16on" path="res://Scenes/abyss_touch.tscn" id="4_c5ldm"]
@@ -16,6 +16,7 @@ bg_color = Color(0.201527, 0.201527, 0.201527, 1)
 bg_color = Color(0.94902, 0, 0, 1)
 
 [node name="mh\'orzath" type="CharacterBody2D" unique_id=164748168 groups=["monsters"]]
+scale = Vector2(2.5, 2.5)
 collision_layer = 2
 collision_mask = 1653
 script = ExtResource("1_c5ldm")

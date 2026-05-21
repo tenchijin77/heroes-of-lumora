@@ -2,7 +2,13 @@
   "permissions": {
     "allow": [
       "Bash(xargs -I{} sh -c 'grep -l \"collision_mask\" {} 2>/dev/null')",
-      "Bash(xargs -I{} grep -Hn \"collision_mask\" {})"
+      "Bash(xargs -I{} grep -Hn \"collision_mask\" {})",
+      "Bash(sed -n '20,30p' /home/rwilkinson/Documents/GitHub/heroes-of-lumora/Scripts/villager_spawner.gd)",
+      "Bash(sed -n '41,50p' /home/rwilkinson/Documents/GitHub/heroes-of-lumora/Scripts/villager_spawner.gd)",
+      "Bash(sed -n '55,62p' /home/rwilkinson/Documents/GitHub/heroes-of-lumora/Scripts/villager_spawner.gd)",
+      "Bash(sed -n '100,106p' /home/rwilkinson/Documents/GitHub/heroes-of-lumora/Scripts/villager_spawner.gd)",
+      "Bash(sed -n '333,338p' /home/rwilkinson/Documents/GitHub/heroes-of-lumora/Scripts/monsters.gd)",
+      "Bash(python3 *)"
     ]
   }
 }

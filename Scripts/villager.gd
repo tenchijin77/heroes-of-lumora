@@ -19,7 +19,6 @@ var shout_label: Label
 var target_position: Vector2
 
 func _ready() -> void:
-	print("Villager %s: _ready() called" % name)
 	add_to_group("villagers")
 	collision_mask = 2  # Monsters only — don't get stuck on environment or friendlies
 
@@ -28,11 +27,8 @@ func _ready() -> void:
 		health_bar.value = current_health
 
 	if navigation_agent:
-		print("Villager %s: navigation_agent found in _ready, connecting signals" % name)
 		navigation_agent.navigation_finished.connect(_on_navigation_finished)
 		update_navigation_target()
-	else:
-		print("Villager %s: navigation_agent is NULL in _ready!" % name)
 
 	if avoidance_ray:
 		avoidance_ray.enabled = true
@@ -70,10 +66,8 @@ func _on_navigation_finished() -> void:
 
 func update_navigation_target() -> void:
 	# FIXED: Guard against calling when not in tree or navigation_agent not ready
-	print("Villager %s: update_navigation_target called, is_inside_tree=%s, navigation_agent=%s" % [name, is_inside_tree(), navigation_agent != null])
 	
 	if not is_inside_tree():
-		print("Villager %s: Not in tree, returning" % name)
 		return
 	
 	if not navigation_agent:
@@ -81,7 +75,6 @@ func update_navigation_target() -> void:
 		return
 		
 	var extraction_points = get_tree().get_nodes_in_group("extraction_points")
-	print("Villager %s: Found %d extraction points" % [name, extraction_points.size()])
 	
 	if extraction_points.is_empty():
 		push_error("Villager %s: No extraction points found!" % name)
@@ -90,7 +83,6 @@ func update_navigation_target() -> void:
 	var random_target = extraction_points[randi() % extraction_points.size()]
 	target_position = random_target.global_position
 	navigation_agent.set_target_position(target_position)
-	print("Villager %s: Set target position to %s" % [name, target_position])
 
 func _setup_shout_label() -> void:
 	if not has_node("shout_label"):
@@ -164,7 +156,6 @@ func take_damage(damage: int, _projectile_instance) -> void:
 		queue_free()
 
 func reset(type: String = villager_type) -> void:
-	print("Villager %s: reset() called with type=%s, navigation_agent=%s" % [name, type, navigation_agent != null])
 	
 	villager_type = type
 	current_health = max_health
@@ -191,10 +182,7 @@ func reset(type: String = villager_type) -> void:
 	
 	# FIXED: Update navigation if agent is ready, otherwise _ready() will handle it
 	if navigation_agent:
-		print("Villager %s: Calling update_navigation_target from reset" % name)
 		update_navigation_target()
-	else:
-		print("Villager %s: navigation_agent is null in reset, will wait for _ready()" % name)
 	
 	# Shout message
 	if is_inside_tree():
@@ -218,8 +206,3 @@ func heal(amount: int) -> void:
 
 	if health_bar and is_instance_valid(health_bar):
 		health_bar.value = current_health
-
-	print(
-		"Villager %s healed for %d → current_health = %d"
-		% [name, amount, current_health]
-	)

@@ -30,6 +30,5 @@ func _cast() -> void:
 		lifedrain.move_direction = direction.normalized() if direction.length() > 0.01 else Vector2.RIGHT  # Fallback to avoid zero vector
 		lifedrain.owner_group = "monsters"
 		lifedrain.launch(muzzle.global_position, lifedrain.move_direction)  # Call launch to play sound and activate
-		print("Wraith %s: Cast lifedrain %s at %s, move_direction=%s, position=%s" % [name, lifedrain.name, target.name, lifedrain.move_direction, lifedrain.global_position])
 	else:
 		push_warning("Wraith %s: Failed to spawn lifedrain!" % name)

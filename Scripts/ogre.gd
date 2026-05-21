@@ -31,6 +31,5 @@ func _cast() -> void:
 		boulder.move_direction = direction.normalized() if direction.length() > 0.01 else Vector2.RIGHT  # Fallback to avoid zero vector
 		boulder.owner_group = "monsters"
 		boulder.launch(muzzle.global_position, boulder.move_direction)  # Call launch to play sound and activate
-		print("Ogre %s: Cast boulder %s at %s, move_direction=%s, position=%s" % [name, boulder.name, target.name, boulder.move_direction, boulder.global_position])
 	else:
 		push_warning("Ogre %s: Failed to spawn boulder!" % name)

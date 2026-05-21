@@ -37,6 +37,5 @@ func _cast() -> void:
 		ghost_fire.move_direction = direction.normalized() if direction.length() > 0.01 else Vector2.RIGHT  # Fallback to avoid zero vector
 		ghost_fire.owner_group = "monsters"
 		ghost_fire.launch(muzzle.global_position, ghost_fire.move_direction)  # Call launch to play sound and activate
-		print("Ghost %s: Cast ghost_fire %s at %s, move_direction=%s, position=%s" % [name, ghost_fire.name, target.name, ghost_fire.move_direction, ghost_fire.global_position])
 	else:
 		push_warning("Ghost %s: Failed to spawn ghost_fire!" % name)

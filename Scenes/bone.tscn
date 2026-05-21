@@ -1,13 +1,13 @@
-[gd_scene load_steps=5 format=3 uid="uid://ccvecuowlwto8"]
+[gd_scene format=3 uid="uid://ccvecuowlwto8"]
 
 [ext_resource type="Script" uid="uid://d6xrs2lxn4lc" path="res://Scripts/projectile.gd" id="1_2e6wv"]
-[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="2_lh5sp"]
-[ext_resource type="AudioStream" uid="uid://cjlgt6nnsdopc" path="res://Assets/Audio/egg-cracking-6844.mp3" id="3_2e6wv"]
+[ext_resource type="Texture2D" uid="uid://dhln4w4t2sc8n" path="res://Assets/Sprites/Spritesheet.png" id="2_lh5sp"]
+[ext_resource type="AudioStream" uid="uid://51o6bwvmvwpr" path="res://Assets/Audio/egg-cracking-6844.mp3" id="3_2e6wv"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_h5x2m"]
 size = Vector2(12, 6)
 
-[node name="bone" type="Area2D"]
+[node name="bone" type="Area2D" unique_id=637488985]
 collision_layer = 8
 collision_mask = 3121
 script = ExtResource("1_2e6wv")
@@ -15,20 +15,20 @@ speed = 180.0
 damage = 5
 sound_stream = ExtResource("3_2e6wv")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1267055045]
 rotation = 0.785398
 texture = ExtResource("2_lh5sp")
 region_enabled = true
 region_rect = Rect2(1274, 1227, 22, 17)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=921045765]
 shape = SubResource("RectangleShape2D_h5x2m")
 
-[node name="destroy_timer" type="Timer" parent="."]
+[node name="destroy_timer" type="Timer" parent="." unique_id=212899261]
 wait_time = 4.0
 autostart = true
 
-[node name="projectile_sound" type="AudioStreamPlayer2D" parent="."]
+[node name="projectile_sound" type="AudioStreamPlayer2D" parent="." unique_id=587857416]
 stream = ExtResource("3_2e6wv")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

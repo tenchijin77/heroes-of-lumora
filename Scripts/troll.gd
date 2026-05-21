@@ -30,6 +30,5 @@ func _cast() -> void:
 		poison_bolt.move_direction = direction.normalized() if direction.length() > 0.01 else Vector2.RIGHT  # Fallback to avoid zero vector
 		poison_bolt.owner_group = "monsters"
 		poison_bolt.launch(muzzle.global_position, poison_bolt.move_direction)  # Call launch to play sound and activate
-		print("Troll %s: Cast poison_bolt %s at %s, move_direction=%s, position=%s" % [name, poison_bolt.name, target.name, poison_bolt.move_direction, poison_bolt.global_position])
 	else:
 		push_warning("Troll %s: Failed to spawn poison_bolt!" % name)

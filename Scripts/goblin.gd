@@ -31,6 +31,5 @@ func _cast() -> void:
 		dagger.move_direction = direction.normalized() if direction.length() > 0.01 else Vector2.RIGHT  # Fallback to avoid zero vector
 		dagger.owner_group = "monsters"
 		dagger.launch(muzzle.global_position, dagger.move_direction)  # Call launch to play sound and activate
-		print("Goblin %s: Cast dagger %s at %s, move_direction=%s, position=%s" % [name, dagger.name, target.name, dagger.move_direction, dagger.global_position])
 	else:
 		push_warning("Goblin %s: Failed to spawn dagger!" % name)

@@ -17,5 +17,4 @@ func _on_heal_tick():
 		for group in target_groups:
 			if body.is_in_group(group) and body.has_method("heal"):
 				body.heal(heal_amount)
-				print("HealingAura: Healed %s for %d" % [body.name, heal_amount])
 				break

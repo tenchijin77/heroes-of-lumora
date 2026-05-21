@@ -26,8 +26,6 @@ func _ready() -> void:
 			return
 	add_to_group("villager_spawner")
 	
-	if OS.has_feature("editor"):
-		print("VillagerSpawner: Ready")
 	villager_pool = NodePool.new()
 	add_child(villager_pool)
 	villager_pool.node_scene = villager_scene
@@ -41,8 +39,6 @@ func _ready() -> void:
 			for key in json_data.keys():
 				if key != "_comment" and key is String:
 					villager_types.append(key)
-			if OS.has_feature("editor"):
-				print("VillagerSpawner: Loaded villager types: %s" % str(villager_types))
 		else:
 			if OS.has_feature("editor"):
 				push_error("VillagerSpawner: Failed to parse villagers.json!")
@@ -58,8 +54,6 @@ func _ready() -> void:
 		spawn_timer.autostart = false
 		spawn_timer.one_shot = false
 		spawn_timer.paused = true  # Start paused until wave 2
-		if OS.has_feature("editor"):
-			print("VillagerSpawner: Timer initialized with wait_time %s (paused)" % spawn_timer.wait_time)
 	else:
 		if OS.has_feature("editor"):
 			push_error("VillagerSpawner: villager_spawn_timer not found!")
@@ -72,8 +66,6 @@ func _on_wave_updated(wave: int) -> void:
 	if wave >= 2 and spawn_timer.paused:
 		spawn_timer.paused = false
 		spawn_timer.start()
-		if OS.has_feature("editor"):
-			print("VillagerSpawner: Started spawning at wave %d" % wave)
 
 func _on_villager_spawn_timer_timeout() -> void:
 	_spawn_villager()
@@ -85,8 +77,6 @@ func stop_spawning() -> void:
 
 func _spawn_villager() -> void:
 	# Spawns a villager with a random type and position
-	if OS.has_feature("editor"):
-		print("Spawner: Attempting to spawn villager.")
 	if villager_pool:
 		var villager = villager_pool.spawn()
 		if villager:
@@ -102,8 +92,6 @@ func _spawn_villager() -> void:
 			if villager.has_method("reset"):
 				villager.reset(villager.villager_type)
 			
-			if OS.has_feature("editor"):
-				print("Spawner: Spawned villager %s with type %s at %s" % [villager.name, villager.villager_type, villager.global_position])
 			
 			# Connect the signals to the spawner's handler functions
 			if not villager.villager_died.is_connected(_on_villager_died):
@@ -114,43 +102,25 @@ func _spawn_villager() -> void:
 		if OS.has_feature("editor"):
 			push_error("VillagerSpawner: villager_pool is null!")
 
-func _on_villager_died(villager: Node2D) -> void:
-	# villager.gd:take_damage already calls Global.increment_lost_villagers(); just log here
-	if OS.has_feature("editor"):
-		print("Villager died: %s, lost_villagers now %d" % [villager.name, Global.lost_villagers])
+func _on_villager_died(_villager: Node2D) -> void:
+	pass
 
-func _on_villager_extracted(villager: Node2D) -> void:
-	# villager.gd:_on_navigation_finished already calls Global.increment_saved_villagers(); just log here
-	if OS.has_feature("editor"):
-		print("Villager extracted: %s, saved_villagers now %d" % [villager.name, Global.saved_villagers])
+func _on_villager_extracted(_villager: Node2D) -> void:
+	pass
 
 func _get_random_spawn_position() -> Vector2:
 	# Returns a random spawn position within the forbidden zone or town rect
-	if OS.has_feature("editor"):
-		print("Spawner: Attempting to get random spawn position.")
 	var forbidden_zone: Area2D = get_node_or_null("/root/main/forbidden_zone")
 	if forbidden_zone:
-		if OS.has_feature("editor"):
-			print("Spawner: Found forbidden_zone node.")
 		var shape: CollisionShape2D = forbidden_zone.get_node_or_null("CollisionShape2D")
 		if not shape:
 			for child in forbidden_zone.get_children():
 				if child is CollisionShape2D:
 					shape = child
-					if OS.has_feature("editor"):
-						print("Spawner: Found CollisionShape2D child.")
 					break
 		if shape and shape.shape is RectangleShape2D:
 			var rect: Rect2 = shape.global_transform * shape.shape.get_rect()
-			if OS.has_feature("editor"):
-				print("Spawner: Found valid RectangleShape2D, spawning inside it.")
 			return Vector2(randf_range(rect.position.x, rect.position.x + rect.size.x),
 							randf_range(rect.position.y, rect.position.y + rect.size.y))
-		else:
-			if OS.has_feature("editor"):
-				print("Spawner: Forbidden zone shape is not a RectangleShape2D or no shape found.")
-	else:
-		if OS.has_feature("editor"):
-			print("Spawner: Could not find forbidden_zone node. Falling back to town_spawn_rect.")
 	return Vector2(randf_range(town_spawn_rect.position.x, town_spawn_rect.position.x + town_spawn_rect.size.x),
 					randf_range(town_spawn_rect.position.y, town_spawn_rect.position.y + town_spawn_rect.size.y))

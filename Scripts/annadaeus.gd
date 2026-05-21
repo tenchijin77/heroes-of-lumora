@@ -149,8 +149,6 @@ func _load_casting_lines() -> void:
 		var error = json.parse(content)
 		if error == OK:
 			casting_lines = json.get_data()
-		else:
-			print("JSON Parse Error: ", json.get_error_message())
 		file.close()
 
 func _configure_auras() -> void:
@@ -185,7 +183,6 @@ func _update_targets() -> void:
 	current_target = null
 	current_friendly_target = null
 	if current_health <= max_health * illusory_double_hp_threshold and ability_cooldowns["double"] <= 0:
-		print("Annadaeus: Health=%d, Double CD=%.2f, triggering Illusory Double" % [current_health, ability_cooldowns["double"]])
 		_perform_illusory_double()
 		return
 	var enemy_target = _find_closest_mob()
@@ -232,7 +229,6 @@ func _following_player_state(delta: float) -> void:
 func _announce_arrival() -> void:
 	_force_show_text("You, outsider! To arms! Help me defend Lumora!")
 	arrived.emit()
-	print("Annadaeus: Charging into battle alongside the outsider!")
 
 func _force_show_text(text: String) -> void:
 	if casting_label and casting_timer:
@@ -323,7 +319,6 @@ func _perform_finale() -> void:
 		finale_particles.emitting = true
 	if finale_sound and is_instance_valid(finale_sound):
 		finale_sound.play()
-		print("Annadaeus: Playing Finale sound")
 	var base_finale_damage: int = 25
 	var damage_boost: float = 1.0 + 0.5 * (int(courage_aura.visible) + int(renewal_aura.visible))
 	var final_damage: int = int(base_finale_damage * damage_boost)
@@ -334,7 +329,6 @@ func _perform_finale() -> void:
 			if distance <= finale_range:
 				mob.take_damage(final_damage, null)
 				hit_count += 1
-	print("Annadaeus: Finale hit %d enemies within %.2f pixels for %d damage (boost=%.2f)" % [hit_count, finale_range, final_damage, damage_boost])
 	ability_cooldowns["finale"] = finale_rate
 	current_state = "FOLLOWING_PLAYER"
 
@@ -385,7 +379,6 @@ func _spawn_ability_projectile_random() -> void:
 			projectile.move_direction = Vector2(cos(random_angle), sin(random_angle))
 			if projectile.has_method("set_damage"):
 				projectile.set_damage(base_damage * damage_modifier)
-			print("Annadaeus: Fired Symphony of Fate projectile in random direction=%s" % projectile.move_direction)
 
 func _spawn_finale_projectile(target: CharacterBody2D) -> void:
 	if not bullet_pool or not muzzle or not target or not is_instance_valid(target):
@@ -435,7 +428,6 @@ func _spawn_decoy() -> void:
 	)
 	decoy.add_child(timer)
 	timer.start()
-	print("Annadaeus: Spawned decoy at %s with 40 HP" % decoy.global_position)
 
 # --- Utility ---
 func _update_avoidance_ray(target: Node2D, range: float) -> void:
@@ -443,16 +435,12 @@ func _update_avoidance_ray(target: Node2D, range: float) -> void:
 	if avoidance_ray and target and is_instance_valid(target):
 		avoidance_ray.target_position = (target.global_position - global_position).normalized() * range
 		avoidance_ray.force_raycast_update()
-	else:
-		print("Annadaeus: Invalid avoidance ray or target for %s" % (target.name if target else "null"))
 
 func _has_clear_line_to_target(target: Node2D) -> bool:
 	# Check if there's a clear line to target
 	if not avoidance_ray or not target or not is_instance_valid(target):
-		print("Annadaeus: No clear line to target %s, invalid ray or target" % (target.name if target else "null"))
 		return false
 	if avoidance_ray.is_colliding() and avoidance_ray.get_collider() != target:
-		print("Annadaeus: No clear line to target %s, blocked by %s" % [target.name, avoidance_ray.get_collider().name])
 		return false
 	return true
 
@@ -492,7 +480,6 @@ func take_damage(damage: int, _projectile_instance) -> void:
 			if not has_emitted_health_critical:
 				has_emitted_health_critical = true
 				health_critical.emit()
-				print("Annadaeus: Health critical! (%d/%d) - Calling for reinforcements!" % [current_health, max_health])
 
 	if current_health <= 0:
 		if not is_decoy:
@@ -511,10 +498,8 @@ func _damage_flash() -> void:
 func _die() -> void:
 	# Handle death, queue_free for decoys
 	if is_decoy:
-		print("Annadaeus decoy died at %s!" % global_position)
 		queue_free()
 		return
-	print("Annadaeus died!")
 	if get_parent() is NodePool:
 		get_parent().despawn(self)
 	else:
@@ -559,10 +544,6 @@ func _find_closest_mob() -> CharacterBody2D:
 			if distance < min_distance:
 				min_distance = distance
 				closest_mob = mob
-	if closest_mob:
-		print("Annadaeus: Found closest enemy %s at position %s, distance=%.2f" % [closest_mob.name, closest_mob.global_position, min_distance])
-	else:
-		print("Annadaeus: No enemies found within range %.2f, total enemies=%d" % [support_range, enemy_count])
 	return closest_mob
 
 func _is_critical_situation() -> bool:
@@ -573,12 +554,6 @@ func _is_critical_situation() -> bool:
 			enemy_count += 1
 	var player_low_hp = player and is_instance_valid(player) and player.has_method("get_health") and player.get_health() < player.get_max_health() * 0.5
 	var annadaeus_low_hp = current_health < max_health * 0.5
-	print("Annadaeus: Checking critical situation: enemies=%d, player_hp=%s, annadaeus_hp=%d, is_critical=%s" % [
-		enemy_count,
-		player.get_health() if player and player.has_method("get_health") else "N/A",
-		current_health,
-		enemy_count > 5 or player_low_hp or annadaeus_low_hp
-	])
 	return enemy_count > 5 or player_low_hp or annadaeus_low_hp
 
 func _move_wobble() -> void:
@@ -622,7 +597,6 @@ func heal(amount: int) -> void:
 	current_health = clamp(current_health + amount, 0, max_health)
 	if health_bar and is_instance_valid(health_bar):
 		health_bar.value = current_health
-	print("Annadaeus %s healed for %d - current_health = %d" % [name, amount, current_health])
 
 func set_damage_modifier(modifier: float) -> void:
 	# Set damage multiplier for courage aura

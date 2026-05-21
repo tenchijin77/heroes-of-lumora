@@ -32,6 +32,5 @@ func _cast() -> void:
 		fireball.move_direction = direction.normalized() if direction.length() > 0.01 else Vector2.RIGHT  # Fallback to avoid zero vector
 		fireball.owner_group = "monsters"
 		fireball.launch(muzzle.global_position, fireball.move_direction)  # Call launch to play sound and activate
-		print("Wizard %s: Cast fireball %s at %s, move_direction=%s, position=%s" % [name, fireball.name, target.name, fireball.move_direction, fireball.global_position])
 	else:
 		push_warning("Wizard %s: Failed to spawn fireball!" % name)

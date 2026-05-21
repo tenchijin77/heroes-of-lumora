@@ -85,10 +85,6 @@ func _process(delta: float) -> void:
 func _handle_game_over() -> void:
 	# Handle game over logic when player's health hits zero
 	Global.game_active = false
-	if debug_enabled:
-		print("Game Over! Final Score: %d | Wave: %d | Coins: %d | Time: %s | Saved: %d | Lost: %d" % [
-			Global.current_score, Global.current_wave, Global.coins_collected, Global.format_time(Global.current_time_survived),
-			Global.saved_villagers, Global.lost_villagers])
 	# Explicitly hide UI
 	var ui = get_node_or_null("/root/UI")
 	if ui:
@@ -136,8 +132,6 @@ func open_fire() -> void:
 	if arrow.has_method("set_damage"):
 		arrow.set_damage(base_damage * damage_modifier)
 	
-	if debug_enabled:
-		print("Player: Spawned arrow %s, move_direction=%s, position=%s" % [arrow.name, arrow.move_direction, arrow.global_position])
 
 func _move_wobble() -> void:
 	# Handle sprite wobble animation
@@ -160,8 +154,6 @@ func _on_pickup_area_entered(area: Area2D) -> void:
 	if area.is_in_group("loot"):
 		Global.coins_collected += 1
 		Global.emit_signal("coins_updated", Global.coins_collected)
-		if debug_enabled:
-			print("Picked up coin! Coins: %d" % Global.coins_collected)
 		area.collect()
 	# Handle potion pickup
 	if area.is_in_group("potion"):
@@ -231,8 +223,6 @@ func heal(amount: int) -> void:
 	if health_bar and is_instance_valid(health_bar):
 		health_bar.value = current_health
 	emit_signal("health_updated", current_health, max_health)
-	if debug_enabled:
-		print("Player %s healed for %d → current_health = %d" % [name, amount, current_health])
 
 func set_damage_modifier(modifier: float) -> void:
 	# Set damage modifier for courage aura

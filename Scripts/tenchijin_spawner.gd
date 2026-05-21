@@ -16,31 +16,23 @@ func _ready() -> void:
 	if anna:
 		if anna.has_signal("health_critical"):
 			anna.health_critical.connect(_on_anna_health_critical)
-			print("TenchijinSpawner: Connected to Anna's health_critical signal")
 		if anna.has_signal("died"):
 			anna.died.connect(_on_anna_died)
-			print("TenchijinSpawner: Connected to Anna's died signal")
-	else:
-		print("TenchijinSpawner: Warning - Annadaeus not found in scene!")
 	
 	# Connect to global wave signal
 	if Global.has_signal("wave_updated"):
 		Global.wave_updated.connect(_on_wave_updated)
-		print("TenchijinSpawner: Connected to Global wave_updated signal")
 
 func _on_anna_health_critical() -> void:
 	if not has_spawned:
-		print("TenchijinSpawner: Anna's health is critical! Summoning Tenchijin...")
 		_spawn_tenchijin()
 
 func _on_anna_died() -> void:
 	if not has_spawned:
-		print("TenchijinSpawner: Anna has fallen! Tenchijin arrives to avenge her!")
 		_spawn_tenchijin()
 
 func _on_wave_updated(wave: int) -> void:
 	if wave >= spawn_wave_threshold and not has_spawned:
-		print("TenchijinSpawner: Wave %d reached! The Archmage is needed!" % wave)
 		_spawn_tenchijin()
 
 func _spawn_tenchijin() -> void:
@@ -63,7 +55,6 @@ func _spawn_tenchijin() -> void:
 	if tenchijin_instance.has_method("dramatic_entrance"):
 		tenchijin_instance.dramatic_entrance()
 	
-	print("TenchijinSpawner: Tenchijin spawned at %s!" % spawn_pos)
 
 func _get_spawn_position() -> Vector2:
 	# Spawn near Anna if she exists, otherwise near player

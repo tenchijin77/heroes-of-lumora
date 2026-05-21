@@ -32,6 +32,5 @@ func _cast() -> void:
 		bone.move_direction = direction.normalized() if direction.length() > 0.01 else Vector2.RIGHT  # Fallback to avoid zero vector
 		bone.owner_group = "monsters"
 		bone.launch(muzzle.global_position, bone.move_direction)  # Call launch to play sound and activate
-		print("Skeleton %s: Cast bone %s at %s, move_direction=%s, position=%s" % [name, bone.name, target.name, bone.move_direction, bone.global_position])
 	else:
 		push_warning("Skeleton %s: Failed to spawn bone!" % name)

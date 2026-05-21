@@ -19,14 +19,14 @@ var tween: Tween  # Declare tween as a class variable
 
 
 func _ready() -> void:
-	add_to_group("loot")  # Add to loot group for pickup detection
+	add_to_group("loot")
 	target = get_tree().get_first_node_in_group("player")
-	if not target:
-		print("Potion warning: No player found in 'player' group!")
 	initial_y = global_position.y
 	if not $CollisionShape2D.shape:
 		push_error("Potion: Missing CollisionShape2D shape!")
 	start_bounce()
+	var lifetime := get_tree().create_timer(20.0)
+	lifetime.timeout.connect(_on_lifetime_expired)
 
 func _process(delta: float) -> void:
 	if target:
@@ -35,9 +35,6 @@ func _process(delta: float) -> void:
 		if distance <= activation_radius:
 			var direction = to_target.normalized()
 			global_position += direction * speed * delta
-			# Reduced debug spam
-			if OS.has_feature("editor") and randf() < 0.1:
-				print("Potion moving toward player, distance: %.1f" % distance)
 
 # Start the bounce animation
 func start_bounce() -> void:
@@ -53,9 +50,6 @@ func play_pickup_sound() -> void:
 		potion_sound.volume_db = 0.0  # Ensure volume is audible
 		potion_sound.stream_paused = false  # Ensure not paused
 		potion_sound.play()
-	else:
-		if OS.has_feature("editor"):
-			print("Potion sound setup failed: potion_sound=%s, stream=%s" % [potion_sound, potion_sound.stream if potion_sound else "null"])
 
 func setup(potion_data: Dictionary) -> void:
 	potion_id = potion_data["id"]
@@ -92,10 +86,12 @@ func collect() -> void:
 			
 	await get_tree().create_timer(0.3).timeout
 	queue_free()
-	if OS.has_feature("editor"):
-		print("Picked up potion!")
 
 # FIXED: Added reset() method for NodePool compatibility
+func _on_lifetime_expired() -> void:
+	if is_inside_tree():
+		queue_free()
+
 func reset() -> void:
 	"""Reset potion state for object pooling"""
 	# Stop any active tween

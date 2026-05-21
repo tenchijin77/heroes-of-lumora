@@ -91,7 +91,6 @@ func _respawn_allies() -> void:
 			ac.set_deferred("disabled", false)
 		if anna.has_method("_force_show_text"):
 			anna.call_deferred("_force_show_text", "I still draw breath! I fight with you to the end!")
-		print("MhOrzath: Annadaeus has returned for the final battle!")
 
 	var tenchi := get_tree().get_first_node_in_group("tenchijin")
 	if tenchi and is_instance_valid(tenchi) and not tenchi.visible:
@@ -100,7 +99,6 @@ func _respawn_allies() -> void:
 			tenchi.get_node("health_bar").value = tenchi.max_health
 		if tenchi.has_method("dramatic_entrance"):
 			tenchi.call_deferred("dramatic_entrance")
-		print("MhOrzath: Tenchijin has returned for the final battle!")
 
 # --- Helpers ---
 

@@ -32,7 +32,6 @@ func _ready() -> void:
 	window.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_IGNORE
 	window.content_scale_size = Vector2i(1152, 648)
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
-	print("Global: window size=%s scale_mode=%d scale_size=%s" % [window.size, window.content_scale_mode, window.content_scale_size])
 	DirAccess.make_dir_absolute("user://saves/")
 	load_high_scores()
 
@@ -59,20 +58,16 @@ func load_high_scores() -> void:
 						"lost_villagers": int(round(item.get("lost_villagers", 0.0)))
 					}
 					high_scores.append(entry)
-		if OS.has_feature("editor"):
-			print("Global: Loaded high scores: %s" % JSON.stringify(high_scores))
 		file.close()
 	else:
 		# File doesn't exist yet - create default empty scores (first run)
 		high_scores = []
-		print("Global: high_scores.json not found (first run), creating default file")
 		save_high_scores()  # Create the file with empty array
 
 func save_high_scores() -> void:
 	var dir: DirAccess = DirAccess.open("user://")
 	if not dir.dir_exists("saves"):
 		dir.make_dir("saves")
-		print("Global: Created saves directory")
 	var file: FileAccess = FileAccess.open("user://saves/high_scores.json", FileAccess.WRITE)
 	if file:
 		file.store_string(JSON.stringify(high_scores, "\t"))
@@ -99,8 +94,6 @@ func add_high_score(score: int, initials: String, wave: int, coins: int, time_su
 	if high_scores.size() > 10:
 		high_scores.resize(10)
 	save_high_scores()
-	if OS.has_feature("editor"):
-		print("Global: Added high score entry: %s" % entry)
 
 func is_high_score(score: int) -> bool:
 	if high_scores.size() < 10:
@@ -161,7 +154,6 @@ func _start_boss_sequence() -> void:
 		ui.show_announcement("50 Villagers Saved!\nMh'orzath awakens...", 4.0)
 	if ui and ui.has_method("chat_add"):
 		ui.chat_add("The darkness recoils... something far worse stirs.", "System")
-	print("Global: Win condition met — boss sequence begins")
 	await get_tree().create_timer(3.5).timeout
 	if not game_active:
 		return
@@ -177,7 +169,6 @@ func _spawn_boss() -> void:
 	get_tree().current_scene.add_child(boss)
 	if boss.has_signal("mob_died"):
 		boss.mob_died.connect(_on_boss_died)
-	print("Global: Mh'orzath has entered the world at %s!" % boss.global_position)
 
 func _get_boss_spawn_position() -> Vector2:
 	var player := get_tree().get_first_node_in_group("player")

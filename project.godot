@@ -65,9 +65,7 @@ choices/reveal_delay=0
 choices/reveal_by_input=false
 save/autosave_delay=60.0
 save/encryption_on_exports_only=true
-text/autopauses={
-"": 2.0
-}
+text/autopauses={}
 variables={}
 text/autocolor_names=true
 text/autoadvance_fixed_delay=0.8

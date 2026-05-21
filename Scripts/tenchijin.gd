@@ -153,7 +153,6 @@ func dramatic_entrance() -> void:
 	set_physics_process(true)
 	_show_casting_text("Tenchijin arrives! The tide turns now!")
 	arrived.emit()
-	print("Tenchijin: Stand firm! I shall turn the tide!")
 
 func _process(delta: float) -> void:
 	_update_target()
@@ -353,7 +352,6 @@ func _cast_frost_nova() -> void:
 				mob.apply_root(frost_nova_root_duration)
 			hit_count += 1
 	_spawn_nova_vfx()
-	print("Tenchijin: Frost Nova rooted %d enemies for %.1fs" % [hit_count, frost_nova_root_duration])
 
 func _cast_meteor() -> void:
 	if not current_target or not is_instance_valid(current_target):
@@ -378,7 +376,6 @@ func _meteor_impact(impact_pos: Vector2) -> void:
 				mob.apply_dot(meteor_dot_per_sec, meteor_dot_ticks)
 			hit_count += 1
 	_spawn_meteor_impact_vfx(impact_pos)
-	print("Tenchijin: Meteor struck %d enemies — %d dmg + %d/s DoT for %ds" % [hit_count, meteor_damage, meteor_dot_per_sec, meteor_dot_ticks])
 
 func _cast_disintegrate() -> void:
 	if not bullet_pool or not muzzle or not current_target or not is_instance_valid(current_target):
@@ -407,7 +404,6 @@ func _cast_time_warp() -> void:
 			unit.apply_speed_buff(time_warp_speed_bonus, time_warp_duration)
 			buffed += 1
 	_spawn_time_warp_vfx()
-	print("Tenchijin: Time Warp gave +%.0f%% speed to %d allies for %.1fs" % [time_warp_speed_bonus * 100.0, buffed, time_warp_duration])
 
 # --- VFX ---
 func _spawn_nova_vfx() -> void:
@@ -603,7 +599,6 @@ func _damage_flash() -> void:
 		sprite.modulate = Color.WHITE
 
 func _die() -> void:
-	print("Tenchijin: The archmage has fallen...")
 	died.emit()
 	visible = false
 	set_process(false)

@@ -34,7 +34,6 @@ func _cast() -> void:
 		bile_spew.move_direction = direction.normalized() if direction.length() > 0.01 else Vector2.RIGHT  # Fallback to avoid zero vector
 		bile_spew.owner_group = "monsters"
 		bile_spew.launch(muzzle.global_position, bile_spew.move_direction)  # Call launch to play sound and activate
-		print("hezrou %s: Cast bile_spew %s at %s, move_direction=%s, position=%s" % [name, bile_spew.name, target.name, bile_spew.move_direction, bile_spew.global_position])
 	else:
 		push_warning("hezrou %s: Failed to spawn bile_spew!" % name)
 

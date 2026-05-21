@@ -35,6 +35,7 @@ signal wave_updated(wave: int)
 @export var obstacle_collision_mask: int = 2064 # Layer 5 (Environment=16) + Layer 12 (Walls=2048)
 @export var forbidden_zone_mask: int = 128 # Layer 8
 @export var initial_mobs_per_spawn: int = 1
+@export var max_active_enemies: int = 30
 @export var mobs_increase_per_wave: int = 1
 @export var coin_drop_chance: float = 0.3
 @export var coin_drop_amount_range: Vector2 = Vector2(1, 4)
@@ -83,7 +84,6 @@ func _ready() -> void:
 	current_spawn_multiplier = initial_spawn_multiplier
 	current_mobs_per_spawn = initial_mobs_per_spawn
 	_update_spawn_timer_interval()
-	print("Initial spawn interval: %.2f seconds." % spawn_timer.wait_time)
 	
 	# Connect timers
 	if not spawn_timer.timeout.is_connected(_on_spawn_timer_timeout):
@@ -94,7 +94,6 @@ func _ready() -> void:
 	# Set initial wave
 	Global.current_wave = current_wave
 	Global.emit_signal("wave_updated", current_wave)
-	print("Wave timer set for %.1f minutes." % (wave_timer.wait_time / 60.0))
 
 func _calculate_total_weight() -> void:
 	# Sum weights for current effective monster configs
@@ -110,8 +109,6 @@ func _update_effective_configs() -> void:
 		if current_wave >= boss.get("min_wave", 1):
 			effective_monster_configs.append(boss)
 			added += 1
-	if added > 0:
-		print("Wave %d: %d boss type(s) in spawn pool" % [current_wave, added])
 	_calculate_total_weight()
 
 func _increase_spawn_rate() -> void:
@@ -120,7 +117,6 @@ func _increase_spawn_rate() -> void:
 	current_spawn_multiplier = max(min_multiplier_limit, current_spawn_multiplier)
 	current_mobs_per_spawn += mobs_increase_per_wave
 	_update_spawn_timer_interval()
-	print("Wave %d: Spawn multiplier=%.2f, Mobs per spawn=%d" % [current_wave, current_spawn_multiplier, current_mobs_per_spawn])
 
 func _update_spawn_timer_interval() -> void:
 	# Update spawn timer with scaled interval
@@ -128,14 +124,11 @@ func _update_spawn_timer_interval() -> void:
 	var effective_max: float = max(effective_min + 0.1, max_spawn_time * current_spawn_multiplier)
 	spawn_timer.wait_time = randf_range(effective_min, effective_max)
 	spawn_timer.start()
-	print("Spawn interval updated to %.2f (Range: %.2f-%.2f, Multiplier: %.2f)." % [
-		spawn_timer.wait_time, effective_min, effective_max, current_spawn_multiplier])
 
 func _on_wave_timer_timeout() -> void:
 	# Increment wave and update effective configs with bosses
 	Global.increment_wave()
 	current_wave = Global.current_wave
-	print("--- Wave %d Started! ---" % current_wave)
 	_update_effective_configs()
 	_increase_spawn_rate()
 
@@ -148,7 +141,11 @@ func _on_spawn_timer_timeout() -> void:
 	_update_spawn_timer_interval()
 
 func _spawn_monster() -> void:
-	# Spawn a regular or boss monster
+	var active_count := get_tree().get_nodes_in_group("monsters").filter(
+		func(m: Node) -> bool: return is_instance_valid(m) and m.visible
+	).size()
+	if active_count >= max_active_enemies:
+		return
 	var monster_scene: PackedScene = _select_weighted_scene()
 	if not monster_scene:
 		push_error("Spawner: No monster scene selected!")
@@ -168,8 +165,7 @@ func _spawn_monster() -> void:
 				spawn_pos = _get_spawn_position()
 				attempts += 1
 			if attempts >= max_attempts:
-				print("Spawner: Failed to find valid spawn position for %s after %d attempts!" % [monster.name, max_attempts])
-				monster.queue_free()
+				monster.visible = false
 				return
 		
 		# Set position and make visible
@@ -184,14 +180,7 @@ func _spawn_monster() -> void:
 		if monster.has_signal("mob_died") and player.has_method("increment_score") and not monster.is_connected("mob_died", Callable(player, "increment_score")):
 			monster.mob_died.connect(Callable(player, "increment_score"))
 		if monster.has_signal("mob_died") and not monster.is_connected("mob_died", _on_mob_died):
-			var connection_result = monster.mob_died.connect(_on_mob_died.bind(monster))
-			if connection_result != OK:
-				print("Failed to connect mob_died for %s, error: %s" % [monster.name, connection_result])
-			else:
-				print("Connected mob_died for %s" % monster.name)
-		print("Spawner: Spawned %s at %s" % [monster.name, spawn_pos])
-	else:
-		print("Spawner: Failed to spawn %s!" % monster_scene.resource_path)
+			monster.mob_died.connect(_on_mob_died.bind(monster))
 
 func _is_obstacle_free(position: Vector2, shape: Shape2D) -> bool:
 	var space: PhysicsDirectSpaceState2D = get_viewport().get_world_2d().direct_space_state
@@ -201,7 +190,6 @@ func _is_obstacle_free(position: Vector2, shape: Shape2D) -> bool:
 	shape_query.collision_mask = obstacle_collision_mask # Layer 5
 	var intersects: Array = space.intersect_shape(shape_query)
 	if not intersects.is_empty():
-		print("Position %s blocked by obstacle: %s" % [position, intersects])
 		return false
 	return true
 
@@ -213,7 +201,6 @@ func _is_forbidden_free(position: Vector2, shape: Shape2D) -> bool:
 	shape_query.collision_mask = forbidden_zone_mask # Layer 8
 	var intersects: Array = space.intersect_shape(shape_query)
 	if not intersects.is_empty():
-		print("Position %s in forbidden zone: %s" % [position, intersects])
 		return false
 	return true
 
@@ -261,6 +248,3 @@ func _spawn_coins(drop_position: Vector2, coin_count: int) -> void:
 			coin.collision_mask = 1 # Layer 1 (player)
 			coin.global_position = drop_position + Vector2(randf_range(-20.0, 20.0), randf_range(-20.0, 20.0))
 			get_parent().add_child(coin)
-			print("Dropped %d coins at %s (total %d)" % [coin_count, coin.global_position, i + 1])
-		else:
-			print("Failed to instantiate coin at %s" % drop_position)
