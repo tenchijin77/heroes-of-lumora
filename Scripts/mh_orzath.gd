@@ -17,6 +17,7 @@ var _event_horizon_timer: float = 12.0
 var _nihil_storm_timer: float = 22.0
 
 func _ready() -> void:
+	score_value = 10000
 	super._ready()
 	add_to_group("final_boss")
 	call_deferred("_on_boss_spawned")

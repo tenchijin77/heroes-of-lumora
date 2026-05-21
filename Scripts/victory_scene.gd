@@ -18,6 +18,18 @@ func _ready() -> void:
 		Global.saved_villagers, Global.lost_villagers
 	)
 	_build_ui()
+	_play_victory_music()
+
+func _play_victory_music() -> void:
+	var stream := load("res://Assets/Audio/monument_music-keys-of-wisdom-266235.mp3") as AudioStreamMP3
+	if stream:
+		stream.loop = true
+	var player := AudioStreamPlayer.new()
+	player.stream = stream
+	player.volume_db = -2.0
+	player.process_mode = Node.PROCESS_MODE_ALWAYS
+	add_child(player)
+	player.play()
 
 func _build_ui() -> void:
 	# Dark cosmic background
@@ -37,12 +49,18 @@ func _build_ui() -> void:
 	margin.process_mode = Node.PROCESS_MODE_ALWAYS
 	add_child(margin)
 
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.process_mode = Node.PROCESS_MODE_ALWAYS
+	margin.add_child(scroll)
+
 	var vbox := VBoxContainer.new()
-	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	vbox.alignment = BoxContainer.ALIGNMENT_BEGIN
+	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	vbox.add_theme_constant_override("separation", 14)
 	vbox.process_mode = Node.PROCESS_MODE_ALWAYS
-	margin.add_child(vbox)
+	scroll.add_child(vbox)
 
 	# THE ECLIPSE LIFTS.
 	_label(vbox, "THE ECLIPSE LIFTS.", FONT_TITLE, 54, Color(1.0, 0.88, 0.30))
