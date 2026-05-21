@@ -104,7 +104,8 @@ func _handle_game_over() -> void:
 		push_error("SceneTree is null—cannot change to game over scene!")
 
 func take_damage(damage: int, _projectile_instance) -> void:
-	# Apply damage to player
+	if Global.godmode:
+		return
 	current_health -= damage
 	if health_bar and is_instance_valid(health_bar):
 		health_bar.value = current_health

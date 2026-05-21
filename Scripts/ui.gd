@@ -318,6 +318,11 @@ func _handle_command(text: String) -> void:
 			chat_add("/heal [amount] — heal the player (default 100)", "System")
 			chat_add("/coins [amount] — add coins (default 100)", "System")
 			chat_add("/wave [n] — jump to wave n", "System")
+			chat_add("/set_health <n> — set player health to n", "System")
+			chat_add("/set_speed <n> — set player move speed to n", "System")
+			chat_add("/set_damage <n> — set player projectile damage to n", "System")
+			chat_add("/set_solari <n> — set coin total to n", "System")
+			chat_add("/set_godmode — toggle invincibility", "System")
 		"/kill":
 			var killed := 0
 			for mob in get_tree().get_nodes_in_group("monsters"):
@@ -347,6 +352,58 @@ func _handle_command(text: String) -> void:
 				chat_add("Wave set to %d." % Global.current_wave, "System")
 			else:
 				chat_add("Current wave: %d. Usage: /wave [n]" % Global.current_wave, "System")
+		"/set_health":
+			if parts.size() < 2 or not parts[1].is_valid_int():
+				chat_add("Usage: /set_health <amount>", "System")
+			else:
+				var p := get_tree().get_first_node_in_group("player")
+				if p:
+					var amount := int(parts[1])
+					p.current_health = amount
+					p.max_health = max(p.max_health, amount)
+					if p.health_bar and is_instance_valid(p.health_bar):
+						p.health_bar.max_value = p.max_health
+						p.health_bar.value = p.current_health
+					p.emit_signal("health_updated", p.current_health, p.max_health)
+					chat_add("Player health set to %d." % amount, "System")
+				else:
+					chat_add("Player not found.", "System")
+		"/set_speed":
+			if parts.size() < 2 or not parts[1].is_valid_float():
+				chat_add("Usage: /set_speed <amount>", "System")
+			else:
+				var p := get_tree().get_first_node_in_group("player")
+				if p:
+					var amount := float(parts[1])
+					p.max_speed = amount
+					p.base_max_speed = amount
+					p.emit_signal("speed_updated", p.max_speed)
+					chat_add("Player speed set to %.1f." % amount, "System")
+				else:
+					chat_add("Player not found.", "System")
+		"/set_damage":
+			if parts.size() < 2 or not parts[1].is_valid_int():
+				chat_add("Usage: /set_damage <amount>", "System")
+			else:
+				var p := get_tree().get_first_node_in_group("player")
+				if p:
+					var amount := int(parts[1])
+					p.base_damage = amount
+					p.emit_signal("damage_updated", float(p.base_damage) * p.damage_modifier)
+					chat_add("Player damage set to %d." % amount, "System")
+				else:
+					chat_add("Player not found.", "System")
+		"/set_solari":
+			if parts.size() < 2 or not parts[1].is_valid_int():
+				chat_add("Usage: /set_solari <amount>", "System")
+			else:
+				var amount := int(parts[1])
+				Global.coins_collected = amount
+				Global.emit_signal("coins_updated", Global.coins_collected)
+				chat_add("Solari set to %d." % amount, "System")
+		"/set_godmode":
+			Global.godmode = not Global.godmode
+			chat_add("Godmode %s." % ("ON" if Global.godmode else "OFF"), "System")
 		_:
 			chat_add("Unknown command '%s'. Type /help." % cmd, "System")
 

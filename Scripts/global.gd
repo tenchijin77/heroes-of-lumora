@@ -19,6 +19,7 @@ var total_villagers: int = 50
 var game_active: bool = true
 var boss_fight_active: bool = false
 var _boss_triggered: bool = false
+var godmode: bool = false
 var guard_spawn_index: int = 0
 var magi_spawn_index: int = 0
 
@@ -122,6 +123,7 @@ func reset() -> void:
 	game_active = true
 	boss_fight_active = false
 	_boss_triggered = false
+	godmode = false
 	guard_spawn_index = 0
 	magi_spawn_index = 0
 	shop_purchase_counts = {"health": 0, "damage": 0, "speed": 0, "guard": 0, "magi": 0}
