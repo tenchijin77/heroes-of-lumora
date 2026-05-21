@@ -69,7 +69,59 @@ func _build_ui() -> void:
 
 	# THE END
 	_label(vbox, "THE END", FONT_TITLE, 60, Color(1.0, 0.88, 0.30))
+	_spacer(vbox, 40)
+
+	# ═══════════════════════════════════════════════════════════════════════
+	# DEVELOPER THANK YOU MESSAGE
+	# ═══════════════════════════════════════════════════════════════════════
+	_label(vbox, "Thank you for playing Heroes of Lumora!", FONT_TITLE, 22, Color(1.0, 0.95, 0.70))
+	_spacer(vbox, 16)
+	
+	# Create a panel for the message text with word wrap
+	var message_panel := PanelContainer.new()
+	message_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	message_panel.process_mode = Node.PROCESS_MODE_ALWAYS
+	
+	# Semi-transparent dark panel background
+	var panel_style := StyleBoxFlat.new()
+	panel_style.bg_color = Color(0.05, 0.03, 0.10, 0.7)
+	panel_style.border_color = Color(0.40, 0.35, 0.50, 0.5)
+	panel_style.set_border_width_all(2)
+	panel_style.corner_radius_top_left = 8
+	panel_style.corner_radius_top_right = 8
+	panel_style.corner_radius_bottom_left = 8
+	panel_style.corner_radius_bottom_right = 8
+	panel_style.content_margin_left = 32
+	panel_style.content_margin_right = 32
+	panel_style.content_margin_top = 24
+	panel_style.content_margin_bottom = 24
+	message_panel.add_theme_stylebox_override("panel", panel_style)
+	vbox.add_child(message_panel)
+	
+	var message_label := RichTextLabel.new()
+	message_label.bbcode_enabled = true
+	message_label.fit_content = true
+	message_label.scroll_active = false
+	message_label.custom_minimum_size = Vector2(700, 0)
+	message_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	message_label.add_theme_font_override("normal_font", FONT_BODY)
+	message_label.add_theme_font_size_override("normal_font_size", 18)
+	message_label.add_theme_color_override("default_color", Color(0.88, 0.85, 0.90))
+	message_label.process_mode = Node.PROCESS_MODE_ALWAYS
+	
+	message_label.text = """As a solo developer learning the craft of game creation, this project has been an incredible journey of discovery. Every system, every character, every wave you survived—it all came together through experimentation, perseverance, and genuine passion for bringing this world to life.
+
+Heroes of Lumora is my first game, but it won't be my last. This story is a window into Aldenexia—a world I'm building for my next project, [color=#FFD700]Aldenexia: Lightfall[/color]. The characters you met here, the darkness you fought, and the light you defended are all threads in a much larger tapestry.
+
+I hope you'll join me in Aldenexia when the full story unfolds.
+
+Thank you for defending Lumora.
+
+[color=#B8B080]- Ross Wilkinson[/color]"""
+	
+	message_panel.add_child(message_label)
 	_spacer(vbox, 32)
+	# ═══════════════════════════════════════════════════════════════════════
 
 	# Buttons
 	var btn_row := HBoxContainer.new()
@@ -95,6 +147,7 @@ func _build_ui() -> void:
 	fade.process_mode = Node.PROCESS_MODE_ALWAYS
 	add_child(fade)
 	var tween := create_tween()
+	tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 	tween.tween_property(fade, "modulate:a", 0.0, 2.0).set_ease(Tween.EASE_IN)
 	tween.tween_callback(fade.queue_free)
 
