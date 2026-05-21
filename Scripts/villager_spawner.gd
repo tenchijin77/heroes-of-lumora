@@ -115,16 +115,12 @@ func _spawn_villager() -> void:
 			push_error("VillagerSpawner: villager_pool is null!")
 
 func _on_villager_died(villager: Node2D) -> void:
-	# Increment the lost villagers counter and emit the update signal
-	Global.lost_villagers += 1
-	Global.villagers_updated.emit(Global.saved_villagers, Global.lost_villagers, Global.total_villagers)
+	# villager.gd:take_damage already calls Global.increment_lost_villagers(); just log here
 	if OS.has_feature("editor"):
 		print("Villager died: %s, lost_villagers now %d" % [villager.name, Global.lost_villagers])
 
 func _on_villager_extracted(villager: Node2D) -> void:
-	# Increment the saved villagers counter and emit the update signal
-	Global.saved_villagers += 1
-	Global.villagers_updated.emit(Global.saved_villagers, Global.lost_villagers, Global.total_villagers)
+	# villager.gd:_on_navigation_finished already calls Global.increment_saved_villagers(); just log here
 	if OS.has_feature("editor"):
 		print("Villager extracted: %s, saved_villagers now %d" % [villager.name, Global.saved_villagers])
 

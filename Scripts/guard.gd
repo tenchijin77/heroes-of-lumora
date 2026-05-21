@@ -19,7 +19,10 @@ extends "res://Scripts/npc.gd"
 @onready var health_bar: ProgressBar = $health_bar
 @onready var avoidance_ray: RayCast2D = $avoidance_ray
 
+const SEEK_HEALER_THRESHOLD: float = 0.3
+
 var current_target: CharacterBody2D = null
+var current_friendly_target: CharacterBody2D = null
 var detected_monsters: Array[CharacterBody2D] = []
 var current_state: String = "IDLE"
 var last_shoot_time: float = 0.0
@@ -58,6 +61,8 @@ func _process(delta: float) -> void:
 			_attacking_state(delta)
 		"RETURNING":
 			_returning_state(delta)
+		"SEEKING_HEALER":
+			_seeking_healer_state(delta)
 
 	_update_flip_h()
 
@@ -89,6 +94,24 @@ func _update_target() -> void:
 		current_target = null
 		if current_state in ["CHASING", "ATTACKING"]:
 			current_state = "RETURNING"
+
+	var health_ratio := float(current_health) / float(max_health)
+	if current_state == "SEEKING_HEALER":
+		if health_ratio >= SEEK_HEALER_THRESHOLD:
+			current_state = "IDLE"
+			current_friendly_target = null
+		else:
+			var healer := _find_nearest_healer()
+			if healer:
+				current_friendly_target = healer
+			else:
+				current_state = "IDLE"
+				current_friendly_target = null
+	elif health_ratio < SEEK_HEALER_THRESHOLD:
+		var healer := _find_nearest_healer()
+		if healer:
+			current_state = "SEEKING_HEALER"
+			current_friendly_target = healer
 
 func _idle_state(delta: float) -> void:
 	velocity = Vector2.ZERO
@@ -157,6 +180,29 @@ func _update_avoidance_ray(target: Node2D, range: float) -> void:
 
 func _has_clear_line_to_target(target: Node2D) -> bool:
 	return not avoidance_ray.is_colliding() or avoidance_ray.get_collider() == target
+
+func _seeking_healer_state(delta: float) -> void:
+	if not current_friendly_target or not is_instance_valid(current_friendly_target):
+		current_state = "IDLE"
+		current_friendly_target = null
+		return
+	var distance := global_position.distance_to(current_friendly_target.global_position)
+	if distance > 48.0:
+		var direction := global_position.direction_to(current_friendly_target.global_position)
+		velocity = velocity.lerp(direction * max_speed, acceleration * delta)
+	else:
+		velocity = Vector2.ZERO
+
+func _find_nearest_healer() -> CharacterBody2D:
+	var nearest: CharacterBody2D = null
+	var min_dist: float = INF
+	for healer in get_tree().get_nodes_in_group("healing_npcs"):
+		if is_instance_valid(healer) and healer is CharacterBody2D:
+			var dist := global_position.distance_to(healer.global_position)
+			if dist < min_dist:
+				min_dist = dist
+				nearest = healer as CharacterBody2D
+	return nearest
 
 func take_damage(damage: int, _projectile_instance) -> void:
 	current_health -= damage

@@ -10,7 +10,7 @@ size = Vector2(14, 16)
 
 [node name="troubadour_bolt" type="Area2D"]
 collision_layer = 64
-collision_mask = 18
+collision_mask = 2066
 script = ExtResource("1_upah7")
 speed = 250.0
 owner_group = "friendly"

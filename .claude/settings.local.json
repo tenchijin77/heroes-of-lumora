@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs -I{} sh -c 'grep -l \"collision_mask\" {} 2>/dev/null')",
+      "Bash(xargs -I{} grep -Hn \"collision_mask\" {})"
+    ]
+  }
+}

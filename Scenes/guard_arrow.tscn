@@ -9,7 +9,7 @@ size = Vector2(20, 6)
 
 [node name="guard_arrow" type="Area2D"]
 collision_layer = 64
-collision_mask = 18
+collision_mask = 2066
 script = ExtResource("1_e7kb4")
 speed = 250.0
 owner_group = "friendly"

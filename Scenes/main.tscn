@@ -6798,11 +6798,11 @@ position = Vector2(4, 3)
 script = ExtResource("16_h1bgf")
 side = "town"
 
-[node name="tenchijin" parent="town_markers/town_center" unique_id=291352951 instance=ExtResource("18_hibaj")]
-position = Vector2(-357, 7)
-
 [node name="messenger" parent="town_markers" unique_id=1627267044 instance=ExtResource("15_wsu2k")]
 position = Vector2(-2277, 464)
+
+[node name="tenchijin" parent="." unique_id=291352951 instance=ExtResource("18_hibaj")]
+position = Vector2(451, 386)
 
 [node name="annadaeus" parent="." unique_id=1265889869 instance=ExtResource("18_b3802")]
 position = Vector2(2906, 327)

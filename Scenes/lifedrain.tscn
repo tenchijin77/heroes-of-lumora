@@ -10,7 +10,7 @@ size = Vector2(15, 27)
 
 [node name="lifedrain" type="Area2D"]
 collision_layer = 8
-collision_mask = 1073
+collision_mask = 3121
 script = ExtResource("1_tiio2")
 speed = 300.0
 owner_group = "monsters"

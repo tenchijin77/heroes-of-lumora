@@ -9,7 +9,7 @@ radius = 11.0
 
 [node name="bile_spew" type="Area2D"]
 collision_layer = 8
-collision_mask = 1073
+collision_mask = 3121
 script = ExtResource("1_au4kq")
 speed = 350.0
 damage = 28

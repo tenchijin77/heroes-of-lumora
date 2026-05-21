@@ -18,6 +18,7 @@ var lost_villagers: int = 0
 var total_villagers: int = 50
 var game_active: bool = true
 var boss_fight_active: bool = false
+var _boss_triggered: bool = false
 var guard_spawn_index: int = 0
 var magi_spawn_index: int = 0
 
@@ -120,6 +121,7 @@ func reset() -> void:
 	total_villagers = 50
 	game_active = true
 	boss_fight_active = false
+	_boss_triggered = false
 	guard_spawn_index = 0
 	magi_spawn_index = 0
 	shop_purchase_counts = {"health": 0, "damage": 0, "speed": 0, "guard": 0, "magi": 0}
@@ -136,7 +138,54 @@ func increment_wave() -> void:
 func increment_saved_villagers() -> void:
 	saved_villagers += 1
 	emit_signal("villagers_updated", saved_villagers, lost_villagers, total_villagers)
+	if saved_villagers >= total_villagers and not _boss_triggered and not boss_fight_active:
+		_boss_triggered = true
+		_start_boss_sequence()
 
 func increment_lost_villagers() -> void:
 	lost_villagers += 1
 	emit_signal("villagers_updated", saved_villagers, lost_villagers, total_villagers)
+
+func _start_boss_sequence() -> void:
+	boss_fight_active = true
+	for spawner in get_tree().get_nodes_in_group("villager_spawner"):
+		if spawner.has_method("stop_spawning"):
+			spawner.stop_spawning()
+	for mob in get_tree().get_nodes_in_group("monsters"):
+		if is_instance_valid(mob):
+			mob.queue_free()
+	var ui := get_node_or_null("/root/UI")
+	if ui and ui.has_method("show_announcement"):
+		ui.show_announcement("50 Villagers Saved!\nMh'orzath awakens...", 4.0)
+	if ui and ui.has_method("chat_add"):
+		ui.chat_add("The darkness recoils... something far worse stirs.", "System")
+	print("Global: Win condition met — boss sequence begins")
+	await get_tree().create_timer(3.5).timeout
+	if not game_active:
+		return
+	_spawn_boss()
+
+func _spawn_boss() -> void:
+	var boss_scene: PackedScene = load("res://Scenes/mh_orzath.tscn")
+	if not boss_scene:
+		push_error("Global: Could not load mh_orzath.tscn!")
+		return
+	var boss: Node2D = boss_scene.instantiate() as Node2D
+	boss.global_position = _get_boss_spawn_position()
+	get_tree().current_scene.add_child(boss)
+	if boss.has_signal("mob_died"):
+		boss.mob_died.connect(_on_boss_died)
+	print("Global: Mh'orzath has entered the world at %s!" % boss.global_position)
+
+func _get_boss_spawn_position() -> Vector2:
+	var player := get_tree().get_first_node_in_group("player")
+	var base: Vector2 = player.global_position if player and is_instance_valid(player) else Vector2(600.0, 400.0)
+	var viewport_rect := get_viewport().get_visible_rect()
+	return base + Vector2(0.0, -(viewport_rect.size.y * 0.5 + 200.0))
+
+func _on_boss_died() -> void:
+	game_active = false
+	var ui := get_node_or_null("/root/UI")
+	if ui:
+		ui.visible = false
+	get_tree().call_deferred("change_scene_to_file", "res://Scenes/victory_scene.tscn")
