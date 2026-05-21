@@ -32,6 +32,7 @@ func _on_boss_spawned() -> void:
 	Global.boss_fight_active = true
 	_clear_regular_monsters()
 	_respawn_allies()
+	_enable_magi_vulnerability()
 	_start_boss_music()
 	var ui = get_node_or_null("/root/UI")
 	if ui and ui.has_method("show_announcement"):
@@ -121,6 +122,11 @@ func _respawn_allies() -> void:
 			tenchi.call_deferred("dramatic_entrance")
 
 # --- Helpers ---
+
+func _enable_magi_vulnerability() -> void:
+	for magi in get_tree().get_nodes_in_group("magi"):
+		if is_instance_valid(magi) and magi.has_method("enable_boss_targeting"):
+			magi.enable_boss_targeting()
 
 func _clear_regular_monsters() -> void:
 	for mob in get_tree().get_nodes_in_group("monsters"):

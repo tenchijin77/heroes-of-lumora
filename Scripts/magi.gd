@@ -3,6 +3,7 @@ extends CharacterBody2D
 
 @export var shoot_rate: float = 1.2
 @export var shoot_range: float = 280.0
+@export var max_health: int = 300
 
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var muzzle: Node2D = $muzzle
@@ -12,9 +13,12 @@ extends CharacterBody2D
 var current_target: CharacterBody2D = null
 var detected_monsters: Array[CharacterBody2D] = []
 var last_shoot_time: float = 0.0
+var current_health: int = 300
+var _health_bar: ProgressBar = null
 
 func _ready() -> void:
 	add_to_group("friendly")
+	add_to_group("magi")
 	collision_layer = 0  # No physical presence — monsters pass through freely
 	collision_mask = 0   # Stationary turret, doesn't push against anything
 	velocity = Vector2.ZERO
@@ -79,3 +83,26 @@ func _on_detection_area_body_entered(body: Node2D) -> void:
 func _on_detection_area_body_exited(body: Node2D) -> void:
 	if detected_monsters.has(body):
 		detected_monsters.erase(body)
+
+func enable_boss_targeting() -> void:
+	collision_layer = 32  # Layer 6 — matched by abyss_touch collision_mask
+	current_health = max_health
+	_create_health_bar()
+
+func _create_health_bar() -> void:
+	if _health_bar:
+		return
+	_health_bar = ProgressBar.new()
+	_health_bar.max_value = max_health
+	_health_bar.value = current_health
+	_health_bar.size = Vector2(48, 6)
+	_health_bar.position = Vector2(-24, -42)
+	_health_bar.show_percentage = false
+	add_child(_health_bar)
+
+func take_damage(damage: int, _proj) -> void:
+	current_health -= damage
+	if _health_bar:
+		_health_bar.value = current_health
+	if current_health <= 0:
+		queue_free()
