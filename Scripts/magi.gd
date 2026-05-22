@@ -92,12 +92,19 @@ func enable_boss_targeting() -> void:
 func _create_health_bar() -> void:
 	if _health_bar:
 		return
+	var bg := StyleBoxFlat.new()
+	bg.bg_color = Color(0.201527, 0.201527, 0.201527, 1.0)
+	var fill := StyleBoxFlat.new()
+	fill.bg_color = Color(0.94902, 0.0, 0.0, 1.0)
 	_health_bar = ProgressBar.new()
 	_health_bar.max_value = max_health
 	_health_bar.value = current_health
 	_health_bar.size = Vector2(48, 6)
 	_health_bar.position = Vector2(-24, -42)
 	_health_bar.show_percentage = false
+	_health_bar.rounded = true
+	_health_bar.add_theme_stylebox_override("background", bg)
+	_health_bar.add_theme_stylebox_override("fill", fill)
 	add_child(_health_bar)
 
 func take_damage(damage: int, _proj) -> void:
