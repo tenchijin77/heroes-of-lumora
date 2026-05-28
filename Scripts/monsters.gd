@@ -416,7 +416,7 @@ func _process_collisions():
 		
 		if body.has_method("take_damage"):
 			last_damage_times[body] = current_time
-			body.call_deferred("take_damage", collision_damage, null)
+			body.call_deferred("take_damage", collision_damage, self)
 
 func _move_wobble() -> void:
 	# Apply sprite wobble animation
@@ -441,8 +441,9 @@ func _cast() -> void:
 		
 	var projectile = bullet_pool.spawn()
 	if projectile:
+		projectile.shooter = self
 		projectile.global_position = muzzle.global_position
-		
+
 		var direction_vector = muzzle.global_position.direction_to(target.global_position)
 		
 		if direction_vector.is_zero_approx():

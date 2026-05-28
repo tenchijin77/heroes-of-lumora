@@ -48,6 +48,9 @@ func update_leader_board() -> void:
 			label.text = "%s - Score: %d | Coins: %d | Wave: %d | Saved: %d | Lost: %d | Time: %s" % [
 				entry.initials, entry.score, entry.coins, entry.wave, entry.saved_villagers, entry.lost_villagers, Global.format_time(entry.time_survived)
 			]
+			var ep: String = entry.get("epitaph", "")
+			if ep != "":
+				label.text += "\n  \"%s: %s\"" % [entry.initials, ep]
 		else:
 			label.text = "--- - Score: 0 | Coins: 0 | Wave: 0 | Saved: 0 | Lost: 0 | Time: 00:00"
 

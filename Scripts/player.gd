@@ -99,7 +99,7 @@ func _handle_game_over() -> void:
 	else:
 		push_error("SceneTree is null—cannot change to game over scene!")
 
-func take_damage(damage: int, _projectile_instance) -> void:
+func take_damage(damage: int, source: Node) -> void:
 	if Global.godmode:
 		return
 	current_health -= damage
@@ -110,10 +110,23 @@ func take_damage(damage: int, _projectile_instance) -> void:
 	if camera and camera.has_method("shake"):
 		camera.shake(5.0, 0.2)
 	if current_health <= 0:
+		Global.killer_name = _identify_killer(source)
 		_handle_game_over()
 	else:
 		if player_damage_sound:
 			player_damage_sound.play()
+
+func _identify_killer(source: Node) -> String:
+	if not is_instance_valid(source):
+		return ""
+	var attacker: Node = source
+	var maybe_shooter = source.get("shooter")
+	if maybe_shooter != null and is_instance_valid(maybe_shooter):
+		attacker = maybe_shooter
+	var script = attacker.get_script()
+	if script:
+		return script.resource_path.get_file().get_basename()
+	return ""
 
 func open_fire() -> void:
 	# Fire an arrow projectile

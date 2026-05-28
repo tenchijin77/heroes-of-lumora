@@ -15,6 +15,7 @@ var home_target: Node = null
 @export var home_strength: float = 0.0  # turn rate radians/sec; 0 = straight flight
 var slow_percent: float = 0.0
 var slow_duration: float = 0.0
+var shooter: Node = null
 
 func _ready() -> void:
 	if not is_connected("body_entered", Callable(self, "_on_body_entered")):

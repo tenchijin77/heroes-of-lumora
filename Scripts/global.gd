@@ -20,6 +20,7 @@ var game_active: bool = true
 var boss_fight_active: bool = false
 var _boss_triggered: bool = false
 var godmode: bool = false
+var killer_name: String = ""
 var guard_spawn_index: int = 0
 var magi_spawn_index: int = 0
 
@@ -55,7 +56,8 @@ func load_high_scores() -> void:
 						"coins": int(round(item.get("coins", 0.0))),
 						"time_survived": float(item.get("time_survived", 0.0)),
 						"saved_villagers": int(round(item.get("saved_villagers", 0.0))),
-						"lost_villagers": int(round(item.get("lost_villagers", 0.0)))
+						"lost_villagers": int(round(item.get("lost_villagers", 0.0))),
+						"epitaph": item.get("epitaph", "")
 					}
 					high_scores.append(entry)
 		file.close()
@@ -75,7 +77,7 @@ func save_high_scores() -> void:
 	else:
 		push_error("Global: Failed to save high_scores.json")
 
-func add_high_score(score: int, initials: String, wave: int, coins: int, time_survived: float, saved_villagers: int, lost_villagers: int) -> void:
+func add_high_score(score: int, initials: String, wave: int, coins: int, time_survived: float, saved_villagers: int, lost_villagers: int, epitaph: String = "") -> void:
 	if initials.length() > 3:
 		initials = initials.substr(0, 3)
 	if initials.length() == 0:
@@ -87,7 +89,8 @@ func add_high_score(score: int, initials: String, wave: int, coins: int, time_su
 		"coins": coins,
 		"time_survived": time_survived,
 		"saved_villagers": saved_villagers,
-		"lost_villagers": lost_villagers
+		"lost_villagers": lost_villagers,
+		"epitaph": epitaph
 	}
 	high_scores.append(entry)
 	high_scores.sort_custom(func(a, b): return a.score > b.score)
@@ -117,6 +120,7 @@ func reset() -> void:
 	boss_fight_active = false
 	_boss_triggered = false
 	godmode = false
+	killer_name = ""
 	guard_spawn_index = 0
 	magi_spawn_index = 0
 	shop_purchase_counts = {"health": 0, "damage": 0, "speed": 0, "guard": 0, "magi": 0}
@@ -182,3 +186,69 @@ func _on_boss_died() -> void:
 	if ui:
 		ui.visible = false
 	get_tree().call_deferred("change_scene_to_file", "res://Scenes/victory_scene.tscn")
+
+static func generate_epitaph(killer: String) -> String:
+	var templates: Dictionary = {
+		"goblin": [
+			"cut down by a goblin — a most ignoble end",
+			"bested by a creature half their size",
+			"felled by a goblin's grubby dagger",
+		],
+		"skeleton": [
+			"slain before their time by a skeleton",
+			"rattled to death by an animated corpse",
+			"reduced to bones by an agent of bones",
+		],
+		"troll": [
+			"crushed underfoot by a troll's terrible bulk",
+			"met the wrong end of a troll's club",
+			"smashed flat — a troll's idea of a greeting",
+		],
+		"wraith": [
+			"their life force drained by a wraith",
+			"frozen in their final step by a wraith's cold touch",
+			"the wraith kept what little warmth remained",
+		],
+		"beholder": [
+			"gazed upon by something that gazed back",
+			"the last thing they saw was an eye",
+			"unmade by a beholder's many terrible eyes",
+		],
+		"lich": [
+			"outmatched in arcane matters by a lich",
+			"a lich's curse found its mark",
+			"turned to dust by forces they didn't understand",
+		],
+		"hezrou": [
+			"torn apart by a hezrou's claws",
+			"a demon's prey — nothing more",
+			"overwhelmed by demonic fury",
+		],
+		"ogre": [
+			"flattened by an ogre's unfortunate enthusiasm",
+			"clubbed into the afterlife",
+			"the ogre barely noticed",
+		],
+		"ghost": [
+			"frightened to death — technically",
+			"haunted into the hereafter",
+			"phased out of existence by a ghost",
+		],
+		"balrog": [
+			"consumed in the balrog's hellfire",
+			"they shall not pass — and didn't",
+			"the balrog's flames left nothing behind",
+		],
+		"mh_orzath": [
+			"annihilated by Mh'Orzath, The Eternal Dark",
+			"claimed by the darkness they came to oppose",
+			"the old ones claimed another",
+		],
+	}
+	if templates.has(killer):
+		var opts: Array = templates[killer]
+		return opts[randi() % opts.size()]
+	elif killer != "":
+		return "slain by a " + killer.replace("_", " ")
+	else:
+		return "their fate lost to the darkness"

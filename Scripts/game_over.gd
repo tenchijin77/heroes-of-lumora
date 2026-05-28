@@ -7,6 +7,7 @@ extends Control
 @onready var restart_button: Button = $restart_button
 
 var current_score: int
+var current_epitaph: String = ""
 
 func _ready() -> void:
 	add_to_group("ui_hidden")
@@ -36,6 +37,7 @@ func _ready() -> void:
 	if not restart_button:
 		push_error("GameOver: restart_button is null!")
 	current_score = Global.current_score
+	current_epitaph = Global.generate_epitaph(Global.killer_name)
 	update_leader_board()
 	if not Global.is_high_score(current_score):
 		if initials_input:
@@ -73,13 +75,16 @@ func update_leader_board() -> void:
 			label.text = "%s - Score: %d | Coins: %d | Wave: %d | Saved: %d | Lost: %d | Time: %s" % [
 				entry.initials, entry.score, entry.coins, entry.wave, entry.saved_villagers, entry.lost_villagers, Global.format_time(entry.time_survived)
 			]
+			var ep: String = entry.get("epitaph", "")
+			if ep != "":
+				label.text += "\n  \"%s: %s\"" % [entry.initials, ep]
 		else:
 			label.text = "--- - Score: 0 | Coins: 0 | Wave: 0 | Saved: 0 | Lost: 0 | Time: 00:00"
 
 # Handle initials submission
 func _on_initials_input_text_submitted(new_text: String) -> void:
 	if new_text.length() > 0:
-		Global.add_high_score(current_score, new_text, Global.current_wave, Global.coins_collected, Global.current_time_survived, Global.saved_villagers, Global.lost_villagers)
+		Global.add_high_score(current_score, new_text, Global.current_wave, Global.coins_collected, Global.current_time_survived, Global.saved_villagers, Global.lost_villagers, current_epitaph)
 		update_leader_board()
 		if initials_input:
 			initials_input.hide()
@@ -93,7 +98,7 @@ func _on_submit_button_pressed() -> void:
 	if initials_input:
 		var text: String = initials_input.text
 		if text.length() > 0:
-			Global.add_high_score(current_score, text, Global.current_wave, Global.coins_collected, Global.current_time_survived, Global.saved_villagers, Global.lost_villagers)
+			Global.add_high_score(current_score, text, Global.current_wave, Global.coins_collected, Global.current_time_survived, Global.saved_villagers, Global.lost_villagers, current_epitaph)
 			update_leader_board()
 			initials_input.hide()
 			submit_button.hide()

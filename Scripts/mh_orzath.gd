@@ -81,7 +81,7 @@ func _cast_event_horizon() -> void:
 			return
 		for t2 in _get_targets_in_range(event_horizon_range):
 			if t2.has_method("take_damage"):
-				t2.take_damage(event_horizon_damage, null)
+				t2.take_damage(event_horizon_damage, self)
 	)
 
 func _cast_nihil_storm() -> void:
@@ -89,7 +89,7 @@ func _cast_nihil_storm() -> void:
 	_spawn_nihil_storm_vfx()
 	for t in _get_targets_in_range(nihil_storm_range):
 		if t.has_method("take_damage"):
-			t.take_damage(nihil_storm_damage, null)
+			t.take_damage(nihil_storm_damage, self)
 	var camera := get_viewport().get_camera_2d()
 	if camera and camera.has_method("shake"):
 		camera.shake(14.0, 0.9)
