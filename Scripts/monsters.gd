@@ -404,7 +404,9 @@ func _process_collisions():
 	for i in collision_count:
 		var collision = get_slide_collision(i)
 		var body = collision.get_collider()
-		
+		if not is_instance_valid(body):
+			continue
+
 		# Quick group check first (faster than has_method)
 		if not (body.is_in_group("player") or body.is_in_group("friendly")):
 			continue
