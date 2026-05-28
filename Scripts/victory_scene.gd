@@ -11,12 +11,7 @@ func _ready() -> void:
 	if ui:
 		ui.visible = false
 	Global.game_active = false
-	Global.add_high_score(
-		Global.current_score, "WIN",
-		Global.current_wave, Global.coins_collected,
-		Global.current_time_survived,
-		Global.saved_villagers, Global.lost_villagers
-	)
+	Global.killer_name = "victory"
 	_build_ui()
 	_play_victory_music()
 
@@ -148,7 +143,7 @@ Thank you for defending Lumora.
 	btn_row.process_mode = Node.PROCESS_MODE_ALWAYS
 	vbox.add_child(btn_row)
 
-	var restart_btn := _button("Play Again")
+	var restart_btn := _button("The Wall of Heroes")
 	restart_btn.pressed.connect(_on_restart_pressed)
 	btn_row.add_child(restart_btn)
 	restart_btn.grab_focus()
@@ -204,9 +199,8 @@ func _input(event: InputEvent) -> void:
 			focused.emit_signal("pressed")
 
 func _on_restart_pressed() -> void:
-	Global.reset()
 	get_tree().paused = false
-	get_tree().change_scene_to_file("res://Scenes/main.tscn")
+	get_tree().change_scene_to_file("res://Scenes/game_over.tscn")
 
 func _on_quit_pressed() -> void:
 	get_tree().quit()

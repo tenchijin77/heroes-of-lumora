@@ -244,6 +244,11 @@ static func generate_epitaph(killer: String) -> String:
 			"claimed by the darkness they came to oppose",
 			"the old ones claimed another",
 		],
+		"victory": [
+			"defeated Mh'Orzath and saved all of Lumora",
+			"stood victorious where others fell",
+			"the last light of Lumora, unextinguished",
+		],
 	}
 	if templates.has(killer):
 		var opts: Array = templates[killer]
