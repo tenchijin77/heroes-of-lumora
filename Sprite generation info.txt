@@ -1,0 +1,442 @@
+================================================================================
+HEROES OF LUMORA - 2D Game Sprites
+================================================================================
+
+UNIVERSAL SPECIFICATIONS
+========================
+Art Style: Pixel art, 2D, modern flat top-down view (not isometric)
+Base Size: 16x16 pixels per sprite (can be scaled up by AI)
+Background: Solid color background (not transparent). Colored background will be removed
+in post-processing.
+Spacing: Each sprite centered with clear spacing around it for easy selection
+Detail Level: Clean, readable at small scale, no tiny labels or text
+Perspective: Flat overhead view looking straight down
+No watermarks, or images other than the sprites
+
+STYLE CONSISTENCY:
+- All sprites should have consistent shading/lighting direction
+- Use similar color depth and saturation across all sprites
+- Maintain consistent line weight (pixel thickness)
+- Keep anti-aliasing minimal for pixel art feel
+
+TECHNICAL REQUIREMENTS:
+- Generate at 2x or 3x the final size (so 64x64 or 96x96) then scale down
+- This maintains crispness and detail at small sizes
+- Ensure transparency is clear (no white backgrounds)
+- High contrast so sprites are readable at 32x32
+
+COLOR RECOMMENDATIONS:
+- Use vibrant but natural colors
+- Avoid pure white (use off-white)
+- Avoid pure black for outlines (use dark gray)
+- Keep saturation high enough to be readable small
+
+ORGANIZATION:
+- Create each prompt separately for best results
+- Request horizontal sprite strips (easier to work with)
+- Ask AI to space sprites evenly
+- Get high-res versions you can scale down
+
+
+================================================================================
+SECTION 1: NPCs (Active Stances)
+================================================================================
+
+PROMPT 1: NPC Spritesheet - Heroes & Town Defenders
+-------------------------------------------------------
+2D pixel art spritesheet top-down view. Create 7 NPC characters in active
+combat/action stances. Transparent background. Each character 32x32 base size,
+centered with spacing.
+
+1. PLAYER: Male human archer with dark hair, brown leather armor. Actively
+   aiming a bow at target, arrow nocked, dynamic stance. Show movement.
+
+2. ANNADAEUS: Female with long blonde hair, bard character. Wearing blue-tinted
+   lambent armor. Equipped with a short sword and small lute. In active combat
+   pose, ready to fight and play music simultaneously.
+
+3. TENCHIJIN: Male dark-skinned wizard (erudite style), wearing white robe with
+   black magical runes. Has a beard. Holding a large spell book. In active
+   casting stance with magical aura.
+
+4. GUARD: Town guard in full armor with sword and shield. Active defensive
+   stance, ready for combat. Shield raised.
+
+5. MAGI: Wizard protecting town, in blue/purple robe. Carrying ornate staff.
+   In active spell-casting pose with magical energy around them.
+
+6. PRIESTESS: Female healer in flowing robe. In active healing pose, hands
+   glowing with healing light. Peaceful but ready.
+
+7. VILLAGER: Common townspeople, scared expression, in running pose fleeing to
+   escape. Shows fear and urgency. Simple clothes.
+
+8. MESSENGER: Common townspeople running into town to warn of danger. Simple
+   traveling clothes - tunic, breeches, boots in earth tones. Expression shows
+   alarm and concern - eyes wide, mouth open as if shouting a warning. Wearing
+   a leather messenger bag (satchel) slung across chest or shoulder, bouncing
+   as they run. Dynamic running pose - one leg forward, one back, arms moving
+   with momentum. Shows panic and urgency in body language. Dust or dirt on
+   clothes from hard travel. Not a fighter - just desperate to deliver the
+   warning. Conveys fear mixed with determination.
+
+================================================================================
+PROMPT 2: Monster Spritesheet - Enemies Part 1 (Flying & Floating)
+-------------------------------------------------------------------
+2D pixel art spritesheet top-down view. Create 5 enemy monsters. Transparent
+background. Each sprite 32x32 base, centered with spacing.
+
+1. BALROG: Winged demon inspired by Lord of the Rings. Red and black coloring.
+   Large black horns. Menacing expression. Has flaming sword. Wings spread in
+   threatening pose. Demonic, powerful presence.
+
+2. BEHOLDER: Floating eye creature with multiple eyeball stalks extending from
+   main body. Main eye is red/yellow with large black pupil. Creepy, alien
+   design. Floating overhead.
+
+3. GHOST: Semi-transparent spectral ghost. Light blue and black tones. Wailing
+   expression, ethereal wisps. Transparent effect shown through sprite.
+   Spooky but not cartoony.
+
+4. WRAITH: Undead spirit like the Grim Reaper. Black flowing cloak/robes.
+   Skeleton head visible. Menacing posture. Dark, eerie, powerful.
+
+5. LICH: Powerful undead caster. Blue robe. Crown on skull. Holding staff with
+   skull atop it. In casting pose with dark magical aura. Aristocratic evil.
+
+Darker color palette. Menacing monsters. High contrast. Modern pixel art.
+
+================================================================================
+PROMPT 3: Monster Spritesheet - Enemies Part 2 (Melee & Ground)
+---------------------------------------------------------------
+2D pixel art spritesheet top-down view. Create 6 enemy monsters. Transparent
+background. Each sprite 32x32 base, centered with spacing.
+
+1. SKELETON: Decaying skeleton. Black hollow eyes. Wearing some armor/bones.
+   Holding femur bone as weapon. Aggressive posture. Undead warrior.
+
+2. GOBLIN: Small angry goblin. Green skin. Wearing scrappy leather armor pieces.
+   Menacing expression. Holding a weapon. Quick, vicious looking.
+
+3. HEZROU: Amphibious poison demon. Fat, bloated green body. Toad-like. Dripping
+   poison or slime. Menacing expression. Otherworldly and gross in threatening
+   way.
+
+4. OGRE: Two-headed ogre. Massive, powerful, lumbering. Large muscular body.
+   Both heads look angry and dim. Huge club or weapon. Brutal.
+
+5. TROLL: Large hunched creature. Green coloring. Long sharp claws extended.
+   Regenerating feel to it. Primal and dangerous. Hunched aggressive stance.
+
+6. WIZARD: Evil human wizard. Red cloak/robes. Pointed hat or dark robes.
+   Holding staff or wand. Magical aura around them. Sinister scholar look.
+
+Medium-dark color palette. Mix of humanoid and monster designs. Clear silhouettes.
+
+================================================================================
+PROMPT 4: Projectiles Spritesheet - Player & Friendly (Part 1)
+---------------------------------------------------------------
+2D pixel art spritesheet top-down view. Create 7 projectile sprites. Transparent
+background. Each sprite 16-24px, centered with spacing.
+
+1. ARROW: Standard player arrow. Yellow/tan with fletching. Pointed tip. Simple
+   and iconic. Overhead view showing arrowhead clearly.
+
+2. GUARD ARROW: Different looking arrow from town guard. Silver-tipped or unique
+   design. Slightly different from player arrow to distinguish.
+
+3. MAGIC MISSILE: Diamond-shaped projectile. Purple/pink coloring. Magical
+   sparkles around it. Arcane energy. Used by Magi.
+
+4. HEAL BOLT: Looks like a plus sign (+). Green and yellow coloring. Glowing
+   healing light effect. Used by Priestess.
+
+5. FROST BOLT: Ice projectile. Light blue/cyan with white frosted effect.
+   Crystalline appearance. Icy aura. Used by Tenchijin.
+
+6. TROUBADOUR BOLT OPTION 1: Treble clef music note shape. Golden/yellow with
+   musical notes trailing. Magical music energy. Used by Annadaeus bard.
+
+7. TROUBADOUR BOLT OPTION 2: Quarter notes and eighth notes floating. Golden/
+   yellow with musical staffs or floating notes. Ethereal music magic.
+
+Bright, clear colors. Easily readable at small size. Magical/musical effects.
+
+================================================================================
+PROMPT 5: Projectiles Spritesheet - Enemy Attacks (Part 2)
+-----------------------------------------------------------
+2D pixel art spritesheet top-down view. Create 8 enemy projectile sprites.
+Transparent background. Each sprite 16-24px, centered with spacing.
+
+1. ABYSS TOUCH: Void bolt from final boss. Crimson and dark void energy mixed.
+   Tentacle-like effect. Otherworldly. Cosmic horror energy. Boss attack.
+
+2. FIREBALL: Small fireball. Yellow center with red/orange flames around edges.
+   Round projectile. Standard fire magic. Used by Wizard.
+
+3. FIREBALL2: Larger, more intense fireball. Dark red center, bright orange
+   flames extending. More powerful looking than fireball. Used by Balrog.
+
+4. MALFIRE: Large corrupted fireball from Balrog. Yellow center, red fire
+   surrounding. Demonic fire, looks more evil than regular fireball.
+
+5. DISINTEGRATION RAY: Powerful beholder attack. Purple and yellow hues mixed.
+   Beam-like appearance with arcane energy. Destructive look.
+
+6. DEATH BOLT: Fast projectile from Lich. Light blue bolt with black center.
+   Pure death energy. Ominous and fast-looking.
+
+7. BILE SPEW: Corrosive poison from Hezrou. Green/brown sickly color. Dripping
+   or splashing effect. Toxic, gross looking.
+
+8. BONE/FEMUR: Thrown bone from Skeleton. Off-white bone color. Looks like
+   actual femur. Simple but recognizable projectile.
+
+Dark/evil color palette. Clear visual distinction from friendly projectiles.
+High contrast.
+
+================================================================================
+PROMPT 6: Projectiles Spritesheet - Misc Attacks (Part 3)
+----------------------------------------------------------
+2D pixel art spritesheet top-down view. Create 4 additional projectile sprites.
+Transparent background. Each sprite 16-24px, centered with spacing.
+
+1. DAGGER: Small fast dagger thrown by Goblin. Gray/silver blade with brown
+   handle. Simple weapon projectile. Overhead view showing blade clearly.
+
+2. BOULDER: Huge boulder thrown by Ogre. Gray/brown rocky appearance. Large and
+   heavy-looking. Chunky, solid projectile.
+
+3. LIFE DRAIN: Evil energy bolt from Wraith. Black/purple energy with draining
+   effect. Looks like it steals life force. Ominous and dark.
+
+4. GUARD ARROW ALT: Alternative guard arrow if different visual needed. Silver
+   or different tipped than main arrow. Optional second variant.
+
+Dark earth tones and shadow colors. Distinct from magical projectiles. Clear
+silhouettes.
+
+================================================================================
+PROMPT 7: Random Items Spritesheet - Collectibles & NPCs
+---------------------------------------------------------
+2D pixel art spritesheet top-down view. Create multiple item sprites. Transparent
+background. Each sprite properly spaced.
+
+COLLECTIBLES:
+1. COIN: Money pickup. Gold colored circle/coin. Shiny appearance, simple design.
+   Top-down view showing coin face.
+
+2. POTION - TYPE 1: Health potion. Red liquid in glass bottle. Simple potion
+   bottle shape.
+
+3. POTION - TYPE 2: Mana potion. Blue liquid in glass bottle.
+
+4. POTION - TYPE 3: Speed potion. Yellow/orange liquid in glass bottle.
+
+5. POTION - TYPE 4: Defense potion. Green liquid in glass bottle.
+
+6. POTION - TYPE 5: Damage potion. Purple liquid in glass bottle.
+
+7. POTION - TYPE 6: Healing potion. White/silver liquid in glass bottle.
+
+ENVIRONMENT/OBJECTS:
+8. TORCH: Medieval torch for town lighting. Flat top-down view looking directly
+   at torch head. Show 4-5 frames in a strip for animation: different flame
+   heights/positions for flicking effect.
+
+9-10. BRIMBLE (CAT): Fat orange tabby cat. Two images:
+   - Sitting: Sitting upright, content expression. Chubby cat.
+   - Walking: In walking/running pose, moving left or right. Same chubby tabby.
+
+Bright colors for potions. Natural wood/orange for torch. Warm orange for cat.
+Clear readable designs.
+
+================================================================================
+PROMPT 8: World/Environment - Lumora Town
+------------------------------------------
+2D pixel art spritesheet top-down view. Create environment tiles/objects for
+Lumora town area. Transparent background. Properly spaced sprites.
+
+Include variety of:
+- Grass tiles (multiple variants for natural look)
+- Sand/dirt patches
+- Stone walls (defensive walls, building walls)
+- Medieval torches (various lighting states)
+- Trees (deciduous, various sizes)
+- Mushrooms (scattered around)
+- Foliage/bushes
+- Market stalls/buildings (simple top-down view)
+- Barrels, crates (storage items)
+- Wooden gates/barriers
+- Stone paths/roads
+
+Medieval town setting. Natural earth tones (greens, browns, grays). Cheerful
+but realistic. Easy to identify each element.
+
+================================================================================
+PROMPT 9: World/Environment - Umbral Boglands
+-----------------------------------------------
+2D pixel art spritesheet top-down view. Create environment tiles for dark
+swamp area. Transparent background. Properly spaced.
+
+Include:
+- Dark bog mud tiles (multiple variants)
+- Cursed murky water (dark, eerie)
+- Dense fog effect (semi-transparent)
+- Gnarled, twisted trees (dead/corrupted)
+- Pale fungi/mushrooms (ghostly white)
+- Shadow Willow trees (dark weeping willows)
+- Bog-Hands (corrupted hands reaching from ground) - optional creature
+- Cursed water plants/reeds
+- Rotting logs
+- Swamp mist effects
+
+Dark purples, blacks, sickly greens, muddy browns. Ominous and corrupted.
+High contrast against typical nature.
+
+================================================================================
+PROMPT 10: World/Environment - Verdant Expanse
+-----------------------------------------------
+2D pixel art spritesheet top-down view. Create environment tiles for green
+plains area. Transparent background. Properly spaced.
+
+Include:
+- Sweeping green grass tiles (multiple variants)
+- Tall grass patches (different heights)
+- Rolling hill slopes
+- Majestic elm trees (large, healthy looking)
+- Fairy rings (mushroom circles)
+- Wildflowers (scattered color accents)
+- Natural stone features
+- Small ponds/water features
+- Corrupted nature elements (some twisted/dark areas mixed in)
+- Forest edges (transition areas)
+
+Bright greens, natural colors. Beautiful but with hints of corruption showing
+balance between nature and shadow.
+
+================================================================================
+PROMPT 11: World/Environment - Crimson Canyons
+-----------------------------------------------
+2D pixel art spritesheet top-down view. Create environment tiles for red
+canyon/desert area. Transparent background. Properly spaced.
+
+Include:
+- Red/orange canyon rock tiles
+- Dust/sand dunes
+- High cliff faces (ambush terrain)
+- Saguaro cacti (tall, iconic desert plant)
+- Desert brush/scrubland
+- Canyon walls (various heights)
+- Rock formations
+- Tumbleweeds (optional rolling element)
+- Sandy patches
+- Shadows from high terrain (showing depth)
+
+Warm reds, oranges, tans, browns. Desert heat feel. Rocky and arid landscape.
+
+================================================================================
+PROMPT 12: World/Environment - Gloomfen Frontier
+-------------------------------------------------
+2D pixel art spritesheet top-down view. Create environment tiles for corrupted
+frontier area. Transparent background. Properly spaced.
+
+Include:
+- Peat moss ground tiles
+- Murky brown water
+- Corruption clusters (purple/black spreading patches)
+- Void rifts (dark swirling portals or cracks)
+- Twisted pine trees (bent, corrupted)
+- Patchy grass mixed with corruption
+- Cursed soil (darker, evil-looking earth)
+- Fog effects (corruption spreading)
+- Dead/dying vegetation
+- Otherworldly energy effects
+
+Muddy browns, dark purples, sickly yellows. Sense of corruption spreading.
+Transition between natural and corrupted.
+
+================================================================================
+PROMPT 13: World/Environment - The Burning Scar
+-------------------------------------------------
+2D pixel art spritesheet top-down view. Create environment tiles for volcanic/
+final area. Transparent background. Properly spaced.
+
+Include:
+- Ash and cinder ground tiles (gray, charred)
+- Lava flows (bright orange/yellow)
+- Active lava fissures (cracks with glow)
+- Steam vents (hissing terrain features)
+- Persistent fire areas (flames on ground)
+- Scorched petrified trees (blackened, dead)
+- Charred rocks (gray and black)
+- Heat distortion effects (visual shimmer)
+- Molten ground (cracked with glow underneath)
+- Volcanic rock formations
+
+Bright oranges, reds, yellows, blacks, grays. Extremely hot/dangerous feel.
+Highest difficulty visual language. Most corrupted/destroyed looking.
+
+================================================================================
+PROMPT 14: Portals Spritesheet - Monster Spawn Rifts
+================================================================================
+
+2D pixel art spritesheet top-down view. Create 6 different portal/rift sprites
+where monsters spawn from. Transparent background. Each sprite 32x32-48x48,
+centered with spacing.
+
+PORTAL STYLE: Each portal should look like a magical/interdimensional tear or
+vortex. Top-down perspective showing the opening/swirl. Animated appearance
+with swirling energy. Portal shows it's a dangerous spawn point.
+
+---
+
+PORTAL 1: VOID PORTAL
+Dark cosmic portal. Black and deep purple swirling vortex. Has tentacle-like
+void energy reaching outward around edges. Otherworldly and menacing. Spawns
+undead/cosmic monsters (Skeleton, Ghost, Wraith, Lich). Dark void energy
+spiraling inward.
+
+PORTAL 2: INFERNAL PORTAL
+Fiery hellish portal. Red, orange, yellow flames swirling in vortex pattern.
+Hot, dangerous appearance. Demonic energy radiating outward. Spawns fire/demon
+monsters (Balrog, Wizard, evil fire creatures). Crackling energy effect.
+
+PORTAL 3: TOXIC PORTAL
+Poisonous corrupted portal. Green and sickly yellow-brown swirling. Dripping
+or oozing effect. Noxious gas/poison visible. Bio-hazardous look. Spawns
+poison/corruption monsters (Hezrou, corrupted creatures). Bubbling energy.
+
+PORTAL 4: ELDRITCH PORTAL
+Mysterious alien portal. Purple and cyan/pink swirling mix. Strange geometric
+patterns around edges. Alien, unnatural appearance. Reality-bending look.
+Spawns beholder/eye creatures and otherworldly entities. Crystalline energy.
+
+PORTAL 5: CORRUPTED NATURE PORTAL
+Twisted nature portal. Sickly green and black swirling. Corrupted plants/vines
+wrapping around portal edge. Organic but wrong-looking. Nature corrupted.
+Spawns corrupted nature creatures and twisted beasts. Thorny/vine effects.
+
+PORTAL 6: SHADOW PORTAL
+Pure darkness portal. Black and dark gray swirling void. Shadowy mist/fog
+effect. Ominous and subtle compared to others. Shadow energy seeping outward.
+Spawns shadow creatures, incorporeal entities, and dark beings. Misty tendrils.
+
+---
+
+ANIMATION SUGGESTION:
+Each portal should have a swirling/rotating effect. Consider creating 3-4
+frame animation strip for each portal showing the rotation/pulse effect.
+Monsters will appear at center of portal when spawning.
+
+COLOR PALETTE SUMMARY:
+- Portal 1 (Void): Black, Deep Purple, Dark Blue
+- Portal 2 (Infernal): Red, Orange, Yellow, Black
+- Portal 3 (Toxic): Green, Yellow-Brown, Sickly Yellow
+- Portal 4 (Eldritch): Purple, Cyan, Pink, White
+- Portal 5 (Corrupted Nature): Green, Black, Dark Brown
+- Portal 6 (Shadow): Black, Dark Gray, Dark Purple
+
+STYLE: High contrast, clearly readable as portals. Swirling vortex patterns.
+Dark, ominous aesthetic. Each visually distinct so player can identify what
+type of monster will spawn. Pixel art, 32x32-48x48 size.

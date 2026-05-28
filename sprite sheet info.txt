@@ -1,0 +1,72 @@
+Heroes of Lumora sprite sheet
+
+2d game, pixel art, 32x32, modern style, flat top down view, not 3/4 view, on a transparent background, each section should be on a single sheet: NPCs, Monsters, Projectiles, Random, World. Each sprite should be centered, with spacing around it so it is easy to select the sprite, no labelling, No projectiles shown on the sprites; they'll be selected from the projectile section. Do not put names or labels on the sprites.
+
+NPCS: Make all of the npcs in an active stance
+
+Player- male human archer, dark hair, leather armour, equipped with a bow; aiming at the target
+Annadaeus - Female, long blonde hair, she's a bard, in blue tinted armour (like lambent armour from everquest), has a short sword and a small lute,
+Tenchijin - Male, dark skinned (like an erudite in everquest), with a beard, a wizard in a white robe with black runes on it, he has a book in his hand.
+
+Guard - town guardsman, in armour and has a sword and shield
+Magi - wizard that protects the town, in a robe, and has a staff
+Priestess - a female healer in a robe, casts healing on the townspeople
+villager - a common townfolk, scared, running to escape
+
+
+Monsters:
+balrog - a winged demon (similar to the lord of the rings), with a flaming sword, red, black horns
+beholder - a floating eye with eyeball stalks, main eye is red/yellow with a big black pupil
+ghost - a semi transparent ghost, light blue/black tones, wailing
+goblin - a small, angry goblin, green skin, some leather armor scraps
+skeleton - a decaying skeleton; black eyes, has some armor on, holding a femur bone
+hezrou - an amphibious poison demon, fat, green bloated, menacing
+lich - a powerful undead caster; in a blue robe, crown, holding a staff with a skull atop it
+ogre - a two headed ogre, large, powerful, lumbering
+troll - a large, hunched, enemy green, with long claws
+wizard - an evil wizard, in a red cloak
+wraith - an undead spirit; looks like the grim reaper in a black flowing cloak with a skeleton head
+
+Projectiles:
+abyss touch - a void bolt for the last boss, crimson, dark void energy, has a tentacle effect
+arrow - the main player's attack, standard looking arrow
+guard arrow - another different looking arrow used by the guard, silver colored, or different tipped arrow
+bile spew - a bolt of corrosive poison used by the hezrou
+bone - a femur bone, thrown by the skeleton
+boulder - a huge boulder thrown by the ogre
+dagger - a small, fast dagger thrown by the goblin
+death bolt - a fast light blue projectile with a black center, a bolt of pure death energy thrown by the lich
+disintegration ray - a powerful projectile used by the beholder; purple/yellow hues
+fireball - a small fireball used by the wizard
+fireball2 - a larger fireball, dark red, with orange fire
+frost bolt - a projectile of ice, used by tenchijin
+heal bolt - looks like a plus sign, green and yellow - a healing projectile used by the priestess
+life drain - a bolt of evil energy that steals the player's life used by the wraith
+magic missile - a diamond shaped projectile used by the magi; purple/pink in color
+malfire -  a larger fireball thrown by the balrog, has a yellow center, and red fire towards the outside
+troubadour bolt - a musical attack fired by the bard, let's do 2 projectile types so i can pick which one fits better, one a treble cleff, one notes, like a quarter note, and a few eigth notes, not on a staff, floating in the air
+
+
+Random:
+coin - money pickup for the player
+potions - 6 types/colors of potions collected by the player
+torches - used as lighting in the town, flat, like you're looking at them head on 4-5 frames so i can animate them
+brimble - a fat orange tabby cat, two images, one sitting, one walking
+portals: 6 different types of portals; the monsters will zone in from these
+
+
+
+World Building:
+
+
+Lumora Town - Grass, sand, walls, torches, trees, mushrooms, folliage, and basic things that would be found in a town, in the middle ages.
+
+Umbral Boglands - Features the dark bog mud, cursed water, Shadow Vortex, dense fog, entangling Bog-Hands, pale fungi, Shadow Willow, Marsh Mosquitoes, and the Venomous Bog Viper.
+
+Gloomfen Frontier - Showcases the peat moss, murky brown water, active Void Rifts, Corruption Pressure clusters, patchy corruption, twisted pine trees, Scavenger Crabs, and the Corrupted-Scale Lizard.
+
+Crimson Canyons - Presents the red canyon rocks and dust, ambush high ground, Bandit Clan flags, Saguaro cacti, desert brush, Cliff Dwelling Condors, Canyon Coyotes, and Rock Beetles.
+
+Verdant Expanse - Displays the sweeping green plains with varied grass and tall grass variants, rolling hills, the Corrupted Nature Spirit Circle, Majestic Elm trees, Fairy Rings, and the Corrupted Dryad.
+
+The Burning Scar - The final difficulty zone, including ash and cinder ground, the massive Lava Pit Scar, active fissures, steam vents, persistent fire, scorched petrified trees, Cinder Elementals, and Magma Crabs.
