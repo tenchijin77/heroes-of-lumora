@@ -123,6 +123,10 @@ position = Vector2(0.499989, 0.499996)
 scale = Vector2(0.387695, 0.397461)
 texture = ExtResource("7_cti21")
 
+[node name="sparkle_particles" type="CPUParticles2D" parent="renewal_aura" unique_id=100002]
+emitting = false
+one_shot = true
+
 [node name="courage_aura" type="Area2D" parent="." unique_id=786213876]
 collision_layer = 0
 collision_mask = 1057
@@ -138,6 +142,10 @@ material = SubResource("ShaderMaterial_dnpss")
 position = Vector2(0.500004, 2.5)
 scale = Vector2(0.385742, 0.389648)
 texture = ExtResource("7_cti21")
+
+[node name="sparkle_particles" type="CPUParticles2D" parent="courage_aura" unique_id=100003]
+emitting = false
+one_shot = true
 
 [node name="renewal_aura_timer" type="Timer" parent="." unique_id=2052443003]
 wait_time = 8.0

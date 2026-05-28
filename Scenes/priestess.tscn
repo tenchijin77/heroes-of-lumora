@@ -26,7 +26,7 @@ radius = 281.397
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_nmwim"]
 shader = ExtResource("6_bwqxu")
 shader_parameter/pulse_speed = 3.5
-shader_parameter/max_alpha = 0.45
+shader_parameter/max_alpha = 0.1
 
 [node name="priestess" type="CharacterBody2D" unique_id=1803817363 groups=["healer"]]
 collision_layer = 1024
@@ -96,6 +96,10 @@ material = SubResource("ShaderMaterial_nmwim")
 position = Vector2(-1.50002, 2.00001)
 scale = Vector2(0.9, 0.9)
 texture = ExtResource("7_bwqxu")
+
+[node name="sparkle_particles" type="CPUParticles2D" parent="heal_aura" unique_id=100001]
+emitting = false
+one_shot = true
 
 [node name="navigation_agent_2d" type="NavigationAgent2D" parent="." unique_id=1660293745]
 avoidance_enabled = true

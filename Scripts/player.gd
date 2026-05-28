@@ -62,7 +62,11 @@ func _process(delta: float) -> void:
 	var use_touch: bool = OS.has_feature("touchscreen")
 	var joystick_connected: bool = Input.get_joy_name(0) != ""
 	var aim_active: bool = Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down").length() > 0.2
-	var shoot_active: bool = (joystick_connected and aim_active) or Input.is_action_pressed("shoot") or Input.get_action_strength("shoot") > 0.1
+	var shoot_active: bool
+	if use_touch and not joystick_connected:
+		shoot_active = aim_active  # on touch, only shoot when the right joystick is pushed
+	else:
+		shoot_active = (joystick_connected and aim_active) or Input.is_action_pressed("shoot") or Input.get_action_strength("shoot") > 0.1
 
 	if joystick_connected and aim_active:
 		# Joystick active for aiming

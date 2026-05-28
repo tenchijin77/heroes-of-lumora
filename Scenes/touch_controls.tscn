@@ -6,10 +6,10 @@
 [node name="touch_controls" type="CanvasLayer"]
 
 [node name="left_joystick" type="Control" parent="."]
-position = Vector2(280, 840)
+position = Vector2(165, 500)
 script = ExtResource("1_poon4")
 action_name = "move"
-radius = 150.0
+radius = 130.0
 
 [node name="Sprite2D" type="Sprite2D" parent="left_joystick"]
 scale = Vector2(2, 2)
@@ -18,10 +18,10 @@ region_enabled = true
 region_rect = Rect2(228, 772, 23, 23)
 
 [node name="right_joystick" type="Control" parent="."]
-position = Vector2(1770, 840)
+position = Vector2(990, 500)
 script = ExtResource("1_poon4")
 action_name = "aim"
-radius = 150.0
+radius = 130.0
 
 [node name="Sprite2D" type="Sprite2D" parent="right_joystick"]
 scale = Vector2(2, 2)

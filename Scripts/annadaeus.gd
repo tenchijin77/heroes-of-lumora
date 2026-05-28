@@ -38,6 +38,15 @@ signal arrived  # Emitted when Annadaeus first reaches the player
 @onready var courage_aura_timer: Timer = $courage_aura_timer
 @onready var finale_particles: GPUParticles2D = $finale_particles
 @onready var finale_sound: AudioStreamPlayer2D = $finale_sound
+@onready var renewal_sparkle: CPUParticles2D = $renewal_aura/sparkle_particles
+@onready var courage_sparkle: CPUParticles2D = $courage_aura/sparkle_particles
+
+const _AURA_PULSE_SPEED: float = 4.5  # matches shader_parameter/pulse_speed on aura glows
+
+var _aura_sparkle_phase: float = 0.0
+var _aura_prev_pulse: float = 0.0
+var _aura_tick_timer: float = 0.0
+const _AURA_TICK_INTERVAL: float = 2.0
 
 var current_target: CharacterBody2D = null
 var current_friendly_target: CharacterBody2D = null
@@ -133,6 +142,46 @@ func _process(delta: float) -> void:
 	if current_target:
 		_update_avoidance_ray(current_target, support_range)
 	_update_flip_h()
+	_update_aura_sparkles(delta)
+	_update_aura_ticks(delta)
+
+func _update_aura_ticks(delta: float) -> void:
+	if not (renewal_aura.visible or courage_aura.visible):
+		return
+	_aura_tick_timer += delta
+	if _aura_tick_timer >= _AURA_TICK_INTERVAL:
+		_aura_tick_timer = 0.0
+		if renewal_aura.visible:
+			_renewal_heal_tick()
+		if courage_aura.visible:
+			_courage_buff_tick()
+
+func _renewal_heal_tick() -> void:
+	for body in renewal_aura.get_overlapping_bodies():
+		if (body.is_in_group("friendly") or body.is_in_group("player") or body.is_in_group("healer")) and body.has_method("heal"):
+			body.heal(4)
+
+func _courage_buff_tick() -> void:
+	for body in courage_aura.get_overlapping_bodies():
+		if (body.is_in_group("friendly") or body.is_in_group("player") or body.is_in_group("healer")) and body.has_method("set_damage_modifier"):
+			body.set_damage_modifier(1.5)
+
+func _clear_courage_buffs() -> void:
+	for body in courage_aura.get_overlapping_bodies():
+		if body.has_method("set_damage_modifier"):
+			body.set_damage_modifier(1.0)
+
+func _update_aura_sparkles(delta: float) -> void:
+	if not (renewal_aura.visible or courage_aura.visible):
+		return
+	_aura_sparkle_phase += delta * _AURA_PULSE_SPEED
+	var pulse := sin(_aura_sparkle_phase)
+	if pulse >= 0.9 and _aura_prev_pulse < 0.9:
+		if renewal_aura.visible:
+			renewal_sparkle.restart()
+		if courage_aura.visible:
+			courage_sparkle.restart()
+	_aura_prev_pulse = pulse
 
 func _physics_process(delta: float) -> void:
 	# Handle physics-based movement, skip for decoys
@@ -159,7 +208,33 @@ func _configure_auras() -> void:
 	renewal_aura.visible = false
 	courage_aura.visible = false
 	renewal_aura_timer.timeout.connect(func(): renewal_aura.visible = false)
-	courage_aura_timer.timeout.connect(func(): courage_aura.visible = false)
+	courage_aura_timer.timeout.connect(func():
+		_clear_courage_buffs()
+		courage_aura.visible = false
+	)
+	_setup_aura_sparkles()
+
+func _setup_aura_sparkles() -> void:
+	_configure_sparkle(renewal_sparkle, Color(0.3, 0.9, 1.0, 0.9), Color(0.3, 0.9, 1.0, 0.0))
+	_configure_sparkle(courage_sparkle, Color(1.0, 0.85, 0.2, 0.9), Color(1.0, 0.85, 0.2, 0.0))
+
+func _configure_sparkle(p: CPUParticles2D, col_start: Color, col_end: Color) -> void:
+	p.amount = 10
+	p.lifetime = 0.55
+	p.explosiveness = 0.9
+	p.emission_shape = CPUParticles2D.EMISSION_SHAPE_SPHERE
+	p.emission_sphere_radius = 90.0
+	p.direction = Vector2.ZERO
+	p.spread = 180.0
+	p.gravity = Vector2.ZERO
+	p.initial_velocity_min = 20.0
+	p.initial_velocity_max = 50.0
+	p.scale_amount_min = 2.5
+	p.scale_amount_max = 6.0
+	var grad := Gradient.new()
+	grad.set_color(0, col_start)
+	grad.set_color(1, col_end)
+	p.color_ramp = grad
 
 # --- State & Target Logic ---
 func _update_targets() -> void:
@@ -304,8 +379,6 @@ func _perform_song_of_renewal() -> void:
 	await get_tree().create_timer(1.0).timeout
 	ability_cooldowns["renewal"] = song_of_renewal_rate
 	_activate_renewal_aura()
-	if current_health < max_health:
-		heal(4) # Match renewal_aura.gd's heal_amount
 	current_state = "FOLLOWING_PLAYER"
 
 func _perform_symphony_of_fate(target: CharacterBody2D) -> void:
@@ -356,14 +429,14 @@ func _perform_illusory_double() -> void:
 	current_state = "FOLLOWING_PLAYER"
 
 func _activate_courage_aura() -> void:
-	# Show courage aura (effects in aura script)
 	courage_aura.visible = true
 	courage_aura_timer.start()
+	_courage_buff_tick()
 
 func _activate_renewal_aura() -> void:
-	# Show renewal aura (effects in aura script)
 	renewal_aura.visible = true
 	renewal_aura_timer.start()
+	_renewal_heal_tick()
 
 func _spawn_ability_projectile(target: CharacterBody2D) -> void:
 	if not bullet_pool or not muzzle or not target or not is_instance_valid(target):
