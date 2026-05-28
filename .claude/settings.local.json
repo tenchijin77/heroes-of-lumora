@@ -10,7 +10,8 @@
       "Bash(sed -n '333,338p' /home/rwilkinson/Documents/GitHub/heroes-of-lumora/Scripts/monsters.gd)",
       "Bash(python3 *)",
       "Bash(xargs ls -la)",
-      "Bash(sort -k5 -rn)"
+      "Bash(sort -k5 -rn)",
+      "Bash(grep -E \"\\\\.\\(tscn|tres\\)$\")"
     ]
   }
 }

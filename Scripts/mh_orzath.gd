@@ -5,12 +5,12 @@ const BOSS_MUSIC: AudioStreamMP3 = preload("res://Assets/Audio/audiodollar-adven
 
 const ARRIVAL_MESSAGE: String = "Your meddling has drawn the ire of Mh'orzath, the Eclipsed One! Tremble in fear!"
 
-@export var event_horizon_range: float = 300.0
+@export var event_horizon_range: float = 500.0
 @export var event_horizon_damage: int = 160
-@export var event_horizon_pull_strength: float = 600.0
+@export var event_horizon_pull_strength: float = 1000.0
 @export var event_horizon_cooldown: float = 15.0
 
-@export var nihil_storm_range: float = 400.0
+@export var nihil_storm_range: float = 600.0
 @export var nihil_storm_damage: int = 200
 @export var nihil_storm_cooldown: float = 20.0
 

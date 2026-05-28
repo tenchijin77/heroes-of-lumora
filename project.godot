@@ -80,7 +80,7 @@ text/split_at_new_lines_as=0
 window/size/viewport_width=2048
 window/size/viewport_height=1024
 window/stretch/mode="viewport"
-window/stretch/aspect="ignore"
+window/stretch/aspect="expand"
 
 [dotnet]
 

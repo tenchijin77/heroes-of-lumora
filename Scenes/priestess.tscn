@@ -25,8 +25,8 @@ radius = 281.397
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_nmwim"]
 shader = ExtResource("6_bwqxu")
-shader_parameter/pulse_speed = 2.0
-shader_parameter/max_alpha = 0.1
+shader_parameter/pulse_speed = 3.5
+shader_parameter/max_alpha = 0.45
 
 [node name="priestess" type="CharacterBody2D" unique_id=1803817363 groups=["healer"]]
 collision_layer = 1024
@@ -94,7 +94,7 @@ modulate = Color(0.3, 1, 0.3, 1)
 show_behind_parent = true
 material = SubResource("ShaderMaterial_nmwim")
 position = Vector2(-1.50002, 2.00001)
-scale = Vector2(0.551758, 0.552734)
+scale = Vector2(0.9, 0.9)
 texture = ExtResource("7_bwqxu")
 
 [node name="navigation_agent_2d" type="NavigationAgent2D" parent="." unique_id=1660293745]

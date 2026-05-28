@@ -21,8 +21,8 @@ collision_layer = 2
 collision_mask = 1653
 script = ExtResource("1_c5ldm")
 max_speed = 45.0
-current_health = 7500
-max_health = 7500
+current_health = 10000
+max_health = 10000
 bullet_scene = ExtResource("4_c5ldm")
 score_value = 10000
 

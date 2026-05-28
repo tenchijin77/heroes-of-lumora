@@ -83,7 +83,8 @@ func _process(delta: float) -> void:
 	_move_wobble()
 
 func _handle_game_over() -> void:
-	# Handle game over logic when player's health hits zero
+	if not Global.game_active:
+		return  # Victory already claimed this frame (boss died simultaneously)
 	Global.game_active = false
 	# Explicitly hide UI
 	var ui = get_node_or_null("/root/UI")
