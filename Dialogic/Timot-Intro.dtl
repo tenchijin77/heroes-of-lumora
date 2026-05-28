@@ -6,8 +6,8 @@ leave Narrator
 join Timot leftmost
 Timot: By Aurethiel's grace… you made it! Quickly—this way. There's no time to lose!
 Timot: At dawn, they broke the city gate. Our defenders hold what ground they can, but the village chokes beneath the encroaching dark—heavy, black, pendulous. It rolls like smoke through the streets, smothering flame and song alike.
-Timot: You know how to fight? Good—then you'll survive this. Listen: Move with the left stick or WASD keys. Aim and fire with the right stick or left mouse button. On mobile, use the touch controls. Hit ESC to pause. Stay nimble—keep moving, or the horde will drown you before you can draw breath!
-Timot: Defend the town and buy us time while the villagers flee to the safe zones. Fifty souls must reach the extraction points—every one of them counts. When you have coin, seek my shop in the northwest corner. I'll have what defenses I can spare.d
+Timot: You know how to fight? Good—then you'll survive this. Listen\: Move with the left stick or WASD keys. Aim and fire with the right stick or left mouse button. On mobile, use the touch controls. Hit ESC to pause. Stay nimble—keep moving, or the horde will drown you before you can draw breath!
+Timot: Defend the town and buy us time while the villagers flee to the safe zones. Fifty souls must reach the extraction points—every one of them counts. When you have coin, seek my shop in the northwest corner. I'll have what defenses I can spare.
 Timot: The guards hold the gates… but only just. The village is under siege—creatures of the Moribund Order pour in from every direction. We must evacuate the townsfolk, but we can't do it alone. We need you to buy us time.
 Timot: I shall open my shop to you in what time we have left—what potions and trinkets I have are yours in exchange for whatever coin you may gather. Use them wisely. Every second you hold the line gives another villager a chance to escape.
 Timot: Stand fast. Hold them off. The fate of Lumora rests in your hands.
@@ -31,4 +31,3 @@ Timot: Lumora cannot fall—not while the light endures. And you… you are that
 Timot: (A distant roar echoes through the valley. The ground shakes. Timot doesn't flinch.)
 Timot: Show them why monsters fear the light.
 [end_timeline]
-

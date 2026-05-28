@@ -70,3 +70,250 @@ Controls:
 Move: Arrow keys or WASD
 
 Melee Attack: Left mouse click - calls arrow.tscn and gd
+
+
+================================================================================
+HEROES OF LUMORA - GAME DESCRIPTION
+================================================================================
+
+SHORT DESCRIPTION (One-Liner)
+-----------------------------
+A solo-developed medieval fantasy tower defense bullet-hell hybrid where you
+defend the town of Lumora from an endless siege of monsters while evacuating
+villagers to safety.
+
+
+MEDIUM DESCRIPTION (App Store/Game Jam Format)
+-----------------------------------------------
+Heroes of Lumora is a fast-paced medieval fantasy action game that blends
+tower defense and bullet-hell mechanics. Stand as the last line of defense
+for the town of Lumora as waves of monsters breach the gates. Evacuate 50
+villagers to safety while fending off creatures of the Umbral Talon.
+
+Team up with allies including the bard Annadaeus—who buffs your abilities
+through inspiring songs—and the powerful archmage Tenchijin, who arrives
+to turn the tide when darkness reaches its peak. Survive the waves, manage
+your resources, and prepare yourself for the ultimate confrontation:
+Mh'orzath, the Eclipsed One—an ancient cosmic horror that emerges when
+the barriers between worlds grow thin.
+
+Control with keyboard and mouse or gamepad. Defend. Survive. Triumph.
+
+
+LONG DESCRIPTION (Website/Press Kit Format)
+---------------------------------------------
+HEROES OF LUMORA
+A Medieval Fantasy Tower Defense Action Game
+
+================================================================================
+THE STORY
+================================================================================
+
+At dawn, the gates of Lumora shatter. A tide of shadow and teeth pours in—
+creatures of the Umbral Talon, servants of an elder darkness that hungers
+to consume the town and all within it. The town's defenders rally, but they
+cannot hold alone. You arrive as the light breaks over the ridge, and Timot
+of the market—a keeper of what few treasures remain—looks at you with
+desperate hope.
+
+"We need you to buy us time."
+
+Fifty souls must reach the extraction points. Every second you hold the line
+is another life that escapes. Every wave you survive is another breath drawn
+by someone you save. But as the night deepens and the waves intensify,
+something darker stirs—a presence so ancient and terrible that even the
+monsters fear it.
+
+When hope seems lost, Anna's voice rings out. The bard Annadaeus joins the
+fight, her songs bolstering your strength and healing your wounds. And when
+the battle reaches its crescendo, the Archmage Tenchijin himself materializes
+to turn the tide.
+
+But even with allies at your side, one final horror awaits: Mh'orzath,
+the Eclipsed One—a being from the void between worlds, drawn by the
+weakening seal beneath Lumora's walls.
+
+================================================================================
+GAMEPLAY
+================================================================================
+
+CONTROL & COMBAT
+- Move with WASD keys, arrow keys, or left analog stick
+- Aim with mouse or right analog stick
+- Fire with left mouse button or right trigger
+- Stay mobile. Stay alive.
+
+DEFEND THE TOWN
+- Evacuate 50 villagers to extraction points
+- Protect them from monsters that hunt them at the gates
+- Use Solari (in-game currency) to purchase upgrades and defensive structures
+- Call upon guards and priestesses to aid in the fight
+
+ALLY WITH HEROES
+- Annadaeus: The Bard — Joins automatically. Sings buffs that boost your
+  damage, speed, and healing. Manage her cooldowns.
+
+- Tenchijin: The Archmage — Arrives when the battle turns darkest (30% Anna
+  health, Anna's death, or wave 20+). Casts devastation spells: Abyss Touch,
+  Event Horizon, and Nihil Storm.
+
+FACE THE BOSS
+When 50 villagers escape, all lesser monsters vanish. Mh'orzath rises.
+
+This cosmic horror fights in three devastating phases:
+- **Abyss Touch** — Fast void projectiles that home toward you
+- **Event Horizon** — A gravity well that pulls you toward the boss and deals
+  damage over time
+- **Nihil Storm** — A screen-wide ultimate attack that devastates everything
+
+Defeat Mh'orzath to save Lumora.
+
+================================================================================
+FEATURES
+================================================================================
+
+✓ WAVE-BASED TOWER DEFENSE
+  - 20+ waves of increasingly dangerous enemies
+  - Multiple monster types: Skeletons, Ghosts, Hezrous, Wraiths, Balrogs, and
+    more
+  - Smart pathfinding AI as enemies navigate toward your defenses
+
+✓ BULLET-HELL ACTION
+  - Fast-paced real-time combat
+  - Dodge, weave, and fight your way through hordes
+  - Projectile-heavy gameplay with constant visual feedback
+
+✓ CHARACTER-DRIVEN NARRATIVE
+  - Meet Timot, the resourceful merchant
+  - Ally with Annadaeus, the bard whose songs save lives
+  - Summon Tenchijin, the archmage, at the game's darkest hour
+  - Confront Mh'orzath, the Eclipsed One, in an epic final battle
+
+✓ RESOURCE MANAGEMENT
+  - Earn Solari by defeating monsters
+  - Spend wisely on potions, upgrades, and defensive turrets
+  - Balance immediate survival with long-term preparation
+
+✓ NPC RESCUE MECHANICS
+  - Guide villagers to safety
+  - Protect extraction points from assault
+  - Witness the consequences of your defense (or failure to defend)
+
+✓ BOSS FIGHTS
+  - Three-phase epic encounter with Mh'orzath
+  - Unique attack patterns requiring different strategies
+  - Victory screen with detailed stats and developer message
+
+================================================================================
+WORLD & LORE
+================================================================================
+
+Lumora is one corner of a vast world called Aldenexia. This medieval town
+sits above an ancient seal imprisoning a cosmic horror—Mh'orzath, the
+Eclipsed One. When the seal weakens, shadows seep through, and the darkness
+begins its hunger.
+
+The characters you meet—Anna, Tenchijin, and others—are threads in a much
+larger tapestry. Their stories, struggles, and powers hint at deeper mysteries
+in Aldenexia's history.
+
+Heroes of Lumora is both a complete game AND a window into that larger world.
+It serves as a brief introduction to Aldenexia: Lightfall, an upcoming full
+game that will explore this realm in depth.
+
+================================================================================
+TECHNICAL DETAILS
+================================================================================
+
+PLATFORMS: PC (Windows, Linux, Mac)
+ENGINE: Godot 4.6
+DISPLAY: 1920x1080 recommended
+INPUT: Keyboard & Mouse, Gamepad/Joystick supported
+AUDIO: Dynamic music, sound effects for combat and ambiance
+
+SOLO DEVELOPER: Ross Wilkinson
+DEVELOPMENT: First game; passion project created while learning game
+             development from the ground up
+
+================================================================================
+ABOUT THE DEVELOPER
+================================================================================
+
+This is Ross Wilkinson's first game—a solo project born from months of
+learning, experimentation, and genuine passion for bringing Lumora to life.
+Every system, every character, every wave was crafted by hand, debugged in
+the late hours, and refined through countless playtests.
+
+Heroes of Lumora is the beginning of a larger vision. The next chapter of
+this world unfolds in Aldenexia: Lightfall, where the full scope of Mh'orzath's
+threat, the powers of the great heroes, and the secrets of Aldenexia itself
+will be revealed.
+
+If Lumora earned your sword, I hope Aldenexia will earn your return.
+
+================================================================================
+KEY THEMES
+================================================================================
+
+LIGHT vs. DARKNESS
+The eternal struggle between hope (golden light) and despair (void shadow).
+Your defense of Lumora is a defense of the light itself.
+
+SACRIFICE & SALVATION
+Every villager you save has a name, a story. Protecting them drives the
+narrative forward.
+
+RISING DARKNESS
+The threat escalates from minor skirmishes to waves of deadly monsters,
+culminating in the awakening of an ancient evil.
+
+HEROIC ALLIANCE
+You don't stand alone. Allies arrive when needed most. Together, heroes can
+face any darkness.
+
+================================================================================
+PLAYSTYLE APPEAL
+================================================================================
+
+Heroes of Lumora is perfect for players who enjoy:
+- Tower defense mechanics (Bloons TD, Plants vs. Zombies)
+- Bullet-hell action (Vampire Survivors, Hades, Brotato)
+- Medieval fantasy settings (Dark Souls, Elden Ring, Baldur's Gate)
+- Indie games with heart (Stardew Valley, Hollow Knight, Celeste)
+- Fast-paced, skill-based gameplay
+- Games with meaningful NPCs and narrative
+
+================================================================================
+VISUAL STYLE
+================================================================================
+
+Medieval fantasy pixel/sprite-based art with a cosmic horror twist. The town
+of Lumora is vibrant and lived-in, filled with torches and defense structures.
+The monsters grow darker and more otherworldly as waves progress.
+
+The climax features Mh'orzath—a being of pure void and shadow, larger than
+comprehension, wrapped in purple cosmic energies and writhing tentacles.
+
+The color palette shifts from warm medieval golds and oranges to cold purples
+and blacks as the eclipse descends, signaling the player's progress toward
+the final confrontation.
+
+================================================================================
+AUDIO DESIGN
+================================================================================
+
+MUSIC: Dynamic boss themes and wave-based tracks that intensify as the danger
+       grows. Contemplative town music during calm moments. Triumphant victory
+       theme after defeating Mh'orzath.
+
+SOUND EFFECTS: Satisfying weapon impacts, spell casts from allies, monster
+               roars, and the ominous sound of the eclipse. Audio cues signal
+               important events (Anna's health critical, Tenchijin arrives,
+               boss phases).
+
+VOICE: Dialogue through text, delivered by characters in key moments
+       (Timot's briefing, Anna's entrance shout, final boss quotes).
+
+================================================================================
+END OF GAME DESCRIPTION
+================================================================================

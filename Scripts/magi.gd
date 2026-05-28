@@ -99,8 +99,10 @@ func _create_health_bar() -> void:
 	_health_bar = ProgressBar.new()
 	_health_bar.max_value = max_health
 	_health_bar.value = current_health
-	_health_bar.size = Vector2(48, 6)
-	_health_bar.position = Vector2(-24, -42)
+	_health_bar.offset_left = -8.0
+	_health_bar.offset_top = -22.0
+	_health_bar.offset_right = 11.0
+	_health_bar.offset_bottom = -20.0
 	_health_bar.show_percentage = false
 	_health_bar.rounded = true
 	_health_bar.add_theme_stylebox_override("background", bg)

@@ -73,6 +73,7 @@ text/autoadvance_enabled=true
 glossary/default_case_sensitive=true
 layout/style_list=[]
 layout/default_style="Default"
+text/split_at_new_lines_as=0
 
 [display]
 

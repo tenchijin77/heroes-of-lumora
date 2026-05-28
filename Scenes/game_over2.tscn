@@ -1,17 +1,17 @@
-[gd_scene load_steps=4 format=3 uid="uid://dicm58kpeox50"]
+[gd_scene format=3 uid="uid://dicm58kpeox50"]
 
 [ext_resource type="Script" uid="uid://chhbi41vxqdyy" path="res://Scripts/game_over2.gd" id="1_7rh5p"]
-[ext_resource type="FontFile" uid="uid://djcjuyoolr6e1" path="res://Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf" id="2_niae8"]
-[ext_resource type="FontFile" uid="uid://cam7bapqpcdf8" path="res://Assets/Fonts/_bitmap_font____romulus_by_pix3m-d6aokem.ttf" id="3_ko4a0"]
+[ext_resource type="FontFile" uid="uid://blnxrqwyomqn" path="res://Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf" id="2_niae8"]
+[ext_resource type="FontFile" uid="uid://d1g3p034nbu18" path="res://Assets/Fonts/_bitmap_font____romulus_by_pix3m-d6aokem.ttf" id="3_ko4a0"]
 
-[node name="Control" type="Control"]
+[node name="Control" type="Control" unique_id=1642821692]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_7rh5p")
 
-[node name="leader_board" type="VBoxContainer" parent="."]
+[node name="leader_board" type="VBoxContainer" parent="." unique_id=688866592]
 layout_mode = 0
 offset_left = 384.0
 offset_top = 128.0
@@ -19,59 +19,59 @@ offset_right = 768.0
 offset_bottom = 448.0
 alignment = 1
 
-[node name="score_1" type="Label" parent="leader_board"]
+[node name="score_1" type="Label" parent="leader_board" unique_id=1841862229]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_niae8")
 theme_override_font_sizes/font_size = 16
 
-[node name="score_2" type="Label" parent="leader_board"]
+[node name="score_2" type="Label" parent="leader_board" unique_id=2044397892]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_niae8")
 theme_override_font_sizes/font_size = 16
 
-[node name="score_3" type="Label" parent="leader_board"]
+[node name="score_3" type="Label" parent="leader_board" unique_id=1359875195]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_niae8")
 theme_override_font_sizes/font_size = 16
 
-[node name="score_4" type="Label" parent="leader_board"]
+[node name="score_4" type="Label" parent="leader_board" unique_id=352489141]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_niae8")
 theme_override_font_sizes/font_size = 16
 
-[node name="score_5" type="Label" parent="leader_board"]
+[node name="score_5" type="Label" parent="leader_board" unique_id=196061676]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_niae8")
 theme_override_font_sizes/font_size = 16
 
-[node name="score_6" type="Label" parent="leader_board"]
+[node name="score_6" type="Label" parent="leader_board" unique_id=2123129730]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_niae8")
 theme_override_font_sizes/font_size = 16
 
-[node name="score_7" type="Label" parent="leader_board"]
+[node name="score_7" type="Label" parent="leader_board" unique_id=1635685683]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_niae8")
 theme_override_font_sizes/font_size = 16
 
-[node name="score_8" type="Label" parent="leader_board"]
+[node name="score_8" type="Label" parent="leader_board" unique_id=819002919]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_niae8")
 theme_override_font_sizes/font_size = 16
 
-[node name="score_9" type="Label" parent="leader_board"]
+[node name="score_9" type="Label" parent="leader_board" unique_id=1420691089]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_niae8")
 theme_override_font_sizes/font_size = 16
 
-[node name="score_10" type="Label" parent="leader_board"]
+[node name="score_10" type="Label" parent="leader_board" unique_id=972998255]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_niae8")
 theme_override_font_sizes/font_size = 16
 
-[node name="restart_button" type="Button" parent="."]
+[node name="restart_button" type="Button" parent="." unique_id=208370562]
 top_level = true
-layout_mode = 2
+layout_mode = 0
 offset_left = 480.0
 offset_top = 576.0
 offset_right = 548.0
@@ -80,9 +80,9 @@ theme_override_fonts/font = ExtResource("3_ko4a0")
 theme_override_font_sizes/font_size = 18
 text = "Restart"
 
-[node name="quit_button" type="Button" parent="."]
+[node name="quit_button" type="Button" parent="." unique_id=1795704047]
 top_level = true
-layout_mode = 2
+layout_mode = 0
 offset_left = 600.0
 offset_top = 576.0
 offset_right = 680.0
@@ -91,13 +91,13 @@ theme_override_fonts/font = ExtResource("3_ko4a0")
 theme_override_font_sizes/font_size = 18
 text = "Run Away"
 
-[node name="Panel" type="Panel" parent="."]
+[node name="Panel" type="Panel" parent="." unique_id=647598195]
 z_index = -1
 layout_mode = 0
 offset_right = 1152.0
 offset_bottom = 648.0
 
-[node name="title_label" type="Label" parent="."]
+[node name="title_label" type="Label" parent="." unique_id=756369955]
 layout_mode = 0
 offset_left = 248.0
 offset_top = 8.0
@@ -107,7 +107,7 @@ theme_override_fonts/font = ExtResource("2_niae8")
 theme_override_font_sizes/font_size = 55
 text = "The Wall of Fallen Heroes"
 
-[node name="do_better_label" type="Label" parent="."]
+[node name="do_better_label" type="Label" parent="." unique_id=1503612548]
 layout_mode = 0
 offset_left = 307.0
 offset_top = 472.0
