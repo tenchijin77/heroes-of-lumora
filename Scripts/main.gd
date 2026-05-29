@@ -9,17 +9,13 @@ func _ready() -> void:
 
 func _setup_map_bounds() -> void:
 	const TILE_SIZE := 32
-	# Union the used rects of all ground layers to get the full painted area
-	var used := Rect2i()
-	for layer_name in ["grass", "roads", "town", "walls"]:
-		var layer := get_node_or_null(layer_name) as TileMapLayer
-		if not layer:
-			continue
-		var r: Rect2i = layer.get_used_rect()
-		if r.size == Vector2i.ZERO:
-			continue
-		used = used.merge(r) if used.size != Vector2i.ZERO else r
-
+	# Use only the grass layer — it defines the playable area.
+	# Other layers (walls, town) may have tiles placed outside the grass for
+	# decorative purposes, which would push the merged rect far out.
+	var grass := get_node_or_null("grass") as TileMapLayer
+	if not grass:
+		return
+	var used: Rect2i = grass.get_used_rect()
 	if used.size == Vector2i.ZERO:
 		return
 
@@ -28,7 +24,7 @@ func _setup_map_bounds() -> void:
 	var right  := (used.position.x + used.size.x) * TILE_SIZE
 	var bottom := (used.position.y + used.size.y) * TILE_SIZE
 
-	# Clamp camera so the viewport never shows grey beyond the painted tiles
+	# Clamp camera so the viewport never shows beyond the grass tiles
 	var cam := get_node_or_null("Camera2D") as Camera2D
 	if cam:
 		cam.limit_left   = left
@@ -49,7 +45,7 @@ func _add_boundary_walls(left: int, top: int, right: int, bottom: int) -> void:
 	]
 	for r: Rect2 in rects:
 		var body := StaticBody2D.new()
-		body.collision_layer = 16  # matches existing wall tiles (layer 5)
+		body.collision_layer = 16 + 2048  # Environment (layer 5) + Walls (layer 12)
 		body.collision_mask  = 0
 		var shape := CollisionShape2D.new()
 		var box   := RectangleShape2D.new()

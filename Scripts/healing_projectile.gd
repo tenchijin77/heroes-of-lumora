@@ -9,14 +9,13 @@ func _ready() -> void:
 		body_entered.connect(_on_body_entered)
 
 func _on_body_entered(body: Node) -> void:
-
 	if body.is_in_group("player") or body.is_in_group("friendly"):
 		if body.has_method("heal"):
 			body.heal(heal_amount)
-			despawn()
+		despawn()
 	elif body.is_in_group("monsters"):
 		if body.has_method("take_damage"):
 			body.take_damage(damage, self)
-			despawn()
+		despawn()
 	else:
 		despawn()

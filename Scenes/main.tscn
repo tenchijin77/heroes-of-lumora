@@ -17,6 +17,7 @@
 [ext_resource type="Script" uid="uid://xlp43s2ui51c" path="res://Scripts/shop_door.gd" id="14_wsu2k"]
 [ext_resource type="PackedScene" uid="uid://duxegpyq1i8q1" path="res://Scenes/gate_detector.tscn" id="15_k12tt"]
 [ext_resource type="PackedScene" uid="uid://bgfaj16qrlyhf" path="res://Scenes/messenger.tscn" id="15_wsu2k"]
+[ext_resource type="Texture2D" uid="uid://b7llvjvq3358i" path="res://Assets/New Sprites/Portal Sprites.png" id="16_ee4r6"]
 [ext_resource type="Script" uid="uid://7fwlm6n6y3sq" path="res://Scripts/gate_detector.gd" id="16_h1bgf"]
 [ext_resource type="PackedScene" uid="uid://cdfbj1oyr0vl5" path="res://Scenes/annadaeus.tscn" id="18_b3802"]
 [ext_resource type="PackedScene" uid="uid://cvu1l5283jic0" path="res://Scenes/tenchijin.tscn" id="18_hibaj"]
@@ -6753,31 +6754,27 @@ shape = SubResource("RectangleShape2D_fdnlq")
 
 [node name="spawner_marker" type="Sprite2D" parent="." unique_id=179218430]
 position = Vector2(-3369, 373)
-scale = Vector2(2.5, 2.5)
-texture = ExtResource("1_bo1nx")
+texture = ExtResource("16_ee4r6")
 region_enabled = true
-region_rect = Rect2(1024.1211, 480.5161, 32.181763, 31.22583)
+region_rect = Rect2(43.3981, 354.3643, 222.66238, 198.75693)
 
 [node name="spawner_marker2" type="Sprite2D" parent="." unique_id=1597850491]
 position = Vector2(-4134, 337)
-scale = Vector2(2.5, 2.5)
-texture = ExtResource("1_bo1nx")
+texture = ExtResource("16_ee4r6")
 region_enabled = true
-region_rect = Rect2(1056.4263, 480.30994, 31.21521, 31.512451)
+region_rect = Rect2(1271.1096, 360.42514, 229.74097, 185.65555)
 
 [node name="spawner_marker3" type="Sprite2D" parent="." unique_id=774689763]
 position = Vector2(1067, -1456)
-scale = Vector2(2.5, 2.5)
-texture = ExtResource("1_bo1nx")
+texture = ExtResource("16_ee4r6")
 region_enabled = true
-region_rect = Rect2(608.04553, 481.34647, 32.209106, 30.032806)
+region_rect = Rect2(1053, 370.5, 216.54797, 181)
 
 [node name="spawner_marker4" type="Sprite2D" parent="." unique_id=559089987]
 position = Vector2(1097, -1964)
-scale = Vector2(2.5, 2.5)
-texture = ExtResource("1_bo1nx")
+texture = ExtResource("16_ee4r6")
 region_enabled = true
-region_rect = Rect2(736.57935, 480.8439, 31.393494, 31.066528)
+region_rect = Rect2(263, 363.5, 205, 180)
 
 [node name="town_markers" type="Node2D" parent="." unique_id=1039774906]
 

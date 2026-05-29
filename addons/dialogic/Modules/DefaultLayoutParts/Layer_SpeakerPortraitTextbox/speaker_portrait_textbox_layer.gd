@@ -90,8 +90,10 @@ func _apply_export_overrides() -> void:
 		panel.self_modulate = get_global_setting(&'bg_color', box_modulate_custom_color)
 	else:
 		panel.self_modulate = box_modulate_custom_color
-	panel.size = box_size
-	panel.position = Vector2(-box_size.x/2, -box_size.y-box_distance)
+	panel.offset_left = -box_size.x / 2.0
+	panel.offset_right = box_size.x / 2.0
+	panel.offset_top = -box_size.y - box_distance
+	panel.offset_bottom = -box_distance
 	portrait_panel.size_flags_stretch_ratio = portrait_stretch_factor
 
 	var stylebox: StyleBox = load(box_panel)

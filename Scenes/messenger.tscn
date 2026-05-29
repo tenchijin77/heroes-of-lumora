@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://bgfaj16qrlyhf"]
 
 [ext_resource type="Script" uid="uid://5nsfrut0l8bb" path="res://Scripts/messenger.gd" id="1_jdkcu"]
-[ext_resource type="Texture2D" uid="uid://dhln4w4t2sc8n" path="res://Assets/Sprites/Spritesheet.png" id="2_fx8ed"]
+[ext_resource type="Texture2D" uid="uid://dcv5g1va4ow4y" path="res://Assets/New Sprites/NPC Sprites.png" id="2_jdkcu"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7u53x"]
-size = Vector2(16, 24)
+size = Vector2(39, 48)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_gn4cm"]
 radius = 74.0
@@ -21,14 +21,14 @@ collision_mask = 586
 script = ExtResource("1_jdkcu")
 
 [node name="sprite_2d" type="Sprite2D" parent="." unique_id=2145853389]
-texture = ExtResource("2_fx8ed")
-flip_h = true
+scale = Vector2(0.15, 0.15)
+texture = ExtResource("2_jdkcu")
 region_enabled = true
-region_rect = Rect2(1380.4675, 29.897171, 20.827026, 34.233063)
+region_rect = Rect2(1066.0209, 393.93982, 284.34998, 315.81018)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1729731236]
 visible = false
-position = Vector2(0, 1)
+position = Vector2(-0.5, 0)
 shape = SubResource("RectangleShape2D_7u53x")
 
 [node name="navigation_agent_2d" type="NavigationAgent2D" parent="." unique_id=1404592239]
@@ -51,9 +51,9 @@ collision_mask = 1075
 
 [node name="health_bar" type="ProgressBar" parent="." unique_id=784915655]
 offset_left = -10.0
-offset_top = -19.0
+offset_top = -32.0
 offset_right = 8.0
-offset_bottom = -17.0
+offset_bottom = -30.0
 theme_override_styles/background = SubResource("StyleBoxFlat_7u53x")
 theme_override_styles/fill = SubResource("StyleBoxFlat_gn4cm")
 rounded = true

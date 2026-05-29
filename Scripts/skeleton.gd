@@ -27,6 +27,7 @@ func _cast() -> void:
 	var bone = bullet_pool.spawn()
 
 	if bone:
+		bone.shooter = self
 		bone.global_position = muzzle.global_position
 		var direction: Vector2 = muzzle.global_position.direction_to(target.global_position)
 		bone.move_direction = direction.normalized() if direction.length() > 0.01 else Vector2.RIGHT  # Fallback to avoid zero vector

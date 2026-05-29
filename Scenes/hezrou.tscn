@@ -1,13 +1,13 @@
 [gd_scene format=3 uid="uid://dgfdgfgyxwky6"]
 
 [ext_resource type="Script" uid="uid://bxdcw03f401hl" path="res://Scripts/hezrou.gd" id="1_lmg06"]
-[ext_resource type="Texture2D" uid="uid://dhln4w4t2sc8n" path="res://Assets/Sprites/Spritesheet.png" id="3_aebgk"]
+[ext_resource type="Texture2D" uid="uid://cedm3ij5t47se" path="res://Assets/New Sprites/Monsters 2 Sprites.png" id="3_lmg06"]
 [ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="4_ual8j"]
 [ext_resource type="PackedScene" uid="uid://d3rcusi22khhd" path="res://Scenes/potion.tscn" id="5_uprq3"]
 [ext_resource type="PackedScene" uid="uid://b3u85ibipyv8w" path="res://Scenes/bile_spew.tscn" id="5_x8tu6"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sfdtf"]
-size = Vector2(78, 86)
+size = Vector2(70, 70)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pegji"]
 bg_color = Color(0.201527, 0.201527, 0.201527, 1)
@@ -28,14 +28,14 @@ score_value = 300
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1097151433]
 visible = false
-position = Vector2(2, 0)
+position = Vector2(-2, 0)
 shape = SubResource("RectangleShape2D_sfdtf")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1479097181]
-scale = Vector2(2, 2)
-texture = ExtResource("3_aebgk")
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("3_lmg06")
 region_enabled = true
-region_rect = Rect2(321, 160, 31, 32)
+region_rect = Rect2(882.326, 81.19795, 306.13007, 290.15802)
 
 [node name="muzzle" type="Node2D" parent="." unique_id=1575981973]
 
@@ -48,6 +48,7 @@ script = ExtResource("4_ual8j")
 node_scene = ExtResource("5_uprq3")
 
 [node name="avoidance_ray" type="RayCast2D" parent="." unique_id=1414778301]
+rotation = 3.1415927
 target_position = Vector2(-50, 0)
 collision_mask = 1075
 

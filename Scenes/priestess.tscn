@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bhm0mxnnqdj6x"]
 
 [ext_resource type="Script" uid="uid://cv70j56i2fo7u" path="res://Scripts/healer.gd" id="1_ewup4"]
-[ext_resource type="Texture2D" uid="uid://dhln4w4t2sc8n" path="res://Assets/Sprites/Spritesheet.png" id="2_2kld1"]
+[ext_resource type="Texture2D" uid="uid://dcv5g1va4ow4y" path="res://Assets/New Sprites/NPC Sprites.png" id="3_bwqxu"]
 [ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="3_owegj"]
 [ext_resource type="PackedScene" uid="uid://dkjn4u5pvci4p" path="res://Scenes/heal_bolt.tscn" id="4_6h5py"]
 [ext_resource type="Script" uid="uid://dirtd7uwkj0xb" path="res://Scripts/healing_aura.gd" id="5_2kld1"]
@@ -9,7 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://cdratucivf3ji" path="res://Assets/Sprites/green aura glow.png" id="7_bwqxu"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sfdtf"]
-size = Vector2(20, 28)
+size = Vector2(28, 43)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pegji"]
 bg_color = Color(0.201527, 0.201527, 0.201527, 1)
@@ -37,14 +37,15 @@ projectile_scene = ExtResource("4_6h5py")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1154312849]
 visible = false
-position = Vector2(2, -1)
+position = Vector2(1, -2.5)
 shape = SubResource("RectangleShape2D_sfdtf")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=731010838]
 position = Vector2(1, -2.5)
-texture = ExtResource("2_2kld1")
+scale = Vector2(0.15, 0.15)
+texture = ExtResource("3_bwqxu")
 region_enabled = true
-region_rect = Rect2(64, 288, 32, 33)
+region_rect = Rect2(408.63223, 410.00006, 259.29233, 294.41418)
 
 [node name="muzzle" type="Node2D" parent="." unique_id=1442754440]
 position = Vector2(-13, 6)
@@ -54,14 +55,15 @@ script = ExtResource("3_owegj")
 node_scene = ExtResource("4_6h5py")
 
 [node name="avoidance_ray" type="RayCast2D" parent="." unique_id=1707946898]
+rotation = 3.1415927
 target_position = Vector2(-64, 0)
 collision_mask = 51
 
 [node name="health_bar" type="ProgressBar" parent="." unique_id=711579162]
 offset_left = -8.0
-offset_top = -22.0
+offset_top = -32.0
 offset_right = 11.0
-offset_bottom = -20.0
+offset_bottom = -30.0
 theme_override_styles/background = SubResource("StyleBoxFlat_pegji")
 theme_override_styles/fill = SubResource("StyleBoxFlat_5abox")
 rounded = true
@@ -85,6 +87,7 @@ collision_mask = 1057
 script = ExtResource("5_2kld1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="heal_aura" unique_id=542107520]
+visible = false
 shape = SubResource("CircleShape2D_6h5py")
 
 [node name="heal_aura_timer" type="Timer" parent="heal_aura" unique_id=1951356396]

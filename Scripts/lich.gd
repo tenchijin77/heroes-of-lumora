@@ -25,6 +25,7 @@ func _cast() -> void:
 	var death_bolt: Area2D = bullet_pool.spawn()
 
 	if death_bolt:
+		death_bolt.shooter = self
 		death_bolt.global_position = muzzle.global_position
 		var direction: Vector2 = muzzle.global_position.direction_to(target.global_position)
 		death_bolt.move_direction = direction.normalized() if direction.length() > 0.01 else Vector2.RIGHT  # Fallback to avoid zero vector

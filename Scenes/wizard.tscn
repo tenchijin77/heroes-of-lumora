@@ -1,14 +1,15 @@
-[gd_scene load_steps=13 format=3 uid="uid://ccp2m0ys1cf3"]
+[gd_scene format=3 uid="uid://ccp2m0ys1cf3"]
 
 [ext_resource type="Script" uid="uid://ckissxtq661ii" path="res://Scripts/wizard.gd" id="1_mqqw1"]
-[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="3_sask2"]
+[ext_resource type="Texture2D" uid="uid://dhln4w4t2sc8n" path="res://Assets/Sprites/Spritesheet.png" id="3_sask2"]
+[ext_resource type="Texture2D" uid="uid://cedm3ij5t47se" path="res://Assets/New Sprites/Monsters 2 Sprites.png" id="3_vxkga"]
 [ext_resource type="PackedScene" uid="uid://d1sakl0e37oo2" path="res://Scenes/fireball.tscn" id="4_be21u"]
 [ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="4_vxkga"]
-[ext_resource type="AudioStream" uid="uid://dw2ivmc1p3drn" path="res://Assets/Audio/fireball-whoosh-2-179126.mp3" id="5_sask2"]
+[ext_resource type="AudioStream" uid="uid://msquneaovfvs" path="res://Assets/Audio/fireball-whoosh-2-179126.mp3" id="5_sask2"]
 [ext_resource type="PackedScene" uid="uid://d3rcusi22khhd" path="res://Scenes/potion.tscn" id="7_vxkga"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sfdtf"]
-size = Vector2(18, 25)
+size = Vector2(36, 53)
 
 [sub_resource type="Resource" id="Resource_sask2"]
 metadata/__load_path__ = "res://Scripts/fireball.gd"
@@ -22,8 +23,10 @@ _bundled = {
 "conn_count": 3,
 "conns": PackedInt32Array(1073741829, 1073741828, 23, 22, 2, 0, 0, 1073741831, 1073741830, 25, 24, 2, 0, 0, 1073741833, 1073741832, 27, 26, 2, 0, 0),
 "editable_instances": [],
+"id_paths": [],
 "names": PackedStringArray("fireball", "Area2D", "collision_layer", "collision_mask", "script", "owner_group", "Sprite2D", "Sprite2D", "texture", "region_enabled", "region_rect", "CollisionShape2D", "CollisionShape2D", "shape", "destroy_timer", "Timer", "wait_time", "autostart", "fireball_sound", "AudioStreamPlayer2D", "stream", "autoplay", "_on_body_entered", "body_entered", "_on_visibility_changed", "visibility_changed", "_on_destroy_timer_timeout", "timeout"),
 "node_count": 5,
+"node_ids": PackedInt32Array(),
 "node_paths": [NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath("."), NodePath("destroy_timer")],
 "nodes": PackedInt32Array(-1, -1, 1, 0, -1, 4, 2, 0, 3, 1, 4, 2, 5, 3, 0, 1073741824, 0, 7, 6, -1, 3, 8, 4, 9, 5, 10, 6, 0, 1073741825, 0, 12, 11, -1, 1, 13, 7, 0, 1073741826, 0, 15, 14, -1, 2, 16, 8, 17, 9, 0, 1073741827, 0, 19, 18, -1, 2, 20, 10, 21, 11, 0),
 "variants": [8, 17, SubResource("Resource_sask2"), "monsters", ExtResource("3_sask2"), true, Rect2(96, 323, 32, 26), SubResource("CapsuleShape2D_cpagb"), 4.0, true, ExtResource("5_sask2"), true],
@@ -36,48 +39,50 @@ bg_color = Color(0.201527, 0.201527, 0.201527, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5abox"]
 bg_color = Color(0.94902, 0, 0, 1)
 
-[node name="wizard" type="CharacterBody2D" groups=["monsters"]]
+[node name="wizard" type="CharacterBody2D" unique_id=567732271 groups=["monsters"]]
 collision_layer = 2
 collision_mask = 629
 script = ExtResource("1_mqqw1")
 bullet_scene = ExtResource("4_be21u")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=702282376]
 visible = false
-position = Vector2(1, -2.5)
+position = Vector2(4, -0.5)
 shape = SubResource("RectangleShape2D_sfdtf")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2055864776]
 position = Vector2(1, -2.5)
-texture = ExtResource("3_sask2")
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("3_vxkga")
 region_enabled = true
-region_rect = Rect2(641, 64, 31, 32)
+region_rect = Rect2(894.305, 407.29297, 239.58002, 308.792)
 
-[node name="muzzle" type="Node2D" parent="."]
+[node name="muzzle" type="Node2D" parent="." unique_id=653188425]
 
-[node name="bullet_pool" type="Node" parent="."]
+[node name="bullet_pool" type="Node" parent="." unique_id=1423659337]
 script = ExtResource("4_vxkga")
 node_scene = SubResource("PackedScene_vxkga")
 
-[node name="potion_pool" type="Node" parent="."]
+[node name="potion_pool" type="Node" parent="." unique_id=2031461199]
 script = ExtResource("4_vxkga")
 node_scene = ExtResource("7_vxkga")
 metadata/_custom_type_script = "uid://s244dhbmprhx"
 
-[node name="avoidance_ray" type="RayCast2D" parent="."]
+[node name="avoidance_ray" type="RayCast2D" parent="." unique_id=1110785253]
+rotation = 3.1415927
 target_position = Vector2(-64, 0)
 collision_mask = 1075
 
-[node name="health_bar" type="ProgressBar" parent="."]
+[node name="health_bar" type="ProgressBar" parent="." unique_id=1418020217]
 offset_left = -8.0
-offset_top = -19.0
+offset_top = -42.0
 offset_right = 8.0
-offset_bottom = -17.0
+offset_bottom = -40.0
 theme_override_styles/background = SubResource("StyleBoxFlat_pegji")
 theme_override_styles/fill = SubResource("StyleBoxFlat_5abox")
 rounded = true
 show_percentage = false
 
-[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=1049747576]
 avoidance_enabled = true
 radius = 30.0

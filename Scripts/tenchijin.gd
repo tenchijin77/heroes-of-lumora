@@ -529,11 +529,11 @@ func _has_clear_line_to_target(target: Node2D) -> bool:
 
 func _update_flip_h() -> void:
 	if velocity.x > 0:
-		sprite.flip_h = true
-	elif velocity.x < 0:
 		sprite.flip_h = false
+	elif velocity.x < 0:
+		sprite.flip_h = true
 	elif current_target and is_instance_valid(current_target):
-		sprite.flip_h = global_position.direction_to(current_target.global_position).x > 0
+		sprite.flip_h = global_position.direction_to(current_target.global_position).x < 0
 
 func _on_detection_area_body_entered(body: Node2D) -> void:
 	if body.is_in_group("monsters") and body.visible and body is CharacterBody2D and not detected_monsters.has(body):

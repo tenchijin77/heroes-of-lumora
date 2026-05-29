@@ -29,6 +29,7 @@ func _cast() -> void:
 	var bile_spew: Area2D = bullet_pool.spawn()
 	
 	if bile_spew:
+		bile_spew.shooter = self
 		bile_spew.global_position = muzzle.global_position
 		var direction: Vector2 = muzzle.global_position.direction_to(target.global_position)
 		bile_spew.move_direction = direction.normalized() if direction.length() > 0.01 else Vector2.RIGHT  # Fallback to avoid zero vector

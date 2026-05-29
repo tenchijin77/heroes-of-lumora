@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://d6xrs2lxn4lc" path="res://Scripts/projectile.gd" id="1_ann0h"]
 [ext_resource type="AudioStream" uid="uid://b255cnud2qxo6" path="res://Assets/Audio/fireball-impact-351961.mp3" id="2_ann0h"]
-[ext_resource type="Texture2D" uid="uid://dhln4w4t2sc8n" path="res://Assets/Sprites/Spritesheet.png" id="2_btltc"]
+[ext_resource type="Texture2D" uid="uid://b145lo5v3cwa4" path="res://Assets/New Sprites/Projectiles 2 Sprites.png" id="3_ann0h"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_btltc"]
 radius = 14.0
@@ -17,11 +17,14 @@ damage = 20
 sound_stream = ExtResource("2_ann0h")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=329239716]
-texture = ExtResource("2_btltc")
+rotation = -1.3264502
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("3_ann0h")
 region_enabled = true
-region_rect = Rect2(1183.9064, 191.72646, 33.514893, 32.557327)
+region_rect = Rect2(1085.9691, 29.288952, 251.55896, 274.18604)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=921662852]
+visible = false
 position = Vector2(-1, 0)
 shape = SubResource("CircleShape2D_btltc")
 

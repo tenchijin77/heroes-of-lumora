@@ -8,13 +8,22 @@
 "sound_moods": {},
 "style": ""
 },
-&"default_portrait": "default",
+&"default_portrait": "Narrator-New",
 &"description": "The Narrator",
 &"display_name": "Narrator",
 &"mirror": false,
 &"nicknames": [""],
 &"offset": Vector2(0, 0),
 &"portraits": {
+"Narrator-New": {
+"export_overrides": {
+"image": "\"res://Assets/New Sprites/Narrator-New.png\""
+},
+"mirror": false,
+"offset": Vector2(0, 0),
+"scale": 1.0,
+"scene": ""
+},
 "default": {
 "export_overrides": {
 "image": "\"res://Assets/Sprites/narrator2.png\""

@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" uid="uid://d6xrs2lxn4lc" path="res://Scripts/projectile.gd" id="1_jl3ee"]
 [ext_resource type="AudioStream" uid="uid://bdxhxd7ylm7mf" path="res://Assets/Audio/Lightning.ogg" id="2_paq36"]
-[ext_resource type="Texture2D" uid="uid://dhln4w4t2sc8n" path="res://Assets/Sprites/Spritesheet.png" id="3_eju60"]
+[ext_resource type="Texture2D" uid="uid://cpxbkkf2gom46" path="res://Assets/New Sprites/Projectiles Sprites.png" id="3_jl3ee"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_mm"]
-radius = 8.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_paq36"]
+size = Vector2(20, 7)
 
 [node name="magic_missile" type="Area2D" unique_id=2036796320]
 collision_layer = 64
@@ -17,13 +17,16 @@ damage = 20
 sound_stream = ExtResource("2_paq36")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=286781257]
-rotation = -1.5708
-texture = ExtResource("3_eju60")
+rotation = 1.5707964
+scale = Vector2(0.075, 0.075)
+texture = ExtResource("3_jl3ee")
 region_enabled = true
-region_rect = Rect2(573.8941, 320.87836, 38.085144, 33.732513)
+region_rect = Rect2(782.0004, 204, 142.00012, 305.00018)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1746323521]
-shape = SubResource("CircleShape2D_mm")
+visible = false
+position = Vector2(0, -0.5)
+shape = SubResource("RectangleShape2D_paq36")
 
 [node name="destroy_timer" type="Timer" parent="." unique_id=1347921183]
 wait_time = 4.0

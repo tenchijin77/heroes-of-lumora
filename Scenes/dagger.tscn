@@ -1,35 +1,36 @@
-[gd_scene load_steps=5 format=3 uid="uid://bd3fki35y5s1v"]
+[gd_scene format=3 uid="uid://bd3fki35y5s1v"]
 
 [ext_resource type="Script" uid="uid://d6xrs2lxn4lc" path="res://Scripts/projectile.gd" id="1_uw7d1"]
-[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="2_2xgjm"]
-[ext_resource type="AudioStream" uid="uid://byiqt01ne7bxk" path="res://Assets/Audio/sword-hit-7160.mp3" id="2_h2poi"]
+[ext_resource type="AudioStream" uid="uid://ceb7mrjny1d10" path="res://Assets/Audio/sword-hit-7160.mp3" id="2_h2poi"]
+[ext_resource type="Texture2D" uid="uid://bxsbcimcy7252" path="res://Assets/New Sprites/Projectiles 3 Sprites.png" id="2_uw7d1"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6o4l1"]
-size = Vector2(24, 7.57576)
+size = Vector2(25, 5.30303)
 
-[node name="dagger" type="Area2D"]
+[node name="dagger" type="Area2D" unique_id=225703318]
 collision_layer = 8
 collision_mask = 3121
 script = ExtResource("1_uw7d1")
 speed = 250.0
 damage = 8
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-rotation = 0.785398
-texture = ExtResource("2_2xgjm")
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=128405846]
+scale = Vector2(0.15, 0.15)
+texture = ExtResource("2_uw7d1")
 region_enabled = true
-region_rect = Rect2(1573, 866, 26, 25)
+region_rect = Rect2(83.01836, 98.87044, 172.11952, 86.05977)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-1, 1)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1516296807]
+visible = false
+position = Vector2(0.5, 0.49999988)
 scale = Vector2(1, 1.32)
 shape = SubResource("RectangleShape2D_6o4l1")
 
-[node name="destroy_timer" type="Timer" parent="."]
+[node name="destroy_timer" type="Timer" parent="." unique_id=1213531906]
 wait_time = 4.0
 autostart = true
 
-[node name="projectile_sound" type="AudioStreamPlayer2D" parent="."]
+[node name="projectile_sound" type="AudioStreamPlayer2D" parent="." unique_id=2070442749]
 stream = ExtResource("2_h2poi")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

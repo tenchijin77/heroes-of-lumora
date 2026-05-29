@@ -71,11 +71,11 @@ func _physics_process(delta: float) -> void:
 
 func _update_flip_h() -> void:
 	if velocity.x > 0:
-		sprite.flip_h = true
-	elif velocity.x < 0:
 		sprite.flip_h = false
+	elif velocity.x < 0:
+		sprite.flip_h = true
 	elif current_target:
-		sprite.flip_h = global_position.direction_to(current_target.global_position).x > 0
+		sprite.flip_h = global_position.direction_to(current_target.global_position).x < 0
 
 func _update_target() -> void:
 	detected_monsters = detected_monsters.filter(

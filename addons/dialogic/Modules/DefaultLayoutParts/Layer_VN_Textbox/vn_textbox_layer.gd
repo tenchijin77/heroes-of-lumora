@@ -158,8 +158,10 @@ func _apply_box_settings() -> void:
 		dialog_text_panel.self_modulate = box_color_custom
 
 	var sizer: Control = %Sizer
-	sizer.size = box_size
-	sizer.position = box_size * Vector2(-0.5, -1)+Vector2(0, -box_margin_bottom)
+	sizer.offset_left = -box_size.x / 2.0
+	sizer.offset_right = box_size.x / 2.0
+	sizer.offset_top = -box_size.y - box_margin_bottom
+	sizer.offset_bottom = -box_margin_bottom
 
 
 ## Applies box animations settings to the scene.

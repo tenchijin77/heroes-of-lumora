@@ -1,33 +1,34 @@
-[gd_scene load_steps=5 format=3 uid="uid://dgm03pu34032m"]
+[gd_scene format=3 uid="uid://dgm03pu34032m"]
 
 [ext_resource type="Script" uid="uid://d6xrs2lxn4lc" path="res://Scripts/projectile.gd" id="1_umxe1"]
-[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="2_vxn5h"]
-[ext_resource type="AudioStream" uid="uid://qbp6c7mpjsah" path="res://Assets/Audio/rubble-crash-275691.mp3" id="3_umxe1"]
+[ext_resource type="AudioStream" uid="uid://mlt1wlc16jav" path="res://Assets/Audio/rubble-crash-275691.mp3" id="3_umxe1"]
+[ext_resource type="Texture2D" uid="uid://bxsbcimcy7252" path="res://Assets/New Sprites/Projectiles 3 Sprites.png" id="3_vxn5h"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_umxe1"]
-radius = 14.0357
+radius = 20.024984
 
-[node name="boulder" type="Area2D"]
+[node name="boulder" type="Area2D" unique_id=1543909669]
 collision_layer = 8
 collision_mask = 3121
 script = ExtResource("1_umxe1")
 damage = 20
 sound_stream = ExtResource("3_umxe1")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("2_vxn5h")
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=267420518]
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("3_vxn5h")
 region_enabled = true
-region_rect = Rect2(1661, 33, 37, 25)
+region_rect = Rect2(407.58212, 39.05561, 212.96017, 198.31918)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(1, 1)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1824020961]
+visible = false
 shape = SubResource("CircleShape2D_umxe1")
 
-[node name="destroy_timer" type="Timer" parent="."]
+[node name="destroy_timer" type="Timer" parent="." unique_id=906624251]
 wait_time = 4.0
 autostart = true
 
-[node name="projectile_sound" type="AudioStreamPlayer2D" parent="."]
+[node name="projectile_sound" type="AudioStreamPlayer2D" parent="." unique_id=1398466719]
 stream = ExtResource("3_umxe1")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

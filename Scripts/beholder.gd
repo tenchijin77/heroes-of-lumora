@@ -26,6 +26,7 @@ func _cast() -> void:
 	var disintegration_ray: Area2D = bullet_pool.spawn()
 
 	if disintegration_ray:
+		disintegration_ray.shooter = self
 		disintegration_ray.global_position = muzzle.global_position
 		var direction: Vector2 = muzzle.global_position.direction_to(target.global_position)
 		disintegration_ray.move_direction = direction.normalized() if direction.length() > 0.01 else Vector2.RIGHT  # Fallback to avoid zero vector

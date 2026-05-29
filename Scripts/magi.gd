@@ -53,7 +53,7 @@ func _update_target() -> void:
 		current_target = null
 
 func _update_facing() -> void:
-	sprite.flip_h = current_target.global_position.x > global_position.x
+	sprite.flip_h = current_target.global_position.x < global_position.x
 
 func _try_shoot() -> void:
 	var time: float = Time.get_unix_time_from_system()

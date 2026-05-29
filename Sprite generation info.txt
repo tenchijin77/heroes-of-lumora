@@ -160,6 +160,21 @@ background. Each sprite 16-24px, centered with spacing.
 7. TROUBADOUR BOLT OPTION 2: Quarter notes and eighth notes floating. Golden/
    yellow with musical staffs or floating notes. Ethereal music magic.
 
+8. POISON BOLT: Acidic poison projectile used by Troll. Green and murky
+   brown/yellow color. Dripping or oozing appearance showing toxic liquid.
+   Acidic vapor/smoke effect around projectile. Splashing or bubbling look.
+   Corrosive, disgusting appearance. Similar style to Bile Spew but distinct
+   - more solid projectile, less splash.
+
+9. GHOST FIRE: Ethereal soul fire bolt used by Ghost. White/pale blue coloring
+   with semi-transparent effect showing ghostly nature. Smoking/wisping trails
+   behind projectile. Ethereal glow, otherworldly appearance. Spectral flames
+   rather than normal fire. Light and airy despite being a damaging attack.
+   Should look haunting and mystical.
+
+Dark/spooky color palette. Clear visual distinction showing poison vs spectral
+fire. High contrast for visibility at small size.
+
 Bright, clear colors. Easily readable at small size. Magical/musical effects.
 
 ================================================================================
@@ -440,3 +455,327 @@ COLOR PALETTE SUMMARY:
 STYLE: High contrast, clearly readable as portals. Swirling vortex patterns.
 Dark, ominous aesthetic. Each visually distinct so player can identify what
 type of monster will spawn. Pixel art, 32x32-48x48 size.
+
+
+================================================================================
+PROMPT: MH'ORZATH, THE ECLIPSED ONE - Final Boss Sprite
+================================================================================
+
+2D pixel art sprite sheet top-down view. Create the final boss character
+Mh'orzath, the Eclipsed One. Transparent background. Sprite size: 128x128
+or 192x192 pixels (3-4x larger than regular monsters). Centered with spacing.
+
+REQUEST: Create 4 animation frames showing different states:
+1. IDLE - Floating/hovering pose
+2. ATTACKING - Recoiling, preparing attack
+3. CHANNELING - Casting ultimate ability (larger, more menacing)
+4. HURT - Flashing damage state
+
+---
+
+VISUAL DESIGN - CORE CONCEPT:
+Cosmic horror elder god. Not humanoid. A mass of shifting shadow and void
+energy. Top-down overhead perspective. Otherworldly, menacing, ancient,
+incomprehensible power.
+
+---
+
+MAIN BODY:
+Central amorphous mass of deep shadow/void energy. Shifting, organic, writhing.
+Semi-transparent at edges fading into darkness. Like looking at a living void
+or tear in reality. The body should feel alive but wrong - alien and dangerous.
+
+Core should be BLACK and DEEP PURPLE (#1a0033, #0d001a, #000000).
+
+---
+
+EYES:
+Multiple (4-6) pale WHITE/YELLOW eyes (#fffacd) scattered across the body,
+positioned like corona rays around an eclipse. Eyes should glow faintly.
+Mix of different sizes. Some eyes half-closed, some wide open. Creates a
+sense of being watched from multiple directions. Eyes have red (#ff0000)
+pupils or hints of red within them.
+
+---
+
+TENDRILS:
+Black tentacles/void tendrils constantly extending outward from the main body.
+Writhing, organic movement suggested through curved lines. Tentacles should
+look wet, slimy, otherworldly. Dripping void energy. Some tendrils reaching
+upward, some downward, creating a dynamic silhouette. Tentacles have darker
+black with hints of deep purple (#6a0dad).
+
+---
+
+AURA & EFFECTS:
+Gravitational lensing effect - light distorts around the boss. Subtle shimmer
+or warping effect around edges showing reality bending. Dark purple mist/fog
+floating around the body. Void particles drifting downward like inverse rain
+(dark purple with transparency). Shadow energy radiating outward.
+
+---
+
+COLOR PALETTE (CRITICAL):
+- PRIMARY BODY: Deep purple-black (#1a0033, #0d001a, #000000)
+- TENDRILS: Black (#000000) with dark purple highlights (#6a0bad)
+- EYES: Pale white-yellow (#fffacd) with red pupils (#ff0000)
+- ACCENT/GLOW: Eclipse gold (#d4af37) - subtle, around eyes or edges
+- PARTICLES: Dark purple (#6a0dad) at 50% transparency
+- MIST: Black to dark purple gradient
+
+---
+
+ANIMATION FRAME DESCRIPTIONS:
+
+FRAME 1 - IDLE:
+Boss floating calmly. Tendrils slowly undulating. Eyes have gentle glow.
+Calm but ominous presence. Subtle writhing motion implied through poses.
+
+FRAME 2 - ATTACKING:
+Boss recoiling slightly as if unleashing an attack. Tendrils more aggressive,
+whipping outward. Eyes brighter, more intense glow. Body contracts slightly
+as if gathering void energy to attack.
+
+FRAME 3 - CHANNELING (ULTIMATE ABILITY):
+Boss appears LARGER, more menacing. Eyes glow intensely, almost filling with
+light. Tendrils spread wide in chaotic directions. Massive presence. Reality
+warping effect more pronounced. This is the desperate, maximum power state.
+
+FRAME 4 - HURT:
+Boss flashes red or dark red overlay showing damage. Tendrils drooping slightly.
+Eyes dimmed momentarily. Shows vulnerability and pain, even for a cosmic horror.
+
+---
+
+OVERALL AESTHETIC:
+- NOT cute or cartoonish
+- Cosmic horror (Lovecraftian inspired)
+- Alien and incomprehensible
+- Menacing and powerful
+- Dark, ominous, end-game boss feel
+- High contrast for visibility
+- Readable as a cohesive entity despite the chaos
+- Modern pixel art style with clean shading
+- Should feel like the most dangerous thing in the game
+
+---
+
+TECHNICAL REQUIREMENTS:
+- Pixel art style, high contrast
+- 128x128 or 192x192 base size (much larger than regular 32x32 enemies)
+- Generate at 2-3x size then scale down
+- Top-down overhead view
+- Transparent background
+- Each frame clearly distinct
+- High detail appropriate to large sprite size
+- No white backgrounds (transparent)
+- Animated feel - frames should show movement/state change
+
+---
+
+REFERENCE VISUAL STYLE:
+- Similar ominous power level to: Dark Souls bosses, Elden Ring demigods, Hades
+- Cosmic horror aesthetic like: Lovecraft entities, void creatures
+- Pixel art quality comparable to: Hollow Knight, Celeste, Hyper Light Drifter
+- Colors: Predominantly blacks, purples, with gold/yellow accents
+
+---
+
+WHAT NOT TO DO:
+- Don't make it look like a demon/devil with horns and tail (too traditional)
+- Don't make it cute or friendly
+- Don't make it look like a regular large monster (should feel alien/wrong)
+- Don't use bright colors (stay dark and moody)
+- Don't make the eyes too small (they should be focal points)
+- Don't forget the tendrils (they're essential to the design)
+
+---
+
+INSPIRATION ELEMENTS TO INCLUDE:
+- Eclipse imagery (sun blocked by shadow)
+- Void/nothingness aesthetic
+- Writhing cosmic horror
+- Ancient, primordial evil
+- Reality-warping distortion
+- Multiple watchful eyes
+- Incomprehensible alien design
+
+================================================================================
+
+
+
+================================================================================
+DIALOGIC CHAT ICONS - CHARACTER PORTRAITS
+================================================================================
+
+These are character portraits for dialogue/chat bubbles in the game.
+Style: Portrait/bust shot, head and shoulders
+Format: Square 256x256 or 512x512 pixels
+Background: Transparent
+Use: Dialogic dialogue system character icons
+
+================================================================================
+PROMPT 1: TIMOT - Village Merchant (Chat Icon)
+================================================================================
+
+Create a portrait character icon for Timot, the village merchant and shopkeeper.
+
+APPEARANCE:
+- Middle-aged white man (40-50 years old)
+- Brown hair, wavy/slightly unkempt
+- Full beard, brown color
+- Weathered, friendly face with character
+- Kind but tired eyes (runs a shop during siege)
+- Tan/beige tunic or simple shirt
+- Brown leather belt with buckle
+- Simple, practical merchant clothes
+- Shows both wisdom and stress/concern
+
+EXPRESSION:
+- Concerned but determined expression
+- Could show worry (during siege) or relief (when villagers saved)
+- Thoughtful, caring look
+- Tired but hopeful
+
+COMPOSITION:
+- Portrait/bust shot (head and shoulders)
+- Facing forward or slight 3/4 angle
+- Medieval fantasy merchant aesthetic
+- Warm, earthy color palette
+- Transparent background
+- Clear, readable at small size for dialogue bubbles
+
+STYLE:
+- Digital art, realistic but slightly stylized
+- Similar quality to reference images provided
+- Medieval fantasy setting feel
+- Warm lighting
+- Professional game dialogue icon quality
+
+================================================================================
+PROMPT 2: BRIMBLE - Fat Orange Tabby Cat (Chat Icon)
+================================================================================
+
+Create a portrait character icon for Brimble, Timot's chubby orange tabby cat.
+
+APPEARANCE:
+- Orange/ginger tabby cat
+- Very fat, round, chubby
+- Classic tabby markings (stripes)
+- Large green or yellow eyes
+- White/cream colored chest and chin
+- Pink nose
+- Adorable but slightly grumpy expression
+- Fluffy fur giving impression of roundness
+
+EXPRESSION:
+- Slightly annoyed/unimpressed look
+- "Meow" expression (could look like it's talking)
+- Independent cat attitude despite being cuddly-looking
+- Sweet but sarcastic vibe
+
+COMPOSITION:
+- Portrait/bust shot (head and shoulders, cat-appropriate)
+- Facing forward or slight angle
+- Fat cat looking at viewer
+- Transparent background
+- Clear, readable at small dialogue icon size
+- Cute but with personality
+
+STYLE:
+- Digital art, realistic but charming
+- Warm orange and cream colors
+- Similar quality to reference images
+- Professional game icon quality
+- Slightly stylized, appealing character design
+
+================================================================================
+PROMPT 3: NARRATOR - Mysterious Silhouette (Chat Icon)
+================================================================================
+
+Create a portrait character icon for the Narrator - a mysterious silhouette figure.
+
+APPEARANCE:
+- Silhouette of a man (head and shoulders only)
+- Complete black silhouette, no internal details visible
+- Could suggest: thoughtful, mysterious, otherworldly
+- Head shape showing features through silhouette (ears, nose profile if visible)
+- Broad shoulders suggesting presence/authority
+- Silhouette should look calm, knowing, watching
+
+EXPRESSION/MOOD:
+- No visible expression (it's a silhouette)
+- But the pose/silhouette conveys: mystery, wisdom, observation
+- Subtle hint of movement or thoughtfulness in the outline
+
+BACKGROUND:
+- Transparent background preferred
+- OR: Could have subtle atmospheric effects (mist, stars, darkness) but keep
+  silhouette as pure black
+- Should feel ominous but not evil
+- Mysterious and narrative-focused
+
+COMPOSITION:
+- Portrait/bust shot, mostly head and shoulders
+- Facing forward or 3/4 view
+- Strong silhouette outline
+- Clear readability as icon at small size
+- Authoritative but mysterious presence
+
+STYLE:
+- Digital art silhouette
+- Pure black or very dark with subtle edges
+- Possibly subtle glow or atmospheric effects
+- Professional game icon quality
+- Suggest presence and mystery without showing features
+
+================================================================================
+PROMPT 4: VILLAGER / SHOPKEEPER - Generic Townsperson (Chat Icon)
+================================================================================
+
+Create a portrait character icon for a generic Villager or secondary Shopkeeper.
+
+APPEARANCE:
+- Common townsperson, average appearance
+- Could be male or female (suggest male for variety)
+- Simple, practical clothes (linen, wool)
+- Brown, blonde, or darker hair
+- Weathered, working-class look
+- Not armored or fancy - just regular townfolk
+- Could show signs of worry/concern from siege
+
+EXPRESSION:
+- Nervous or concerned (common person in dangerous times)
+- Could show relief, gratitude, or worry
+- Average person caught in extraordinary circumstances
+- Relatable, honest expression
+
+COMPOSITION:
+- Portrait/bust shot (head and shoulders)
+- Facing forward or slight angle
+- Everyday medieval town clothes
+- Transparent background
+- Readable as small dialogue icon
+- Sympathetic, relatable character
+
+STYLE:
+- Digital art, realistic but approachable
+- Earthy color palette (browns, tans, grays)
+- Similar quality to reference images
+- Professional game dialogue icon
+- Shows humanity and relatability
+- Medieval fantasy setting appropriate
+
+================================================================================
+TECHNICAL SPECIFICATIONS - ALL ICONS
+================================================================================
+
+SIZE: Generate at 512x512 pixels (can scale down to 256x256 for use)
+FORMAT: PNG with transparent background
+STYLE: Digital illustration, realistic with slight stylization
+PERSPECTIVE: Portrait/bust shot, head and shoulders view
+QUALITY: High quality, readable when scaled down to small chat bubble size
+BACKGROUND: Transparent (or atmospheric for narrator, but clear silhouette)
+CONSISTENCY: All should have similar art style and quality level
+
+USE CASE: Dialogic character portrait icons for dialogue bubbles in-game

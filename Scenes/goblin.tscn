@@ -1,14 +1,14 @@
-[gd_scene load_steps=10 format=3 uid="uid://dnruigihfkioj"]
+[gd_scene format=3 uid="uid://dnruigihfkioj"]
 
 [ext_resource type="Script" uid="uid://cybc8x6cr6a7s" path="res://Scripts/goblin.gd" id="1_gbw3e"]
 [ext_resource type="PackedScene" uid="uid://bd3fki35y5s1v" path="res://Scenes/dagger.tscn" id="2_fkbyy"]
 [ext_resource type="PackedScene" uid="uid://dw75c4av0rk1e" path="res://Scenes/projectile.tscn" id="2_gbw3e"]
-[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="3_fkbyy"]
+[ext_resource type="Texture2D" uid="uid://cedm3ij5t47se" path="res://Assets/New Sprites/Monsters 2 Sprites.png" id="3_fkbyy"]
 [ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="4_2gt0r"]
 [ext_resource type="PackedScene" uid="uid://d3rcusi22khhd" path="res://Scenes/potion.tscn" id="6_fkbyy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sfdtf"]
-size = Vector2(28, 31)
+size = Vector2(46, 51)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pegji"]
 bg_color = Color(0.201527, 0.201527, 0.201527, 1)
@@ -16,7 +16,7 @@ bg_color = Color(0.201527, 0.201527, 0.201527, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5abox"]
 bg_color = Color(0.94902, 0, 0, 1)
 
-[node name="goblin" type="CharacterBody2D" groups=["monsters"]]
+[node name="goblin" type="CharacterBody2D" unique_id=1776503664 groups=["monsters"]]
 collision_layer = 2
 collision_mask = 629
 script = ExtResource("1_gbw3e")
@@ -26,41 +26,44 @@ current_health = 20
 max_health = 20
 bullet_scene = ExtResource("2_fkbyy")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -2.5)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=147003588]
+visible = false
+position = Vector2(0, 1.5)
 shape = SubResource("RectangleShape2D_sfdtf")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1805149702]
+scale = Vector2(0.2, 0.2)
 texture = ExtResource("3_fkbyy")
 region_enabled = true
-region_rect = Rect2(98, 65, 31, 33)
+region_rect = Rect2(528.43695, 91.02795, 275.51703, 282.172)
 
-[node name="muzzle" type="Node2D" parent="."]
+[node name="muzzle" type="Node2D" parent="." unique_id=1441839156]
 position = Vector2(-14, -3)
 
-[node name="bullet_pool" type="Node" parent="."]
+[node name="bullet_pool" type="Node" parent="." unique_id=625600240]
 script = ExtResource("4_2gt0r")
 node_scene = ExtResource("2_gbw3e")
 
-[node name="potion_pool" type="Node" parent="."]
+[node name="potion_pool" type="Node" parent="." unique_id=1832969923]
 script = ExtResource("4_2gt0r")
 node_scene = ExtResource("6_fkbyy")
 metadata/_custom_type_script = "uid://s244dhbmprhx"
 
-[node name="avoidance_ray" type="RayCast2D" parent="."]
+[node name="avoidance_ray" type="RayCast2D" parent="." unique_id=89829774]
+rotation = 3.1415927
 target_position = Vector2(-64, 0)
 collision_mask = 1075
 
-[node name="health_bar" type="ProgressBar" parent="."]
+[node name="health_bar" type="ProgressBar" parent="." unique_id=952298531]
 offset_left = -8.0
-offset_top = -22.0
+offset_top = -36.0
 offset_right = 8.0
-offset_bottom = -20.0
+offset_bottom = -34.0
 theme_override_styles/background = SubResource("StyleBoxFlat_pegji")
 theme_override_styles/fill = SubResource("StyleBoxFlat_5abox")
 rounded = true
 show_percentage = false
 
-[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=287808506]
 avoidance_enabled = true
 radius = 8.0

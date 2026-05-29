@@ -27,6 +27,7 @@ func _cast() -> void:
 	var fireball: Area2D = bullet_pool.spawn()
 
 	if fireball:
+		fireball.shooter = self
 		fireball.global_position = muzzle.global_position
 		var direction: Vector2 = muzzle.global_position.direction_to(target.global_position)
 		fireball.move_direction = direction.normalized() if direction.length() > 0.01 else Vector2.RIGHT  # Fallback to avoid zero vector

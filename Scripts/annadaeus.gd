@@ -525,6 +525,7 @@ func _has_clear_line_to_target(target: Node2D) -> bool:
 	# Check if there's a clear line to target
 	if not avoidance_ray or not target or not is_instance_valid(target):
 		return false
+	_update_avoidance_ray(target, support_range)
 	if avoidance_ray.is_colliding() and avoidance_ray.get_collider() != target:
 		return false
 	return true
@@ -650,11 +651,11 @@ func _update_flip_h() -> void:
 	# Flip sprite based on movement or target
 	var active_target = _get_active_target()
 	if velocity.x > 0:
-		sprite.flip_h = true
-	elif velocity.x < 0:
 		sprite.flip_h = false
+	elif velocity.x < 0:
+		sprite.flip_h = true
 	elif active_target:
-		sprite.flip_h = global_position.direction_to(active_target.global_position).x > 0
+		sprite.flip_h = global_position.direction_to(active_target.global_position).x < 0
 
 func _get_active_target() -> CharacterBody2D:
 	# Get current target (enemy or friendly)

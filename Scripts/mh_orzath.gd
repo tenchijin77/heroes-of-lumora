@@ -28,6 +28,10 @@ func _ready() -> void:
 	add_to_group("final_boss")
 	call_deferred("_on_boss_spawned")
 
+func _initialize_waypoint() -> void:
+	# Boss doesn't use the waypoint system — it stays put and uses abilities
+	waypoint_stage = 2
+
 func _on_boss_spawned() -> void:
 	Global.boss_fight_active = true
 	_clear_regular_monsters()

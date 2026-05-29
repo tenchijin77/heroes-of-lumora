@@ -16,6 +16,7 @@ signal health_updated(current: int, max: int)
 @export var max_health: int = 100
 @export var regeneration_per_second: float = 2.0 # Health regenerated per second
 @export var debug_enabled: bool = false  # NEW: Toggle debug printing
+@export var flip_sprite: bool = false  # Invert all flip logic if sprite faces left by default
 
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var muzzle = $muzzle
@@ -69,19 +70,17 @@ func _process(delta: float) -> void:
 		shoot_active = (joystick_connected and aim_active) or Input.is_action_pressed("shoot") or Input.get_action_strength("shoot") > 0.1
 
 	if joystick_connected and aim_active:
-		# Joystick active for aiming
 		cached_aim_vector = Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down").normalized()
-		sprite.flip_h = cached_aim_vector.x > 0
+		sprite.flip_h = (cached_aim_vector.x < 0) != flip_sprite
 	elif not use_touch:
-		# Keyboard/Mouse fallback
 		var mouse_position = get_global_mouse_position()
 		cached_aim_vector = muzzle.global_position.direction_to(mouse_position)
-		sprite.flip_h = mouse_position.x > global_position.x
+		sprite.flip_h = (mouse_position.x < global_position.x) != flip_sprite
 	else:
 		var touch_aim := Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down")
 		if touch_aim.length() > 0.2:
 			cached_aim_vector = touch_aim.normalized()
-			sprite.flip_h = cached_aim_vector.x > 0
+			sprite.flip_h = (cached_aim_vector.x < 0) != flip_sprite
 
 	if shoot_active and Time.get_unix_time_from_system() - last_shoot_time > firing_speed:
 		open_fire()

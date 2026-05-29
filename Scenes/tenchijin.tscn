@@ -1,13 +1,13 @@
 [gd_scene format=3 uid="uid://cvu1l5283jic0"]
 
 [ext_resource type="Script" uid="uid://dt5n5d0p7y8g3" path="res://Scripts/tenchijin.gd" id="1_ohxry"]
-[ext_resource type="Texture2D" uid="uid://dhln4w4t2sc8n" path="res://Assets/Sprites/Spritesheet.png" id="2_ohxry"]
+[ext_resource type="Texture2D" uid="uid://dcv5g1va4ow4y" path="res://Assets/New Sprites/NPC Sprites.png" id="2_ohxry"]
 [ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="3_jajwk"]
 [ext_resource type="PackedScene" uid="uid://bo8nnyu2jjtr2" path="res://Scenes/frost_bolt.tscn" id="5_jajwk"]
 [ext_resource type="FontFile" uid="uid://blnxrqwyomqn" path="res://Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf" id="5_ohxry"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sfdtf"]
-size = Vector2(20, 28)
+size = Vector2(33, 40)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pegji"]
 bg_color = Color(0.201527, 0.201527, 0.201527, 1)
@@ -30,14 +30,15 @@ disintegrate_rate = 30.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=591954426]
 visible = false
-position = Vector2(2, -1)
+position = Vector2(0.5, -1)
 shape = SubResource("RectangleShape2D_sfdtf")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=371730454]
 position = Vector2(1, -2.5)
+scale = Vector2(0.15, 0.15)
 texture = ExtResource("2_ohxry")
 region_enabled = true
-region_rect = Rect2(930.31104, 290.64066, 26.986084, 30.90335)
+region_rect = Rect2(578.0002, 47.00003, 269.00012, 291.0001)
 
 [node name="muzzle" type="Node2D" parent="." unique_id=2082776260]
 position = Vector2(-13, 6)
@@ -52,9 +53,9 @@ collision_mask = 1075
 
 [node name="health_bar" type="ProgressBar" parent="." unique_id=214094090]
 offset_left = -8.0
-offset_top = -22.0
+offset_top = -44.0
 offset_right = 11.0
-offset_bottom = -20.0
+offset_bottom = -42.0
 theme_override_styles/background = SubResource("StyleBoxFlat_pegji")
 theme_override_styles/fill = SubResource("StyleBoxFlat_5abox")
 rounded = true

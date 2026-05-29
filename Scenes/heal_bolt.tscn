@@ -1,33 +1,35 @@
-[gd_scene load_steps=5 format=3 uid="uid://dkjn4u5pvci4p"]
+[gd_scene format=3 uid="uid://dkjn4u5pvci4p"]
 
 [ext_resource type="Script" uid="uid://uer5q8tttnsw" path="res://Scripts/healing_projectile.gd" id="1_0kvpt"]
-[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="2_mvsgx"]
-[ext_resource type="AudioStream" uid="uid://drmqw7t2lnkl7" path="res://Assets/Audio/healing-magic-3-378664.mp3" id="3_0kvpt"]
+[ext_resource type="AudioStream" uid="uid://cqrhsh6lf2bfv" path="res://Assets/Audio/healing-magic-3-378664.mp3" id="3_0kvpt"]
+[ext_resource type="Texture2D" uid="uid://cpxbkkf2gom46" path="res://Assets/New Sprites/Projectiles Sprites.png" id="3_mvsgx"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_mvsgx"]
-radius = 7.0
+radius = 5.0
 
-[node name="heal_bolt" type="Area2D"]
+[node name="heal_bolt" type="Area2D" unique_id=1419783131]
 collision_layer = 512
 collision_mask = 2099
 script = ExtResource("1_0kvpt")
 owner_group = "healer"
 sound_stream = ExtResource("3_0kvpt")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("2_mvsgx")
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1889457957]
+scale = Vector2(0.075, 0.075)
+texture = ExtResource("3_mvsgx")
 region_enabled = true
-region_rect = Rect2(2012, 1224, 20, 19)
+region_rect = Rect2(588.0128, 283.53418, 172.05115, 178.81296)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1551702741]
+visible = false
 position = Vector2(0, 1)
 shape = SubResource("CircleShape2D_mvsgx")
 
-[node name="destroy_timer" type="Timer" parent="."]
+[node name="destroy_timer" type="Timer" parent="." unique_id=229480826]
 wait_time = 4.0
 autostart = true
 
-[node name="projectile_sound" type="AudioStreamPlayer2D" parent="."]
+[node name="projectile_sound" type="AudioStreamPlayer2D" parent="." unique_id=1482990409]
 position = Vector2(1, 1)
 stream = ExtResource("3_0kvpt")
 

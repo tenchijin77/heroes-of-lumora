@@ -1,13 +1,13 @@
-[gd_scene load_steps=5 format=3 uid="uid://qabuch25b3i1"]
+[gd_scene format=3 uid="uid://qabuch25b3i1"]
 
 [ext_resource type="Script" uid="uid://d6xrs2lxn4lc" path="res://Scripts/projectile.gd" id="1_40cdi"]
-[ext_resource type="AudioStream" uid="uid://cuuy6rr4t7ccp" path="res://Assets/Audio/arrow-swish_03-306040.mp3" id="2_xxsqv"]
-[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="3_yjaco"]
+[ext_resource type="AudioStream" uid="uid://cm6p6fqhakrfl" path="res://Assets/Audio/arrow-swish_03-306040.mp3" id="2_xxsqv"]
+[ext_resource type="Texture2D" uid="uid://cpxbkkf2gom46" path="res://Assets/New Sprites/Projectiles Sprites.png" id="3_40cdi"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_h5x2m"]
-size = Vector2(24, 6)
+size = Vector2(27, 6)
 
-[node name="arrow" type="Area2D"]
+[node name="arrow" type="Area2D" unique_id=903978469]
 collision_layer = 36
 collision_mask = 2066
 script = ExtResource("1_40cdi")
@@ -15,20 +15,23 @@ speed = 250.0
 owner_group = "player"
 sound_stream = ExtResource("2_xxsqv")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("3_yjaco")
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=548574695]
+rotation = 1.5707964
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("3_40cdi")
 region_enabled = true
-region_rect = Rect2(1828, 295, 26, 19)
+region_rect = Rect2(85.999695, 217.49988, 74, 302.00012)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-1, -1)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1360876924]
+visible = false
+position = Vector2(0.5, -1)
 shape = SubResource("RectangleShape2D_h5x2m")
 
-[node name="destroy_timer" type="Timer" parent="."]
+[node name="destroy_timer" type="Timer" parent="." unique_id=2079536073]
 wait_time = 4.0
 autostart = true
 
-[node name="projectile_sound" type="AudioStreamPlayer2D" parent="."]
+[node name="projectile_sound" type="AudioStreamPlayer2D" parent="." unique_id=1050193890]
 stream = ExtResource("2_xxsqv")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

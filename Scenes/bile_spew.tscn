@@ -1,13 +1,13 @@
-[gd_scene load_steps=5 format=3 uid="uid://b3u85ibipyv8w"]
+[gd_scene format=3 uid="uid://b3u85ibipyv8w"]
 
 [ext_resource type="Script" uid="uid://d6xrs2lxn4lc" path="res://Scripts/projectile.gd" id="1_au4kq"]
-[ext_resource type="AudioStream" uid="uid://wfkf4800q4oi" path="res://Assets/Audio/cough.ogg" id="2_au4kq"]
-[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="3_8qfpl"]
+[ext_resource type="AudioStream" uid="uid://cy7ckcn34b0wy" path="res://Assets/Audio/cough.ogg" id="2_au4kq"]
+[ext_resource type="Texture2D" uid="uid://b145lo5v3cwa4" path="res://Assets/New Sprites/Projectiles 2 Sprites.png" id="3_au4kq"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_phk3b"]
-radius = 11.0
+radius = 11.18034
 
-[node name="bile_spew" type="Area2D"]
+[node name="bile_spew" type="Area2D" unique_id=323249747]
 collision_layer = 8
 collision_mask = 3121
 script = ExtResource("1_au4kq")
@@ -15,19 +15,23 @@ speed = 350.0
 damage = 28
 sound_stream = ExtResource("2_au4kq")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("3_8qfpl")
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1316765441]
+rotation = 0.74700093
+scale = Vector2(0.15, 0.15)
+texture = ExtResource("3_au4kq")
 region_enabled = true
-region_rect = Rect2(67, 8, 27, 25)
+region_rect = Rect2(869.5488, 375.94705, 177.15625, 163.97934)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=74071783]
+visible = false
+position = Vector2(1, 1)
 shape = SubResource("CircleShape2D_phk3b")
 
-[node name="destroy_timer" type="Timer" parent="."]
+[node name="destroy_timer" type="Timer" parent="." unique_id=1596486517]
 wait_time = 4.0
 autostart = true
 
-[node name="projectile_sound" type="AudioStreamPlayer2D" parent="."]
+[node name="projectile_sound" type="AudioStreamPlayer2D" parent="." unique_id=1970879874]
 position = Vector2(1, 0)
 stream = ExtResource("2_au4kq")
 volume_db = 2.0

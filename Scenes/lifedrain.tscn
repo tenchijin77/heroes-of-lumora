@@ -1,14 +1,14 @@
-[gd_scene load_steps=6 format=3 uid="uid://dn3uy2cyajlqp"]
+[gd_scene format=3 uid="uid://dn3uy2cyajlqp"]
 
 [ext_resource type="Script" uid="uid://d6xrs2lxn4lc" path="res://Scripts/projectile.gd" id="1_tiio2"]
-[ext_resource type="AudioStream" uid="uid://k3wyw6j7ju8t" path="res://Assets/Audio/something-haunted-passing-by-190277.mp3" id="2_7ffry"]
-[ext_resource type="AudioStream" uid="uid://c1vu8nwvpucsq" path="res://Assets/Audio/fireball-impact-351961.mp3" id="2_x53bk"]
-[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="3_7ffry"]
+[ext_resource type="AudioStream" uid="uid://cpv5nsmgutjdt" path="res://Assets/Audio/something-haunted-passing-by-190277.mp3" id="2_7ffry"]
+[ext_resource type="AudioStream" uid="uid://b255cnud2qxo6" path="res://Assets/Audio/fireball-impact-351961.mp3" id="2_x53bk"]
+[ext_resource type="Texture2D" uid="uid://bxsbcimcy7252" path="res://Assets/New Sprites/Projectiles 3 Sprites.png" id="3_x53bk"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tiio2"]
-size = Vector2(15, 27)
+size = Vector2(16, 11)
 
-[node name="lifedrain" type="Area2D"]
+[node name="lifedrain" type="Area2D" unique_id=741752051]
 collision_layer = 8
 collision_mask = 3121
 script = ExtResource("1_tiio2")
@@ -17,21 +17,22 @@ owner_group = "monsters"
 damage = 30
 sound_stream = ExtResource("2_7ffry")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("3_7ffry")
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1288774175]
+scale = Vector2(0.075, 0.075)
+texture = ExtResource("3_x53bk")
 region_enabled = true
-region_rect = Rect2(518, 355, 17, 28)
+region_rect = Rect2(726.599, 58.570946, 271.524, 154.39603)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=196890727]
 visible = false
-position = Vector2(0.5, -0.5)
+position = Vector2(1, 0.5)
 shape = SubResource("RectangleShape2D_tiio2")
 
-[node name="destroy_timer" type="Timer" parent="."]
+[node name="destroy_timer" type="Timer" parent="." unique_id=1277756534]
 wait_time = 4.0
 autostart = true
 
-[node name="projectile_sound" type="AudioStreamPlayer2D" parent="."]
+[node name="projectile_sound" type="AudioStreamPlayer2D" parent="." unique_id=1005157584]
 stream = ExtResource("2_x53bk")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

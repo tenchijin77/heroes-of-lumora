@@ -26,6 +26,7 @@ func _cast() -> void:
 	var dagger: Area2D = bullet_pool.spawn()
 
 	if dagger:
+		dagger.shooter = self
 		dagger.global_position = muzzle.global_position
 		var direction: Vector2 = muzzle.global_position.direction_to(target.global_position)
 		dagger.move_direction = direction.normalized() if direction.length() > 0.01 else Vector2.RIGHT  # Fallback to avoid zero vector

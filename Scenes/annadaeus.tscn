@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cdfbj1oyr0vl5"]
 
 [ext_resource type="Script" uid="uid://b7hku5cs4rmy6" path="res://Scripts/annadaeus.gd" id="1_4xvhl"]
-[ext_resource type="Texture2D" uid="uid://dhln4w4t2sc8n" path="res://Assets/Sprites/Spritesheet.png" id="2_20pnm"]
+[ext_resource type="Texture2D" uid="uid://dcv5g1va4ow4y" path="res://Assets/New Sprites/NPC Sprites.png" id="2_cti21"]
 [ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="3_qhmnp"]
 [ext_resource type="PackedScene" uid="uid://shyk8gpa8u3i" path="res://Scenes/troubadour_bolt.tscn" id="4_qalx6"]
 [ext_resource type="FontFile" uid="uid://blnxrqwyomqn" path="res://Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf" id="5_20pnm"]
@@ -10,7 +10,7 @@
 [ext_resource type="AudioStream" uid="uid://chudnuuy1qul0" path="res://Assets/Audio/dingle-106476.mp3" id="8_cti21"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sfdtf"]
-size = Vector2(20, 28)
+size = Vector2(24, 40)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pegji"]
 bg_color = Color(0.201527, 0.201527, 0.201527, 1)
@@ -55,14 +55,15 @@ max_health = 500
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=698963861]
 visible = false
-position = Vector2(2, -1)
+position = Vector2(0, -1)
 shape = SubResource("RectangleShape2D_sfdtf")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1369092772]
 position = Vector2(1, -2.5)
-texture = ExtResource("2_20pnm")
+scale = Vector2(0.15, 0.15)
+texture = ExtResource("2_cti21")
 region_enabled = true
-region_rect = Rect2(1604, 257, 21.633057, 31)
+region_rect = Rect2(303.99976, 54.99986, 255.00006, 279.00012)
 
 [node name="muzzle" type="Node2D" parent="." unique_id=472072671]
 position = Vector2(-8, 0)
@@ -73,13 +74,13 @@ node_scene = ExtResource("4_qalx6")
 
 [node name="avoidance_ray" type="RayCast2D" parent="." unique_id=1351237833]
 target_position = Vector2(-64, 0)
-collision_mask = 1075
+collision_mask = 2066
 
 [node name="health_bar" type="ProgressBar" parent="." unique_id=2009166137]
-offset_left = -8.0
-offset_top = -22.0
+offset_left = -9.0
+offset_top = -44.0
 offset_right = 11.0
-offset_bottom = -20.0
+offset_bottom = -42.0
 theme_override_styles/background = SubResource("StyleBoxFlat_pegji")
 theme_override_styles/fill = SubResource("StyleBoxFlat_5abox")
 rounded = true
@@ -139,7 +140,7 @@ shape = SubResource("CircleShape2D_20pnm")
 modulate = Color(0.5, 0.75, 20.995, 1)
 show_behind_parent = true
 material = SubResource("ShaderMaterial_dnpss")
-position = Vector2(0.500004, 2.5)
+position = Vector2(215, 53.999996)
 scale = Vector2(0.385742, 0.389648)
 texture = ExtResource("7_cti21")
 

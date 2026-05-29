@@ -57,6 +57,13 @@ func _load_villager_data() -> void:
 			health_bar.max_value = max_health
 			health_bar.value = current_health
 
+func _process(_delta: float) -> void:
+	if sprite:
+		if velocity.x > 0:
+			sprite.flip_h = false
+		elif velocity.x < 0:
+			sprite.flip_h = true
+
 func _on_navigation_finished() -> void:
 	if Global.has_method("increment_saved_villagers"):
 		Global.increment_saved_villagers()

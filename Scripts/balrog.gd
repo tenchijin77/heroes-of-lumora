@@ -29,6 +29,7 @@ func _cast() -> void:
 	var malfire: Area2D = bullet_pool.spawn()
 	
 	if malfire:
+		malfire.shooter = self
 		malfire.global_position = muzzle.global_position
 		var direction: Vector2 = muzzle.global_position.direction_to(target.global_position)
 		malfire.move_direction = direction.normalized() if direction.length() > 0.01 else Vector2.RIGHT  # Fallback to avoid zero vector

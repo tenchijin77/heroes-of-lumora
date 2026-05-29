@@ -1,3 +1,4 @@
+[background color="#000000ff"]
 [music path="res://Assets/Audio/Loading Screen Loop.wav" fade="0.0" volume="0.0"]
 join Narrator rightmost
 Narrator: Heavy fog coils as you crest the ridge. Below, Lumora drowns beneath a shroud of smoke and shadow. Torchlight sputters like dying stars, flickering against the gloom. Distant screeches pierce the air—sharp, panicked—mingling with the anguished cries of villagers caught in fierce combat.

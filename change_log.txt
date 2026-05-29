@@ -1,0 +1,110 @@
+================================================================================
+HEROES OF LUMORA - CHANGE LOG
+================================================================================
+
+--------------------------------------------------------------------------------
+SESSION: 2026-05-28
+--------------------------------------------------------------------------------
+
+BUG FIX: Annadaeus (Troubadour) not firing Symphony of Fate bolts at enemies
+  Files: Scripts/annadaeus.gd, Scenes/annadaeus.tscn
+  Problem: _has_clear_line_to_target() was checking the avoidance_ray before
+    updating its direction to point at the target. The ray used its previous
+    frame direction (often pointing at the player or a wall), causing the
+    line-of-sight check to always fail and the troubadour_bolt to never fire.
+    Additionally, the avoidance_ray collision_mask included the player layer (1)
+    and friendly NPC layer (32), so the player standing between Anna and a
+    monster always blocked the check.
+  Fix: Added _update_avoidance_ray(target, support_range) call inside
+    _has_clear_line_to_target() before the collision check. Changed
+    avoidance_ray collision_mask in annadaeus.tscn from 1075 to 2066
+    (monsters + environment + walls only, removes player and friendlies).
+
+BUG FIX: Priestess heal bolt passing through some friendly targets
+  File: Scripts/healing_projectile.gd
+  Problem: despawn() was nested inside the inner `if body.has_method("heal")`
+    block. Friendly/player bodies without a heal method were detected but the
+    bolt would not despawn, silently flying through them.
+  Fix: Moved despawn() outside the inner conditional so it always fires when
+    a friendly or player body is touched, regardless of heal method presence.
+
+BUG FIX: Tenchijin health bar not visible
+  File: Scenes/tenchijin.tscn
+  Problem: tenchijin.gd._ready() adds a _name_label dynamically at y=-38 to
+    y=-20. The health bar was at offset_top=-32, offset_bottom=-30, placing it
+    directly behind the name label.
+  Fix: Moved health bar offsets to top=-44, bottom=-42 (above the name label),
+    matching the same fix previously applied to Annadaeus.
+
+BUG FIX: Mh'orzath becoming invisible during boss fight
+  File: Scripts/monsters.gd
+  Problem: _damage_flash() set sprite.modulate = Color.BLACK. The game
+    background is black, so a black modulate made the boss invisible. With
+    rapid player hits, multiple concurrent await coroutines stacked, each
+    trying to reset the modulate to WHITE after 0.05s, but immediately
+    overridden by the next hit setting it back to BLACK. The boss stayed
+    permanently invisible while alive.
+  Fix: Changed flash color from Color.BLACK to Color.RED. Added _is_flashing
+    bool guard to prevent coroutine stacking. Added _is_flashing = false to
+    reset() so pooled monsters start clean.
+
+BUG FIX: Wall of Heroes always showing "slain by a projectile" instead of
+    custom epitaphs
+  Files: Scripts/skeleton.gd, goblin.gd, wizard.gd, wraith.gd, troll.gd,
+         ghost.gd, balrog.gd, beholder.gd, lich.gd, hezrou.gd, ogre.gd
+  Problem: Every monster's _cast() override set owner_group = "monsters" on
+    the projectile but never set shooter = self. When the player died,
+    player.gd._identify_killer() called source.get("shooter") which returned
+    null, so it fell back to the projectile node itself as the attacker.
+    The projectile script basename is "projectile", so
+    Global.generate_epitaph("projectile") hit the fallback branch and
+    returned "slain by a projectile" for every death.
+  Fix: Added `<projectile_var>.shooter = self` as the first line inside each
+    monster's if-projectile-spawned block. Variable names per monster:
+      skeleton -> bone
+      goblin   -> dagger
+      wizard   -> fireball
+      wraith   -> lifedrain
+      troll    -> poison_bolt
+      ghost    -> ghost_fire
+      balrog   -> malfire
+      beholder -> disintegration_ray
+      lich     -> death_bolt
+      hezrou   -> bile_spew
+      ogre     -> boulder
+  Note: monsters.gd base _cast() already set shooter = self correctly. Only
+    the per-monster overrides were missing it.
+
+BUG FIX: Mh'orzath running away to map edge mid-fight
+  File: Scripts/mh_orzath.gd
+  Problem: The boss inherits monsters.gd's waypoint movement system. On spawn
+    it initializes at waypoint_stage=0 (move to village center), then advances
+    to stage 1 (move to extraction point at map edge), and stops there. The
+    boss's ranged abilities kept firing from the edge, making the fight
+    unplayable. The boss "came back" only in the sense that it stopped moving
+    at stage 2 (arrived at extraction point) while still shooting.
+  Fix: Added _initialize_waypoint() override in mh_orzath.gd that immediately
+    sets waypoint_stage = 2. The boss skips all waypoint movement entirely and
+    stays in its spawn position, relying on its abilities (Event Horizon,
+    Nihil Storm, and ranged projectiles) to engage the player.
+
+BUG FIX: Area outside grass tilemap visually black but still traversable
+  File: Scripts/main.gd
+  Problem 1 (wrong bounds): _setup_map_bounds() merged the used_rect from all
+    four TileMapLayers (grass, roads, town, walls). If the walls or town layers
+    had decorative tiles placed outside the grass area (to create the black
+    visual border), the merged bounds would be enormous, placing the invisible
+    StaticBody2D walls far from the actual playable area. Players and monsters
+    could freely walk over the black tile region.
+  Problem 2 (monsters not blocked): The boundary StaticBody2D walls used
+    collision_layer = 16 (Environment, layer 5). Monster collision_mask does
+    not include layer 5, only layer 12 (Walls, 2048). So monsters including
+    the boss were not stopped by the walls at all.
+  Fix 1: Changed _setup_map_bounds() to read only the grass TileMapLayer's
+    used_rect. The grass layer defines the visual playable area; other layers
+    should not expand the bounds.
+  Fix 2: Changed boundary wall collision_layer from 16 to 16 + 2048
+    (Environment + Walls). Player mask includes both (16+2048). Monster mask
+    includes 2048. Both are now blocked at the map edge.
+
+================================================================================

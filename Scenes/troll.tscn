@@ -1,13 +1,13 @@
 [gd_scene format=3 uid="uid://bdlq1sgvlmrwk"]
 
 [ext_resource type="Script" uid="uid://c4tbgdnoxqv5b" path="res://Scripts/troll.gd" id="1_necui"]
-[ext_resource type="Texture2D" uid="uid://dhln4w4t2sc8n" path="res://Assets/Sprites/Spritesheet.png" id="2_g1nw4"]
 [ext_resource type="PackedScene" uid="uid://k0eurtplf71g" path="res://Scenes/poison_bolt.tscn" id="2_olevf"]
+[ext_resource type="Texture2D" uid="uid://cedm3ij5t47se" path="res://Assets/New Sprites/Monsters 2 Sprites.png" id="3_necui"]
 [ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="3_olevf"]
 [ext_resource type="PackedScene" uid="uid://d3rcusi22khhd" path="res://Scenes/potion.tscn" id="5_bp7kp"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sfdtf"]
-size = Vector2(78, 86)
+size = Vector2(113, 97)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pegji"]
 bg_color = Color(0.201527, 0.201527, 0.201527, 1)
@@ -28,14 +28,14 @@ score_value = 250
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=711936068]
 visible = false
-position = Vector2(2, 0)
+position = Vector2(-1.5, 2.5)
 shape = SubResource("RectangleShape2D_sfdtf")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=646142592]
-scale = Vector2(2, 2)
-texture = ExtResource("2_g1nw4")
+scale = Vector2(0.35, 0.35)
+texture = ExtResource("3_necui")
 region_enabled = true
-region_rect = Rect2(160, 96, 32, 32)
+region_rect = Rect2(530.942, 400.638, 322.10205, 312.78497)
 
 [node name="muzzle" type="Node2D" parent="." unique_id=188759114]
 
@@ -48,14 +48,15 @@ script = ExtResource("3_olevf")
 node_scene = ExtResource("5_bp7kp")
 
 [node name="avoidance_ray" type="RayCast2D" parent="." unique_id=1425749000]
+rotation = 3.1415927
 target_position = Vector2(-50, 0)
 collision_mask = 1075
 
 [node name="health_bar" type="ProgressBar" parent="." unique_id=63130072]
 offset_left = -22.0
-offset_top = -50.0
+offset_top = -62.0
 offset_right = 22.0
-offset_bottom = -47.0
+offset_bottom = -59.0
 theme_override_styles/background = SubResource("StyleBoxFlat_pegji")
 theme_override_styles/fill = SubResource("StyleBoxFlat_5abox")
 rounded = true

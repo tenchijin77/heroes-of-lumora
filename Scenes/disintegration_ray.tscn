@@ -1,13 +1,13 @@
-[gd_scene load_steps=5 format=3 uid="uid://7vg4iod2d430"]
+[gd_scene format=3 uid="uid://7vg4iod2d430"]
 
 [ext_resource type="Script" uid="uid://d6xrs2lxn4lc" path="res://Scripts/projectile.gd" id="1_2emgx"]
-[ext_resource type="AudioStream" uid="uid://d234ibi2b2m1k" path="res://Assets/Audio/elemental-magic-spell-impact-outgoing-228342.mp3" id="2_k4dh4"]
-[ext_resource type="Texture2D" uid="uid://bk8qao521iy21" path="res://Assets/Sprites/Spritesheet.png" id="3_x63gm"]
+[ext_resource type="AudioStream" uid="uid://dvuxklwnj4pcd" path="res://Assets/Audio/elemental-magic-spell-impact-outgoing-228342.mp3" id="2_k4dh4"]
+[ext_resource type="Texture2D" uid="uid://bxsbcimcy7252" path="res://Assets/New Sprites/Projectiles 3 Sprites.png" id="3_boqxx"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_g7t1c"]
-radius = 14.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2emgx"]
+size = Vector2(53, 15)
 
-[node name="disintegration_ray" type="Area2D"]
+[node name="disintegration_ray" type="Area2D" unique_id=1452658816]
 collision_layer = 8
 collision_mask = 3121
 script = ExtResource("1_2emgx")
@@ -15,20 +15,22 @@ speed = 500.0
 damage = 25
 sound_stream = ExtResource("2_k4dh4")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("3_x63gm")
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1893703464]
+scale = Vector2(0.15, 0.15)
+texture = ExtResource("3_boqxx")
 region_enabled = true
-region_rect = Rect2(1152, 192, 32, 32)
+region_rect = Rect2(44.99997, 394.69983, 377.3004, 145.20013)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1920038635]
 visible = false
-shape = SubResource("CircleShape2D_g7t1c")
+position = Vector2(0.5, -0.5)
+shape = SubResource("RectangleShape2D_2emgx")
 
-[node name="destroy_timer" type="Timer" parent="."]
+[node name="destroy_timer" type="Timer" parent="." unique_id=1057208043]
 wait_time = 4.0
 autostart = true
 
-[node name="projectile_sound" type="AudioStreamPlayer2D" parent="."]
+[node name="projectile_sound" type="AudioStreamPlayer2D" parent="." unique_id=2124148940]
 position = Vector2(1, 1)
 stream = ExtResource("2_k4dh4")
 

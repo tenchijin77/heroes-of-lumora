@@ -155,7 +155,7 @@ func _cast_projectile(target: CharacterBody2D) -> void:
 func _update_flip_h() -> void:
 	var face_target: Node2D = current_friendly_target if current_state == "HEALING" else current_target
 	if face_target and is_instance_valid(face_target):
-		sprite.flip_h = face_target.global_position.x > global_position.x
+		sprite.flip_h = face_target.global_position.x < global_position.x
 
 func get_health() -> int:
 	return 100

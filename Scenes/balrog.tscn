@@ -1,13 +1,13 @@
 [gd_scene format=3 uid="uid://d20ejlwxq2t2w"]
 
 [ext_resource type="Script" uid="uid://dxasexg88xf87" path="res://Scripts/balrog.gd" id="1_6thfx"]
-[ext_resource type="Texture2D" uid="uid://dhln4w4t2sc8n" path="res://Assets/Sprites/Spritesheet.png" id="3_p7gmx"]
+[ext_resource type="Texture2D" uid="uid://c0w70q2skore" path="res://Assets/New Sprites/Monster Sprites.png" id="2_6thfx"]
 [ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="4_64t5y"]
 [ext_resource type="PackedScene" uid="uid://d3rcusi22khhd" path="res://Scenes/potion.tscn" id="5_1hy3r"]
 [ext_resource type="PackedScene" uid="uid://dbt61vebx6k37" path="res://Scenes/malfire.tscn" id="5_2hk64"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sfdtf"]
-size = Vector2(85, 82)
+size = Vector2(146, 82)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pegji"]
 bg_color = Color(0.201527, 0.201527, 0.201527, 1)
@@ -24,14 +24,14 @@ max_health = 250
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1315675121]
 visible = false
-position = Vector2(2.5, 2)
+position = Vector2(-2, 2)
 shape = SubResource("RectangleShape2D_sfdtf")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=548945303]
-scale = Vector2(2.5, 2.5)
-texture = ExtResource("3_p7gmx")
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("2_6thfx")
 region_enabled = true
-region_rect = Rect2(2015, 125, 34, 35)
+region_rect = Rect2(46.658264, 19.010963, 620.7789, 360.16888)
 
 [node name="muzzle" type="Node2D" parent="." unique_id=1762043902]
 
@@ -48,10 +48,10 @@ target_position = Vector2(127, 0)
 collision_mask = 1075
 
 [node name="health_bar" type="ProgressBar" parent="." unique_id=992865467]
-offset_left = -16.0
-offset_top = -48.0
-offset_right = 28.0
-offset_bottom = -45.0
+offset_left = -22.0
+offset_top = -51.0
+offset_right = 22.0
+offset_bottom = -48.0
 theme_override_styles/background = SubResource("StyleBoxFlat_pegji")
 theme_override_styles/fill = SubResource("StyleBoxFlat_5abox")
 rounded = true

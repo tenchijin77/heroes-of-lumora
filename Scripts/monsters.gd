@@ -30,6 +30,7 @@ var last_shoot_time: float = 0.0
 var last_damage_source: Node = null
 var last_damage_times: Dictionary = {}
 var monster_size: String = "medium"
+var _is_flashing: bool = false
 
 # Waypoint system for sequential pathfinding
 var current_waypoint: Node2D = null
@@ -155,6 +156,7 @@ func reset() -> void:
 	last_damage_source = null
 	last_damage_times = {}
 	debug_frame_counter = 0
+	_is_flashing = false
 	waypoint_stage = 0  # Reset to stage 0 (village center)
 	target_update_timer = 0.0  # Reset target timer
 	target = null  # FIXED: Clear target so monster finds new one
@@ -181,7 +183,7 @@ func _process(delta: float) -> void:
 	if has_valid_target:
 		target_distance = global_position.distance_to(target.global_position)
 		target_direction = global_position.direction_to(target.global_position)
-		sprite.flip_h = target_direction.x > 0
+		sprite.flip_h = target_direction.x < 0
 		
 		# Shooting logic
 		if target_distance < shoot_range:
@@ -532,10 +534,13 @@ func _add_potion_to_main(potion: Area2D, death_position: Vector2, potion_data: D
 		
 
 func _damage_flash() -> void:
-	# Flash sprite on damage
-	sprite.modulate = Color.BLACK
-	await get_tree().create_timer(0.05).timeout
+	if _is_flashing:
+		return
+	_is_flashing = true
+	sprite.modulate = Color.RED
+	await get_tree().create_timer(0.08).timeout
 	sprite.modulate = Color.WHITE
+	_is_flashing = false
 
 func _on_visibility_changed() -> void:
 	# Handle visibility changes for pooling
