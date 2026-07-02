@@ -29,8 +29,12 @@ func _ready() -> void:
 	call_deferred("_on_boss_spawned")
 
 func _initialize_waypoint() -> void:
-	# Boss doesn't use the waypoint system — it stays put and uses abilities
 	waypoint_stage = 2
+	# Prevent the nav agent from emitting velocity_computed and overriding our zero velocity
+	navigation_agent.avoidance_enabled = false
+	navigation_agent.target_position = global_position  # clear any waypoint target from reset()
+	# LOS should only fail for actual walls, not villagers/allies on layer 1
+	avoidance_ray.collision_mask = 2048
 
 func _on_boss_spawned() -> void:
 	Global.boss_fight_active = true

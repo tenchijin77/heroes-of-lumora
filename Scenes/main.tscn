@@ -6807,7 +6807,7 @@ position = Vector2(-2277, 464)
 position = Vector2(451, 386)
 
 [node name="annadaeus" parent="." unique_id=1265889869 instance=ExtResource("18_b3802")]
-position = Vector2(2906, 327)
+position = Vector2(4121, 306)
 
 [node name="boss_spawner" type="Node" parent="." unique_id=1641295952]
 script = ExtResource("19_fboss")

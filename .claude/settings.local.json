@@ -11,7 +11,8 @@
       "Bash(python3 *)",
       "Bash(xargs ls -la)",
       "Bash(sort -k5 -rn)",
-      "Bash(grep -E \"\\\\.\\(tscn|tres\\)$\")"
+      "Bash(grep -E \"\\\\.\\(tscn|tres\\)$\")",
+      "Bash(git *)"
     ]
   }
 }

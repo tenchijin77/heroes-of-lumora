@@ -5,7 +5,8 @@ HEROES OF LUMORA - 2D Game Sprites
 UNIVERSAL SPECIFICATIONS
 ========================
 Art Style: Pixel art, 2D, modern flat top-down view (not isometric)
-Base Size: 16x16 pixels per sprite (can be scaled up by AI)
+Base Size: 32x32 pixels per sprite (can be scaled up by AI)
+Uniformity: All sprites need to be the same size, so this can be used as a sprite sheet.
 Background: Solid color background (not transparent). Colored background will be removed
 in post-processing.
 Spacing: Each sprite centered with clear spacing around it for easy selection
@@ -270,7 +271,7 @@ Clear readable designs.
 PROMPT 8: World/Environment - Lumora Town
 ------------------------------------------
 2D pixel art spritesheet top-down view. Create environment tiles/objects for
-Lumora town area. Transparent background. Properly spaced sprites.
+Lumora town area. Transparent background. Properly spaced sprites. All uniform in size.
 
 Include variety of:
 - Grass tiles (multiple variants for natural look)
