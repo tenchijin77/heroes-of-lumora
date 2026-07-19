@@ -18,9 +18,9 @@ var lost_villagers: int = 0
 var total_villagers: int = 50
 var game_active: bool = true
 var boss_fight_active: bool = false
-var _boss_triggered: bool = false
 var godmode: bool = false
 var killer_name: String = ""
+var killer_weapon: String = ""
 var guard_spawn_index: int = 0
 var magi_spawn_index: int = 0
 
@@ -118,9 +118,9 @@ func reset() -> void:
 	total_villagers = 50
 	game_active = true
 	boss_fight_active = false
-	_boss_triggered = false
 	godmode = false
 	killer_name = ""
+	killer_weapon = ""
 	guard_spawn_index = 0
 	magi_spawn_index = 0
 	shop_purchase_counts = {"health": 0, "damage": 0, "speed": 0, "guard": 0, "magi": 0}
@@ -137,122 +137,168 @@ func increment_wave() -> void:
 func increment_saved_villagers() -> void:
 	saved_villagers += 1
 	emit_signal("villagers_updated", saved_villagers, lost_villagers, total_villagers)
-	if saved_villagers >= total_villagers and not _boss_triggered and not boss_fight_active:
-		_boss_triggered = true
-		_start_boss_sequence()
+	# Boss spawning itself is handled by final_boss_spawner.gd, which listens
+	# for this same signal — keep this a single source of truth.
 
 func increment_lost_villagers() -> void:
 	lost_villagers += 1
 	emit_signal("villagers_updated", saved_villagers, lost_villagers, total_villagers)
 
-func _start_boss_sequence() -> void:
-	boss_fight_active = true
-	for spawner in get_tree().get_nodes_in_group("villager_spawner"):
-		if spawner.has_method("stop_spawning"):
-			spawner.stop_spawning()
-	for mob in get_tree().get_nodes_in_group("monsters"):
-		if is_instance_valid(mob):
-			mob.queue_free()
-	var ui := get_node_or_null("/root/UI")
-	if ui and ui.has_method("show_announcement"):
-		ui.show_announcement("50 Villagers Saved!\nMh'orzath awakens...", 4.0)
-	if ui and ui.has_method("chat_add"):
-		ui.chat_add("The darkness recoils... something far worse stirs.", "System")
-	await get_tree().create_timer(3.5).timeout
-	if not game_active:
-		return
-	_spawn_boss()
-
-func _spawn_boss() -> void:
-	var boss_scene: PackedScene = load("res://Scenes/mh_orzath.tscn")
-	if not boss_scene:
-		push_error("Global: Could not load mh_orzath.tscn!")
-		return
-	var boss: Node2D = boss_scene.instantiate() as Node2D
-	boss.global_position = _get_boss_spawn_position()
-	get_tree().current_scene.add_child(boss)
-	if boss.has_signal("mob_died"):
-		boss.mob_died.connect(_on_boss_died)
-
-func _get_boss_spawn_position() -> Vector2:
-	var player := get_tree().get_first_node_in_group("player")
-	var base: Vector2 = player.global_position if player and is_instance_valid(player) else Vector2(600.0, 400.0)
-	var viewport_rect := get_viewport().get_visible_rect()
-	return base + Vector2(0.0, -(viewport_rect.size.y * 0.5 + 200.0))
-
-func _on_boss_died() -> void:
-	game_active = false
-	var ui := get_node_or_null("/root/UI")
-	if ui:
-		ui.visible = false
-	get_tree().call_deferred("change_scene_to_file", "res://Scenes/victory_scene.tscn")
-
-static func generate_epitaph(killer: String) -> String:
+## Sayings for each monster, split into "melee" (no weapon known — plain
+## contact damage) and "ranged" (the specific projectile that landed the
+## killing blow, filled in via a single %s, e.g. "wizard" + "fireball").
+static func generate_epitaph(killer: String, weapon: String = "") -> String:
 	var templates: Dictionary = {
-		"goblin": [
-			"cut down by a goblin — a most ignoble end",
-			"bested by a creature half their size",
-			"felled by a goblin's grubby dagger",
-		],
-		"skeleton": [
-			"slain before their time by a skeleton",
-			"rattled to death by an animated corpse",
-			"reduced to bones by an agent of bones",
-		],
-		"troll": [
-			"crushed underfoot by a troll's terrible bulk",
-			"met the wrong end of a troll's club",
-			"smashed flat — a troll's idea of a greeting",
-		],
-		"wraith": [
-			"their life force drained by a wraith",
-			"frozen in their final step by a wraith's cold touch",
-			"the wraith kept what little warmth remained",
-		],
-		"beholder": [
-			"gazed upon by something that gazed back",
-			"the last thing they saw was an eye",
-			"unmade by a beholder's many terrible eyes",
-		],
-		"lich": [
-			"outmatched in arcane matters by a lich",
-			"a lich's curse found its mark",
-			"turned to dust by forces they didn't understand",
-		],
-		"hezrou": [
-			"torn apart by a hezrou's claws",
-			"a demon's prey — nothing more",
-			"overwhelmed by demonic fury",
-		],
-		"ogre": [
-			"flattened by an ogre's unfortunate enthusiasm",
-			"clubbed into the afterlife",
-			"the ogre barely noticed",
-		],
-		"ghost": [
-			"frightened to death — technically",
-			"haunted into the hereafter",
-			"phased out of existence by a ghost",
-		],
-		"balrog": [
-			"consumed in the balrog's hellfire",
-			"they shall not pass — and didn't",
-			"the balrog's flames left nothing behind",
-		],
-		"mh_orzath": [
-			"annihilated by Mh'Orzath, The Eternal Dark",
-			"claimed by the darkness they came to oppose",
-			"the old ones claimed another",
-		],
-		"victory": [
-			"defeated Mh'Orzath and saved all of Lumora",
-			"stood victorious where others fell",
-			"the last light of Lumora, unextinguished",
-		],
+		"goblin": {
+			"melee": [
+				"cut down by a goblin — a most ignoble end",
+				"bested by a creature half their size",
+			],
+			"ranged": [
+				"felled by a goblin's grubby %s",
+				"caught off guard by a hurled %s",
+			],
+		},
+		"skeleton": {
+			"melee": [
+				"slain before their time by a skeleton",
+				"rattled to death by an animated corpse",
+				"reduced to bones by an agent of bones",
+			],
+			"ranged": [
+				"perforated by a skeleton's thrown %s",
+				"struck down by a rattling %s",
+			],
+		},
+		"wizard": {
+			"melee": [
+				"outdueled by a wizard's arcane will",
+				"overwhelmed by raw arcane power",
+			],
+			"ranged": [
+				"incinerated by a wizard's %s",
+				"reduced to ash by a wizard's %s",
+				"consumed in a wizard's %s",
+			],
+		},
+		"troll": {
+			"melee": [
+				"crushed underfoot by a troll's terrible bulk",
+				"met the wrong end of a troll's club",
+				"smashed flat — a troll's idea of a greeting",
+			],
+			"ranged": [
+				"poisoned by a troll's %s",
+				"brought low by a troll's noxious %s",
+			],
+		},
+		"wraith": {
+			"melee": [
+				"their life force drained by a wraith",
+				"frozen in their final step by a wraith's cold touch",
+				"the wraith kept what little warmth remained",
+			],
+			"ranged": [
+				"their essence siphoned by a wraith's %s",
+				"drained hollow by a %s",
+			],
+		},
+		"beholder": {
+			"melee": [
+				"gazed upon by something that gazed back",
+				"the last thing they saw was an eye",
+				"unmade by a beholder's many terrible eyes",
+			],
+			"ranged": [
+				"unmade by a beholder's %s",
+				"reduced to nothing by a %s",
+			],
+		},
+		"lich": {
+			"melee": [
+				"outmatched in arcane matters by a lich",
+				"turned to dust by forces they didn't understand",
+			],
+			"ranged": [
+				"a lich's %s found its mark",
+				"struck down by a lich's %s",
+			],
+		},
+		"hezrou": {
+			"melee": [
+				"torn apart by a hezrou's claws",
+				"a demon's prey — nothing more",
+				"overwhelmed by demonic fury",
+			],
+			"ranged": [
+				"dissolved by a hezrou's %s",
+				"caught in a wave of %s",
+			],
+		},
+		"ogre": {
+			"melee": [
+				"flattened by an ogre's unfortunate enthusiasm",
+				"clubbed into the afterlife",
+				"the ogre barely noticed",
+			],
+			"ranged": [
+				"crushed by an ogre's hurled %s",
+				"flattened by a thrown %s",
+			],
+		},
+		"ghost": {
+			"melee": [
+				"frightened to death — technically",
+				"haunted into the hereafter",
+				"phased out of existence by a ghost",
+			],
+			"ranged": [
+				"consumed by %s",
+				"engulfed in a ghost's %s",
+			],
+		},
+		"balrog": {
+			"melee": [
+				"they shall not pass — and didn't",
+				"the balrog's flames left nothing behind",
+			],
+			"ranged": [
+				"consumed in the balrog's %s",
+				"engulfed by a wave of %s",
+			],
+		},
+		"mh_orzath": {
+			"melee": [
+				"annihilated by Mh'Orzath, The Eternal Dark",
+				"claimed by the darkness they came to oppose",
+				"the old ones claimed another",
+			],
+			"ranged": [
+				"torn apart by Mh'Orzath's %s",
+				"unmade by the Eclipsed One's %s",
+			],
+		},
+		"victory": {
+			"melee": [
+				"defeated Mh'Orzath and saved all of Lumora",
+				"stood victorious where others fell",
+				"the last light of Lumora, unextinguished",
+				"defeated Mh'Orzath to become a hero of Lumora",
+				"banished the Eclipsed One and brought dawn to Lumora",
+			],
+			"ranged": [],
+		},
 	}
+	var pretty_weapon: String = weapon.replace("_", " ")
 	if templates.has(killer):
-		var opts: Array = templates[killer]
-		return opts[randi() % opts.size()]
+		var bucket: Dictionary = templates[killer]
+		var ranged_opts: Array = bucket["ranged"]
+		if weapon != "" and not ranged_opts.is_empty():
+			return ranged_opts[randi() % ranged_opts.size()] % pretty_weapon
+		var melee_opts: Array = bucket["melee"]
+		return melee_opts[randi() % melee_opts.size()]
+	elif killer != "" and weapon != "":
+		return "felled by a %s's %s" % [killer.replace("_", " "), pretty_weapon]
 	elif killer != "":
 		return "slain by a " + killer.replace("_", " ")
 	else:

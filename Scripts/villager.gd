@@ -63,6 +63,13 @@ func _process(_delta: float) -> void:
 			sprite.flip_h = false
 		elif velocity.x < 0:
 			sprite.flip_h = true
+		_move_wobble()
+
+func _move_wobble() -> void:
+	if velocity.length() > 10.0:
+		sprite.rotation_degrees = sin(Time.get_ticks_msec() / 100.0) * 3.0
+	else:
+		sprite.rotation_degrees = move_toward(sprite.rotation_degrees, 0.0, 0.5)
 
 func _on_navigation_finished() -> void:
 	if Global.has_method("increment_saved_villagers"):

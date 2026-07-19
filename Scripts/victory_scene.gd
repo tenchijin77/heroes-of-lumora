@@ -12,6 +12,7 @@ func _ready() -> void:
 		ui.visible = false
 	Global.game_active = false
 	Global.killer_name = "victory"
+	Global.killer_weapon = ""
 	_build_ui()
 	_play_victory_music()
 

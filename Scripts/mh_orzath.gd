@@ -28,6 +28,25 @@ func _ready() -> void:
 	add_to_group("final_boss")
 	call_deferred("_on_boss_spawned")
 
+func _physics_process(delta: float) -> void:
+	# Base monsters.gd freezes movement entirely once waypoint_stage == 2
+	# (the "already at hunting grounds, just shoot" state we force in
+	# _initialize_waypoint below). That leaves him permanently stuck at his
+	# spawn point — fine for regular monsters, but a boss needs to be able to
+	# close the distance when the fight drifts outside his shoot_range.
+	if _is_rooted:
+		velocity = Vector2.ZERO
+		move_and_slide()
+		_process_collisions()
+		return
+	if is_instance_valid(target) and target_distance > shoot_range:
+		var dir := global_position.direction_to(target.global_position)
+		velocity = velocity.lerp(dir * max_speed, acceleration * delta)
+	else:
+		velocity = velocity.lerp(Vector2.ZERO, drag)
+	move_and_slide()
+	_process_collisions()
+
 func _initialize_waypoint() -> void:
 	waypoint_stage = 2
 	# Prevent the nav agent from emitting velocity_computed and overriding our zero velocity

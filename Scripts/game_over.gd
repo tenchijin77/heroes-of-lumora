@@ -37,7 +37,7 @@ func _ready() -> void:
 	if not restart_button:
 		push_error("GameOver: restart_button is null!")
 	current_score = Global.current_score
-	current_epitaph = Global.generate_epitaph(Global.killer_name)
+	current_epitaph = Global.generate_epitaph(Global.killer_name, Global.killer_weapon)
 	update_leader_board()
 	if not Global.is_high_score(current_score):
 		if initials_input:

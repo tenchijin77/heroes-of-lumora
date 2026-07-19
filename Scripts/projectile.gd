@@ -16,6 +16,9 @@ var home_target: Node = null
 var slow_percent: float = 0.0
 var slow_duration: float = 0.0
 var shooter: Node = null
+var apply_dot_on_hit: bool = false
+var dot_damage_per_tick: int = 0
+var dot_ticks: int = 0
 
 func _ready() -> void:
 	if not is_connected("body_entered", Callable(self, "_on_body_entered")):
@@ -52,6 +55,9 @@ func reset() -> void:
 	slow_percent = 0.0
 	slow_duration = 0.0
 	modulate = Color.WHITE
+	apply_dot_on_hit = false
+	dot_damage_per_tick = 0
+	dot_ticks = 0
 
 
 func _process(delta: float) -> void:
@@ -88,6 +94,8 @@ func _on_body_entered(body: Node) -> void:
 		body.take_damage(damage, self)
 		if slow_percent > 0.0 and body.has_method("apply_slow"):
 			body.apply_slow(slow_percent, slow_duration)
+		if apply_dot_on_hit and dot_ticks > 0 and body.has_method("apply_dot"):
+			body.apply_dot(dot_damage_per_tick, dot_ticks)
 		despawn()
 		return
 

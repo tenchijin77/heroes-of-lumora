@@ -12,7 +12,10 @@
       "Bash(xargs ls -la)",
       "Bash(sort -k5 -rn)",
       "Bash(grep -E \"\\\\.\\(tscn|tres\\)$\")",
-      "Bash(git *)"
+      "Bash(git *)",
+      "Skill(run)",
+      "Bash(godot *)",
+      "Bash(echo \"Launched PID $!\")"
     ]
   }
 }

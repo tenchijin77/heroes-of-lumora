@@ -241,8 +241,10 @@ func _update_targets() -> void:
 	# Determine current target and state
 	if current_state == "CASTING":
 		return
-	# Seek a healer when below 50% HP
-	if current_health < max_health * 0.5 and current_state != "SEEKING_HEALER":
+	# Seek a healer when below 50% HP — but not during the boss fight, where
+	# she's needed at the player's side and a trip back to town would mean
+	# abandoning it entirely.
+	if current_health < max_health * 0.5 and current_state != "SEEKING_HEALER" and not Global.boss_fight_active:
 		var healer := _find_nearest_healer()
 		if healer:
 			current_state = "SEEKING_HEALER"
@@ -643,9 +645,10 @@ func _is_critical_situation() -> bool:
 	return enemy_count > 5 or player_low_hp or annadaeus_low_hp
 
 func _move_wobble() -> void:
-	# Apply wobble animation to sprite
-	var rot: float = sin(Time.get_ticks_msec() / 100.0) * 2
-	sprite.rotation_degrees = rot
+	if velocity.length() == 0:
+		sprite.rotation_degrees = 0
+		return
+	sprite.rotation_degrees = sin(Time.get_ticks_msec() / 100.0) * 2
 
 func _update_flip_h() -> void:
 	# Flip sprite based on movement or target

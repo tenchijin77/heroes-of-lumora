@@ -79,7 +79,6 @@ var current_target: CharacterBody2D = null
 var current_healer_target: CharacterBody2D = null
 var detected_monsters: Array[CharacterBody2D] = []
 var current_state: String = "IDLE"
-var _strategic_target: Vector2 = Vector2.ZERO
 var ability_cooldowns: Dictionary = {
 	"frost_bolt": 0.0,
 	"frost_nova": 0.0,
@@ -168,8 +167,6 @@ func _process(delta: float) -> void:
 			_positioning_state(delta)
 		"ATTACKING":
 			_attacking_state(delta)
-		"STRATEGIC_MOVE":
-			_strategic_move_state(delta)
 		"ESCAPING":
 			_escaping_state(delta)
 		"FOLLOWING_PLAYER":
@@ -205,8 +202,10 @@ func _update_target() -> void:
 	if current_state == "ESCAPING":
 		return
 
-	# Seek healer when below 50% HP
-	if current_health < max_health * 0.5 and current_state != "SEEKING_HEALER":
+	# Seek healer when below 50% HP — but not during the boss fight, where
+	# he's needed at the player's side and a trip back to town would mean
+	# abandoning it entirely.
+	if current_health < max_health * 0.5 and current_state != "SEEKING_HEALER" and not Global.boss_fight_active:
 		var healer := _find_nearest_healer()
 		if healer:
 			current_healer_target = healer
@@ -220,11 +219,11 @@ func _update_target() -> void:
 
 	if not detected_monsters.is_empty():
 		current_target = detected_monsters[0]
-		if current_state in ["IDLE", "STRATEGIC_MOVE", "FOLLOWING_PLAYER"]:
+		if current_state in ["IDLE", "FOLLOWING_PLAYER"]:
 			current_state = "POSITIONING"
 	else:
 		current_target = null
-		if current_state in ["POSITIONING", "ATTACKING", "IDLE", "STRATEGIC_MOVE"]:
+		if current_state in ["POSITIONING", "ATTACKING", "IDLE"]:
 			current_state = "FOLLOWING_PLAYER"
 
 # --- States ---
@@ -233,7 +232,7 @@ func _idle_state(delta: float) -> void:
 
 func _positioning_state(delta: float) -> void:
 	if not current_target or not is_instance_valid(current_target):
-		current_state = "STRATEGIC_MOVE"
+		current_state = "FOLLOWING_PLAYER"
 		return
 	var dist := global_position.distance_to(current_target.global_position)
 	if dist <= preferred_range:
@@ -257,15 +256,6 @@ func _attacking_state(delta: float) -> void:
 	else:
 		velocity = velocity.lerp(Vector2.ZERO, drag)
 	_perform_spell_rotation()
-
-func _strategic_move_state(delta: float) -> void:
-	var dist := global_position.distance_to(_strategic_target)
-	if dist < 80.0:
-		velocity = velocity.lerp(Vector2.ZERO, drag)
-		current_state = "IDLE"
-	else:
-		var dir := global_position.direction_to(_strategic_target)
-		velocity = velocity.lerp(dir * max_speed, acceleration * delta)
 
 func _escaping_state(delta: float) -> void:
 	var closest := _find_closest_mob_globally()

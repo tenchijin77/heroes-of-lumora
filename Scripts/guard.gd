@@ -65,6 +65,7 @@ func _process(delta: float) -> void:
 			_seeking_healer_state(delta)
 
 	_update_flip_h()
+	_move_wobble()
 
 func _physics_process(delta: float) -> void:
 	move_and_slide()
@@ -76,6 +77,12 @@ func _update_flip_h() -> void:
 		sprite.flip_h = true
 	elif current_target:
 		sprite.flip_h = global_position.direction_to(current_target.global_position).x < 0
+
+func _move_wobble() -> void:
+	if velocity.length() > 10.0:
+		sprite.rotation_degrees = sin(Time.get_ticks_msec() / 100.0) * 3.0
+	else:
+		sprite.rotation_degrees = move_toward(sprite.rotation_degrees, 0.0, 0.5)
 
 func _update_target() -> void:
 	detected_monsters = detected_monsters.filter(

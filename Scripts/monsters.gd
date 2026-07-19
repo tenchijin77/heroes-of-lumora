@@ -46,6 +46,8 @@ const TARGET_UPDATE_INTERVAL: float = 0.5  # Update target twice per second
 # Status effects
 var _is_rooted: bool = false
 var _is_slowed: bool = false
+var mark_damage_bonus: float = 0.0
+var ability_chest_drop_chance: float = 0.0
 var _waypoint_offset: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
@@ -144,6 +146,13 @@ func _auto_tune_from_collision() -> void:
 
 func reset() -> void:
 	# Reset monster state for reuse
+	# Stop/free any leftover status-effect timers (DoT, mark, root, slow) from a
+	# previous life of this pooled node — otherwise they keep ticking on the
+	# invisible dead node and fire against whatever monster reuses it next.
+	for child in get_children():
+		if child is Timer:
+			child.stop()
+			child.queue_free()
 	visible = true
 	current_health = max_health
 	if health_bar:
@@ -152,6 +161,7 @@ func reset() -> void:
 	velocity = Vector2.ZERO
 	_is_rooted = false
 	_is_slowed = false
+	mark_damage_bonus = 0.0
 	last_shoot_time = 0.0
 	last_damage_source = null
 	last_damage_times = {}
@@ -459,7 +469,7 @@ func _cast() -> void:
 
 func take_damage(damage: int, projectile_instance: Node):
 	# Apply damage and handle death
-	current_health -= damage
+	current_health -= int(damage * (1.0 + mark_damage_bonus))
 	if health_bar:
 		health_bar.value = current_health
 	if current_health <= 0:
@@ -475,7 +485,9 @@ func take_damage(damage: int, projectile_instance: Node):
 				if drop_chance <= cumulative_chance:
 					_spawn_potion(potion)
 					break
-		
+		if ability_chest_drop_chance > 0.0 and randf() < ability_chest_drop_chance:
+			_spawn_ability_chest()
+
 		# FIXED: Just hide and disable, DON'T call reset yet!
 		visible = false
 		set_process(false)
@@ -602,3 +614,37 @@ func apply_dot(damage_per_tick: int, ticks: int) -> void:
 	)
 	add_child(dot_timer)
 	dot_timer.start()
+
+func apply_mark(duration: float) -> void:
+	mark_damage_bonus = 0.15
+	if sprite and is_instance_valid(sprite):
+		sprite.modulate = Color(1.0, 0.65, 0.0, 1.0)
+		get_tree().create_timer(0.35).timeout.connect(func():
+			if is_instance_valid(sprite):
+				sprite.modulate = Color.WHITE
+		)
+	var t := Timer.new()
+	t.wait_time = duration
+	t.one_shot = true
+	t.timeout.connect(func():
+		mark_damage_bonus = 0.0
+		t.queue_free()
+	)
+	add_child(t)
+	t.start()
+
+func apply_knockback(impulse: Vector2) -> void:
+	velocity += impulse
+
+func _spawn_ability_chest() -> void:
+	var chest := Area2D.new()
+	chest.set_script(load("res://Scripts/ability_chest.gd"))
+	call_deferred("_add_chest_to_scene", chest, global_position)
+
+func _add_chest_to_scene(chest: Area2D, pos: Vector2) -> void:
+	if not is_instance_valid(chest):
+		return
+	var main = get_tree().root.get_node_or_null("main")
+	if main:
+		main.add_child(chest)
+		chest.global_position = pos
