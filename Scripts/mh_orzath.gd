@@ -21,10 +21,17 @@ var _nihil_storm_timer: float = 14.0
 func _ready() -> void:
 	score_value = 10000
 	# Override inherited monster defaults to boss-level values
-	shoot_rate = 0.8       # monsters.gd default is 1.5 — boss fires nearly 2x faster
-	shoot_range = 350.0    # longer reach so he doesn't have to chase
-	max_speed = 65.0       # was 45 — more mobile and harder to kite
+	shoot_rate = 1.0       # monsters.gd default is 1.5 — boss fires nearly 50% faster
+	shoot_range = 500.0    # matches event_horizon_range — a kiting player who stays outside melee still has to deal with the bolt
+	max_speed = 120.0      # faster than the player's 100 base speed — now he actually catches up when kited instead of trailing forever
 	super._ready()
+	# He's faster than every ally (Ten's 80, Anna's 125 while backing off, etc.),
+	# so while he beelines for the player, any ally caught in his path gets
+	# physically shoved/dragged along and can never outrun him — confirmed via
+	# logging as the cause of Ten getting forced into melee contact instead of
+	# casting. He should only physically collide with the player he's actually
+	# hunting, not bulldoze through support allies standing near his path.
+	collision_mask &= ~32  # drop layer 6 (friendly)
 	add_to_group("final_boss")
 	call_deferred("_on_boss_spawned")
 
@@ -54,6 +61,38 @@ func _initialize_waypoint() -> void:
 	navigation_agent.target_position = global_position  # clear any waypoint target from reset()
 	# LOS should only fail for actual walls, not villagers/allies on layer 1
 	avoidance_ray.collision_mask = 2048
+
+func _has_line_of_sight() -> bool:
+	# The shared avoidance_ray LOS check (monsters.gd) is only ever exercised
+	# by this boss — every regular monster overrides _cast() with its own
+	# version and never calls it. Combined with his unique 2.5x scale, it was
+	# silently blocking his ranged bolt while the AoE spells (which don't
+	# check LOS) kept firing fine. Range is already gated by the caller, so
+	# just let range decide.
+	return is_instance_valid(target)
+
+func _cast() -> void:
+	last_shoot_time = Time.get_unix_time_from_system()
+	if not bullet_pool or not muzzle or not is_instance_valid(target):
+		return
+	var projectile = bullet_pool.spawn()
+	if not projectile:
+		return
+	projectile.shooter = self
+	var direction := muzzle.global_position.direction_to(target.global_position)
+	if projectile.has_method("launch"):
+		projectile.launch(muzzle.global_position, direction)
+	else:
+		projectile.global_position = muzzle.global_position
+		projectile.move_direction = direction
+
+func _find_nearest_attack_target() -> void:
+	# Base monsters.gd chases whichever of player/friendly/villagers is
+	# nearest — right for regular invaders, but a final boss should stay
+	# locked onto the player instead of wandering off after a guard or
+	# villager that happens to be closer to his current position.
+	var player := get_tree().get_first_node_in_group("player")
+	target = player if player and is_instance_valid(player) else null
 
 func _on_boss_spawned() -> void:
 	Global.boss_fight_active = true

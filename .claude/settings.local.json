@@ -15,7 +15,11 @@
       "Bash(git *)",
       "Skill(run)",
       "Bash(godot *)",
-      "Bash(echo \"Launched PID $!\")"
+      "Bash(echo \"Launched PID $!\")",
+      "Bash(awk NR>=6520 && NR<=6580 *)",
+      "Bash(awk -F: '$1>=6555 && $1<=6600')",
+      "Bash(awk -F: '$1>=6563 && $1<=6579')",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ]
   }
 }

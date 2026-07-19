@@ -107,4 +107,195 @@ BUG FIX: Area outside grass tilemap visually black but still traversable
     (Environment + Walls). Player mask includes both (16+2048). Monster mask
     includes 2048. Both are now blocked at the map edge.
 
+--------------------------------------------------------------------------------
+SESSION: 2026-07-18
+--------------------------------------------------------------------------------
+
+BUG FIX: Game crashed on startup (Variant type inference in pet.gd)
+  File: Scripts/pet.gd
+  Problem: `var last := _last_damage_times.get(body, 0.0)` — Dictionary.get()
+    returns Variant, and the project treats warnings as errors, so the
+    inferred-Variant warning was fatal at parse time.
+  Fix: Explicit `var last: float = _last_damage_times.get(body, 0.0)`.
+
+FEATURE: Villagers and guards wobble while moving
+  Files: Scripts/villager.gd, Scripts/guard.gd
+  Added _move_wobble() (sine-wave sprite rotation keyed off velocity),
+  matching the wobble already used elsewhere, called each _process().
+
+FEATURE: Pet companion can be healed/buffed, is non-killable, and has a
+    boss-aware leash range
+  File: Scripts/pet.gd
+  - Added heal(), get_health(), get_max_health(), set_damage_modifier() so
+    Annadaeus's auras and priestess heal bolts can affect the pet.
+  - take_damage() now floors health at 1 instead of dying; removed the old
+    _is_dead / _die() / _respawn() flow entirely (dead code once the pet
+    can no longer die).
+  - _LEASH_RANGE raised from 256 to 480 (15 tiles) so the pet actually
+    engages enemies near the player instead of ignoring most of the map.
+  - Added _is_within_leash() with a boss-aware exception: 900px leash when
+    the target is in the "final_boss" group, since boss-to-player distance
+    routinely exceeds a normal monster's engagement range.
+
+BUG FIX: Second crash after the leash-range fix ("Cannot infer the type of
+    'dist' variable")
+  File: Scripts/pet.gd
+  Problem: `var dist := _player.global_position.distance_to(mob.global_position)`
+    — _player and mob are typed as generic Node, so .global_position
+    resolves to Variant.
+  Fix: Explicit `var dist: float = ...` in _is_within_leash().
+
+FEATURE: Death epitaphs and victory sayings now name the specific monster
+    and weapon, with a random line per combination
+  Files: Scripts/global.gd, Scripts/player.gd, Scripts/game_over.gd,
+         Scripts/victory_scene.gd
+  - generate_epitaph(killer, weapon) rewritten around {melee: [...],
+    ranged: [...]} string buckets per monster, weapon name substituted via
+    %s where the bucket is "ranged" (e.g. "the wizard's fireball").
+  - _identify_killer() in player.gd now returns {monster, weapon}, deriving
+    the weapon name from the projectile's scene_file_path — no per-monster
+    script changes needed.
+  - Added a new victory-sayings bucket (referencing the player's initials
+    and Mh'orzath by name) for the Wall of Heroes after a win.
+  - Removed the duplicate boss-spawn system: global.gd had its own
+    _start_boss_sequence()/_spawn_boss()/_on_boss_died() firing on the same
+    "50 villagers saved" event that final_boss_spawner.gd already handles,
+    so two Mh'orzath instances were being spawned. final_boss_spawner.gd is
+    now the sole trigger.
+
+BUG FIX: Barrage arrow spread too wide, missing enemies standing close
+    together
+  File: Scripts/player.gd
+  Problem: Fixed 40-degree total cone regardless of arrow count meant the
+    outer arrows in a 5-arrow Barrage diverged too far to hit anything.
+  Fix: Fixed 5-degree spacing between adjacent arrows instead of a fixed
+    total spread, so the cone scales sensibly with arrow count.
+
+BUG FIX: Tenchijin retreating away from the player into monsters and dying
+  File: Scripts/tenchijin.gd
+  Problem: A STRATEGIC_MOVE state and _strategic_target var existed but
+    _strategic_target was never assigned, so entering that state made Ten
+    beeline for world origin (0,0) whenever he lost a target — frequently
+    running through enemy monsters on the way.
+  Fix: Removed the dead STRATEGIC_MOVE state and _strategic_target var
+    entirely.
+
+BUG FIX: Anna and Tenchijin wandering off to seek a healer mid-boss-fight
+  Files: Scripts/annadaeus.gd, Scripts/tenchijin.gd
+  Fix: Added `and not Global.boss_fight_active` to the seek-healer trigger
+    in both _update_targets()/_update_target() — they're needed at the
+    player's side during the boss fight, not making a trip back to town.
+
+BUG FIX: Mh'orzath (final boss) frozen in place for the entire fight
+  File: Scripts/mh_orzath.gd
+  Problem: monsters.gd's base _physics_process() hard-freezes movement once
+    waypoint_stage reaches 2 ("arrived at hunting grounds, just shoot in
+    place") — correct for regular monsters, fatal for a boss that needs to
+    chase a moving player.
+  Fix: Full _physics_process() override: chases the player whenever
+    target_distance > shoot_range, otherwise drifts to a stop. Also
+    overrode _initialize_waypoint() to force waypoint_stage = 2 immediately
+    on spawn (skip the move-to-village-center/move-to-extraction-point
+    walk entirely) and _has_line_of_sight() to unconditionally return true
+    (the shared avoidance_ray check breaks against his own oversized
+    hitbox — see hitbox fix below).
+
+BUG FIX: Mh'orzath trivially easy to kill by kiting at range; never
+    actually threatened the player
+  File: Scripts/mh_orzath.gd
+  - max_speed raised 65 -> 120 (faster than the player's 100 base speed,
+    so sustained kiting no longer works).
+  - _find_nearest_attack_target() overridden to always lock onto the
+    player specifically — the inherited version picked whichever of
+    player/friendly/villagers was globally nearest, so he'd wander off
+    after a guard standing near his spawn point instead of chasing.
+  - collision_mask &= ~32 (drop the friendly-NPC layer) so he no longer
+    physically drags/shoves Tenchijin and Annadaeus around while pursuing
+    the player — his 120 speed vs. their lower speeds meant they could
+    never break free once snagged.
+
+BUG FIX: Anna and the pet not engaging Mh'orzath during the boss fight
+  Files: Scripts/annadaeus.gd, Scripts/pet.gd
+  Problem: Both used engagement ranges tuned for regular monsters (300px /
+    480px), while boss-to-player distance routinely ran 450-780px in
+    actual play.
+  Fix: Added boss-aware 900px engagement ranges (effective_range in
+    _find_closest_mob() for Anna, _is_within_leash() for the pet), and
+    bypassed the LOS raycast check for final_boss-group targets in both
+    (same oversized-hitbox raycast problem as mh_orzath's own LOS check).
+
+BUG FIX: Enemies occasionally taking continuous damage at their spawn
+    point with no attacker nearby
+  File: Scripts/monsters.gd
+  Problem: reset() (called when a pooled monster is reused) didn't clean
+    up leftover Timer children from the previous occupant's DoT/mark/
+    root/slow status effects. Those timers kept ticking on the invisible
+    "dead" node and fired against whatever monster the pool handed the
+    node to next.
+  Fix: reset() now stops and frees any Timer children before reuse.
+
+BUG FIX: Mh'orzath's abyss touch (ranged bolt) never fires
+  File: Scripts/mh_orzath.gd
+  Problem 1: shoot_range was 350, well under his own collision hitbox's
+    effective reach at the time (~660px — see hitbox fix below), so by the
+    time he was close enough to physically touch the player he was already
+    outside the range gate that permits firing. Raised shoot_range to 500
+    to match event_horizon_range.
+  Problem 2 (the real blocker): see the hitbox fix below — even after
+    raising shoot_range, he still couldn't get under it without already
+    colliding, because his hitbox was ~2.5x too large.
+
+BUG FIX: Mh'orzath appears to "chase then get stuck to the player," root-
+    locked in place for large stretches of the fight
+  File: Scripts/monsters.gd
+  Problem: apply_root() had no boss exception. The player's Ensnaring Trap
+    (5s cooldown, no range check — always targets the nearest enemy
+    unconditionally) roots whatever it hits for 2s. With the boss as the
+    only enemy on the field for the whole fight, that's a 2-of-every-5-
+    second freeze for the entire encounter — reads exactly like "stuck to
+    me." Confirmed via targeted debug logging: every freeze was
+    immediately preceded by an apply_root() call, no exceptions either
+    way.
+  Fix: apply_root() now returns immediately (no-op) for anything in the
+    "final_boss" group, so neither Ensnaring Trap nor Tenchijin's Frost
+    Nova can lock him in place anymore.
+
+BUG FIX: Mh'orzath's collision hitbox roughly 2.5x larger than his visible
+    sprite in every direction
+  File: Scenes/mh_orzath.tscn
+  Problem: His CollisionShape2D had scale ~1.0 (Vector2(0.99999976, ...)),
+    apparently intended to cancel out the root CharacterBody2D's 2.5x
+    scale. A child node's own scale does not offset its parent's scale in
+    Godot — they multiply — so the shape's true world-space radius was
+    264 * 2.5 = 660px (diameter ~1320px) instead of the intended 264px.
+    This is what actually caused the "stuck to player from far away"
+    reports: physical contact started at ~660-680px separation, which is
+    outside 500px shoot_range, so he could never simultaneously be "in
+    range" and "not yet touching" the player.
+  Fix: Set the CollisionShape2D's local scale to 0.4 (1/2.5) so the
+    composed world-space radius comes back to the authored 264px, matching
+    his sprite size. Contact now starts around ~280-300px, safely inside
+    shoot_range.
+
+BUG FIX: Abyss touch bolt fires and travels correctly but is barely
+    visible / never noticed landing
+  File: Scenes/abyss_touch.tscn
+  Problem: Confirmed via debug logging that _cast() fires on schedule, the
+    projectile spawns, is visible, is correctly reparented under the main
+    scene, and travels its full straight-line distance before its 4s
+    destroy_timer expires — the firing pipeline itself was never broken.
+    Its sprite scale (0.075) was half the wizard's fireball (0.15) for
+    what's supposed to be the final boss's signature attack, easily lost
+    against boss-fight VFX clutter.
+  Fix: Increased sprite scale, projectile speed, and collision shape size
+    (final values tuned directly by Ross in the editor after the initial
+    pass) so the bolt reads clearly on screen and can actually connect.
+  Note: Editing Sprite2D scale via the Inspector on this node triggered a
+    reproducible Godot editor crash (abort inside TextureRect::set_texture
+    -> CanvasItem::queue_redraw -> CallQueue, a stale-Callable bug in the
+    editor's texture-preview redraw path — confirmed via coredump
+    backtrace, zero GDScript frames involved). Editing the scale value
+    directly in the .tscn text avoids triggering it; dragging/typing the
+    value in the Inspector does not.
+
 ================================================================================

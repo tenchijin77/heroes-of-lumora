@@ -588,6 +588,11 @@ func apply_slow(percent: float, duration: float) -> void:
 	timer.start()
 
 func apply_root(duration: float) -> void:
+	# Ensnaring Trap (5s cooldown, no range check) and Frost Nova would otherwise
+	# freeze a boss in place for 2s out of every 5 for the entire fight — a boss
+	# needs to keep chasing/repositioning, not get choke-held by player CC.
+	if is_in_group("final_boss"):
+		return
 	_is_rooted = true
 	velocity = Vector2.ZERO
 	var timer := Timer.new()

@@ -111,7 +111,7 @@ func _process(delta: float) -> void:
 	# Resolve valid leash target (enemy must be within leash range of the player)
 	var target: Node = null
 	if _target_cache and is_instance_valid(_target_cache) and _player and is_instance_valid(_player):
-		if _player.global_position.distance_to(_target_cache.global_position) <= _LEASH_RANGE:
+		if _is_within_leash(_target_cache):
 			target = _target_cache
 	if _sprite:
 		if velocity.length_squared() > 25.0:
@@ -123,7 +123,7 @@ func _process(delta: float) -> void:
 func _physics_process(_delta: float) -> void:
 	var target: Node = null
 	if _target_cache and is_instance_valid(_target_cache) and _player and is_instance_valid(_player):
-		if _player.global_position.distance_to(_target_cache.global_position) <= _LEASH_RANGE:
+		if _is_within_leash(_target_cache):
 			target = _target_cache
 	if target:
 		var dist := global_position.distance_to(target.global_position)
@@ -174,6 +174,16 @@ func _update_target_cache() -> void:
 				min_dist = d
 				nearest = mob
 	_target_cache = nearest
+
+func _is_within_leash(mob: Node) -> bool:
+	if not _player or not is_instance_valid(_player):
+		return false
+	var dist: float = _player.global_position.distance_to(mob.global_position)
+	# The boss moves fast and drags the fight far from the player — normal
+	# leash range (480, 15 tiles) almost never catches him, since boss-to-
+	# player distance regularly runs 450-780px. Give him a longer leash.
+	var effective_leash := 900.0 if mob.is_in_group("final_boss") else _LEASH_RANGE
+	return dist <= effective_leash
 
 func _move_wobble() -> void:
 	if not _sprite:

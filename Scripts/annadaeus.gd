@@ -527,6 +527,10 @@ func _has_clear_line_to_target(target: Node2D) -> bool:
 	# Check if there's a clear line to target
 	if not avoidance_ray or not target or not is_instance_valid(target):
 		return false
+	# Same raycast-vs-oversized-hitbox issue confirmed on Tenchijin's LOS
+	# check — the boss's ~600px collision box breaks collider-matching.
+	if target.is_in_group("final_boss"):
+		return true
 	_update_avoidance_ray(target, support_range)
 	if avoidance_ray.is_colliding() and avoidance_ray.get_collider() != target:
 		return false
@@ -623,13 +627,16 @@ func _find_friendlies_in_range() -> Array[CharacterBody2D]:
 func _find_closest_mob() -> CharacterBody2D:
 	# Find closest enemy in range
 	var closest_mob: CharacterBody2D = null
-	var min_distance: float = support_range
-	var enemy_count: int = 0
+	var min_distance: float = INF
 	for mob in get_tree().get_nodes_in_group("monsters"):
 		if is_instance_valid(mob) and mob.visible:
-			enemy_count += 1
 			var distance = global_position.distance_to(mob.global_position)
-			if distance < min_distance:
+			# The boss moves fast and drags the fight far from the player —
+			# her normal support_range (300) almost never catches him, since
+			# boss-to-player distance regularly runs 450-780px. Give him a
+			# much larger notice radius specifically.
+			var effective_range: float = 900.0 if mob.is_in_group("final_boss") else support_range
+			if distance < effective_range and distance < min_distance:
 				min_distance = distance
 				closest_mob = mob
 	return closest_mob

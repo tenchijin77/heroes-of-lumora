@@ -230,12 +230,22 @@ func _update_target() -> void:
 func _idle_state(delta: float) -> void:
 	velocity = velocity.lerp(Vector2.ZERO, drag)
 
+func _preferred_range_for(body: Node2D) -> float:
+	# preferred_range (220) assumes a regular-sized monster. The final boss's
+	# own collision box is ~600px across (240x242 shape * 2.5x root scale),
+	# extending ~300px from his center — well past 220 — so Ten was trying to
+	# stand a spot that's physically inside the boss's hitbox, and getting
+	# shoved around by it instead of ever settling down to cast.
+	if body.is_in_group("final_boss"):
+		return 340.0
+	return preferred_range
+
 func _positioning_state(delta: float) -> void:
 	if not current_target or not is_instance_valid(current_target):
 		current_state = "FOLLOWING_PLAYER"
 		return
 	var dist := global_position.distance_to(current_target.global_position)
-	if dist <= preferred_range:
+	if dist <= _preferred_range_for(current_target):
 		current_state = "ATTACKING"
 	else:
 		var dir := global_position.direction_to(current_target.global_position)
@@ -246,11 +256,13 @@ func _attacking_state(delta: float) -> void:
 		current_state = "POSITIONING"
 		return
 	var dist := global_position.distance_to(current_target.global_position)
-	if dist > cast_range or not _has_clear_line_to_target(current_target):
+	var los := _has_clear_line_to_target(current_target)
+	if dist > cast_range or not los:
 		current_state = "POSITIONING"
 		return
+	var target_preferred_range := _preferred_range_for(current_target)
 	# Wizards don't stand in melee — back away if anything closes in
-	if dist < preferred_range:
+	if dist < target_preferred_range:
 		var away := global_position.direction_to(current_target.global_position).normalized()
 		velocity = velocity.lerp(-away * max_speed, acceleration * delta)
 	else:
@@ -514,6 +526,13 @@ func _update_avoidance_ray(target: Node2D, range_dist: float) -> void:
 
 func _has_clear_line_to_target(target: Node2D) -> bool:
 	if not avoidance_ray:
+		return true
+	# The boss's ~600px hitbox breaks collider-matching against a ray cast at
+	# a fixed cast_range length toward his direction rather than clamped to
+	# actual distance — confirmed via logging: los=false reported repeatedly
+	# while well within range. Range is already gated by the caller, so just
+	# trust it for him.
+	if target.is_in_group("final_boss"):
 		return true
 	return not avoidance_ray.is_colliding() or avoidance_ray.get_collider() == target
 

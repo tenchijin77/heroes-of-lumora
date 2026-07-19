@@ -6,25 +6,24 @@
 [ext_resource type="AudioStream" uid="uid://tjlfi4jb3uqx" path="res://Assets/Audio/tanweraman-flesh-growing-horror-392360.mp3" id="4_lgjbv"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_lgjbv"]
-radius = 8.062258
+radius = 60.0
 
 [node name="abyss_touch" type="Area2D" unique_id=333976846]
 collision_layer = 8
 collision_mask = 3121
 script = ExtResource("1_bjisp")
-speed = 180.0
+speed = 350.0
 owner_group = "monsters"
 damage = 35
 sound_stream = ExtResource("2_lgjbv")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=173454585]
-scale = Vector2(0.075, 0.075)
+scale = Vector2(0.75, 0.75)
 texture = ExtResource("3_6fse4")
 region_enabled = true
 region_rect = Rect2(66.99942, 77.49975, 211.00012, 222.00012)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=394509188]
-visible = false
 shape = SubResource("CircleShape2D_lgjbv")
 
 [node name="destroy_timer" type="Timer" parent="." unique_id=931588414]
