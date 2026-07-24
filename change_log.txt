@@ -328,4 +328,25 @@ BALANCE: Shop upgrade prices switched from Fibonacci to gentle exponential
   each subsequent purchase costs 30% more than the last. Reduces late-game
   price spikes substantially while still discouraging infinite stacking.
 
+
+The magi and guards were too inexpensive to buy, so players could easily overwhelm the enemies by buying many of them. Updated pricing to balance this.
+
+● Simple fix — just bumping the base prices in shop_ui.gd.
+
+● Update(Scripts/shop_ui.gd)
+  ⎿  Added 2 lines, removed 2 lines
+      20    "health": 20,
+      21    "damage": 30,
+      22    "speed": 25,
+      23 -  "guard": 50,
+      24 -  "magi": 75
+      23 +  "guard": 100,
+      24 +  "magi": 150
+      25  }
+      26
+      27  const GUARD_SCENE: String = "res://Scenes/guard.tscn"
+
+● Doubled both — guard goes 50 → 100, magi goes 75 → 150. Combined with the 1.3× exponential, a third guard now costs ~169 and a
+  third magi ~254, so stacking gets expensive fast. Let me know how it feels in testing and we can adjust from there.
+
 ================================================================================
