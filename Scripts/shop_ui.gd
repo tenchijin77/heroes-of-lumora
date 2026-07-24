@@ -43,20 +43,10 @@ func _ready() -> void:
 	_update_all_costs()
 	_update_solari()
 
-# Returns the nth Fibonacci number (1-indexed): fib(0)=1, fib(1)=1, fib(2)=2, fib(3)=3, fib(4)=5…
-func _fib(n: int) -> int:
-	if n <= 1:
-		return 1
-	var a: int = 1
-	var b: int = 1
-	for _i in range(2, n + 1):
-		var c: int = a + b
-		a = b
-		b = c
-	return b
+const PRICE_EXPONENT: float = 1.3
 
 func _get_price(item: String) -> int:
-	return BASE_PRICES[item] * _fib(purchase_counts[item])
+	return roundi(BASE_PRICES[item] * pow(PRICE_EXPONENT, purchase_counts[item]))
 
 func _update_all_costs() -> void:
 	health_cost_label.text = "%d Solari" % _get_price("health")

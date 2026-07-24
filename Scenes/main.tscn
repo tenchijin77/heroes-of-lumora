@@ -6545,6 +6545,7 @@ editor_draw_limits = true
 script = ExtResource("3_8gbba")
 
 [node name="forbidden_zone" type="Area2D" parent="." unique_id=1073369177]
+visible = false
 collision_layer = 128
 collision_mask = 2
 
@@ -6686,6 +6687,14 @@ position = Vector2(440, 2927)
 [node name="torch22" parent="." unique_id=1120578487 instance=ExtResource("6_21xkr")]
 position = Vector2(1186, 2919)
 
+[node name="torch_shop_l" parent="." unique_id=999000001 instance=ExtResource("6_21xkr")]
+position = Vector2(125, 55)
+scale = Vector2(0.5, 0.5)
+
+[node name="torch_shop_r" parent="." unique_id=999000002 instance=ExtResource("6_21xkr")]
+position = Vector2(182, 55)
+scale = Vector2(0.5, 0.5)
+
 [node name="guard" parent="." unique_id=599254190 instance=ExtResource("7_6bp64")]
 position = Vector2(1015, 91)
 
@@ -6717,7 +6726,7 @@ position = Vector2(58, 327)
 position = Vector2(49, 494)
 
 [node name="priestess" parent="." unique_id=407663265 instance=ExtResource("11_d1ilt")]
-position = Vector2(91, 406)
+position = Vector2(47, 411)
 heal_rate = 2.0
 projectile_scene = null
 

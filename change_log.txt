@@ -298,4 +298,34 @@ BUG FIX: Abyss touch bolt fires and travels correctly but is barely
     directly in the .tscn text avoids triggering it; dragging/typing the
     value in the Inspector does not.
 
+--------------------------------------------------------------------------------
+SESSION: 2026-07-24
+--------------------------------------------------------------------------------
+
+FEATURE: Torches added flanking shop entrance to improve discoverability
+  File: Scenes/main.tscn
+  Added two torch instances (torch_shop_l, torch_shop_r) positioned at
+  (125, 55) and (182, 55) — one on each side of the shop doorway collision
+  shape. Uses the existing torch.tscn scene (animated flame + PointLight2D +
+  audio), consistent with all other landmark torches in the world.
+
+BALANCE: Camera zoom-out limited to prevent trivialising combat
+  File: Scripts/camera_controller.gd
+  Added MIN_USER_ZOOM (0.65) and MAX_USER_ZOOM (3.0) constants. _user_zoom
+  is now clamped on both mouse-wheel and pinch-to-zoom input, so players
+  cannot zoom out far enough to see and preempt the full enemy spawn field.
+
+BALANCE: Enemy spawn rate increased by 150%
+  File: Scripts/enemy_spawner.gd
+  min_spawn_time reduced 3.0 → 1.2s, max_spawn_time reduced 5.0 → 2.0s
+  (2.5× the original spawn frequency). Wave-over-wave escalation via
+  spawn_rate_increase_per_wave is unchanged.
+
+BALANCE: Shop upgrade prices switched from Fibonacci to gentle exponential
+  File: Scripts/shop_ui.gd
+  Replaced the _fib(n) multiplier (Fibonacci, ~1.618× per purchase) with
+  pow(1.3, n) (~1.3× per purchase). First purchase is always the base price;
+  each subsequent purchase costs 30% more than the last. Reduces late-game
+  price spikes substantially while still discouraging infinite stacking.
+
 ================================================================================

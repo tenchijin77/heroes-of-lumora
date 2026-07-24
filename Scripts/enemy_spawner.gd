@@ -4,8 +4,8 @@ extends Node
 signal wave_updated(wave: int)
 
 # -- Existing @exports --
-@export var min_spawn_time: float = 3.0
-@export var max_spawn_time: float = 5.0
+@export var min_spawn_time: float = 1.2
+@export var max_spawn_time: float = 2.0
 @export var spawn_radius: float = 200.0 # Increased to reduce clustering
 @export var monster_configs: Array[Dictionary] = [
 	# Lower tier — always in pool
