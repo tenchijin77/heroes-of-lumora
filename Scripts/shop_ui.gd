@@ -20,8 +20,8 @@ const BASE_PRICES: Dictionary = {
 	"health": 20,
 	"damage": 30,
 	"speed": 25,
-	"guard": 50,
-	"magi": 75
+	"guard": 100,
+	"magi": 150
 }
 
 const GUARD_SCENE: String = "res://Scenes/guard.tscn"
