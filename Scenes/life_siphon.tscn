@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://jjf5nm3n5g1"]
+
+[ext_resource type="Script" uid="uid://d6xrs2lxn4lc" path="res://Scripts/projectile.gd" id="1_a45j1"]
+[ext_resource type="AudioStream" uid="uid://cm6p6fqhakrfl" path="res://Assets/Audio/arrow-swish_03-306040.mp3" id="2_ek5xv"]
+[ext_resource type="Texture2D" uid="uid://b145lo5v3cwa4" path="res://Assets/New Sprites/Projectiles 2 Sprites.png" id="3_ek5xv"]
+[ext_resource type="AudioStream" uid="uid://djqty5p7je131" path="res://Assets/Audio/magic-teleport-whoosh-352764.mp3" id="4_ek5xv"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_sxmlr"]
+radius = 57.00877
+
+[node name="projectile" type="Area2D" unique_id=501367785]
+collision_layer = 8
+collision_mask = 3121
+script = ExtResource("1_a45j1")
+sound_stream = ExtResource("2_ek5xv")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1094849845]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("3_ek5xv")
+region_enabled = true
+region_rect = Rect2(61, 77.5, 216, 223)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=613410483]
+position = Vector2(-1, 0)
+shape = SubResource("CircleShape2D_sxmlr")
+
+[node name="destroy_timer" type="Timer" parent="." unique_id=45213217]
+wait_time = 4.0
+autostart = true
+
+[node name="projectile_sound" type="AudioStreamPlayer2D" parent="." unique_id=129744052]
+stream = ExtResource("4_ek5xv")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
+[connection signal="timeout" from="destroy_timer" to="." method="_on_destroy_timer_timeout"]

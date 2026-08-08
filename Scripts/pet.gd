@@ -24,10 +24,15 @@ var _attack_cooldown: float = 1.0
 var _last_damage_times: Dictionary = {}
 var _damage_modifier: float = 1.0
 var _sprite: Sprite2D = null
+var _collision: CollisionShape2D = null
+var _pickup_area: Area2D = null
+var _pickup_collision: CollisionShape2D = null
 var _name_label: Label = null
 var _target_cache: Node = null
 var _target_update_timer: float = 0.0
 const _TARGET_INTERVAL: float = 0.3
+const _RESPAWN_DELAY: float = 20.0
+var _is_dead: bool = false
 
 func _ready() -> void:
 	add_to_group("friendly")
@@ -43,11 +48,22 @@ func _ready() -> void:
 		_sprite.scale = Vector2(0.2, 0.2)
 	add_child(_sprite)
 
-	var col := CollisionShape2D.new()
+	_collision = CollisionShape2D.new()
 	var shape := CircleShape2D.new()
 	shape.radius = 10.0
-	col.shape = shape
-	add_child(col)
+	_collision.shape = shape
+	add_child(_collision)
+
+	_pickup_area = Area2D.new()
+	_pickup_area.collision_layer = 0
+	_pickup_area.collision_mask = 256  # Loot layer — coins and potions
+	add_child(_pickup_area)
+	_pickup_collision = CollisionShape2D.new()
+	var pickup_shape := CircleShape2D.new()
+	pickup_shape.radius = 45.0
+	_pickup_collision.shape = pickup_shape
+	_pickup_area.add_child(_pickup_collision)
+	_pickup_area.area_entered.connect(_on_pickup_area_entered)
 
 	_name_label = Label.new()
 	var font := load("res://Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf") as Font
@@ -75,6 +91,16 @@ func init(owner_player: Node, stage: int, player_max_health: int) -> void:
 func upgrade(new_stage: int, player_max_health: int) -> void:
 	_apply_stage(new_stage, player_max_health)
 	_current_health = _max_health
+	if _is_dead:
+		# Mid-respawn-timer — upgrading revives it immediately instead
+		_is_dead = false
+		visible = true
+		set_process(true)
+		set_physics_process(true)
+		if _collision:
+			_collision.set_deferred("disabled", false)
+		if _pickup_collision:
+			_pickup_collision.set_deferred("disabled", false)
 	_spawn_upgrade_vfx()
 
 func _apply_stage(stage: int, player_max_health: int) -> void:
@@ -194,8 +220,39 @@ func _move_wobble() -> void:
 	_sprite.rotation_degrees = sin(Time.get_unix_time_from_system() * 20.0) * 2.0
 
 func take_damage(damage: int, _source: Node) -> void:
-	# Pets are non-killable — health floors at 1 instead of triggering death.
-	_current_health = max(_current_health - damage, 1)
+	if _is_dead:
+		return
+	_current_health -= damage
+	if _current_health <= 0:
+		_current_health = 0
+		_die()
+
+func _die() -> void:
+	_is_dead = true
+	visible = false
+	set_process(false)
+	set_physics_process(false)
+	if _collision:
+		_collision.set_deferred("disabled", true)
+	if _pickup_collision:
+		_pickup_collision.set_deferred("disabled", true)
+	_spawn_death_vfx()
+	get_tree().create_timer(_RESPAWN_DELAY).timeout.connect(_respawn)
+
+func _respawn() -> void:
+	if not _player or not is_instance_valid(_player):
+		return  # owner gone — stay dead permanently
+	_is_dead = false
+	_current_health = _max_health
+	global_position = _player.global_position + Vector2(40, 0)
+	visible = true
+	set_process(true)
+	set_physics_process(true)
+	if _collision:
+		_collision.set_deferred("disabled", false)
+	if _pickup_collision:
+		_pickup_collision.set_deferred("disabled", false)
+	_spawn_upgrade_vfx()
 
 func get_health() -> int:
 	return _current_health
@@ -208,6 +265,37 @@ func heal(amount: int) -> void:
 
 func set_damage_modifier(modifier: float) -> void:
 	_damage_modifier = modifier
+
+func _on_pickup_area_entered(area: Area2D) -> void:
+	# Coins and potions are both in the "loot" group. coin.gd's collect() just
+	# plays its pickup fx; potion.gd's collect() looks up the player itself
+	# and applies the effect directly — works the same whether the player or
+	# the pet is what touched it.
+	if area.is_in_group("loot"):
+		Global.coins_collected += 1
+		Global.emit_signal("coins_updated", Global.coins_collected)
+		area.collect()
+
+func _spawn_death_vfx() -> void:
+	if not is_inside_tree():
+		return
+	var p := CPUParticles2D.new()
+	p.global_position = global_position
+	p.one_shot = true
+	p.explosiveness = 1.0
+	p.amount = 30
+	p.lifetime = 0.8
+	p.spread = 180.0
+	p.initial_velocity_min = 30.0
+	p.initial_velocity_max = 100.0
+	p.scale_amount_min = 2.0
+	p.scale_amount_max = 4.0
+	p.color = Color(0.3, 0.3, 0.3, 1.0)
+	get_tree().current_scene.add_child(p)
+	p.emitting = true
+	get_tree().create_timer(1.5).timeout.connect(func():
+		if is_instance_valid(p): p.queue_free()
+	)
 
 func _spawn_upgrade_vfx() -> void:
 	if not is_inside_tree():

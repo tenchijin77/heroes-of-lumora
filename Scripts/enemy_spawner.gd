@@ -24,7 +24,9 @@ signal wave_updated(wave: int)
 	{"scene": preload("res://Scenes/beholder.tscn"),"weight": 0.2, "min_wave": 6},
 	{"scene": preload("res://Scenes/wraith.tscn"),  "weight": 0.15,"min_wave": 8},
 	{"scene": preload("res://Scenes/balrog.tscn"),  "weight": 0.1, "min_wave": 9},
-	{"scene": preload("res://Scenes/troll.tscn"),   "weight": 0.1, "min_wave": 10}
+	{"scene": preload("res://Scenes/troll.tscn"),   "weight": 0.1, "min_wave": 10},
+	{"scene": preload("res://Scenes/voidknight.tscn"),  "weight": 0.15,"min_wave": 7},
+	{"scene": preload("res://Scenes/gravecaller.tscn"), "weight": 0.12,"min_wave": 8}
 ]
 @export var use_fixed_points: bool = false
 @export var fixed_points_paths: Array[NodePath] = []
@@ -37,7 +39,7 @@ signal wave_updated(wave: int)
 @export var initial_mobs_per_spawn: int = 1
 @export var max_active_enemies: int = 30
 @export var mobs_increase_per_wave: int = 1
-@export var coin_drop_chance: float = 0.3
+@export var coin_drop_chance: float = 0.5
 @export var coin_drop_amount_range: Vector2 = Vector2(1, 4)
 @export var coin_scene: PackedScene = preload("res://Scenes/coin.tscn")
 

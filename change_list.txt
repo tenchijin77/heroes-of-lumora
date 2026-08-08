@@ -37,6 +37,9 @@ completed:
 -added a pause menu with ESC with an option to quit to the main menu
 -added the shop, with stat upgrades, guard replacements, and magi (turret npcs)
 -fixed day/night cycle to start at early morning and make darkness less severe
+-created woodstalker class for the player and implemented pet
+-created gravecaller class and pet as an enemy class (will be a playable class in endless mode)
+-created voidknight class and pet as an enemy class (will be a playable class in endless mode)
 
 
 to do: (in order of importance)
@@ -217,3 +220,5 @@ annadaeus.gd-Added signals, entrance system, speech cooldown, fixed TypedArray b
 tenchijin.gd-Added dramatic_entrance(), health/damage functions, starts inactive
 tenchijin_spawner.gd-NEW FILE - spawn managernpc.gdFixed collision mask, added avoidance layers
 ui.gd-Changed "Coins" → "Solari" (previous session)
+
+detailed notes will be added to change_log.txt going forward.

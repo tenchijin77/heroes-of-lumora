@@ -298,6 +298,28 @@ func set_damage_modifier(modifier: float) -> void:
 func apply_speed_buff(bonus_percent: float, duration: float) -> void:
 	apply_potion_effect("speed_boost", 1.0 + bonus_percent, duration)
 
+func apply_slow(percent: float, duration: float) -> void:
+	# Enemy debuff (e.g. Voidknight's Necrotic Grasp) — mirrors monsters.gd's apply_slow.
+	max_speed = base_max_speed * (1.0 - percent)
+	_start_effect_timer(duration, "max_speed", base_max_speed)
+	emit_signal("speed_updated", max_speed)
+
+func apply_dot(damage_per_tick: int, ticks: int) -> void:
+	# Enemy debuff (e.g. Gravecaller's Curse of Withering) — mirrors monsters.gd's apply_dot.
+	var remaining := ticks
+	var dot_timer := Timer.new()
+	dot_timer.wait_time = 1.0
+	dot_timer.timeout.connect(func():
+		remaining -= 1
+		if is_instance_valid(self) and Global.game_active:
+			take_damage(damage_per_tick, null)
+		if remaining <= 0:
+			dot_timer.stop()
+			dot_timer.queue_free()
+	)
+	add_child(dot_timer)
+	dot_timer.start()
+
 # --- Woodstalker Spells ---
 
 func _perform_auto_spells() -> void:

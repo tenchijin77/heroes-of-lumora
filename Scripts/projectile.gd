@@ -19,6 +19,7 @@ var shooter: Node = null
 var apply_dot_on_hit: bool = false
 var dot_damage_per_tick: int = 0
 var dot_ticks: int = 0
+var lifesteal_percent: float = 0.0  # heals shooter on a successful hit (e.g. Voidknight's Life Siphon)
 
 func _ready() -> void:
 	if not is_connected("body_entered", Callable(self, "_on_body_entered")):
@@ -58,6 +59,7 @@ func reset() -> void:
 	apply_dot_on_hit = false
 	dot_damage_per_tick = 0
 	dot_ticks = 0
+	lifesteal_percent = 0.0
 
 
 func _process(delta: float) -> void:
@@ -96,12 +98,14 @@ func _on_body_entered(body: Node) -> void:
 			body.apply_slow(slow_percent, slow_duration)
 		if apply_dot_on_hit and dot_ticks > 0 and body.has_method("apply_dot"):
 			body.apply_dot(dot_damage_per_tick, dot_ticks)
+		_apply_lifesteal()
 		despawn()
 		return
 
 	if owner_group == "monsters":
 		if body.has_method("take_damage") and (body.is_in_group("player") or body.is_in_group("friendly") or body.is_in_group("healer")):
 			body.take_damage(damage, self)
+			_apply_lifesteal()
 			despawn()
 			return
 
@@ -127,6 +131,11 @@ func despawn() -> void:
 
 func set_damage(new_damage: int) -> void:
 	damage = new_damage
+
+
+func _apply_lifesteal() -> void:
+	if lifesteal_percent > 0.0 and is_instance_valid(shooter) and shooter.has_method("heal"):
+		shooter.heal(int(damage * lifesteal_percent))
 
 
 func launch(start_pos: Vector2, direction: Vector2) -> void:

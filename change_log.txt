@@ -349,4 +349,104 @@ The magi and guards were too inexpensive to buy, so players could easily overwhe
 ● Doubled both — guard goes 50 → 100, magi goes 75 → 150. Combined with the 1.3× exponential, a third guard now costs ~169 and a
   third magi ~254, so stacking gets expensive fast. Let me know how it feels in testing and we can adjust from there.
 
+--------------------------------------------------------------------------------
+SESSION: 2026-08-08
+--------------------------------------------------------------------------------
+
+FEATURE: Voidknight and Gravecaller added as elite enemies (non-endless mode)
+  Files: Scripts/voidknight.gd, Scripts/gravecaller.gd, Scripts/enemy_pet.gd,
+         Scenes/voidknight.tscn, Scenes/gravecaller.tscn, Scenes/life_siphon.tscn,
+         Scripts/enemy_spawner.gd, Scripts/projectile.gd, Scripts/player.gd
+  Two new boss-tier enemies, wired into enemy_spawner.gd's boss_configs at the
+  same rarity as Lich/Hezrou/Balrog (min_wave 7 and 8 respectively). Both
+  extend monsters.gd (not the friendly-NPC FSM pattern) so they get spawner
+  pooling, take_damage, potion drops, and waypoint pathing for free. This is
+  a trimmed elite-enemy subset of their full class-notes kit — the complete
+  progression (Dark Sovereignty, Reaper's Plague, Circle of Blight, etc.) is
+  endless-mode scope, for when these become playable classes.
+  - Voidknight: melee-leaning tank. Life Siphon is a ranged bolt
+    (life_siphon.tscn, fired through the standard bullet_pool/_cast() path)
+    that heals Voidknight for 50% of damage dealt — added a generic
+    lifesteal_percent field to projectile.gd for this (same pattern as the
+    existing slow_percent/apply_dot_on_hit flags, so any future spell can
+    opt into lifesteal by just setting a field on its projectile instance).
+    Also has Necrotic Grasp (slow), Shadow Ward (self-shield, absorbs flat
+    damage before HP), and Void Slash (AoE burst) — these run on their own
+    cooldowns in an overridden _process(), independent of the Life Siphon
+    cast gate, so they still fire at close range even between bolts.
+    Permanent Skeleton minion.
+  - Gravecaller: ranged DoT caster. Death Bolt reuses death_bolt.tscn
+    (same bullet Lich uses) through the standard _cast() path. Curse of
+    Withering applies a DoT to its target; Plague Cloud spawns a lingering
+    AoE damage zone (built programmatically, no new scene needed — same
+    "construct in code" pattern as ability_chest.gd). Permanent Wraith
+    minion.
+  - Added apply_slow(percent, duration) and apply_dot(damage_per_tick, ticks)
+    to player.gd, mirroring the equivalent methods already on monsters.gd —
+    needed so these two elites' debuffs have something to call on the player
+    (previously only monsters could be slowed/DoT'd).
+  Sprite regions for both classes plus their minions were measured directly
+  from Assets/New Sprites/NPC Sprites 2.png's bounding boxes.
+
+FEATURE: Pets (player's own + enemy minions) are now killable, with a 20s
+    respawn — permanent death only once the owner is gone
+  Files: Scripts/pet.gd, Scripts/enemy_pet.gd (new)
+  Problem: the Woodstalker's Wolf/Bear/Panther pet (pet.gd) was invincible —
+    take_damage() floored health at 1 instead of ever dying.
+  Fix: pet.gd now dies for real and respawns near the player 20s later
+    (permanently gone only if the player itself is gone by then).
+    enemy_pet.gd is a new hostile mirror of the same pattern, used by
+    Voidknight's Skeleton and Gravecaller's Wraith minions: same 20s
+    respawn while their caster is alive, but the caster's mob_died signal
+    calls notify_owner_died() on its minion, which makes any future kill
+    permanent — no more respawning once the caster is dead.
+
+FEATURE: Player's pet can pick up coins and potions
+  File: Scripts/pet.gd
+  Added a 45px Area2D pickup radius (same "loot" layer detection the player
+  itself uses), listening for area_entered. Reuses coin.gd/potion.gd's
+  existing collect() unchanged — potion.gd already resolves the player
+  directly and applies its effect regardless of what triggered pickup, so
+  no changes were needed there. The pickup collider disables/re-enables
+  alongside the pet's combat collider on death/respawn so a dead pet lying
+  on the ground doesn't vacuum up loot.
+
+BUG FIX: Monsters camping near a town-edge extraction point would target
+    and cast at the priestess, who's supposed to be immune
+  File: Scenes/priestess.tscn
+  Problem: monsters.gd's _find_nearest_attack_target() explicitly excludes
+    healers/priestesses — healer.gd correctly only adds the priestess to
+    the "healing_npcs"/"healer" groups, never "friendly". But priestess.tscn
+    has a leftover Area2D/defense_zone child node — inherited from being
+    cloned off guard.tscn's template — still tagged groups=["friendly"].
+    get_nodes_in_group("friendly") returns any node in that group regardless
+    of type, so that orphaned, invisible-in-the-editor CollisionShape2D
+    (sitting right at her position) was a fully valid attack target.
+  Fix: removed the stray "friendly" group tag from defense_zone.
+  Note: guard.tscn has the identical vestigial defense_zone/"friendly" tag,
+    but it's harmless there since guard.gd already adds the guard itself to
+    "friendly" independently. Left alone — flag if any future NPC is cloned
+    from guard.tscn/tenchijin.tscn and needs to NOT be a valid monster
+    target, since this same trap will reappear.
+
+BUG FIX: Dialogic addon failed to compile after the Godot 4.6 → 4.7 upgrade
+  Files: addons/dialogic/Modules/Text/node_name_label.gd,
+         addons/dialogic/Modules/Variable/subsystem_variables.gd
+  Problem: three _get()/_set() property overrides (bundled Dialogic addon
+    code, not ours) didn't return a value on every code path — e.g. the
+    "property not found" fallthrough had no explicit return. Godot 4.6
+    allowed this; 4.7's GDScript compiler enforces it, so the upgrade
+    surfaced it as "Parse Error: Not all code paths return a value",
+    cascading into "failed to compile depended scripts" across most of
+    Dialogic's Text/Variable modules — almost certainly also breaking
+    cutscenes, not just spamming the console.
+  Fix: added explicit `return false` / `return null` on the missing paths
+    in node_name_label.gd:_set() and both subsystem_variables.gd _get()
+    overrides (module-level and the nested VariableFolder class).
+
+BALANCE: Coin drop chance increased
+  File: Scripts/enemy_spawner.gd
+  coin_drop_chance 0.3 → 0.5 — drops felt too sparse in this session's
+  playtesting. coin_drop_amount_range (1-4 per drop) unchanged.
+
 ================================================================================

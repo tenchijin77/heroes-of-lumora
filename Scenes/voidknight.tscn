@@ -1,0 +1,66 @@
+[gd_scene format=3 uid="uid://dmodbr5njsg87"]
+
+[ext_resource type="Texture2D" uid="uid://shgiuewoiox7" path="res://Assets/New Sprites/NPC Sprites 2.png" id="1_vk01"]
+[ext_resource type="Script" uid="uid://dmyvdd3p3x6xx" path="res://Scripts/voidknight.gd" id="2_vk01"]
+[ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="3_vk01"]
+[ext_resource type="PackedScene" uid="uid://jjf5nm3n5g1" path="res://Scenes/life_siphon.tscn" id="4_g6av7"]
+[ext_resource type="PackedScene" uid="uid://d3rcusi22khhd" path="res://Scenes/potion.tscn" id="4_vk01"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vk01"]
+size = Vector2(41, 50)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vk01_bg"]
+bg_color = Color(0.201527, 0.201527, 0.201527, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vk01_fill"]
+bg_color = Color(0.55, 0.1, 0.85, 1)
+
+[node name="voidknight" type="CharacterBody2D" unique_id=171968584 groups=["monsters"]]
+collision_layer = 2
+collision_mask = 629
+script = ExtResource("2_vk01")
+current_health = 400
+max_health = 400
+bullet_scene = ExtResource("4_g6av7")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1954689368]
+visible = false
+position = Vector2(-7.5, 0)
+shape = SubResource("RectangleShape2D_vk01")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1222498348]
+scale = Vector2(0.15, 0.15)
+texture = ExtResource("1_vk01")
+region_enabled = true
+region_rect = Rect2(35, 30, 379, 327)
+
+[node name="muzzle" type="Node2D" parent="." unique_id=203889884]
+position = Vector2(-10, 3)
+
+[node name="bullet_pool" type="Node" parent="." unique_id=78022659]
+script = ExtResource("3_vk01")
+node_scene = ExtResource("4_g6av7")
+
+[node name="potion_pool" type="Node" parent="." unique_id=1442855155]
+script = ExtResource("3_vk01")
+node_scene = ExtResource("4_vk01")
+
+[node name="avoidance_ray" type="RayCast2D" parent="." unique_id=837441628]
+position = Vector2(4, 0)
+rotation = 3.1415927
+target_position = Vector2(-64, 0)
+collision_mask = 1075
+
+[node name="health_bar" type="ProgressBar" parent="." unique_id=1049000006]
+offset_left = -14.0
+offset_top = -36.0
+offset_right = 14.0
+offset_bottom = -34.0
+theme_override_styles/background = SubResource("StyleBoxFlat_vk01_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_vk01_fill")
+rounded = true
+show_percentage = false
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=1084248196]
+avoidance_enabled = true
+radius = 16.0

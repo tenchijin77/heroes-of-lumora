@@ -1,0 +1,701 @@
+================================================================================
+🗺️ LUMORA OUTSKIRTS - LEVEL DESIGN GUIDE
+================================================================================
+
+A detailed guide for terrain design, visual distinctions, natural transitions,
+and NPC placement. This is your reference for drawing the map and planning 3D
+models.
+
+Levels 1-11 progression across three thematic sub-areas with natural transitions.
+
+
+================================================================================
+🏗️ OVERALL STRUCTURE & TERRAIN PHILOSOPHY
+================================================================================
+
+PRINCIPLE: "It should look like a real desert region that naturally progresses"
+
+The zone flows from NORTH (safe city) → SOUTH (dangerous wilderness):
+  • North: Flat, controlled, civilized edge
+  • Center: Open sand, moderate challenge
+  • South: Broken terrain, ruins, dangerous pockets
+  • West: High dunes, environmental hazard
+  • East: Undead concentration, cursed land
+
+NATURAL TRANSITIONS:
+  • No hard walls (except drop-off, which is geological)
+  • Terrain gradually changes (dunes get bigger, vegetation dies off)
+  • Mobs spawn in contextual clusters (not random)
+  • Environmental hazards (heat, cliffs, ruins) create natural boundaries
+
+
+================================================================================
+🌅 SAND DUNES AREA (SAFE NORTH) - Levels 1-5
+================================================================================
+
+LOCATION: Immediately south of Northern Gate, spans roughly 40% of zone width
+
+TERRAIN CHARACTERISTICS:
+  • Gentle rolling dunes (10-15 ft height variation)
+  • Sparse vegetation (dead shrubs, cacti clusters)
+  • Sandy soil, easy to traverse
+  • Occasional small rocks/stone markers
+  • Clear sightlines (minimal cover)
+  • Flat sky, bright and open
+
+VISUAL PALETTE:
+  • Sand color: Golden (#D4A574), warm beige (#C9B896)
+  • Vegetation: Muted browns, grays
+  • Sky: Clear blue-white (harsh sun overhead)
+  • Lighting: Bright, no shadows from terrain
+
+DISTINCTIVE FEATURES:
+  • Small rocky outcrop (center-north) - natural gathering point
+  • Stone markers/cairns - hints at old caravan routes
+  • Dead shrub clusters - scattered groupings
+  • Occasional small cactus garden - miniature oasis-like areas
+  • Wide open sight lines - players feel safe
+
+TERRAIN TRANSITIONS:
+  • North edge: Guard towers visible (connects to city)
+  • South edge: Dunes get slightly larger, more rugged
+  • Gradual shift from "controlled" to "wild"
+  • Dead vegetation becomes more common south of this area
+
+ELEVATION MAP:
+  • Flat to gently rolling
+  • Max height: 15 ft above base
+  • Natural valleys between dunes
+  • No cliffs or major obstacles
+
+NPC LOCATIONS:
+  • Guard Post (north) - 2 guards, notice board
+  • Rocky Outcrop (center) - social gathering spot
+  • No permanent camps (those are further south)
+
+MOB ENCOUNTER ZONES:
+  • Mobs spawn scattered across open dunes
+  • No dense clusters (teaching new players)
+  • Easy to see and separate single mobs
+  • Roaming mobs present (teaches kiting, awareness)
+
+AUDIO/ATMOSPHERE:
+  • Wind sounds (gentle, not harsh)
+  • Occasional distant bird calls
+  • Clear, bright feeling
+  • No oppressive sounds
+
+
+================================================================================
+📍 DROP-OFF CLIFF - Levels 2-4
+================================================================================
+
+LOCATION: South edge of Sand Dunes, spans ~30% of zone width (center)
+
+GEOGRAPHY:
+  • 40-foot vertical cliff face
+  • Geological stratification visible (layers of rock/sand)
+  • Natural formation, looks ancient
+
+SAFE PASSAGE OPTIONS:
+  • Winding path: Switchbacks down cliff (safe, 2 min walk)
+  • Ladder system: Built by merchants (safe, 1.5 min climb)
+  • Midway landing: Small rest platform (flat area to catch breath)
+
+VISUAL CHARACTERISTICS:
+  • Dramatic stone face (gray/brown stratification)
+  • Weathered, eroded edges
+  • Sand drifts at base (accumulated over time)
+  • Clear demarcation between "safe north" and "dangerous south"
+
+FEATURES:
+  • Warning sign at top (text tells players: "DANGER - Monsters Below")
+  • Midway landing area (small flat platform, ~10x10 ft)
+  • Rope/handholds visible (merchant-built infrastructure)
+  • Path is clearly marked (worn by travelers)
+
+LORE INDICATION:
+  • Ancient geological shift created this barrier
+  • Now a natural checkpoint for travelers
+  • Merchants/scouts maintain the pathways
+
+ENCOUNTERS:
+  • Sparse (Level 2-4 mobs only)
+  • Ambush opportunity: Bandits sometimes wait at base
+  • Checkpoint feel - players pause here psychologically
+
+NPC PLACEMENT:
+  • Ambiguous NPC (scout or lost traveler) at midway landing
+  • Optional flavor dialogue about the zone ahead
+  • No combat here (protected area)
+
+
+================================================================================
+🌱 UNDEAD ROAMING AREA (MAIN ZONE) - Levels 5-11
+================================================================================
+
+This is your PRIMARY GAMEPLAY ZONE. It has multiple sub-regions with distinct
+characteristics.
+
+---
+
+GENERAL CHARACTERISTICS:
+  • Flat to gently rolling scrubland
+  • Abandoned/ruined structures scattered throughout
+  • Bones, skeletal trees, eerie atmosphere
+  • Larger vegetation-free areas than north
+  • More cover (ruins provide line-of-sight breaks)
+  • Dead trees (skeletal, bleached white)
+
+VISUAL PALETTE:
+  • Sand color: Deeper gold (#C9A876), dusty beige
+  • Dead vegetation: Bone white, dark brown
+  • Stone ruins: Gray, weathered
+  • Sky: Slightly warmer (orange-tinged vs pure blue)
+  • Lighting: Still bright, but shadows more pronounced
+
+ATMOSPHERIC FEELING:
+  • Eerie, haunted, but not oppressive
+  • "Something bad happened here"
+  • Transition from safe to dangerous
+  • Players should feel unease, but still capable
+
+---
+
+SUB-REGION 1: UNDEAD ROAMING CORE
+  Location: Central area of Undead Roaming (levels 5-7 primary, 8-9 edges)
+
+  Terrain:
+    • Flat scrubland, scattered stones
+    • Broken wagon wheels, torn cloth (abandoned caravans)
+    • Crumbling stone foundations (old settlement ruins)
+    • Dead trees (skeletal, no leaves)
+    • Bone piles (scattered, visual indicator of undead)
+
+  Features:
+    • 3-4 ruined building foundations (walls only, no roofs)
+    • Scattered wagon parts (wheels, axles, frames)
+    • Rope/chains (what were they holding?)
+    • Stone circle (ritual site? gathering place?)
+    • Natural rock formation (provides some cover)
+
+  Encounter Style:
+    • Mobs spawn scattered and roaming
+    • Mix of skeletons, goblins, bandits
+    • Packs of 2-3 mobs common (teaches grouping)
+    • Wandering predators appear randomly
+
+  NPC Locations:
+    • None (this is pure hunting zone)
+
+---
+
+SUB-REGION 2: GRAVEYARD (High Danger Pocket)
+  Location: Southeast quadrant within Undead Roaming (levels 6-11)
+
+  Geography:
+    • Walled area (wrought iron fence, partially broken)
+    • 20-30 weathered tombstones
+    • 2 stone mausoleums (small building structures)
+    • Fog effect (visual, atmospheric)
+    • Stone benches (where corpses sit? eerie)
+    • Ground is darker (stained? cursed? pulsing visual effect)
+
+  Visual Distinction:
+    • Clearly demarcated from surrounding area (fence/walls)
+    • Cooler color tone (blues/grays vs warm yellows)
+    • Fog particles (visual effect, no mechanical impact)
+    • More stone structures (mausoleums, benches, markers)
+    • Sparser vegetation (nothing grows here)
+
+  Features:
+    • Broken fence (multiple gaps for entry)
+    • Readable tombstones (flavor text, lore)
+    • Mausoleum doors (locked or ajar?)
+    • Stone altar in center (ritual focus?)
+    • Path of disturbed earth (grave robbing? undead rising?)
+
+  Encounter Style:
+    • DENSER mob spawns than core (it's a pocket)
+    • Mobs stay mostly within graveyard (bound to location)
+    • Less roaming (territorial)
+    • Includes unique mob types (tomb ghouls, wights)
+
+  NPC Locations:
+    • None (sacred/cursed ground)
+
+---
+
+SUB-REGION 3: UNDEAD ROAMING DANGEROUS (Pockets)
+  Location: Edge zones within Undead Roaming (levels 7-11, dangerous)
+
+  Terrain:
+    • Rougher than core (more rocks, broken terrain)
+    • Deeper bone piles (more skeletal remains)
+    • More ruins (settlement was larger than visible)
+    • Rock formations (natural dungeons, caves)
+    • Uneven ground (harder to traverse)
+
+  Features:
+    • Large rock outcrops (provide hiding spots for ambush)
+    • Partially collapsed ruins (floor has holes)
+    • Bone piles (deep, suggesting mass graves)
+    • Dark shadows (crevices, caves)
+    • Eerie atmosphere (players should feel danger)
+
+  Encounter Style:
+    • Mix of levels (7-9 common, 10-11 rare)
+    • Ambush predators spawn here (Desert Predator)
+    • Tougher elite variants of normal mobs
+    • Higher mob density
+    • Roaming mobs more aggressive
+
+  NPC Locations:
+    • None (avoid this area)
+
+
+================================================================================
+🏜️ HIGH DUNES AREA (Environmental Danger) - Levels 8-12
+================================================================================
+
+LOCATION: Southwest section, isolated and harsh
+
+TERRAIN CHARACTERISTICS:
+  • Massive sand dunes (30-50 ft height)
+  • Extreme barrenness (no vegetation)
+  • Some climbable dune ridges
+  • Hard-packed sand (difficult traversal)
+  • Rock formations breaking through sand
+  • No shade anywhere (oppressive)
+
+VISUAL PALETTE:
+  • Sand color: Deep golden (#B8860B), rusty (#A0522D)
+  • Sky: Harsh orange (heat shimmer effect)
+  • Limited color range (monochromatic, oppressive)
+  • Extreme contrast (bright sun, deep shadows in dunes)
+
+ATMOSPHERIC FEELING:
+  • Oppressive, dangerous, inhospitable
+  • "The desert will kill you here"
+  • Visual shimmer (heat haze effect)
+  • Mirage pools (water that isn't there)
+  • Sense of isolation
+
+DISTINCTIVE FEATURES:
+  • Towering dune ridges (30-50 ft high)
+  • Scattered boulders (break line of sight)
+  • Rocky outcrops (geological formations)
+  • Mirage shimmer effect (visual)
+  • No water anywhere (completely dry)
+  • Occasional bones (large creatures)
+
+ELEVATION MAP:
+  • High variation (10-50 ft)
+  • Multiple peaks
+  • Valleys between dunes
+  • Natural cover from large dunes
+  • Difficult but not impossible traversal
+
+ENVIRONMENTAL MECHANICS:
+  • Heat Fatigue effect (stamina drain faster)
+  • Reduced visibility (mirage effect)
+  • Reduced movement speed (sand is hard to walk in)
+  • No rest areas (hostile environment)
+
+ENCOUNTER STYLE:
+  • Fewer, tougher mobs (elite spawns)
+  • Scattered, not grouped
+  • Roaming predators common
+  • Rare high-level spawns in corners
+  • Environmental hazard IS the challenge
+
+NPC LOCATIONS:
+  • None (too dangerous)
+
+
+================================================================================
+💧 OASIS (Sacred Haven) - All Levels
+================================================================================
+
+LOCATION: Southwest corner, accessible from High Dunes or camps
+
+TERRAIN CHARACTERISTICS:
+  • Dramatic contrast to surroundings (lush vs barren)
+  • Fresh water spring (centerpiece)
+  • 15-20 palm trees (clustered naturally)
+  • Clear water pool (visibly clean)
+  • Smooth sand around water (walked bare by use)
+  • Green vegetation (actual life)
+
+VISUAL PALETTE:
+  • Water: Clear blue (#1E90FF)
+  • Vegetation: Vibrant green (#228B22), bright against desert
+  • Sand: Lighter around water (well-traveled)
+  • Sky: Still harsh above, but reflected in water
+  • Lighting: Dappled through palm leaves
+
+ATMOSPHERIC FEELING:
+  • SANCTUARY
+  • Peaceful relief from harsh desert
+  • Safe, welcoming, healing
+  • Music changes (gentle, calming)
+  • Sound design: flowing water, rustling leaves
+
+DISTINCTIVE FEATURES:
+  • Central spring (actual water source)
+  • Well (ancient, weathered, functional)
+  • Smooth sand beach around water
+  • Palm tree grove (provides shade)
+  • Stone seating areas (natural gathering spots)
+  • Clear, clean appearance (maintained by NPCs?)
+
+MECHANICS:
+  • No mobs (sacred ground, all factions respect this)
+  • Water restores stamina (mechanical benefit)
+  • Safe resting zone (no combat)
+  • NPC interaction zone
+
+NPC LOCATIONS:
+  • Water Keeper (female merchant) - sells potions, rare herbs
+  • Hermit Sage (old man) - offers wisdom
+  • Occasional travelers (flavor NPCs)
+
+LAYOUT:
+  • Spring at center
+  • Palms arranged naturally (some clustered, some scattered)
+  • Smooth sand creates natural gathering area
+  • Small stone well structure (functional)
+  • Seating areas around water's edge
+
+
+================================================================================
+🏕️ DUSTWALKER CAMPS (Neutral Hubs) - 3 Locations
+================================================================================
+
+LOCATION 1: Northwest (between Sand Dunes and High Dunes)
+LOCATION 2: Central-East (between Undead Area and Graveyard)
+LOCATION 3: South (below High Dunes, near Oasis approach)
+
+CAMP CHARACTERISTICS (per location):
+  • Semi-permanent nomadic settlement
+  • 5-8 nomadic tents (fabric, colorful, realistic)
+  • Central campfire (gathering point)
+  • Scattered sleeping mats
+  • Merchant stall (small but functional)
+  • Grazing animals (camels, horses - decorative)
+
+VISUAL PALETTE:
+  • Tent fabric: Colorful (reds, oranges, blues, earth tones)
+  • Rope/posts: Natural wood/fiber
+  • Campfire: Orange glow at night
+  • Sand: Same as surrounding but clearly disturbed/packed
+  • Animals: Earth tones (camels beige, horses brown)
+
+ATMOSPHERIC FEELING:
+  • Active, alive (people living here)
+  • Friendly, hospitable
+  • Cultural gathering point
+  • Well-established but mobile (could pack up)
+
+DISTINCTIVE FEATURES:
+  • Central campfire (focal point)
+  • Colorful tents (stands out from gray ruins)
+  • Animal pens (ropes, posts)
+  • Merchant stall (goods displayed)
+  • Worn paths around camp (people living here)
+  • Smell of cook fire (sensory)
+
+TENT ARRANGEMENT:
+  • Ring formation (around fire, defensive/communal)
+  • Small entrance area
+  • Merchant stall positioned for visibility
+  • Animal grazing area offset slightly
+
+NPC LOCATIONS per Camp:
+  • Camp Leader (tent/central area) - quests, faction rep
+  • Caravan Master (merchant stall) - buying/selling supplies
+  • Dustwalker Scout (near edge) - wants info on monsters
+  • 2-3 flavor NPCs (sitting by fire, tending animals)
+
+ENCOUNTER ZONES:
+  • Mobs: NONE inside camps
+  • Edges: Level 2-3 mobs nearby (outer boundary)
+  • Safe radius: ~50 ft around camp center
+
+
+================================================================================
+🏪 NEUTRAL VENDOR CAMP - Single Location
+================================================================================
+
+LOCATION: Northwest, between Sand Dunes and High Dunes
+
+CAMP CHARACTERISTICS:
+  • Established merchant settlement (more permanent than nomadic camps)
+  • Large merchant tent (weathered canvas, reinforced)
+  • Supply shack (wood and rope structure)
+  • Trading post (wooden counter, shelving)
+  • Neutral territory banners/markers
+  • Comfortable seating area
+  • No animals (merchant operation, not nomadic)
+
+VISUAL PALETTE:
+  • Canvas: Weathered white/tan (established, maintained)
+  • Wood: Darker (treated lumber, more permanent)
+  • Neutral banners: Gray/silver (faction-neutral)
+  • Ground: Hard-packed, swept clean
+  • Fencing: Low fence marking merchant territory
+  • Lighting: Lanterns at night (more permanent infrastructure)
+
+ATMOSPHERIC FEELING:
+  • Commerce hub (busy but organized)
+  • Professional, established
+  • Safe, neutral ground
+  • Gathering place for travelers/merchants
+
+DISTINCTIVE FEATURES:
+  • Large merchant tent (bigger than nomadic camps)
+  • Trading counter (actual furniture, not just canvas)
+  • Supply shack (separate building structure)
+  • Neutral zone banners (clearly marked)
+  • Organized layout (rows of goods)
+  • Seating area (benches, comfortable)
+  • Better maintained (swept, organized)
+
+LAYOUT:
+  • Main merchant tent (center)
+  • Supply shack (adjacent)
+  • Trading counter area (covered, ventilated)
+  • Seating area (around cleared space)
+  • Merchant stalls (displayed goods)
+  • Perimeter banners (mark neutral ground)
+
+NPC LOCATIONS:
+  • Neutral Vendor (trading counter) - buys/sells everything
+  • Supply Master (supply shack) - potions, reagents, supplies
+  • Information Broker (tent area) - lore, rumors, hints
+  • Adventurer NPC (seating area) - daily quest giver
+
+ENCOUNTER ZONES:
+  • Mobs: NONE (enforced by all factions)
+  • Edges: Roaming mobs nearby but typically avoid
+  • Safe radius: ~75 ft (larger than nomadic camps)
+
+
+================================================================================
+⚔️ DJAHANI ENCAMPMENT - Single Location
+================================================================================
+
+LOCATION: Far south, isolated on black sand dunes (edge of zone)
+
+CAMP CHARACTERISTICS:
+  • Foreign military encampment
+  • Black & crimson tents (military aesthetic)
+  • War banners flying (faction symbols)
+  • Training grounds (circular area with weapon racks)
+  • Command tent (large, central, intimidating)
+  • Perimeter marked by dark stones
+  • Organized military precision
+
+VISUAL PALETTE:
+  • Tent fabric: Black & crimson (aggressive colors)
+  • Banners: Red and black (military standard)
+  • Ground: Black sand (ominous, different from rest of zone)
+  • Stones: Dark gray/black (mark perimeter)
+  • Lighting: Red glow from torches/fires (threatening)
+  • Weapons: Metal glints (racks of arms visible)
+
+ATMOSPHERIC FEELING:
+  • Militant, organized, intimidating
+  • Foreign, mysterious
+  • Dangerous but not chaotic
+  • Military discipline visible
+  • Ominous presence
+
+DISTINCTIVE FEATURES:
+  • Black sand (unique to this area - ominous)
+  • War banners (faction identity)
+  • Weapon racks (visible armaments)
+  • Command tent (largest structure, central)
+  • Training grounds (packed earth circle)
+  • Dark stone perimeter (fortress-like)
+  • Red torches/fires (crimson glow)
+
+LAYOUT:
+  • Command tent (center, large)
+  • Black & crimson tents arranged (organized rows)
+  • Training grounds (circle to one side)
+  • Weapon storage area (racks, equipment)
+  • Perimeter stones (mark boundary)
+  • Guard positions (key points marked)
+
+ELEVATION/TERRAIN:
+  • Built on slight rise (tactical advantage)
+  • Black sand unique to this area
+  • Rocky outcrops nearby (natural fortification)
+  • Some elevation change (defensive position)
+
+NPC LOCATIONS:
+  • Commander (command tent) - suspicious, quest giver
+  • Weapons Master (weapon area) - sells rare combat gear
+  • Djahani Scout (perimeter) - gathers info on threats
+  • Elite Guards (patrol routes) - flavor, enforce discipline
+
+ENCOUNTER ZONES:
+  • Mobs: NONE inside encampment proper
+  • Surrounding area: Level 8-10+ mobs (hostile territory)
+  • Feeling: Players should feel unwelcome but intrigued
+
+
+================================================================================
+🔮 HIDDEN AREAS & SECRETS
+================================================================================
+
+UNDERGROUND SPRING (Beneath Oasis)
+  Location: Under/beside main oasis
+  Access: Hidden passage (requires exploration to find)
+  Characteristics:
+    • Luminescent plants (bioluminescence)
+    • Unique ecosystem (blind cave fish, glowing insects)
+    • Magical spring source (explains surface oasis)
+    • Smaller chambers with unique features
+  Atmosphere: Ethereal, magical, otherworldly
+  Purpose: Discovery quest, lore revelation
+
+SHIPWRECK IN SAND (Far South)
+  Location: Half-buried in dunes (far south, isolated)
+  Access: Visible if you know where to look (landmark visible)
+  Characteristics:
+    • Ancient ship half-submerged in sand
+    • Broken mast, tattered sails
+    • Treasure inside (accessible)
+    • High-level mobs guard it
+    • Implies ocean once covered area (climate change lore)
+  Atmosphere: Eerie, mysterious, archaeological
+  Purpose: Lore implication, treasure hunt quest
+
+NOMADIC CARAVAN ROUTE (NPC Path)
+  Location: Traveled path between camps
+  Characteristics:
+    • Worn ground (visible path)
+    • Merchant caravans travel this route on schedule
+    • Opportunity to ambush or protect
+    • Dynamic NPC movement
+  Atmosphere: Active, alive with merchant activity
+  Purpose: Dynamic events, player choice (good/evil)
+
+MOONLIGHT OASIS (Night-only Area)
+  Location: Separate from main oasis (appears at night only)
+  Access: Visible only during night cycle
+  Characteristics:
+    • Bioluminescent plants (ethereal beauty)
+    • Different mobs spawn (night creatures)
+    • Peaceful, safe zone at night
+    • Magical feeling (why is it here?)
+  Atmosphere: Magical, ethereal, beautiful
+  Purpose: Night-time exploration, alternative experience
+
+
+================================================================================
+🚶 NATURAL FLOW & TRANSITIONS
+================================================================================
+
+PLAYER JOURNEY (Natural Progression):
+
+1. Exit city (Northern Gate) → Enter Sand Dunes (safe)
+2. Explore dunes, gather resources, learn combat
+3. Approach Drop-Off Cliff, pause (psychological barrier)
+4. Descend via path or ladder
+5. Enter Undead Roaming Area (tone shift - eerie)
+6. Explore ruins, scattered mobs, growing challenge
+7. Discover Graveyard (higher danger pocket)
+8. Travel west to Oasis (safe haven, rest)
+9. Travel south to High Dunes (environmental hazard)
+10. Return to central camps for trading
+11. Later: Venture to Djahani Encampment (mysterious)
+
+KEY PRINCIPLE: Players never feel "walled off" - they can explore freely but
+naturally encounter danger as they move south/deeper. Terrain changes gradually,
+not abruptly (except Drop-Off, which is geological feature).
+
+VISUAL SIGNPOSTING:
+  • Sand Dunes: Golden, open, bright (SAFE)
+  • Drop-Off: Dramatic change in elevation (CHECKPOINT)
+  • Undead Roaming: Ruins, bones, darker (WARNING)
+  • Graveyard: Walled, fog, cooler tones (DANGEROUS)
+  • Oasis: Green, water, bright (SANCTUARY)
+  • High Dunes: Massive dunes, heat shimmer (HOSTILE)
+  • Djahani: Black sand, war banners, torches (FOREIGN/THREAT)
+
+
+================================================================================
+📐 CAMP PLACEMENT MAP (Relative Positions)
+================================================================================
+
+NORTHERN GATE (top center)
+         |
+    SAND DUNES
+         |
+    DROP-OFF CLIFF
+    /    |    \
+   /     |     \
+CAMP1  UNDEAD  CAMP2
+      ROAMING
+      /    \
+   GRAVE  DANGEROUS
+   YARD   POCKETS
+    |        |
+    |        |
+   OASIS   DUNE EDGES
+    |        |
+    \        /
+  HIGH DUNES
+      |
+  CAMP3 & DJAHANI
+
+
+================================================================================
+🎨 TERRAIN SUMMARY FOR 3D MODELING
+================================================================================
+
+ZONE USES 5 DISTINCT TERRAIN TYPES:
+
+1. SANDY DUNES (Sand Dunes Area, High Dunes)
+   - Undulating terrain mesh
+   - Sand texture (golden to rust colors)
+   - Sparse cactus/shrub models (scattered)
+   - Rock formations (low, rounded)
+
+2. SCRUBLAND (Undead Roaming Core)
+   - Flat to gentle rolling mesh
+   - Sand/dirt texture (beige/tan)
+   - Dead tree models (skeletal)
+   - Ruined building meshes
+   - Bone pile models
+
+3. GRAVEYARD (Fenced Area)
+   - Flat mesh (maintained ground)
+   - Stone tile texture (graves)
+   - Tombstone models (varied)
+   - Mausoleum building meshes
+   - Iron fence mesh (partial)
+   - Fog particle effect
+
+4. CLIFF FACE (Drop-Off)
+   - Vertical mesh (geological)
+   - Stone texture (stratified)
+   - Path meshes (safe traversal)
+   - Rope/ladder models
+
+5. OASIS (Lush Area)
+   - Flat mesh (cleared area)
+   - Water mesh (reflective)
+   - Palm tree models (clustered)
+   - Grass/green vegetation
+   - Well/stone structures
+
+CAMP MODELS:
+  - Tent structures (fabric, flapping)
+  - Campfire (particles, glow)
+  - Merchant stalls (wood/canvas)
+  - Animals (camels, horses - decorative)
+  - Banners (flapping)
