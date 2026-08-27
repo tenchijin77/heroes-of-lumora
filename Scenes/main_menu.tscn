@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://cwmujphakr5tc" path="res://Scripts/main_menu.gd" id="1_1ehe0"]
 [ext_resource type="FontFile" uid="uid://blnxrqwyomqn" path="res://Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf" id="2_ce3w2"]
 [ext_resource type="FontFile" uid="uid://d1g3p034nbu18" path="res://Assets/Fonts/_bitmap_font____romulus_by_pix3m-d6aokem.ttf" id="3_ce3w2"]
-[ext_resource type="AudioStream" uid="uid://bs3ghbrevpk5x" path="res://Assets/Audio/HeroesOfLumoraLoop-STMix.ogg" id="4_ce3w2"]
 
 [node name="Control" type="Control" unique_id=730615490]
 layout_mode = 3
@@ -19,6 +18,7 @@ layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 195.0
+grow_horizontal = 2
 
 [node name="title" type="Label" parent="Panel" unique_id=905631408]
 layout_mode = 1
@@ -29,6 +29,8 @@ offset_left = 20.0
 offset_top = 16.0
 offset_right = -20.0
 offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_fonts/font = ExtResource("2_ce3w2")
 theme_override_font_sizes/font_size = 65
 text = "Heroes of Lumora"
@@ -43,12 +45,13 @@ offset_left = -150.0
 offset_top = 210.0
 offset_right = 150.0
 offset_bottom = 530.0
+grow_horizontal = 2
 
 [node name="start_button" type="Button" parent="menu_container" unique_id=707411206]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("3_ce3w2")
 theme_override_font_sizes/font_size = 30
-text = "Start Introduction"
+text = "Campaign"
 
 [node name="skip_button" type="Button" parent="menu_container" unique_id=1554441332]
 layout_mode = 2
@@ -56,23 +59,35 @@ theme_override_fonts/font = ExtResource("3_ce3w2")
 theme_override_font_sizes/font_size = 30
 text = "Skip Intro"
 
+[node name="endless_button" type="Button" parent="menu_container" unique_id=547438221]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_ce3w2")
+theme_override_font_sizes/font_size = 30
+text = "Endless Mode"
+
+[node name="store_button" type="Button" parent="menu_container" unique_id=1337833797]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_ce3w2")
+theme_override_font_sizes/font_size = 30
+text = "Upgrade Store"
+
 [node name="scores_button" type="Button" parent="menu_container" unique_id=112767411]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("3_ce3w2")
 theme_override_font_sizes/font_size = 30
 text = "High Scores"
 
+[node name="credits_button" type="Button" parent="menu_container" unique_id=545708474]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_ce3w2")
+theme_override_font_sizes/font_size = 30
+text = "Credits"
+
 [node name="quit_button" type="Button" parent="menu_container" unique_id=372074235]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("3_ce3w2")
 theme_override_font_sizes/font_size = 30
 text = "Run Away"
-
-[node name="background_music" type="AudioStreamPlayer" parent="." unique_id=882635595]
-stream = ExtResource("4_ce3w2")
-volume_db = -7.0
-autoplay = true
-parameters/looping = true
 
 [connection signal="pressed" from="menu_container/start_button" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="menu_container/skip_button" to="." method="_on_skip_button_pressed"]

@@ -1,0 +1,76 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/woodstalker.gd" id="1_cvnsp"]
+[ext_resource type="Texture2D" uid="uid://dcv5g1va4ow4y" path="res://Assets/New Sprites/NPC Sprites.png" id="2_x3wgy"]
+[ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="3_6t5aa"]
+[ext_resource type="PackedScene" uid="uid://qabuch25b3i1" path="res://Scenes/arrow.tscn" id="4_fkybt"]
+[ext_resource type="AudioStream" uid="uid://d2fmprf4y58rx" path="res://Assets/Audio/Minifantasy_Dungeon_SFX/11_human_damage_3.wav" id="5_fkybt"]
+[ext_resource type="AudioStream" uid="uid://b73tm8s20y6vp" path="res://Assets/Audio/385046__mortisblack__damage.ogg" id="6_x3wgy"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cvnsp"]
+size = Vector2(27, 41)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fkybt"]
+bg_color = Color(0.201527, 0.201527, 0.201527, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vgqql"]
+bg_color = Color(0.94902, 0, 0, 1)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_x3wgy"]
+radius = 53.0094
+
+[node name="woodstalker" type="CharacterBody2D" unique_id=1925221135 groups=["player"]]
+top_level = true
+collision_mask = 538
+script = ExtResource("1_cvnsp")
+current_health = 150
+max_health = 150
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=371758023]
+visible = false
+position = Vector2(0.5, 4.5)
+shape = SubResource("RectangleShape2D_cvnsp")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=498423765]
+position = Vector2(3, 4)
+scale = Vector2(0.15, 0.15)
+texture = ExtResource("2_x3wgy")
+offset = Vector2(0, -12)
+region_enabled = true
+region_rect = Rect2(54.000183, 18.999878, 233.00006, 319.00027)
+
+[node name="muzzle" type="Node2D" parent="." unique_id=1733921568]
+position = Vector2(19, -6)
+
+[node name="player_bullet_pool" type="Node" parent="." unique_id=393439219]
+script = ExtResource("3_6t5aa")
+node_scene = ExtResource("4_fkybt")
+
+[node name="health_bar" type="ProgressBar" parent="." unique_id=1754191083]
+offset_left = -12.0
+offset_top = -25.0
+offset_right = 13.0
+offset_bottom = -21.0
+theme_override_styles/background = SubResource("StyleBoxFlat_fkybt")
+theme_override_styles/fill = SubResource("StyleBoxFlat_vgqql")
+rounded = true
+show_percentage = false
+
+[node name="hit_sound" type="AudioStreamPlayer2D" parent="." unique_id=2109725659]
+stream = ExtResource("5_fkybt")
+
+[node name="regeneration_timer" type="Timer" parent="." unique_id=617375915]
+autostart = true
+
+[node name="player_damage_sound" type="AudioStreamPlayer2D" parent="." unique_id=1948517000]
+stream = ExtResource("6_x3wgy")
+
+[node name="pickup_area" type="Area2D" parent="." unique_id=2147307476]
+collision_layer = 0
+collision_mask = 256
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="pickup_area" unique_id=87495343]
+visible = false
+shape = SubResource("CircleShape2D_x3wgy")
+
+[connection signal="timeout" from="regeneration_timer" to="." method="_on_regeneration_timer_timeout"]

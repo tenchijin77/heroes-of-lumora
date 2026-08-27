@@ -1,6 +1,6 @@
 extends Camera2D
 
-@onready var target = $"../player"
+@onready var target: Node2D = get_node_or_null("../player")
 @export var follow_rate: float = 2.0
 
 # The vertical world-units the game was designed to show at 1x zoom.
@@ -29,6 +29,8 @@ func shake(intensity: float, duration: float) -> void:
 	_shake_timer = duration
 
 func _process(delta: float) -> void:
+	if not target:
+		return
 	global_position = global_position.lerp(target.global_position, follow_rate * delta)
 	if _shake_timer > 0.0:
 		_shake_timer -= delta

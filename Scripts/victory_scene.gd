@@ -4,15 +4,22 @@ extends Control
 const FONT_TITLE: FontFile = preload("res://Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf")
 const FONT_BODY: FontFile = preload("res://Assets/Fonts/_bitmap_font____romulus_by_pix3m-d6aokem.ttf")
 
+var _credits_only: bool = false
+
 func _ready() -> void:
+	_credits_only = Global.viewing_credits
+	Global.viewing_credits = false
 	add_to_group("ui_hidden")
-	get_tree().paused = true
-	var ui := get_node_or_null("/root/UI")
-	if ui:
-		ui.visible = false
-	Global.game_active = false
-	Global.killer_name = "victory"
-	Global.killer_weapon = ""
+	if not _credits_only:
+		get_tree().paused = true
+		var ui := get_node_or_null("/root/UI")
+		if ui:
+			ui.visible = false
+		Global.game_active = false
+		Global.killer_name = "victory"
+		Global.killer_weapon = ""
+		Global.campaign_complete = true
+		Global.save_progress()
 	_build_ui()
 	_play_victory_music()
 
@@ -58,28 +65,29 @@ func _build_ui() -> void:
 	vbox.process_mode = Node.PROCESS_MODE_ALWAYS
 	scroll.add_child(vbox)
 
-	# THE ECLIPSE LIFTS.
-	_label(vbox, "THE ECLIPSE LIFTS.", FONT_TITLE, 54, Color(1.0, 0.88, 0.30))
-	_label(vbox, "LIGHT RETURNS TO LUMORA.", FONT_TITLE, 36, Color(1.0, 0.85, 0.42))
-	_spacer(vbox, 22)
+	if not _credits_only:
+		# THE ECLIPSE LIFTS.
+		_label(vbox, "THE ECLIPSE LIFTS.", FONT_TITLE, 54, Color(1.0, 0.88, 0.30))
+		_label(vbox, "LIGHT RETURNS TO LUMORA.", FONT_TITLE, 36, Color(1.0, 0.85, 0.42))
+		_spacer(vbox, 22)
 
-	# Boss defeated line
-	_label(vbox, "MH'ORZATH HAS BEEN BANISHED.", FONT_TITLE, 28, Color(0.90, 0.18, 0.12))
-	_spacer(vbox, 26)
+		# Boss defeated line
+		_label(vbox, "MH'ORZATH HAS BEEN BANISHED.", FONT_TITLE, 28, Color(0.90, 0.18, 0.12))
+		_spacer(vbox, 26)
 
-	# Stats
-	_label(vbox, "50 Villagers Saved", FONT_BODY, 24, Color(0.72, 1.0, 0.72))
-	_label(vbox, "%d Waves Survived" % Global.current_wave, FONT_BODY, 24, Color(0.72, 0.88, 1.0))
-	_spacer(vbox, 10)
-	_label(vbox, "Final Score:       %d" % Global.current_score, FONT_BODY, 20, Color(1.0, 0.90, 0.50))
-	_label(vbox, "Solari Collected:  %d" % Global.coins_collected, FONT_BODY, 20, Color(1.0, 0.90, 0.50))
-	_label(vbox, "Time Survived:     %s" % Global.format_time(Global.current_time_survived), FONT_BODY, 20, Color(1.0, 0.90, 0.50))
-	_spacer(vbox, 30)
+		# Stats
+		_label(vbox, "50 Villagers Saved", FONT_BODY, 24, Color(0.72, 1.0, 0.72))
+		_label(vbox, "%d Waves Survived" % Global.current_wave, FONT_BODY, 24, Color(0.72, 0.88, 1.0))
+		_spacer(vbox, 10)
+		_label(vbox, "Final Score:       %d" % Global.current_score, FONT_BODY, 20, Color(1.0, 0.90, 0.50))
+		_label(vbox, "Solari Collected:  %d" % Global.coins_collected, FONT_BODY, 20, Color(1.0, 0.90, 0.50))
+		_label(vbox, "Time Survived:     %s" % Global.format_time(Global.current_time_survived), FONT_BODY, 20, Color(1.0, 0.90, 0.50))
+		_spacer(vbox, 30)
 
-	# Closing quote
-	_label(vbox, '"The Eclipsed One is sealed once more...', FONT_TITLE, 18, Color(0.62, 0.60, 0.72))
-	_label(vbox, ' but shadows have long memories."', FONT_TITLE, 18, Color(0.62, 0.60, 0.72))
-	_spacer(vbox, 34)
+		# Closing quote
+		_label(vbox, '"The Eclipsed One is sealed once more...', FONT_TITLE, 18, Color(0.62, 0.60, 0.72))
+		_label(vbox, ' but shadows have long memories."', FONT_TITLE, 18, Color(0.62, 0.60, 0.72))
+		_spacer(vbox, 34)
 
 	# THE END
 	_label(vbox, "THE END", FONT_TITLE, 60, Color(1.0, 0.88, 0.30))
@@ -144,14 +152,20 @@ Thank you for defending Lumora.
 	btn_row.process_mode = Node.PROCESS_MODE_ALWAYS
 	vbox.add_child(btn_row)
 
-	var restart_btn := _button("The Wall of Heroes")
-	restart_btn.pressed.connect(_on_restart_pressed)
-	btn_row.add_child(restart_btn)
-	restart_btn.grab_focus()
+	if _credits_only:
+		var back_btn := _button("Back to Menu")
+		back_btn.pressed.connect(_on_back_to_menu_pressed)
+		btn_row.add_child(back_btn)
+		back_btn.grab_focus()
+	else:
+		var restart_btn := _button("The Wall of Heroes")
+		restart_btn.pressed.connect(_on_restart_pressed)
+		btn_row.add_child(restart_btn)
+		restart_btn.grab_focus()
 
-	var quit_btn := _button("Quit")
-	quit_btn.pressed.connect(_on_quit_pressed)
-	btn_row.add_child(quit_btn)
+		var quit_btn := _button("Quit")
+		quit_btn.pressed.connect(_on_quit_pressed)
+		btn_row.add_child(quit_btn)
 
 	# Cinematic fade-in from black
 	var fade := ColorRect.new()
@@ -205,3 +219,6 @@ func _on_restart_pressed() -> void:
 
 func _on_quit_pressed() -> void:
 	get_tree().quit()
+
+func _on_back_to_menu_pressed() -> void:
+	get_tree().change_scene_to_file("res://Scenes/main_menu.tscn")

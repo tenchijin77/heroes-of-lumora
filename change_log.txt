@@ -449,4 +449,258 @@ BALANCE: Coin drop chance increased
   coin_drop_chance 0.3 → 0.5 — drops felt too sparse in this session's
   playtesting. coin_drop_amount_range (1-4 per drop) unchanged.
 
+--------------------------------------------------------------------------------
+SESSION: 2026-08-26
+--------------------------------------------------------------------------------
+
+FEATURE: Lumora Outskirts — first endless-mode level
+  Files: Scenes/lumora_outskirts.tscn (new), Scripts/main.gd
+  Built as a new level (ground/walls/objects TileMapLayers under a "scenery"
+  Node2D) started from a clone of main.tscn. Several things needed fixing
+  before it was actually playable:
+  - Draw order: ground/walls/objects were stacked in the wrong sibling order
+    (ground drawn last = on top, hiding the other two). Fixed with explicit
+    z_index (ground=0, walls=1, objects=2) instead of relying on tree order.
+  - Wall collision: the walls TileSet had a Physics Layer configured
+    (collision_layer=16/Environment, mask=111) but zero tiles actually had a
+    collision polygon painted — walls were fully walkable. Painted a
+    full-tile collision box onto all 17 distinct wall tile types (confirmed
+    no overlap with the objects layer's tile IDs, which shares the same
+    TileSet resource with walls — objects should stay unpainted on the
+    physics layer to avoid accidentally gaining collision).
+  - Boundary walls / camera limits: main.gd._setup_map_bounds() only looked
+    for a direct child literally named "grass" (main.tscn's layout). This
+    level's ground layer is scenery/ground, so zero boundary walls were ever
+    created. Added a fallback lookup (scenery/ground) so both layouts work.
+  - Guards not colliding with walls: guard.tscn's collision_mask (586)
+    didn't include the Environment layer bit even once walls got real
+    collision. Fixed 586 → 602 (adds bit 16). Monsters' mask already
+    included it — no change needed there.
+  - Enemies frozen in place: the level had no village_center/extraction_points
+    group markers, which monsters.gd's waypoint state machine requires —
+    confirmed via a live run that every spawned monster logged "No
+    village_center found" and never moved. Added village_center + two
+    extraction_point Marker2Ds (placeholder positions near the guards —
+    reposition to taste). Also had no NavigationRegion2D at all (main.tscn
+    has a hand-baked one); without one, monsters.gd's pathing code zeroes
+    velocity every frame even with a valid waypoint target. Added a simple
+    rectangular NavigationPolygon covering the playable area so monsters
+    move — it doesn't yet know about the interior walls, so pathing is
+    straight-line plus physics deflection rather than smart routing; a
+    proper bake excluding wall footprints is a good follow-up once the wall
+    layout is finalized.
+
+FEATURE: Woodstalker — first endless-mode player class
+  Files: Scenes/woodstalker.tscn (new), Scripts/woodstalker.gd (new)
+  Duplicated from player.tscn/player.gd rather than subclassed, since the
+  two are expected to diverge over time (balance, eventually distinct art).
+  player.gd was already written *as* the Woodstalker (spells_unlocked dict,
+  SPELL_PROGRESSION array) with a comment anticipating this exact split
+  ("Story campaign: all pre-unlocked. Endless mode: use ability_chest drops
+  to unlock in order") — woodstalker.gd just finishes that: spells_unlocked
+  now starts all false, so the existing _unlock_next_spell()/ability_chest
+  machinery grants them in SPELL_PROGRESSION order as chests drop. Root node
+  renamed "woodstalker" but kept groups=["player"] so monster targeting and
+  other group-based lookups are unaffected. player.tscn/player.gd untouched.
+
+FEATURE: Ability chest — real sprite + collision, wired into monster drops
+  Files: Scenes/chest.tscn, Scripts/ability_chest.gd, Scripts/monsters.gd
+  chest.tscn's root was a Node2D with its CollisionShape2D nested under the
+  Sprite2D — inert, since a CollisionShape2D only functions as a direct
+  child of a CollisionObject2D. Changed root to Area2D (with ability_chest.gd
+  attached) and moved CollisionShape2D to be its direct child. Removed the
+  placeholder Polygon2D body/lid + code-built CollisionShape2D from
+  ability_chest.gd's _ready() now that the real scene provides them.
+  monsters.gd._spawn_ability_chest() now instantiates chest.tscn instead of
+  building a bare Area2D from scratch.
+
+FEATURE: Main menu — endless mode flow (level select, class select, credits)
+  Files: Scripts/global.gd, Scripts/main_menu.gd, Scripts/victory_scene.gd,
+         Scripts/main.gd, Scripts/camera_controller.gd,
+         Scenes/endless_level_select.tscn (new), Scripts/endless_level_select.gd (new),
+         Scenes/class_select.tscn (new), Scripts/class_select.gd (new),
+         Scenes/lumora_outskirts.tscn
+  - Global.campaign_complete now persists to user://saves/progress.json
+    (load_progress()/save_progress(), mirroring the existing high_scores
+    pattern). victory_scene.gd sets it true and saves on a real campaign win.
+  - main_menu.gd: endless_button/credits_button are disabled (and removed
+    from keyboard/gamepad focus via focus_mode) until campaign_complete is
+    true. Wired to endless_level_select.tscn and victory_scene.tscn
+    (credits mode) respectively. start_button/skip_button now reset
+    Global.is_endless_mode = false so a stale flag can't leak into a fresh
+    campaign run.
+  - endless_level_select.tscn/.gd: level picker (Lumora Outskirts is the one
+    entry so far) → sets Global.selected_endless_level, goes to class select.
+  - class_select.tscn/.gd: class picker (Woodstalker is the one entry so
+    far) → sets Global.selected_class_scene, loads the chosen level.
+  - victory_scene.gd: added Global.viewing_credits branch — skips the
+    eclipse/boss/stats preamble and the pause/UI-hide side effects, shows
+    just the developer thank-you message with a single "Back to Menu"
+    button instead of "The Wall of Heroes"/"Quit".
+  - main.gd._apply_endless_class(): when Global.is_endless_mode, swaps in
+    Global.selected_class_scene as the "player" node (same name, so
+    name/group-based references elsewhere keep working). Spawns at the old
+    player's position if one exists in the scene, else at a PlayerSpawn
+    Marker2D, else the origin. Also reassigns Camera2D.target and
+    enemy_spawner.player after the swap, since both cache "player" via
+    @onready before this runs.
+  - camera_controller.gd: target lookup changed from a hard `$"../player"`
+    to get_node_or_null() + a null-guard in _process(), since the endless
+    swap means "player" may not exist yet at Camera2D's own _ready() time.
+  - lumora_outskirts.tscn: added a PlayerSpawn Marker2D (near the guards)
+    since this level currently has no static player node at all.
+
+COSMETIC: UI font color changed to red; villager stats hidden in endless mode
+  Files: Scenes/ui.tscn, Scripts/ui.gd, Scripts/global.gd
+  Added theme_override_colors/font_color = Color(1,0,0,1) to all 15 text
+  nodes in ui.tscn (Labels + Resume/Quit buttons) — default white text was
+  washing out against Lumora Outskirts' background. Added
+  Global.is_endless_mode (defaults false) and ui.gd now hides the
+  saved/lost/remaining-villagers labels when it's true, since endless mode
+  has no villager-rescue objective.
+
+BUG FIX: No monsters ever spawned in endless mode
+  File: Scripts/main.gd
+  Problem: enemy_spawner.gd's _ready() disables its own processing
+  (set_process_mode(PROCESS_MODE_DISABLED)) whenever it can't find a player
+  at that moment — and in endless mode it never can, since the spawner's own
+  _ready() runs before main.gd's player-class swap (children ready before
+  parents). PROCESS_MODE_DISABLED also stops the spawner's spawn_timer/
+  wave_timer children from ever ticking, so nothing ever spawned regardless
+  of spawner config, spawn points, or nav bake.
+  Fix: main.gd._apply_endless_class() now sets
+  spawner.process_mode = Node.PROCESS_MODE_INHERIT right after handing it
+  the real player reference. Verified live: monsters spawning within seconds.
+
+BUG FIX: Villager saved/lost/remaining labels still showing in endless mode
+  File: Scripts/ui.gd
+  Problem: the hide-labels-in-endless-mode logic lived in ui.gd's _ready(),
+  but UI is itself an autoload — _ready() only runs once at game boot,
+  long before the player has chosen endless mode.
+  Fix: moved the check into _on_node_added()'s existing
+  `if node.name == "main"` branch, which re-fires every time a level scene
+  loads, so it now reads Global.is_endless_mode at the right moment.
+  Verified via a full main_menu → endless → level run (not just the level
+  loaded standalone, which doesn't reproduce the timing bug).
+
+FEATURE: Enemies chase the player directly in endless mode
+  File: Scripts/monsters.gd
+  Problem: monsters' only movement AI is the story campaign's village-
+  defense rally system — path to a village_center Marker2D, then to the
+  nearest extraction_points Marker2D, then stop and fight whoever's nearby.
+  They never actually walk toward the player. In Lumora Outskirts this read
+  as every monster marching toward village_center (positioned east of most
+  spawn points) regardless of where the player stood.
+  Fix: added _physics_process_chase_player(), used only when
+  Global.is_endless_mode — continuously retargets
+  navigation_agent.target_position at the player's live position every
+  frame using the same NavigationAgent2D/avoidance pipeline. _update_waypoint()
+  now no-ops in endless mode so the two systems don't fight each other.
+  Story campaign behavior is untouched.
+
+FEATURE: Persistent endless-mode currency
+  Files: Scripts/global.gd, Scripts/woodstalker.gd, Scripts/pet.gd
+  Added Global.endless_coins, separate from the story campaign's per-run
+  coins_collected/Solari — persists to user://saves/progress.json alongside
+  campaign_complete via the existing load_progress()/save_progress().
+  add_endless_coins(n) / spend_endless_coins(n) -> bool (checks funds,
+  deducts, saves, returns success) are ready for the main-menu upgrade store
+  once that's built. Wired into the two places coins are actually collected
+  in endless mode (woodstalker.gd and pet.gd's pickup handlers), both
+  guarded by Global.is_endless_mode.
+
+BUG FIX: Woodstalker's Wolf pet appeared immediately in endless mode
+  File: Scripts/woodstalker.gd
+  Problem: _ready() unconditionally called _spawn_pet(1) — copied verbatim
+  from player.gd, where it's correct (story mode pre-unlocks call_pet). In
+  endless mode call_pet is meant to be chest-gated like every other spell.
+  Fix: guarded the call with
+  `if spells_unlocked.get("call_pet", false): call_deferred("_spawn_pet", 1)`.
+
+FEATURE: Menu background music no longer restarts between menu screens
+  Files: Scripts/global.gd, Scripts/main_menu.gd, Scripts/endless_level_select.gd,
+         Scripts/class_select.gd, Scenes/main_menu.tscn,
+         Scenes/endless_level_select.tscn, Scenes/class_select.tscn
+  Problem: each of the three menu scenes had its own autoplaying
+  background_music AudioStreamPlayer node — since each scene change frees
+  the previous scene, the track restarted from 0 every time the player
+  moved between main menu / level select / class select.
+  Fix: moved playback to a persistent AudioStreamPlayer on the Global
+  autoload (Global.play_menu_music() / stop_menu_music(), idempotent — a
+  second play_menu_music() call while already playing is a no-op). Removed
+  the redundant background_music nodes from all three scenes; each scene's
+  _ready() just calls Global.play_menu_music() now. Music only stops when
+  actually leaving the menu flow (campaign start/skip, credits, entering an
+  endless level).
+
+FEATURE: Objects layer made collidable (Lumora Outskirts)
+  File: Scenes/lumora_outskirts.tscn
+  Painted the same full-tile collision box onto all 17 distinct tile types
+  used on the objects layer that walls already had (same physics layer —
+  Environment/layer 5, mask 111 — since objects and walls share one TileSet
+  resource). Confirmed zero overlap with the wall tile IDs beforehand.
+
+FEATURE: Troubadour, Arcanist, Voidknight, and Gravecaller — four more
+    endless-mode playable classes
+  Files: Scripts/troubadour.gd, Scenes/troubadour.tscn (new);
+         Scripts/arcanist.gd, Scenes/arcanist.tscn (new);
+         Scripts/voidknight_class.gd, Scenes/voidknight_class.tscn (new);
+         Scripts/gravecaller_class.gd, Scenes/gravecaller_class.tscn (new);
+         Scripts/ally_minion.gd (new);
+         Scenes/class_select.tscn, Scripts/class_select.gd
+  Troubadour and Arcanist are converted from the existing story-campaign
+  allies (annadaeus.gd/tenchijin.gd stay untouched) — same shape as the
+  Woodstalker conversion: AI movement/auto-targeting replaced with player
+  input, their real ability code (auras, Finale, Illusory Double / Frost
+  Nova, Meteor, Disintegrate, Time Warp) kept and gated behind
+  spells_unlocked + SPELL_PROGRESSION, unlocked one per ability_chest like
+  every other class.
+  Voidknight and Gravecaller are a bigger conversion since the elite-enemy
+  versions (voidknight.gd/gravecaller.gd, also left untouched — still used
+  by enemy_spawner.gd's boss_configs) extend monsters.gd, not CharacterBody2D
+  at all — built fresh player-shaped scripts from scratch and ported their
+  unique abilities over. The more interesting part: as enemies, all their
+  abilities targeted the player's side (Necrotic Grasp slowed the player,
+  Void Slash/Plague Cloud hit player/friendly, their permanent minions
+  attacked the player). All of that had to be flipped to target "monsters"
+  now that they're on the player's side. Their permanent minions
+  (Skeleton/Wraith) previously used enemy_pet.gd, which is hardcoded to
+  attack player/friendly/villagers — added ally_minion.gd as a friendly-
+  targeting mirror of the same movement/respawn/attack pattern.
+  All four verified live via the real menu flow (main menu → endless →
+  class select → level), each with every ability force-unlocked (and
+  minions explicitly spawned) for a full run — zero script errors.
+  Found but did not fix (out of scope — enemy-side, not part of this
+  conversion): gravecaller.tscn's bullet_pool node_scene points at an empty
+  undefined PackedScene sub-resource instead of death_bolt.tscn, so the
+  *enemy* Gravecaller's Death Bolt is very likely firing broken/invisible
+  projectiles right now. Worth a look separately. (User fixed this directly
+  in gravecaller.tscn afterward.)
+
+BUG FIX: Voidknight/Gravecaller player projectiles weren't colliding with monsters
+  Files: Scenes/voidknight_class.tscn, Scenes/gravecaller_class.tscn,
+         Scenes/life_siphon_player.tscn (new), Scenes/death_bolt_player.tscn (new)
+  Problem: their open_fire() set bolt.owner_group = "player" (a logic-only
+  string used for scoring/attribution), but Life Siphon/Death Bolt still
+  reused the elite-enemy projectile scenes as-is, whose collision_layer/mask
+  were configured for an enemy hitting the player — never updated for a
+  player hitting monsters.
+  Fix (user): duplicated both into life_siphon_player.tscn/death_bolt_player.tscn
+  with collision reconfigured to hit monsters, added to the "player" group,
+  and repointed each class's bullet_pool.node_scene at the new scenes.
+
+BUG FIX: Voidknight/Gravecaller basic-attack damage edits were being silently
+    overwritten
+  Files: Scripts/voidknight_class.gd, Scripts/gravecaller_class.gd
+  Problem: the user resized Life Siphon and set both projectiles' damage to
+  4 (to match the arrow baseline) directly on the new _player projectile
+  scenes — but both classes' open_fire() unconditionally runs
+  `bolt.damage = int(base_damage * damage_modifier)` every shot (same
+  pattern every other class uses so potion damage-boosts keep working),
+  which instantly overwrote the scene-level edit back to the old
+  enemy-derived base_damage (20 / 28).
+  Fix: changed base_damage's export default to 4 in both scripts instead of
+  editing the projectile scenes — verified with an actual fired shot
+  (bolt.damage == 4) rather than just reading the math.
+
 ================================================================================

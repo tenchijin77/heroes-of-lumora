@@ -18,6 +18,29 @@ var lost_villagers: int = 0
 var total_villagers: int = 50
 var game_active: bool = true
 var boss_fight_active: bool = false
+var is_endless_mode: bool = false
+var campaign_complete: bool = false
+var viewing_credits: bool = false
+var selected_endless_level: String = "res://Scenes/lumora_outskirts.tscn"
+var selected_class_scene: String = "res://Scenes/woodstalker.tscn"
+
+# Persistent endless-mode currency (separate from the in-run coins_collected/
+# Solari used by the story campaign's shop) — meant to be spent in the
+# main-menu upgrade store once that's built. Persists to progress.json
+# alongside campaign_complete.
+signal endless_coins_updated(total: int)
+var endless_coins: int = 0
+
+# Persistent per-class upgrade purchase counts for the main-menu upgrade
+# store, keyed by class scene path (e.g. "res://Scenes/woodstalker.tscn").
+# Persists to progress.json alongside campaign_complete/endless_coins.
+var endless_upgrades: Dictionary = {}
+var viewing_upgrade_class: String = ""
+
+func get_class_upgrades(class_path: String) -> Dictionary:
+	if not endless_upgrades.has(class_path):
+		endless_upgrades[class_path] = {"health": 0, "damage": 0, "speed": 0}
+	return endless_upgrades[class_path]
 var godmode: bool = false
 var killer_name: String = ""
 var killer_weapon: String = ""
@@ -27,6 +50,28 @@ var magi_spawn_index: int = 0
 # Shop / scene-transition state preservation
 var shop_purchase_counts: Dictionary = {"health": 0, "damage": 0, "speed": 0, "guard": 0, "magi": 0}
 
+# Menu background music. Lives on this autoload (never freed on scene change)
+# so it keeps playing continuously across main_menu/endless_level_select/
+# class_select instead of restarting from the top every time one of those
+# scenes is reloaded.
+var _menu_music_player: AudioStreamPlayer = null
+
+func play_menu_music() -> void:
+	if _menu_music_player and _menu_music_player.playing:
+		return
+	if not _menu_music_player:
+		_menu_music_player = AudioStreamPlayer.new()
+		var stream := load("res://Assets/Audio/HeroesOfLumoraLoop-STMix.ogg")
+		stream.loop = true
+		_menu_music_player.stream = stream
+		_menu_music_player.volume_db = -7.0
+		add_child(_menu_music_player)
+	_menu_music_player.play()
+
+func stop_menu_music() -> void:
+	if _menu_music_player:
+		_menu_music_player.stop()
+
 func _ready() -> void:
 	var window := get_window()
 	window.content_scale_mode = Window.CONTENT_SCALE_MODE_VIEWPORT
@@ -35,6 +80,7 @@ func _ready() -> void:
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
 	DirAccess.make_dir_absolute("user://saves/")
 	load_high_scores()
+	load_progress()
 
 func _process(delta: float) -> void:
 	if game_active:
@@ -97,6 +143,56 @@ func add_high_score(score: int, initials: String, wave: int, coins: int, time_su
 	if high_scores.size() > 10:
 		high_scores.resize(10)
 	save_high_scores()
+
+func load_progress() -> void:
+	var file: FileAccess = FileAccess.open("user://saves/progress.json", FileAccess.READ)
+	if file:
+		var json_data = JSON.parse_string(file.get_as_text())
+		if json_data is Dictionary:
+			campaign_complete = json_data.get("campaign_complete", false)
+			endless_coins = int(round(json_data.get("endless_coins", 0.0)))
+			endless_upgrades = {}
+			var raw_upgrades = json_data.get("endless_upgrades", {})
+			if raw_upgrades is Dictionary:
+				for class_path in raw_upgrades:
+					var counts = raw_upgrades[class_path]
+					if counts is Dictionary:
+						endless_upgrades[class_path] = {
+							"health": int(round(counts.get("health", 0.0))),
+							"damage": int(round(counts.get("damage", 0.0))),
+							"speed": int(round(counts.get("speed", 0.0))),
+						}
+		file.close()
+
+func save_progress() -> void:
+	var dir: DirAccess = DirAccess.open("user://")
+	if not dir.dir_exists("saves"):
+		dir.make_dir("saves")
+	var file: FileAccess = FileAccess.open("user://saves/progress.json", FileAccess.WRITE)
+	if file:
+		file.store_string(JSON.stringify({
+			"campaign_complete": campaign_complete,
+			"endless_coins": endless_coins,
+			"endless_upgrades": endless_upgrades,
+		}, "\t"))
+		file.close()
+	else:
+		push_error("Global: Failed to save progress.json")
+
+func add_endless_coins(amount: int = 1) -> void:
+	endless_coins += amount
+	emit_signal("endless_coins_updated", endless_coins)
+	save_progress()
+
+# Returns true and deducts the cost if there are enough endless_coins; false
+# (no change made) otherwise. Meant for the main-menu upgrade store.
+func spend_endless_coins(amount: int) -> bool:
+	if endless_coins < amount:
+		return false
+	endless_coins -= amount
+	emit_signal("endless_coins_updated", endless_coins)
+	save_progress()
+	return true
 
 func is_high_score(score: int) -> bool:
 	if high_scores.size() < 10:

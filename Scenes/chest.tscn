@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://cgf6mijnq6dpu"]
+
+[ext_resource type="Texture2D" uid="uid://dhln4w4t2sc8n" path="res://Assets/Sprites/Spritesheet.png" id="1_lyb87"]
+[ext_resource type="Script" path="res://Scripts/ability_chest.gd" id="2_ab1ch"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_oloq5"]
+size = Vector2(31, 24)
+
+[node name="Chest" type="Area2D" unique_id=508885313]
+script = ExtResource("2_ab1ch")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=684207532]
+texture = ExtResource("1_lyb87")
+region_enabled = true
+region_rect = Rect2(1374.5094, 1447.0173, 32.90686, 24.664917)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=469923638]
+shape = SubResource("RectangleShape2D_oloq5")

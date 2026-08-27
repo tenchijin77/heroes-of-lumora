@@ -1,0 +1,91 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/class_select.gd" id="1_cls01"]
+[ext_resource type="FontFile" uid="uid://blnxrqwyomqn" path="res://Assets/Fonts/alagard_by_pix3m-d6awiwp.ttf" id="2_cls02"]
+[ext_resource type="FontFile" uid="uid://d1g3p034nbu18" path="res://Assets/Fonts/_bitmap_font____romulus_by_pix3m-d6aokem.ttf" id="3_cls03"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_cls01")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 195.0
+grow_horizontal = 2
+
+[node name="title" type="Label" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 16.0
+offset_right = -20.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("2_cls02")
+theme_override_font_sizes/font_size = 65
+text = "Select Class"
+horizontal_alignment = 1
+
+[node name="menu_container" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 210.0
+offset_right = 150.0
+offset_bottom = 530.0
+grow_horizontal = 2
+
+[node name="woodstalker_button" type="Button" parent="menu_container"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_cls03")
+theme_override_font_sizes/font_size = 30
+text = "Woodstalker"
+
+[node name="troubadour_button" type="Button" parent="menu_container"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_cls03")
+theme_override_font_sizes/font_size = 30
+text = "Troubadour"
+
+[node name="arcanist_button" type="Button" parent="menu_container"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_cls03")
+theme_override_font_sizes/font_size = 30
+text = "Arcanist"
+
+[node name="voidknight_button" type="Button" parent="menu_container"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_cls03")
+theme_override_font_sizes/font_size = 30
+text = "Voidknight"
+
+[node name="gravecaller_button" type="Button" parent="menu_container"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_cls03")
+theme_override_font_sizes/font_size = 30
+text = "Gravecaller"
+
+[node name="back_button" type="Button" parent="menu_container"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_cls03")
+theme_override_font_sizes/font_size = 30
+text = "Back"
+
+[connection signal="pressed" from="menu_container/woodstalker_button" to="." method="_on_woodstalker_button_pressed"]
+[connection signal="pressed" from="menu_container/troubadour_button" to="." method="_on_troubadour_button_pressed"]
+[connection signal="pressed" from="menu_container/arcanist_button" to="." method="_on_arcanist_button_pressed"]
+[connection signal="pressed" from="menu_container/voidknight_button" to="." method="_on_voidknight_button_pressed"]
+[connection signal="pressed" from="menu_container/gravecaller_button" to="." method="_on_gravecaller_button_pressed"]
+[connection signal="pressed" from="menu_container/back_button" to="." method="_on_back_button_pressed"]

@@ -1,22 +1,24 @@
-[gd_scene format=3 uid="uid://jjf5nm3n5g1"]
+[gd_scene format=3 uid="uid://cn1ggmm44gd4p"]
 
-[ext_resource type="Script" uid="uid://d6xrs2lxn4lc" path="res://Scripts/projectile.gd" id="1_a45j1"]
-[ext_resource type="AudioStream" uid="uid://cm6p6fqhakrfl" path="res://Assets/Audio/arrow-swish_03-306040.mp3" id="2_ek5xv"]
-[ext_resource type="Texture2D" uid="uid://b145lo5v3cwa4" path="res://Assets/New Sprites/Projectiles 2 Sprites.png" id="3_ek5xv"]
-[ext_resource type="AudioStream" uid="uid://djqty5p7je131" path="res://Assets/Audio/magic-teleport-whoosh-352764.mp3" id="4_ek5xv"]
+[ext_resource type="Script" uid="uid://d6xrs2lxn4lc" path="res://Scripts/projectile.gd" id="1_0wuol"]
+[ext_resource type="Texture2D" uid="uid://b145lo5v3cwa4" path="res://Assets/New Sprites/Projectiles 2 Sprites.png" id="3_jk6qt"]
+[ext_resource type="AudioStream" uid="uid://djqty5p7je131" path="res://Assets/Audio/magic-teleport-whoosh-352764.mp3" id="4_4iyxt"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_sxmlr"]
 radius = 53.009434
 
 [node name="projectile" type="Area2D" unique_id=501367785]
-collision_layer = 8
-collision_mask = 3121
-script = ExtResource("1_a45j1")
-sound_stream = ExtResource("2_ek5xv")
+collision_layer = 4
+collision_mask = 3090
+script = ExtResource("1_0wuol")
+speed = 250.0
+owner_group = "player"
+damage = 8
+sound_stream = ExtResource("4_4iyxt")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1094849845]
 scale = Vector2(0.25, 0.25)
-texture = ExtResource("3_ek5xv")
+texture = ExtResource("3_jk6qt")
 region_enabled = true
 region_rect = Rect2(61, 77.5, 216, 223)
 
@@ -30,7 +32,7 @@ wait_time = 4.0
 autostart = true
 
 [node name="projectile_sound" type="AudioStreamPlayer2D" parent="." unique_id=129744052]
-stream = ExtResource("4_ek5xv")
+stream = ExtResource("4_4iyxt")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]

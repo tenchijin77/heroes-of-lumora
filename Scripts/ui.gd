@@ -127,6 +127,9 @@ func _on_node_added(node: Node) -> void:
 		visible = false
 	if node.name == "main":
 		visible = true
+		saved_villagers_label.visible = not Global.is_endless_mode
+		lost_villagers_label.visible = not Global.is_endless_mode
+		remaining_villagers_label.visible = not Global.is_endless_mode
 	if node.is_in_group("player"):
 		_connect_player(node)
 	_toggle_touch_controls()

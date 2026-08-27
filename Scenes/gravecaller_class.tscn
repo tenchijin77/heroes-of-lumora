@@ -1,13 +1,16 @@
-[gd_scene format=3 uid="uid://bxtfhghcmfcxs"]
+[gd_scene format=3 uid="uid://c8v03kxij34qs"]
 
 [ext_resource type="Texture2D" uid="uid://shgiuewoiox7" path="res://Assets/New Sprites/NPC Sprites 2.png" id="1_gc01"]
-[ext_resource type="Script" uid="uid://dnec4jrb3ip2v" path="res://Scripts/gravecaller.gd" id="2_gc01"]
+[ext_resource type="Script" uid="uid://co2cwrj6fqmvs" path="res://Scripts/gravecaller_class.gd" id="2_gc01"]
 [ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="3_gc01"]
-[ext_resource type="PackedScene" uid="uid://bbfa72cjrxx6w" path="res://Scenes/death_bolt.tscn" id="4_gc01"]
-[ext_resource type="PackedScene" uid="uid://d3rcusi22khhd" path="res://Scenes/potion.tscn" id="5_gc01"]
+[ext_resource type="PackedScene" uid="uid://bfi7kliiivv4s" path="res://Scenes/death_bolt_player.tscn" id="4_vqfor"]
+[ext_resource type="AudioStream" uid="uid://b73tm8s20y6vp" path="res://Assets/Audio/385046__mortisblack__damage.ogg" id="5_dmgsnd"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gc01"]
 size = Vector2(35, 44)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pickup"]
+radius = 53.0094
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gc01_bg"]
 bg_color = Color(0.201527, 0.201527, 0.201527, 1)
@@ -15,13 +18,10 @@ bg_color = Color(0.201527, 0.201527, 0.201527, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gc01_fill"]
 bg_color = Color(0.3, 0.55, 0.15, 1)
 
-[node name="gravecaller" type="CharacterBody2D" unique_id=558994036 groups=["monsters"]]
-collision_layer = 2
+[node name="gravecaller" type="CharacterBody2D" unique_id=558994036 groups=["player"]]
+top_level = true
 collision_mask = 629
 script = ExtResource("2_gc01")
-current_health = 300
-max_health = 300
-bullet_scene = ExtResource("4_gc01")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1833736677]
 visible = false
@@ -39,11 +39,18 @@ position = Vector2(-9, 3)
 
 [node name="bullet_pool" type="Node" parent="." unique_id=1587007886]
 script = ExtResource("3_gc01")
-node_scene = ExtResource("4_gc01")
+node_scene = ExtResource("4_vqfor")
 
-[node name="potion_pool" type="Node" parent="." unique_id=1572017966]
-script = ExtResource("3_gc01")
-node_scene = ExtResource("5_gc01")
+[node name="player_damage_sound" type="AudioStreamPlayer2D" parent="." unique_id=2159700004]
+stream = ExtResource("5_dmgsnd")
+
+[node name="pickup_area" type="Area2D" parent="." unique_id=2147307004]
+collision_layer = 0
+collision_mask = 256
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="pickup_area" unique_id=87495004]
+visible = false
+shape = SubResource("CircleShape2D_pickup")
 
 [node name="avoidance_ray" type="RayCast2D" parent="." unique_id=560011991]
 position = Vector2(4, 0)

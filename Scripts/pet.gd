@@ -274,6 +274,8 @@ func _on_pickup_area_entered(area: Area2D) -> void:
 	if area.is_in_group("loot"):
 		Global.coins_collected += 1
 		Global.emit_signal("coins_updated", Global.coins_collected)
+		if Global.is_endless_mode:
+			Global.add_endless_coins(1)
 		area.collect()
 
 func _spawn_death_vfx() -> void:

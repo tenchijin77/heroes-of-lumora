@@ -15,6 +15,7 @@ offset_bottom = 40.0
 
 [node name="wave" type="Label" parent="VBoxContainer" unique_id=1555208306]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
 theme_override_fonts/font = ExtResource("1_jxero")
 theme_override_font_sizes/font_size = 20
 text = "Current Wave: 0"
@@ -23,6 +24,7 @@ text = "Current Wave: 0"
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 6
+theme_override_colors/font_color = Color(1, 0, 0, 1)
 theme_override_fonts/font = ExtResource("1_jxero")
 theme_override_font_sizes/font_size = 20
 text = "Time Survived: 00:00"
@@ -31,6 +33,7 @@ text = "Time Survived: 00:00"
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 6
+theme_override_colors/font_color = Color(1, 0, 0, 1)
 theme_override_fonts/font = ExtResource("1_jxero")
 theme_override_font_sizes/font_size = 20
 text = "Score: 0"
@@ -39,6 +42,7 @@ text = "Score: 0"
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 6
+theme_override_colors/font_color = Color(1, 0, 0, 1)
 theme_override_fonts/font = ExtResource("1_jxero")
 theme_override_font_sizes/font_size = 20
 text = "Solari: 0"
@@ -47,6 +51,7 @@ text = "Solari: 0"
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 6
+theme_override_colors/font_color = Color(1, 0, 0, 1)
 theme_override_fonts/font = ExtResource("1_jxero")
 theme_override_font_sizes/font_size = 20
 text = "Villagers Saved: 0"
@@ -55,6 +60,7 @@ text = "Villagers Saved: 0"
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 6
+theme_override_colors/font_color = Color(1, 0, 0, 1)
 theme_override_fonts/font = ExtResource("1_jxero")
 theme_override_font_sizes/font_size = 20
 text = "Villagers Lost: 0"
@@ -63,6 +69,7 @@ text = "Villagers Lost: 0"
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 6
+theme_override_colors/font_color = Color(1, 0, 0, 1)
 theme_override_fonts/font = ExtResource("1_jxero")
 theme_override_font_sizes/font_size = 20
 text = "Villagers Left: 0"
@@ -71,6 +78,7 @@ text = "Villagers Left: 0"
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 6
+theme_override_colors/font_color = Color(1, 0, 0, 1)
 theme_override_fonts/font = ExtResource("1_jxero")
 theme_override_font_sizes/font_size = 20
 text = "In-Game Time:"
@@ -80,6 +88,7 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 6
+theme_override_colors/font_color = Color(1, 0, 0, 1)
 theme_override_fonts/font = ExtResource("1_jxero")
 theme_override_font_sizes/font_size = 20
 text = "In-Game Date:"
@@ -87,7 +96,6 @@ text = "In-Game Date:"
 [node name="touch_controls" parent="." unique_id=1964900123 instance=ExtResource("3_nf4gj")]
 
 [node name="stats_container" type="HBoxContainer" parent="." unique_id=1211336185]
-layout_direction = 2
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
@@ -100,11 +108,13 @@ grow_horizontal = 2
 grow_vertical = 0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+layout_direction = 2
 theme_override_constants/separation = 15
 alignment = 1
 
 [node name="player_damage" type="Label" parent="stats_container" unique_id=147786404]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
 theme_override_fonts/font = ExtResource("4_2246s")
 theme_override_font_sizes/font_size = 20
 text = "DMG:"
@@ -112,6 +122,7 @@ horizontal_alignment = 1
 
 [node name="player_speed" type="Label" parent="stats_container" unique_id=617319804]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
 theme_override_fonts/font = ExtResource("4_2246s")
 theme_override_font_sizes/font_size = 20
 text = "SPD:"
@@ -119,6 +130,7 @@ horizontal_alignment = 1
 
 [node name="player_health" type="Label" parent="stats_container" unique_id=1347122443]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
 theme_override_fonts/font = ExtResource("4_2246s")
 theme_override_font_sizes/font_size = 20
 text = "HP:"
@@ -163,6 +175,7 @@ alignment = 1
 
 [node name="paused_label" type="Label" parent="pause_overlay/pause_panel/VBoxContainer" unique_id=700000004]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
 theme_override_fonts/font = ExtResource("4_2246s")
 theme_override_font_sizes/font_size = 42
 text = "PAUSED"
@@ -170,12 +183,14 @@ horizontal_alignment = 1
 
 [node name="resume_button" type="Button" parent="pause_overlay/pause_panel/VBoxContainer" unique_id=700000005]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
 theme_override_fonts/font = ExtResource("1_jxero")
 theme_override_font_sizes/font_size = 26
 text = "Resume"
 
 [node name="quit_button" type="Button" parent="pause_overlay/pause_panel/VBoxContainer" unique_id=700000006]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
 theme_override_fonts/font = ExtResource("1_jxero")
 theme_override_font_sizes/font_size = 26
 text = "Quit to Main Menu"

@@ -235,6 +235,10 @@ func _initialize_waypoint() -> void:
 	_update_waypoint()
 
 func _update_waypoint() -> void:
+	# Endless mode doesn't use the village_center/extraction_point rally
+	# system — see _physics_process_chase_player().
+	if Global.is_endless_mode:
+		return
 	# Safety check: Make sure scene tree is available
 	if not is_inside_tree():
 		push_warning("Monster %s: Not in scene tree yet, deferring waypoint update" % name)
@@ -329,6 +333,15 @@ func _physics_process(_delta: float) -> void:
 		move_and_slide()
 		_process_collisions()
 		return
+
+	# Endless mode: skip the village_center/extraction_point rally system
+	# entirely (that's a story-campaign village-defense behavior) and just
+	# chase the player directly, using the same NavigationAgent2D/avoidance
+	# pipeline as everything else.
+	if Global.is_endless_mode:
+		_physics_process_chase_player()
+		return
+
 	var desired_velocity: Vector2 = Vector2.ZERO
 
 	# Stage 2 (hunting grounds) - monsters have reached extraction point, now just hunt
@@ -391,6 +404,36 @@ func _physics_process(_delta: float) -> void:
 	navigation_agent.set_velocity(desired_velocity)
 
 	# Process collisions
+	_process_collisions()
+
+# Endless mode movement: continuously path toward the player's current
+# position instead of a fixed waypoint. navigation_agent.target_position is
+# refreshed every frame since, unlike a waypoint marker, the player moves.
+func _physics_process_chase_player() -> void:
+	var player: Node2D = get_tree().get_first_node_in_group("player")
+	if not is_instance_valid(player):
+		velocity = velocity.lerp(Vector2.ZERO, drag)
+		move_and_slide()
+		_process_collisions()
+		return
+
+	navigation_agent.target_position = player.global_position
+
+	var desired_velocity: Vector2 = Vector2.ZERO
+	if not navigation_agent.is_navigation_finished():
+		var next_path_position: Vector2 = navigation_agent.get_next_path_position()
+		desired_velocity = global_position.direction_to(next_path_position).normalized() * max_speed
+	else:
+		# No path available (e.g. off the baked nav mesh) — close the gap directly.
+		desired_velocity = global_position.direction_to(player.global_position).normalized() * max_speed
+
+	if desired_velocity.is_zero_approx():
+		velocity = velocity.lerp(Vector2.ZERO, drag)
+		move_and_slide()
+		_process_collisions()
+		return
+
+	navigation_agent.set_velocity(desired_velocity)
 	_process_collisions()
 
 # Receives safe velocity from NavigationAgent2D and applies movement
@@ -642,8 +685,7 @@ func apply_knockback(impulse: Vector2) -> void:
 	velocity += impulse
 
 func _spawn_ability_chest() -> void:
-	var chest := Area2D.new()
-	chest.set_script(load("res://Scripts/ability_chest.gd"))
+	var chest: Area2D = preload("res://Scenes/chest.tscn").instantiate()
 	call_deferred("_add_chest_to_scene", chest, global_position)
 
 func _add_chest_to_scene(chest: Area2D, pos: Vector2) -> void:

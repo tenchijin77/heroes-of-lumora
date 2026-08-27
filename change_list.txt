@@ -46,6 +46,10 @@ to do: (in order of importance)
 
 -add particle effects to player and monster projectile attacks
 -create an endless mode for players who have beaten the main game
+-add 5 classes for endless mode: troubadour, arcanist, woodstalker, voidknight, and gravecaller
+-create 5 endless levels
+-create persistent money, exists through endless levels and runs, so the player can buy upgrades to each class.
+
 
 sites for assets:
 

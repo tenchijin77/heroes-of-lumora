@@ -1,0 +1,73 @@
+[gd_scene format=3 uid="uid://cv84p1l0eoexl"]
+
+[ext_resource type="Texture2D" uid="uid://shgiuewoiox7" path="res://Assets/New Sprites/NPC Sprites 2.png" id="1_vk01"]
+[ext_resource type="Script" uid="uid://c2xgq8twm4rci" path="res://Scripts/voidknight_class.gd" id="2_vk01"]
+[ext_resource type="Script" uid="uid://s244dhbmprhx" path="res://Scripts/node_pool.gd" id="3_vk01"]
+[ext_resource type="PackedScene" uid="uid://cn1ggmm44gd4p" path="res://Scenes/life_siphon_player.tscn" id="4_xy682"]
+[ext_resource type="AudioStream" uid="uid://b73tm8s20y6vp" path="res://Assets/Audio/385046__mortisblack__damage.ogg" id="5_dmgsnd"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vk01"]
+size = Vector2(41, 50)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pickup"]
+radius = 53.0094
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vk01_bg"]
+bg_color = Color(0.201527, 0.201527, 0.201527, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vk01_fill"]
+bg_color = Color(0.55, 0.1, 0.85, 1)
+
+[node name="voidknight" type="CharacterBody2D" unique_id=171968584 groups=["player"]]
+top_level = true
+collision_mask = 629
+script = ExtResource("2_vk01")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1954689368]
+visible = false
+position = Vector2(-7.5, 0)
+shape = SubResource("RectangleShape2D_vk01")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1222498348]
+scale = Vector2(0.15, 0.15)
+texture = ExtResource("1_vk01")
+region_enabled = true
+region_rect = Rect2(35, 30, 379, 327)
+
+[node name="muzzle" type="Node2D" parent="." unique_id=203889884]
+position = Vector2(-10, 3)
+
+[node name="bullet_pool" type="Node" parent="." unique_id=78022659]
+script = ExtResource("3_vk01")
+node_scene = ExtResource("4_xy682")
+
+[node name="player_damage_sound" type="AudioStreamPlayer2D" parent="." unique_id=2159700003]
+stream = ExtResource("5_dmgsnd")
+
+[node name="pickup_area" type="Area2D" parent="." unique_id=2147307003]
+collision_layer = 0
+collision_mask = 256
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="pickup_area" unique_id=87495003]
+visible = false
+shape = SubResource("CircleShape2D_pickup")
+
+[node name="avoidance_ray" type="RayCast2D" parent="." unique_id=837441628]
+position = Vector2(4, 0)
+rotation = 3.1415927
+target_position = Vector2(-64, 0)
+collision_mask = 1075
+
+[node name="health_bar" type="ProgressBar" parent="." unique_id=1049000006]
+offset_left = -14.0
+offset_top = -36.0
+offset_right = 14.0
+offset_bottom = -34.0
+theme_override_styles/background = SubResource("StyleBoxFlat_vk01_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_vk01_fill")
+rounded = true
+show_percentage = false
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=1084248196]
+avoidance_enabled = true
+radius = 16.0

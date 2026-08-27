@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://shyk8gpa8u3i"]
 
 [ext_resource type="Script" uid="uid://d6xrs2lxn4lc" path="res://Scripts/projectile.gd" id="1_upah7"]
-[ext_resource type="AudioStream" uid="uid://cm6p6fqhakrfl" path="res://Assets/Audio/arrow-swish_03-306040.mp3" id="2_546on"]
 [ext_resource type="AudioStream" uid="uid://big15pri7hung" path="res://Assets/Audio/skill-attack-combo-music-note-4-384959.mp3" id="2_slpnq"]
 [ext_resource type="Texture2D" uid="uid://cpxbkkf2gom46" path="res://Assets/New Sprites/Projectiles Sprites.png" id="3_546on"]
 
@@ -34,7 +33,7 @@ wait_time = 4.0
 autostart = true
 
 [node name="projectile_sound" type="AudioStreamPlayer2D" parent="." unique_id=1972091729]
-stream = ExtResource("2_546on")
+stream = ExtResource("2_slpnq")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
