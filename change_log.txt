@@ -703,4 +703,57 @@ BUG FIX: Voidknight/Gravecaller basic-attack damage edits were being silently
   editing the projectile scenes — verified with an actual fired shot
   (bolt.damage == 4) rather than just reading the math.
 
+FEATURE: Hit sound parity across all five endless-mode classes
+  Files: Scenes/troubadour.tscn, arcanist.tscn, voidknight_class.tscn,
+         gravecaller_class.tscn; Scripts/troubadour.gd, arcanist.gd,
+         voidknight_class.gd, gravecaller_class.gd
+  Woodstalker (duplicated from player.tscn/player.gd) already played
+  player_damage_sound + camera shake on hit; the other four classes were
+  built from scratch and only got the shake. Added the same
+  player_damage_sound node (385046__mortisblack__damage.ogg, same asset
+  the story campaign uses) and .play() call on non-lethal hits to all four.
+
+AUDIT: Every class's damage values now trace to an @export var, nothing
+    else overwrites them
+  File: Scripts/troubadour.gd
+  Went through all five classes' damage-dealing call sites looking for
+  hardcoded, non-inspector-editable numbers or code that silently
+  overwrites an edit elsewhere (the same class of bug as the Voidknight/
+  Gravecaller basic-attack fix above). Found one: Troubadour's Finale had
+  a hardcoded local `base_finale_damage = 25`, not exported. Added
+  `@export var finale_damage: int = 25` and wired it in. Everything else
+  (base_damage, frost_bolt_damage, meteor_damage, disintegrate_damage,
+  void_slash_damage, curse_damage_per_tick, plague_tick_damage) was already
+  an @export on the character script — that script export is the one
+  authoritative place to edit each class's damage; the projectile scenes'
+  own `damage` field is always overwritten by open_fire() and editing it
+  directly does nothing.
+
+FEATURE: Upgrade Store — permanent per-class stat upgrades
+  Files: Scripts/global.gd, Scripts/main.gd, Scripts/main_menu.gd,
+         Scenes/upgrade_store.tscn (new), Scripts/upgrade_store.gd (new),
+         Scenes/class_upgrade.tscn (new), Scripts/class_upgrade.gd (new)
+  main_menu.tscn's "Upgrade Store" button existed but was never wired up.
+  It now opens upgrade_store.tscn (a class picker, gated behind
+  campaign_complete same as Endless/Credits) → class_upgrade.tscn, which
+  shows that class's current Solari (Global.endless_coins) and offers the
+  same Health/+25hp, Damage/+2, Speed/+10 upgrades as Timot's in-run shop,
+  same cost-scaling curve, but spent from the persistent endless economy
+  and tracked per class (Global.endless_upgrades, keyed by class scene
+  path, persisted in progress.json). Class-specific upgrades are a
+  deliberate to-do, not done this pass.
+  main.gd._apply_endless_class() now calls _apply_class_upgrades() right
+  after spawning the class, applying that class's purchased counts (health/
+  current_health, base_damage — or frost_bolt_damage for Arcanist, whose
+  basic attack doesn't use base_damage — and max_speed/base_max_speed).
+  Caught and fixed one bug along the way: class_upgrade.gd's fallback (if
+  opened without a class selected) called change_scene_to_file directly
+  from _ready(), which Godot disallows mid-tree-setup — switched to
+  call_deferred.
+  Verified live: bought all three upgrades for Woodstalker, confirmed the
+  purchase persisted correctly to progress.json, then confirmed a freshly
+  spawned Woodstalker actually carried +25 HP/+2 damage/+10 speed on top of
+  his base stats. The user's real save (73 Solari, campaign_complete) was
+  backed up before testing and restored exactly afterward.
+
 ================================================================================
